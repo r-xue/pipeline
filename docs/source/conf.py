@@ -19,6 +19,7 @@
 from datetime import datetime
 import os
 import sys
+import textwrap
 
 pipeline_src = os.getenv('pipeline_src')
 if pipeline_src is not None:
@@ -30,6 +31,24 @@ else:
 
 try:
     import pipeline
+
+    from pipeline.infrastructure.renderer.regression import get_all_subclasses
+    from pipeline.infrastructure.api import Task
+    from pipeline.infrastructure.api import Inputs
+
+    taskclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Task)]
+    inputsclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
+    
+    # create custom directives to create inheritance diagrams for all Task/Inputs Classes
+    #   https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
+    #   https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_prolog
+
+    rst_epilog = r"""
+        .. |taskclasses_diagram| inheritance-diagram:: {}
+        .. |inputsclasses_diagram| inheritance-diagram:: {}
+        """.format(' '.join(taskclasses_str), ' '.join(inputsclasses_str))
+    rst_epilog = textwrap.dedent(rst_epilog)
+
 except ImportError as error:
     print("Can't import Pipeline, but we will continue to build the docs.")
     print(error.__class__.__name__ + ": " + error.message)
@@ -44,21 +63,30 @@ except ImportError as error:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
+              # 'autoapi.extension',
               'sphinx.ext.autosectionlabel',
               'sphinx.ext.autosummary',
+              'sphinx.ext.todo',
               'sphinx_markdown_tables',
-#              'sphinx.ext.coverage',
+              #              'sphinx.ext.coverage',
               'sphinx.ext.imgconverter',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
+              'sphinx.ext.coverage',
+              'sphinx.ext.githubpages',
               'sphinx.ext.intersphinx',
-              'sphinxcontrib.bibtex',
-              'sphinx_astrorefs',
+              'sphinx.ext.inheritance_diagram',
+              'sphinx_automodapi.automodapi',
+              # 'sphinxcontrib.bibtex',
+              # 'sphinx_astrorefs',
               'recommonmark',
+              'sphinx.ext.graphviz',
               'sphinx.ext.viewcode',
               'nbsphinx',
               'IPython.sphinxext.ipython_console_highlighting',
               'IPython.sphinxext.ipython_directive']
+
+add_module_names = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -67,7 +95,7 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 
-#source_suffix = ['.rst', '.md']
+# source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
 # The master toctree document.
@@ -83,9 +111,9 @@ copyright = u'2020–{0}, '.format(datetime.utcnow().year) + author
 # the built documents.
 #
 # The short X.Y version.
-#version = pipeline.__version__
+# version = pipeline.__version__
 # The full version, including alpha/beta/rc tags.
-#release = pipeline.__version__
+# release = pipeline.__version__
 
 release = pipeline.environment.pipeline_revision
 version = release.split('+')[0]
@@ -106,7 +134,7 @@ exclude_patterns = [
     '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-#pygments_style = 'sphinx'
+# pygments_style = 'sphinx'
 pygments_style = 'default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
@@ -223,7 +251,7 @@ texinfo_documents = [
 # -- Sidebars
 
 html_sidebars = {
-    '**': ['localtoc.html'], # not allowed if using the 'furo' theme
+    '**': ['localtoc.html'],  # not allowed if using the 'furo' theme
     'search': [],
     'genindex': [],
     'py-modindex': [],
@@ -239,15 +267,23 @@ napoleon_use_ivar = True
 
 verbatimwrapslines = False
 html_show_sourcelink = True
-# Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the 
+# Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the
 # reference manual
-autosummary_generate = False
-autosummary_generate_overwrite = False
+autosummary_generate = True
+autosummary_generate_overwrite = True
 autosummary_imported_members = True
-#autosummary_ignore_module_all = False
-#autodoc_mock_imports = ["pipeline"]
-#autodoc_default_options = ['members']
+autosummary_ignore_module_all = True
+# autodoc_mock_imports = ["pipeline"]
+# autodoc_default_options = ['members']
 
+autodoc_default_options = {
+    # other options
+    'show-inheritance': True
+}
+
+# sphinx-automodapi: https://sphinx-automodapi.readthedocs.io
+numpydoc_show_class_members = False
+automodapi_toctreedirnm = '_automodapi'
 
 # -- intersphinx
 
@@ -257,23 +293,51 @@ autosummary_imported_members = True
 # }
 
 
-#intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
-#intersphinx_mapping['astropy'] = ('http://docs.astropy.org/en/latest/', None)
-#intersphinx_mapping['pyerfa'] = ('https://pyerfa.readthedocs.io/en/stable/', None)
-#intersphinx_mapping['pytest'] = ('https://pytest.readthedocs.io/en/stable/', None)
-#intersphinx_mapping['ipython'] = ('https://ipython.readthedocs.io/en/stable/', None)
-#intersphinx_mapping['pandas'] = ('https://pandas.pydata.org/pandas-docs/stable/', None)
-#intersphinx_mapping['sphinx_automodapi'] = ('https://sphinx-automodapi.readthedocs.io/en/stable/', None)
-#intersphinx_mapping['packagetemplate'] = ('http://docs.astropy.org/projects/package-template/en/latest/', None)
-#intersphinx_mapping['h5py'] = ('http://docs.h5py.org/en/stable/', None)
+# intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+# intersphinx_mapping['astropy'] = ('http://docs.astropy.org/en/latest/', None)
+# intersphinx_mapping['pyerfa'] = ('https://pyerfa.readthedocs.io/en/stable/', None)
+# intersphinx_mapping['pytest'] = ('https://pytest.readthedocs.io/en/stable/', None)
+# intersphinx_mapping['ipython'] = ('https://ipython.readthedocs.io/en/stable/', None)
+# intersphinx_mapping['pandas'] = ('https://pandas.pydata.org/pandas-docs/stable/', None)
+# intersphinx_mapping['sphinx_automodapi'] = ('https://sphinx-automodapi.readthedocs.io/en/stable/', None)
+# intersphinx_mapping['packagetemplate'] = ('http://docs.astropy.org/projects/package-template/en/latest/', None)
+# intersphinx_mapping['h5py'] = ('http://docs.h5py.org/en/stable/', None)
 
 
 def setup(app):
     app.add_css_file('custom_theme.css')
 
 # astrorefs
-bibtex_bibfiles = ['references/pipeline.bib']
-bibtex_encoding = "utf-8"
-astrorefs_resolve_aas_macros = True
-astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
-astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
+# bibtex_bibfiles = ['references/pipeline.bib']
+# bibtex_encoding = "utf-8"
+# astrorefs_resolve_aas_macros = True
+# astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
+# astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
+
+
+# inheritance_graph_attrs = dict(rankdir="TB", size='""')
+
+
+autoapi_dirs = ['../../pipeline']
+
+
+inheritance_graph_attrs = {
+    'rankdir': 'LR',
+    'size': '"25.0, 50.0"',
+    'bgcolor': 'transparent',
+}
+
+inheritance_node_attrs = {
+    'shape': 'box',
+    'fontsize': 12,
+    'height': 0.25,
+    'fontname': '"Vera Sans, DejaVu Sans, Liberation Sans, '
+    'Arial, Helvetica, sans"',
+    'style': '"setlinewidth(0.5),filled"',
+    'fillcolor': 'white',
+}
+
+inheritance__edge_attrs = {
+    'arrowsize': 0.5,
+    'style': '"setlinewidth(0.5)"',
+}

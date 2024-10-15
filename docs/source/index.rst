@@ -9,7 +9,7 @@ Pipeline Documentation
 
 .. autosummary::
    :toctree: _autosummary
-   :caption: Pipeline Task Docs (from sphinx-autosummary)
+   :caption: Pipeline Task (sphinx-autosummary)
 
    pipeline.h.cli
    pipeline.hif.cli
@@ -18,16 +18,56 @@ Pipeline Documentation
    pipeline.hsd.cli
    pipeline.hsdn.cli
 
+   pipeline.domain
+   pipeline.infrastructure.launcher
+
+.. inheritance-diagram:: pipeline.h.tasks pipeline.hif.tasks pipeline.hifa.tasks
+
+.. inheritance-diagram:: sphinx.ext.inheritance_diagram.InheritanceDiagram
+   :parts: 1
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: API Reference
+   :template: custom-module-template.rst
+   :recursive:
+   
+
+   pipeline.domain
+   pipeline.infrastructure.launcher
+
+
 .. toctree::
    :maxdepth: 2
-   :caption: Notes on Pipeline Heuristics
+   :caption: Pipeline Heuristics
 
    heuristics/field_parameter.md
    heuristics/FlaggingTasks.md
 
+
 .. toctree::
    :maxdepth: 2
-   :caption: Developer Notes (from .md)
+   :caption: Releases etc.
+
+   releases
+   modular
+   dependencies
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Pipeline Basics
+
+   basics
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Task Classes
+
+   task_classes
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Developer Notes
 
    develdocmd/ways_to_run_the_pipeline.md
    develdocmd/comparing_pipeline_executions.md
@@ -48,17 +88,20 @@ Pipeline Documentation
    develdocmd/releases.md
    develdocmd/recipes.md
 
+
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples Notes (from Jupyter Notebooks)
+
+   examples/test1.ipynb
+
 .. toctree::
    :maxdepth: 2
    :caption: Example Notes (from .rst)
-
-   rst_examples/installation
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Notebook (from Jupyter Notebooks)
-
-   test
+   
+   examples/test2.rst   
 
 Indices and tables
 ==================

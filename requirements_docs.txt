@@ -14,3 +14,5 @@ sphinx-copybutton
 sphinx-markdown-tables # https://pypi.org/project/sphinx-markdown-tables/
 #ipympl
 #nodejs
+sphinx-automodapi
+sphinx-autoapi
