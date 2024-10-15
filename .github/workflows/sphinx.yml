@@ -4,7 +4,12 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]    
     permissions:
       contents: write
     steps:
@@ -13,6 +18,7 @@ jobs:
       uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
+        pre-build-command: "apt-get update -y && python -m pip install -r ../requirements.txt && python -m pip install -r ../requirements_docs.txt"
         build-command: "make html_docs"      
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
