@@ -4,7 +4,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
 
 __all__ = [
-    'Tsysflag',
+    'ALMATsysflag',
     'TsysflagInputs'
 ]
 
@@ -39,5 +39,5 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
 
 @task_registry.set_equivalent_casa_task('hifa_tsysflag')
 @task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
-class Tsysflag(tsysflag.Tsysflag):
+class ALMATsysflag(tsysflag.Tsysflag):
     Inputs = TsysflagInputs
