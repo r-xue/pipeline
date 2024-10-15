@@ -12,3 +12,12 @@ build                       # https://packaging.python.org/en/latest/key_project
 twine                       # https://packaging.python.org/en/latest/key_projects/#twine
 wheel                       # https://packaging.python.org/en/latest/key_projects/#wheel
 # setuptools_scm              # https://pypi.org/project/setuptools-scm/
+pydocstyle
+pycodestyle
+pytest-cov
+pytest-pep8
+black
+isort
+flake8
+pylint
+future

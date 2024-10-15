@@ -60,6 +60,7 @@ dependencies:
   - protobuf=3.20 # casatplotms requires ver<=3.20 currently
   - poppler # required for PL
   - imagemagick # required for PL
+  - pandoc # nbsphinx requires 'pandoc'; available from macports/homebrew or apt; different from 'pandoc' on PyPI)
   # - python-casacore # if you want a different I/O option.
   - pip:
       - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
@@ -69,4 +70,4 @@ dependencies:
       - casampi
       - casaplotms
       - casaplotserver
-      - .
+      # - .
