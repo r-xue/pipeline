@@ -18,4 +18,5 @@ import pipeline.infrastructure.executeppr as eppr
 import casashell
 
 # Execute the request
-eppr.executeppr (casashell.argv[casashell.argv.index('-c')+2], importonly=False)
+if __name__ == '__main__':
+    eppr.executeppr(casashell.argv[casashell.argv.index('-c')+2], importonly=False)
