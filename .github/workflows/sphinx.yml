@@ -21,7 +21,9 @@ jobs:
         channel-priority: strict
         miniforge-version: latest
         use-only-tar-bz2: true
-        python-version: ${{ matrix.python-version }}            
+        show_channel_urls: true
+        changeps1: true
+        auto_update_conda: true           
     - run: conda info
     - run: conda list
     - run: conda config --show
