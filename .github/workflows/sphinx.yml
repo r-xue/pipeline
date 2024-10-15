@@ -21,9 +21,8 @@ jobs:
         channel-priority: strict
         miniforge-version: latest
         use-only-tar-bz2: true
-        show_channel_urls: true
-        changeps1: true
-        auto_update_conda: true           
+        show-channel-urls: true
+        auto-update-conda: true           
     - run: conda info
     - run: conda list
     - run: conda config --show
