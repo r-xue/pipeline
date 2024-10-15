@@ -11,6 +11,9 @@ jobs:
         os: ["ubuntu-latest"]  
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash -el {0}      
     steps:
     - uses: actions/checkout@v4  
     - uses: conda-incubator/setup-miniconda@v3.0.4
