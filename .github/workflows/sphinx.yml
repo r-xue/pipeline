@@ -14,11 +14,12 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4
+    - name: Pre-build Setup
+      run:  apt-get update -y && python -m pip install -r ../requirements.txt && python -m pip install -r ../requirements_docs.txt
     - name: Build HTML
       uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
-        pre-build-command: "apt-get update -y && python -m pip install -r ../requirements.txt && python -m pip install -r ../requirements_docs.txt"
         build-command: "make html_docs"      
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
