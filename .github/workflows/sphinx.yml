@@ -14,19 +14,17 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4  
-    - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.4
+    - uses: conda-incubator/setup-miniconda@v3.0.4
       with:
         environment-file: pipe1669.yaml
+        activate-environment: pipe1669
+        channel-priority: strict
         miniforge-version: latest
-        auto-update-conda: true
+        use-only-tar-bz2: true
         python-version: ${{ matrix.python-version }}            
-    - name: Conda info
-      shell: bash -el {0}
-      run: conda info
-    - name: Conda list
-      shell: pwsh
-      run: conda list
+    - run: conda info
+    - run: conda list
+    - run: conda config --show
         
     - uses: actions/checkout@v4  
     - name: Pre-build Setup
