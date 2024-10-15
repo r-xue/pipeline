@@ -9,10 +9,10 @@ nbsphinx            # nbsphinx requires 'pandoc' (e.g. from macports or apt, not
 sphinx_rtd_theme
 # furo
 sphinxcontrib-bibtex
-sphinx-astrorefs    # https://github.com/jobovy/sphinx-astrorefs
+# sphinx-astrorefs    # https://github.com/jobovy/sphinx-astrorefs
 sphinx-copybutton
 sphinx-markdown-tables # https://pypi.org/project/sphinx-markdown-tables/
-#ipympl
-#nodejs
+ipympl
+nodejs
 sphinx-automodapi
 sphinx-autoapi

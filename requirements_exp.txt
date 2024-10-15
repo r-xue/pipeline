@@ -16,3 +16,4 @@ wheel                       # https://packaging.python.org/en/latest/key_project
 jupyterlab
 dask[distributed]
 bokeh>=3.1.0
+jupyterlab
