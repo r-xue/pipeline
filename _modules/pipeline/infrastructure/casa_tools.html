@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -163,7 +163,7 @@
 
 
 <div class="viewcode-block" id="log_call">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.log_call">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.log_call">[docs]</a>
 <span class="k">def</span> <span class="nf">log_call</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorate a function or method so that all invocations of that function or</span>
@@ -213,7 +213,7 @@
 
 
 <div class="viewcode-block" id="create_logging_class">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.create_logging_class">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.create_logging_class">[docs]</a>
 <span class="k">def</span> <span class="nf">create_logging_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span> <span class="n">to_log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a class with all methods decorated to log method calls.</span>
@@ -283,7 +283,7 @@
 
 
 <div class="viewcode-block" id="post_to_log">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.post_to_log">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.post_to_log">[docs]</a>
 <span class="k">def</span> <span class="nf">post_to_log</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">log</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">echo_to_screen</span><span class="p">:</span>
@@ -292,14 +292,14 @@
 
 
 <div class="viewcode-block" id="set_log_origin">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.set_log_origin">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.set_log_origin">[docs]</a>
 <span class="k">def</span> <span class="nf">set_log_origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="n">log</span><span class="o">.</span><span class="n">origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="context_manager_factory">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.context_manager_factory">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.context_manager_factory">[docs]</a>
 <span class="k">def</span> <span class="nf">context_manager_factory</span><span class="p">(</span><span class="n">tool_cls</span><span class="p">,</span> <span class="n">finalisers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a context manager function that wraps the given CASA tool.</span>
@@ -334,7 +334,7 @@
 
 
 <div class="viewcode-block" id="selectvis_context_manager">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.casa_tools.selectvis_context_manager">[docs]</a>
+<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.environment.selectvis_context_manager">[docs]</a>
 <span class="k">def</span> <span class="nf">selectvis_context_manager</span><span class="p">(</span><span class="n">tool_cls</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an imager tool context manager function that opens the MS using</span>

@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -160,7 +160,7 @@
 
 
 <div class="viewcode-block" id="UVcontSubInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.UVcontSubInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">UVcontSubInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -186,12 +186,12 @@
 
 
 <div class="viewcode-block" id="SerialUVcontSub">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.SerialUVcontSub">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialUVcontSub</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">UVcontSubInputs</span>
 
 <div class="viewcode-block" id="SerialUVcontSub.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.SerialUVcontSub.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -373,7 +373,7 @@
 
 
 <div class="viewcode-block" id="SerialUVcontSub.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.SerialUVcontSub.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.SerialUVcontSub.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>
@@ -409,7 +409,7 @@
 
 
 <div class="viewcode-block" id="UVcontSub">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSub">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.UVcontSub.html#pipeline.hif.tasks.UVcontSub">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_uvcontsub&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">UVcontSub</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;UVcontSub class for parallelization.&quot;&quot;&quot;</span>
@@ -419,7 +419,7 @@
 
 
 <div class="viewcode-block" id="UVcontSubResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.UVcontSubResults">[docs]</a>
 <span class="k">class</span> <span class="nc">UVcontSubResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    UVcontSubResults is the results class for the pipeline UVcontSub task.</span>
@@ -439,7 +439,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
 <div class="viewcode-block" id="UVcontSubResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.uvcontsub.qa.UVcontSubResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.uvcontsub.html#pipeline.hif.tasks.UVcontSubResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Check to see if this stage was delibrately skipped</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>

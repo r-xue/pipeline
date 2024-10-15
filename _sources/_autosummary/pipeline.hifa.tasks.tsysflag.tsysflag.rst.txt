@@ -8,6 +8,6 @@ pipeline.hifa.tasks.tsysflag.tsysflag
 
    .. autosummary::
    
-      Tsysflag
+      ALMATsysflag
       TsysflagInputs
    

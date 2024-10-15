@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -202,7 +202,7 @@
 
 
 <div class="viewcode-block" id="ExportDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ExportDataInputs manages the inputs for the ExportData task.</span>
@@ -318,7 +318,7 @@
 
 
 <div class="viewcode-block" id="ExportDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pprequest</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sessiondict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msvisdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calvisdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weblog</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                  <span class="n">pipescript</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">restorescript</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">commandslog</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">manifest</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -357,7 +357,7 @@
 
 
 <div class="viewcode-block" id="ExportData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_exportdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The output data products are computed.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ExportData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -388,7 +388,7 @@
     <span class="n">NameBuilder</span> <span class="o">=</span> <span class="n">PipelineProductNameBuilder</span>
 
 <div class="viewcode-block" id="ExportData.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute an export data job appropriate to the</span>
@@ -489,7 +489,7 @@
 
 
 <div class="viewcode-block" id="ExportData.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportData.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyse the results of the export data operation.</span>
@@ -504,7 +504,7 @@
 
 
 <div class="viewcode-block" id="ExportData.get_recipename">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.exportdata.ExportData.get_recipename">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.hifa.tasks.ExportData.get_recipename">[docs]</a>
     <span class="k">def</span> <span class="nf">get_recipename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the recipe name</span>

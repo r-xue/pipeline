@@ -70,21 +70,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -1925,7 +1925,7 @@ logic:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.flag_raster_map">
-<span class="sig-name descname"><span class="pre">flag_raster_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><span class="pre">DataTableImpl</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.html#pipeline.infrastructure.filenamer.MeasurementSet" title="pipeline.infrastructure.filenamer.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterscan_heuristics_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult" title="pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult"><span class="pre">RasterScanHeuristicsResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/common/rasterutil.html#flag_raster_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.flag_raster_map" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flag_raster_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><span class="pre">DataTableImpl</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterscan_heuristics_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult" title="pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult"><span class="pre">RasterScanHeuristicsResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/common/rasterutil.html#flag_raster_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.flag_raster_map" title="Link to this definition"></a></dt>
 <dd><p>Return list of index to be flagged by flagging heuristics for raster scan.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

@@ -6,14 +6,26 @@ TsysFlagContamination
 .. autoclass:: TsysFlagContamination
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~TsysFlagContamination.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~TsysFlagContamination.analyse
+      ~TsysFlagContamination.execute
       ~TsysFlagContamination.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

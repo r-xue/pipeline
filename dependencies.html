@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pipeline.domain" href="basics.html" />
+    <link rel="next" title="pipeline.domain module" href="basics.html" />
     <link rel="prev" title="Run the Pipeline in a Conda environment" href="modular.html" /> 
 </head>
 
@@ -72,12 +72,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies of <cite>Pipeline</cite></a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#runtime">Runtime</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#depdencies-for-casa6-functionaliies">Depdencies for CASA6 functionaliies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#additional-depdencies-required-by-pipeline">Additional Depdencies required by Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies-for-building-a-functional-casa6-environment">Dependencies for building a functional CASA6 environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies-required-by-pipeline">Additional Dependencies Required by Pipeline</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a><ul>
@@ -93,15 +93,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -143,7 +143,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Dependencies of <cite>Pipeline</cite></li>
+      <li class="breadcrumb-item active">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/dependencies.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -154,14 +154,14 @@
            <div itemprop="articleBody">
              
   <section id="dependencies-of-pipeline">
-<h1>Dependencies of <cite>Pipeline</cite><a class="headerlink" href="#dependencies-of-pipeline" title="Link to this heading"></a></h1>
+<h1>Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code><a class="headerlink" href="#dependencies-of-pipeline" title="Link to this heading"></a></h1>
 <section id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Link to this heading"></a></h2>
-<section id="depdencies-for-casa6-functionaliies">
-<h3>Depdencies for CASA6 functionaliies<a class="headerlink" href="#depdencies-for-casa6-functionaliies" title="Link to this heading"></a></h3>
+<section id="dependencies-for-building-a-functional-casa6-environment">
+<h3>Dependencies for building a functional CASA6 environment<a class="headerlink" href="#dependencies-for-building-a-functional-casa6-environment" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-base package with CASA6 componnents as dependencies, therefore, it only operates limitated on the Python vesions and the platform supported by specific CASA versions (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compaibility matrix</a>) and others depdencies libraries specifically required by Pipeine  Please also check the OS/libraries compatibility and requirements for running CASA.</p>
+<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-base package with CASA6 components as dependencies, therefore, it only operates limited on the Python versions and the platform supported by specific CASA versions (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compatibility matrix</a>) and others dependency libraries specifically required by Pipeine  Please also check the OS/libraries compatibility and requirements for running CASA.</p>
 </div>
 <ul class="simple">
 <li><p>python3</p></li>
@@ -177,16 +177,14 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><cite>casadata</cite> and <cite>almatasks</cite> is no longer required for <code class="docutils literal notranslate"><span class="pre">CASA6&gt;=6.6.1</span></code>. already bundled inside the CASA+Pipeline release/prerelease tarball. <cite>casaconfig</cite> is implictlye required by <cite>casatasks`</cite></p>
+<p><cite>casadata</cite> and <cite>almatasks</cite> are no longer required for <code class="docutils literal notranslate"><span class="pre">CASA6&gt;=6.6.1</span></code>. Already bundled inside the CASA+Pipeline release/prerelease tarball. <cite>casaconfig</cite> is implicitly required by <cite>casatasks`</cite></p>
 </div>
 </section>
-<section id="additional-depdencies-required-by-pipeline">
-<h3>Additional Depdencies required by Pipeline<a class="headerlink" href="#additional-depdencies-required-by-pipeline" title="Link to this heading"></a></h3>
-<blockquote>
-<div><ul>
-<li><p>Python (see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>)</p>
+<section id="additional-dependencies-required-by-pipeline">
+<h3>Additional Dependencies Required by Pipeline<a class="headerlink" href="#additional-dependencies-required-by-pipeline" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
+<li><p>Python (see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>)</p></li>
 <li><p>cachetools</p></li>
 <li><p>mako</p></li>
 <li><p>pypubsub</p></li>
@@ -195,30 +193,17 @@
 <li><p>ps_mem</p></li>
 <li><p>astropy</p></li>
 <li><p>bdsf (for VLASS source detection &amp; mask creation)</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>*unix-cmd</p>
-<blockquote>
-<div><ul class="simple">
+<li><p>*unix-cmd</p></li>
 <li><p>ImageMagick</p></li>
-<li><dl class="simple">
-<dt>the “convert” cmd:</dt><dd><ul>
+<li><p>the “convert” cmd:</p></li>
 <li><p>Linux only for generating thumbnails; macOS uses “sips” which comes with OS.</p></li>
 <li><p>Also used by ImageMagickWriter from matplotlib.animation in hsd/tasks/common/rasterutil.py (only for developers)</p></li>
 <li><p>the “montage” cmd: required from hifa_renorm</p></li>
-</ul>
-</dd>
-</dl>
-</li>
 <li><p>poppler-utils</p></li>
 <li><p>the “pdfunite” cmd: required from hifa_renorm</p></li>
 <li><p>Git: for obtaining the Pipeline revision description string.</p></li>
 <li><p>Xvfb/xvfb-run: xvfb from OS is required for the casampi module, which is mandatory for running</p></li>
 <li><p>uncompress: used by tec_maps.py in CASA for VLA pipeline task hifv_priorcals</p></li>
-</ul>
-</div></blockquote>
-</li>
 </ul>
 </div></blockquote>
 </section>
@@ -263,7 +248,7 @@
 <h3>*unix-cmd<a class="headerlink" href="#unix-cmd" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Git LFS: for managing the pipeline-testdata repo</p></li>
+<li><p>Git LFS: for managing the <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse">pipeline-testdata</a> repo</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -275,7 +260,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="modular.html" class="btn btn-neutral float-left" title="Run the Pipeline in a Conda environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="basics.html" class="btn btn-neutral float-right" title="pipeline.domain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="basics.html" class="btn btn-neutral float-right" title="pipeline.domain module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

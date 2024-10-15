@@ -17,6 +17,7 @@ Selfcal
    .. autosummary::
 
       ~Selfcal.analyse
+      ~Selfcal.execute
       ~Selfcal.get_desired_width
       ~Selfcal.get_spw_chanbin
       ~Selfcal.prepare
@@ -28,6 +29,7 @@ Selfcal
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: get_desired_width
    .. automethod:: get_spw_chanbin
    .. automethod:: prepare

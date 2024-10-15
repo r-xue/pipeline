@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -170,7 +170,7 @@
 
 
 <div class="viewcode-block" id="SelfcalResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.SelfcalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SelfcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">applycal_result_contline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_result_line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">selfcal_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_restore</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -183,7 +183,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_resources</span> <span class="o">=</span> <span class="n">selfcal_resources</span>
 
 <div class="viewcode-block" id="SelfcalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.SelfcalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See :method:`~pipeline.infrastructure.api.Results.merge_with_context`.&quot;&quot;&quot;</span>
 
@@ -254,7 +254,7 @@
 
 
 <div class="viewcode-block" id="SelfcalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.SelfcalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.SelfcalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SelfcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="c1"># restrict input vis to be of type REGCAL_CONTLINE_SCIENCE</span>
@@ -324,7 +324,7 @@
 
 
 <div class="viewcode-block" id="Selfcal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_selfcal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Run self-calibration using the science target visibilities.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Selfcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -460,7 +460,7 @@
         <span class="k">return</span> <span class="n">scal_targets</span>
 
 <div class="viewcode-block" id="Selfcal.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -719,7 +719,7 @@
         <span class="k">return</span> <span class="n">tq_results</span>
 
 <div class="viewcode-block" id="Selfcal.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -903,7 +903,7 @@
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_targets_contline</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Selfcal.get_desired_width">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.get_desired_width">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal.get_desired_width">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_desired_width</span><span class="p">(</span><span class="n">meanfreq</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the desired channel width for the given mean frequency.&quot;&quot;&quot;</span>
@@ -927,7 +927,7 @@
 
 
 <div class="viewcode-block" id="Selfcal.get_spw_chanbin">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.qa.Selfcal.get_spw_chanbin">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal.get_spw_chanbin">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_spw_chanbin</span><span class="p">(</span><span class="n">bwarray</span><span class="p">,</span> <span class="n">chanarray</span><span class="p">,</span> <span class="n">chanwidth</span><span class="o">=</span><span class="mf">15.625e6</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the number of channels to average over for each spw.</span>

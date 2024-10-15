@@ -17,6 +17,7 @@ ImagePreCheck
    .. autosummary::
 
       ~ImagePreCheck.analyse
+      ~ImagePreCheck.execute
       ~ImagePreCheck.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ ImagePreCheck
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

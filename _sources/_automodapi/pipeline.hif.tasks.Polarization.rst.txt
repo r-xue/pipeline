@@ -6,6 +6,12 @@ Polarization
 .. autoclass:: Polarization
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Polarization.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -13,11 +19,17 @@ Polarization
       ~Polarization.analyse
       ~Polarization.do_gaincal
       ~Polarization.do_polcal
+      ~Polarization.execute
       ~Polarization.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
    .. automethod:: do_gaincal
    .. automethod:: do_polcal
+   .. automethod:: execute
    .. automethod:: prepare

@@ -5,3 +5,29 @@ UVcontSub
 
 .. autoclass:: UVcontSub
    :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~UVcontSub.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~UVcontSub.analyse
+      ~UVcontSub.execute
+      ~UVcontSub.get_result_for_exception
+      ~UVcontSub.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: execute
+   .. automethod:: get_result_for_exception
+   .. automethod:: prepare

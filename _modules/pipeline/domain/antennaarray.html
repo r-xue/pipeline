@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -156,7 +156,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray">[docs]</a>
 <span class="k">class</span> <span class="nc">AntennaArray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">antennas</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Antenna</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span>
@@ -278,7 +278,7 @@
                           <span class="n">datum</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AntennaArray.baselines_for_antennas">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray.baselines_for_antennas">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.baselines_for_antennas">[docs]</a>
     <span class="k">def</span> <span class="nf">baselines_for_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
         <span class="n">unique_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -340,7 +340,7 @@
         <span class="k">return</span> <span class="n">baselines</span>
 
 <div class="viewcode-block" id="AntennaArray.get_offset">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray.get_offset">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_offset">[docs]</a>
     <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the offset of the given antenna from the centre of the array.</span>
@@ -355,7 +355,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray.get_baseline">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray.get_baseline">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_baseline">[docs]</a>
     <span class="k">def</span> <span class="nf">get_baseline</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">antenna1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
@@ -400,7 +400,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray.get_antenna">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.antennaarray.AntennaArray.get_antenna">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_antenna">[docs]</a>
     <span class="k">def</span> <span class="nf">get_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">]</span>

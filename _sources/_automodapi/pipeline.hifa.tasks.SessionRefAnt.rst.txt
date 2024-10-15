@@ -17,6 +17,7 @@ SessionRefAnt
    .. autosummary::
 
       ~SessionRefAnt.analyse
+      ~SessionRefAnt.execute
       ~SessionRefAnt.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ SessionRefAnt
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

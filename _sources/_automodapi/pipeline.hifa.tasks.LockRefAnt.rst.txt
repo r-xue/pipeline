@@ -6,14 +6,26 @@ LockRefAnt
 .. autoclass:: LockRefAnt
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~LockRefAnt.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~LockRefAnt.analyse
+      ~LockRefAnt.execute
       ~LockRefAnt.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

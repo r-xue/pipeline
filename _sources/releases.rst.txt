@@ -1,5 +1,5 @@
-Pipeline Releases
-=================
+Past Releases
+=============
 
 
 .. list-table::

@@ -17,6 +17,7 @@ MakeImages
    .. autosummary::
 
       ~MakeImages.analyse
+      ~MakeImages.execute
       ~MakeImages.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ MakeImages
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

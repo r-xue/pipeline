@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -153,7 +153,7 @@
 
 
 <div class="viewcode-block" id="PolcalWorkerResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorkerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.PolcalWorkerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalWorkerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    PolcalWorkerResults is the results class for the pipeline polcal calibration</span>
@@ -187,7 +187,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PolcalWorkerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorkerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.PolcalWorkerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">to_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
@@ -235,7 +235,7 @@
 
 
 <div class="viewcode-block" id="PolcalWorkerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorkerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.PolcalWorkerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalWorkerInputs</span><span class="p">(</span><span class="n">commoncalinputs</span><span class="o">.</span><span class="n">VdpCommonCalibrationInputs</span><span class="p">):</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -275,12 +275,12 @@
 
 
 <div class="viewcode-block" id="PolcalWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalWorkerInputs</span>
 
 <div class="viewcode-block" id="PolcalWorker.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorker.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -355,7 +355,7 @@
 
 
 <div class="viewcode-block" id="PolcalWorker.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.polcal.html#pipeline.hif.tasks.polcal.polcalworker.PolcalWorker.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Check that the caltable was actually generated</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>

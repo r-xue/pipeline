@@ -17,6 +17,7 @@ CheckProductSize
    .. autosummary::
 
       ~CheckProductSize.analyse
+      ~CheckProductSize.execute
       ~CheckProductSize.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ CheckProductSize
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

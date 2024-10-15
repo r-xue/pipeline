@@ -5,3 +5,27 @@ GTypeGaincal
 
 .. autoclass:: GTypeGaincal
    :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~GTypeGaincal.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~GTypeGaincal.analyse
+      ~GTypeGaincal.execute
+      ~GTypeGaincal.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: execute
+   .. automethod:: prepare

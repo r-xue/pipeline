@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -171,7 +171,7 @@
 
 
 <div class="viewcode-block" id="TcleanInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.TcleanInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.TcleanInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TcleanInputs</span><span class="p">(</span><span class="n">cleanbase</span><span class="o">.</span><span class="n">CleanBaseInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="c1"># This is just an initial default to get any vis. The real selection is</span>
@@ -343,7 +343,7 @@
 
 
 <div class="viewcode-block" id="Tclean">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_tclean&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;A single target source is cleaned.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Tclean</span><span class="p">(</span><span class="n">cleanbase</span><span class="o">.</span><span class="n">CleanBase</span><span class="p">):</span>
@@ -352,7 +352,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Tclean.rm_stage_files">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.rm_stage_files">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.rm_stage_files">[docs]</a>
     <span class="k">def</span> <span class="nf">rm_stage_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="n">filenames</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">*.</span><span class="si">%s</span><span class="s1">.iter*&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">imagename</span><span class="p">,</span> <span class="n">stokes</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
@@ -369,7 +369,7 @@
 
 
 <div class="viewcode-block" id="Tclean.rm_iter_files">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.rm_iter_files">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.rm_iter_files">[docs]</a>
     <span class="k">def</span> <span class="nf">rm_iter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rootname</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
         <span class="c1"># Delete any old files with this naming root</span>
         <span class="n">filenames</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.iter</span><span class="si">%s</span><span class="s1">*&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rootname</span><span class="p">,</span> <span class="n">iteration</span><span class="p">))</span>
@@ -382,7 +382,7 @@
 
 
 <div class="viewcode-block" id="Tclean.copy_products">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.copy_products">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.copy_products">[docs]</a>
     <span class="k">def</span> <span class="nf">copy_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_pname</span><span class="p">,</span> <span class="n">new_pname</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">imlist</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">glob_ordered</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.*&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">old_pname</span><span class="p">))</span>
         <span class="n">imlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">xx</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">imlist</span> <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ignore</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xx</span><span class="p">]</span>
@@ -394,7 +394,7 @@
 
 
 <div class="viewcode-block" id="Tclean.move_products">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.move_products">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.move_products">[docs]</a>
     <span class="k">def</span> <span class="nf">move_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_pname</span><span class="p">,</span> <span class="n">new_pname</span><span class="p">,</span> <span class="n">ignore_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move imaging products of one iteration to another.</span>
 
@@ -429,7 +429,7 @@
 
 
 <div class="viewcode-block" id="Tclean.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
@@ -899,7 +899,7 @@
 
 
 <div class="viewcode-block" id="Tclean.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.tclean.Tclean.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Perform QA here if this is a sub-task</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>

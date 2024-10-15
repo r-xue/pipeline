@@ -8,7 +8,7 @@ pipeline.hifa.tasks.tsysflag
 
    .. autosummary::
    
-      Tsysflag
+      ALMATsysflag
    
 .. rubric:: Modules
 

@@ -5,3 +5,27 @@ ALMATsysflag
 
 .. autoclass:: ALMATsysflag
    :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ALMATsysflag.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~ALMATsysflag.analyse
+      ~ALMATsysflag.execute
+      ~ALMATsysflag.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: execute
+   .. automethod:: prepare

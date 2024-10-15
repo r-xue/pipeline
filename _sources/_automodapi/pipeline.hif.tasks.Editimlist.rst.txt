@@ -17,6 +17,7 @@ Editimlist
    .. autosummary::
 
       ~Editimlist.analyse
+      ~Editimlist.execute
       ~Editimlist.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ Editimlist
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

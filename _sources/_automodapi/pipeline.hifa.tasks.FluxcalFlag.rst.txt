@@ -6,14 +6,26 @@ FluxcalFlag
 .. autoclass:: FluxcalFlag
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~FluxcalFlag.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~FluxcalFlag.analyse
+      ~FluxcalFlag.execute
       ~FluxcalFlag.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

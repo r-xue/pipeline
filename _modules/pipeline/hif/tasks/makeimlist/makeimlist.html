@@ -69,21 +69,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Pipeline Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <cite>Pipeline</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Task Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html">pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks">pipeline-l2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif">pipeline-l3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-diagram">pipeline-diagram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html"><code class="docutils literal notranslate"><span class="pre">pipeline.hifa.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif.tasks"><code class="docutils literal notranslate"><span class="pre">pipeline.hif.tasks</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#module-pipeline.hif"><code class="docutils literal notranslate"><span class="pre">pipeline.hif</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../task_classes.html#pipeline-inheritance-diagrams">Pipeline Inheritance Diagrams</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
@@ -159,7 +159,7 @@
 
 
 <div class="viewcode-block" id="MakeImListInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImListInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.MakeImListInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">MakeImListInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Must use empty data type list to allow for user override and</span>
     <span class="c1"># automatic determination depending on specmode, field and spw.</span>
@@ -284,7 +284,7 @@
         <span class="k">return</span> <span class="s1">&#39;mfs&#39;</span>
 
 <div class="viewcode-block" id="MakeImListInputs.get_spw_hm_cell">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImListInputs.get_spw_hm_cell">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.MakeImListInputs.get_spw_hm_cell">[docs]</a>
     <span class="k">def</span> <span class="nf">get_spw_hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If possible obtain spwlist specific hm_cell, otherwise return generic value.</span>
 
@@ -310,7 +310,7 @@
 
 
 <div class="viewcode-block" id="MakeImListInputs.get_spw_hm_imsize">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImListInputs.get_spw_hm_imsize">[docs]</a>
+<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.MakeImListInputs.get_spw_hm_imsize">[docs]</a>
     <span class="k">def</span> <span class="nf">get_spw_hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If possible obtain spwlist specific hm_imsize, otherwise return generic value.</span>
 
@@ -369,7 +369,7 @@
 
 
 <div class="viewcode-block" id="MakeImList">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImList">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_makeimlist&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;A list of target sources to be imaged is constructed.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MakeImList</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -378,7 +378,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="MakeImList.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImList.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># this python class will produce a list of images to be calculated.</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -1540,7 +1540,7 @@
 
 
 <div class="viewcode-block" id="MakeImList.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.makeimlist.html#pipeline.hif.tasks.makeimlist.makeimlist.MakeImList.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 

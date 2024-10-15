@@ -6,14 +6,26 @@ Wvrgcalflag
 .. autoclass:: Wvrgcalflag
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Wvrgcalflag.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~Wvrgcalflag.analyse
+      ~Wvrgcalflag.execute
       ~Wvrgcalflag.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

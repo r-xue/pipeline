@@ -17,6 +17,7 @@ FindCont
    .. autosummary::
 
       ~FindCont.analyse
+      ~FindCont.execute
       ~FindCont.prepare
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ FindCont
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

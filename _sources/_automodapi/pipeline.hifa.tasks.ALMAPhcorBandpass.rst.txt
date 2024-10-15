@@ -6,12 +6,26 @@ ALMAPhcorBandpass
 .. autoclass:: ALMAPhcorBandpass
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ALMAPhcorBandpass.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
+      ~ALMAPhcorBandpass.analyse
+      ~ALMAPhcorBandpass.execute
       ~ALMAPhcorBandpass.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

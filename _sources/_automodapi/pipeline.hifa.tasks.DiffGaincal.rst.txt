@@ -6,14 +6,26 @@ DiffGaincal
 .. autoclass:: DiffGaincal
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~DiffGaincal.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~DiffGaincal.analyse
+      ~DiffGaincal.execute
       ~DiffGaincal.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: prepare

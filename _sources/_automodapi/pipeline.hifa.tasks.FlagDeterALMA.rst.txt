@@ -6,16 +6,30 @@ FlagDeterALMA
 .. autoclass:: FlagDeterALMA
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~FlagDeterALMA.is_multi_vis_task
+
    .. rubric:: Methods Summary
 
    .. autosummary::
 
+      ~FlagDeterALMA.analyse
+      ~FlagDeterALMA.execute
       ~FlagDeterALMA.get_fracspw
       ~FlagDeterALMA.prepare
       ~FlagDeterALMA.verify_spw
 
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
    .. rubric:: Methods Documentation
 
+   .. automethod:: analyse
+   .. automethod:: execute
    .. automethod:: get_fracspw
    .. automethod:: prepare
    .. automethod:: verify_spw
