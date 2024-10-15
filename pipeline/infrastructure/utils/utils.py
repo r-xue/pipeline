@@ -896,11 +896,12 @@ def remove_trailing_string(s, t):
 
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
                        condition: Dict[str, Dict[str, Dict[str, Any]]]=None, timestamp: bool=True):
-    """Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON file.
+    """
+    Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
     
     This function is a helper method for development. It should not be used in production codes.
     
-    Useage:
+    Usage:
     @function_io_dumper()
     def foobar(self, bar):
         ...
@@ -916,6 +917,15 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
     
     or, understand input/result of the function by JSON-like output. To avoid recursive or tremendous output,
     it sets max depth of recursive (default to 5).
+
+    Args:
+        to_pickle (bool, optional): Dump pickle or not. Defaults to True.
+        to_json (bool, optional): Dump JSON-like file or not. Defaults to False.
+        json_max_depth (int, optional): Set depth of dumping JSON tree. Defaults to 5.
+        condition (Dict[str, Dict[str, Dict[str, Any]]], optional): Set conditions of argument dumping. Defaults to None.
+            ex) condition={'self', {'spw':10}}
+        timestamp (bool, optional): Add timestamp to the names of output directories. If not and the same function was
+            executed multiple times, the output directory will be overwritten. Defaults to True.
     """
     def decorator(func):
         @wraps(func)
@@ -998,7 +1008,7 @@ def _get_full_method_path(func):
 
 
 def _eval_condition(condition, args):
-    # {'self', {'spw':10}}, needs unittest
+    # {'self', {'spw':10}}, need unittest
     if condition is None:
         return True
     
@@ -1052,6 +1062,22 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
 
 
 def decorate_iodumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+    """Decorate function_io_dumper dynamically.
+
+    Usage:
+    ...
+    import pipeline.infrastructure.utils.utils as ut
+    
+    ut.decorate_iodumper(SDInspection, ['execute'])
+    
+    ...
+    hsd_importdata()  # -> dump args of SDInspection.execute()
+
+    Args:
+        cls (object): the class has functions to be decorated.
+        functions (List[str], optional): Function names to decodate. If not specified or
+            set empty list, then all functions of the class are decorated. Defaults to [].
+    """
     if len(functions) == 0:
         _functions = inspect.getmembers(cls, predicate=inspect.isfunction)
     else:
@@ -1060,7 +1086,6 @@ def decorate_iodumper(cls: object, functions: List[str]=[], *args: Any, **kwargs
             _c = _str_to_func(cls, _f)
             if _c:
                 _functions.append(_c)
-    print(_functions)
     for _func in _functions:
         _name = _func.__name__
         decorated_func = function_io_dumper(*args, **kwargs)(_func)
