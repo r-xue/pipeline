@@ -35,18 +35,31 @@ try:
     from pipeline.infrastructure.renderer.regression import get_all_subclasses
     from pipeline.infrastructure.api import Task
     from pipeline.infrastructure.api import Inputs
+    from pipeline.infrastructure.api import Results
+    from pipeline.h.tasks import ImportData
 
     taskclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Task)]
     inputsclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
-    
+    resultsclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Results)]
+    importdataclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(ImportData)]
+
     # create custom directives to create inheritance diagrams for all Task/Inputs Classes
     #   https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
     #   https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_prolog
 
     rst_epilog = r"""
         .. |taskclasses_diagram| inheritance-diagram:: {}
+            :parts: -1
         .. |inputsclasses_diagram| inheritance-diagram:: {}
-        """.format(' '.join(taskclasses_str), ' '.join(inputsclasses_str))
+            :parts: -1
+        .. |resultsclasses_diagram| inheritance-diagram:: {}
+            :parts: -1
+        .. |importdataclasses_diagram| inheritance-diagram:: {}
+            :parts: -1
+        """.format(' '.join(taskclasses_str),
+                   ' '.join(inputsclasses_str),
+                   ' '.join(resultsclasses_str),
+                   ' '.join(importdataclasses_str))
     rst_epilog = textwrap.dedent(rst_epilog)
 
 except ImportError as error:
@@ -324,7 +337,7 @@ autoapi_dirs = ['../../pipeline']
 inheritance_graph_attrs = {
     'rankdir': 'LR',
     'size': '"25.0, 50.0"',
-    'bgcolor': 'transparent',
+    'bgcolor': 'whitesmoke',
 }
 
 inheritance_node_attrs = {
