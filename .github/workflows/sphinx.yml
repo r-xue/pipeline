@@ -15,11 +15,11 @@ jobs:
     steps:
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3.0.4
-        with:
-          environment-file: pipe1669.yaml
-          miniforge-version: latest
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}            
+      with:
+        environment-file: pipe1669.yaml
+        miniforge-version: latest
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}            
     - name: Conda info
       shell: bash -el {0}
       run: conda info
