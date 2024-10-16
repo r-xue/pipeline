@@ -1,49 +1,6 @@
 Pipeline Documentation
 ======================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Pipeline Tasks
-
-   pipeline_tasks/pipeline_tasks.rst
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Task (sphinx-autosummary)
-
-   pipeline.h.cli
-   pipeline.hif.cli
-   pipeline.hifa.cli
-   pipeline.hifv.cli
-   pipeline.hsd.cli
-   pipeline.hsdn.cli
-
-   pipeline.domain
-   pipeline.infrastructure.launcher
-
-.. inheritance-diagram:: pipeline.h.tasks pipeline.hif.tasks pipeline.hifa.tasks
-
-.. inheritance-diagram:: sphinx.ext.inheritance_diagram.InheritanceDiagram
-   :parts: 1
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: API Reference
-   :template: custom-module-template.rst
-   :recursive:
-   
-
-   pipeline.domain
-   pipeline.infrastructure.launcher
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Pipeline Heuristics
-
-   heuristics/field_parameter.md
-   heuristics/FlaggingTasks.md
-
 
 .. toctree::
    :maxdepth: 2
@@ -54,16 +11,30 @@ Pipeline Documentation
    dependencies
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Pipeline Basics
+   :maxdepth: 2
+   :caption: Pipeline Tasks
 
-   basics
+   pipeline_tasks/pipeline_tasks.rst
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: Pipeline Tasks (autosummary)
+
+   pipeline.h.cli
+   pipeline.hif.cli
+   pipeline.hifa.cli
+   pipeline.hifv.cli
+   pipeline.hsd.cli
+   pipeline.hsdn.cli
+
+
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Task Classes
+   :maxdepth: 2
+   :caption: Pipeline Heuristics
 
-   task_classes
+   heuristics/field_parameter.md
+   heuristics/FlaggingTasks.md
 
 .. toctree::
    :maxdepth: 3
@@ -89,6 +60,25 @@ Pipeline Documentation
    develdocmd/recipes.md
 
 
+.. toctree::
+   :maxdepth: 3
+   :caption: Pipeline Domain/Context (automodapi)
+
+   basics
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: Pipeline Domain/Context (autosummary)
+   :recursive:
+   
+   pipeline.domain
+   pipeline.infrastructure.launcher
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Pipeline Classes
+
+   classes
 
 
 .. toctree::
