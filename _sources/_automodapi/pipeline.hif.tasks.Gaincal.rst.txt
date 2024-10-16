@@ -5,23 +5,3 @@ Gaincal
 
 .. autoclass:: Gaincal
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~Gaincal.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~Gaincal.execute
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: execute

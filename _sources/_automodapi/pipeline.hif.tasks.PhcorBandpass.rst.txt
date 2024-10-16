@@ -6,26 +6,12 @@ PhcorBandpass
 .. autoclass:: PhcorBandpass
    :show-inheritance:
 
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~PhcorBandpass.is_multi_vis_task
-
    .. rubric:: Methods Summary
 
    .. autosummary::
 
-      ~PhcorBandpass.analyse
-      ~PhcorBandpass.execute
       ~PhcorBandpass.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

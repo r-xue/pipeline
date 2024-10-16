@@ -5,33 +5,3 @@ SerialIFApplycal
 
 .. autoclass:: SerialIFApplycal
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~SerialIFApplycal.applied_data_type
-      ~SerialIFApplycal.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~SerialIFApplycal.analyse
-      ~SerialIFApplycal.execute
-      ~SerialIFApplycal.modify_task_args
-      ~SerialIFApplycal.prepare
-      ~SerialIFApplycal.process_flagsummary
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: applied_data_type
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: analyse
-   .. automethod:: execute
-   .. automethod:: modify_task_args
-   .. automethod:: prepare
-   .. automethod:: process_flagsummary

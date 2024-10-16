@@ -17,7 +17,6 @@ SessionALMAPhcorBandpass
    .. autosummary::
 
       ~SessionALMAPhcorBandpass.analyse
-      ~SessionALMAPhcorBandpass.execute
       ~SessionALMAPhcorBandpass.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ SessionALMAPhcorBandpass
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

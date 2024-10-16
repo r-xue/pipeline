@@ -17,7 +17,6 @@ Makermsimages
    .. autosummary::
 
       ~Makermsimages.analyse
-      ~Makermsimages.execute
       ~Makermsimages.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ Makermsimages
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

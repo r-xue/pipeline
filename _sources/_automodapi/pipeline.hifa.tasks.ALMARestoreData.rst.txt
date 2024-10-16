@@ -5,27 +5,3 @@ ALMARestoreData
 
 .. autoclass:: ALMARestoreData
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~ALMARestoreData.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~ALMARestoreData.analyse
-      ~ALMARestoreData.execute
-      ~ALMARestoreData.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: analyse
-   .. automethod:: execute
-   .. automethod:: prepare

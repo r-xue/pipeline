@@ -5,27 +5,3 @@ ALMAAntpos
 
 .. autoclass:: ALMAAntpos
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~ALMAAntpos.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~ALMAAntpos.analyse
-      ~ALMAAntpos.execute
-      ~ALMAAntpos.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: analyse
-   .. automethod:: execute
-   .. automethod:: prepare

@@ -17,7 +17,6 @@ MakeImList
    .. autosummary::
 
       ~MakeImList.analyse
-      ~MakeImList.execute
       ~MakeImList.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ MakeImList
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

@@ -6,26 +6,14 @@ Bandpassflag
 .. autoclass:: Bandpassflag
    :show-inheritance:
 
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~Bandpassflag.is_multi_vis_task
-
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~Bandpassflag.analyse
-      ~Bandpassflag.execute
       ~Bandpassflag.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

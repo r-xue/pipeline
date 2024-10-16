@@ -17,7 +17,6 @@ Polcal
    .. autosummary::
 
       ~Polcal.analyse
-      ~Polcal.execute
       ~Polcal.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ Polcal
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

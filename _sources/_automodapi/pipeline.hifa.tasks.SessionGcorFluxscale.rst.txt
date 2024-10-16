@@ -17,7 +17,6 @@ SessionGcorFluxscale
    .. autosummary::
 
       ~SessionGcorFluxscale.analyse
-      ~SessionGcorFluxscale.execute
       ~SessionGcorFluxscale.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ SessionGcorFluxscale
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

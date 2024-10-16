@@ -17,7 +17,6 @@ Makecutoutimages
    .. autosummary::
 
       ~Makecutoutimages.analyse
-      ~Makecutoutimages.execute
       ~Makecutoutimages.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ Makecutoutimages
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

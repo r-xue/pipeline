@@ -5,29 +5,3 @@ Renorm
 
 .. autoclass:: Renorm
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~Renorm.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~Renorm.analyse
-      ~Renorm.execute
-      ~Renorm.get_result_for_exception
-      ~Renorm.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: analyse
-   .. automethod:: execute
-   .. automethod:: get_result_for_exception
-   .. automethod:: prepare

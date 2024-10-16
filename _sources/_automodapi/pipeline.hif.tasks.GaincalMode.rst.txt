@@ -5,23 +5,3 @@ GaincalMode
 
 .. autoclass:: GaincalMode
    :show-inheritance:
-
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~GaincalMode.is_multi_vis_task
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~GaincalMode.execute
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: execute

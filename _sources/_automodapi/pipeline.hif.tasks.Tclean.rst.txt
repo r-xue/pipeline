@@ -18,7 +18,6 @@ Tclean
 
       ~Tclean.analyse
       ~Tclean.copy_products
-      ~Tclean.execute
       ~Tclean.move_products
       ~Tclean.prepare
       ~Tclean.rm_iter_files
@@ -32,7 +31,6 @@ Tclean
 
    .. automethod:: analyse
    .. automethod:: copy_products
-   .. automethod:: execute
    .. automethod:: move_products
    .. automethod:: prepare
    .. automethod:: rm_iter_files

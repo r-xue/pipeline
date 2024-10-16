@@ -6,26 +6,14 @@ SerialRefAnt
 .. autoclass:: SerialRefAnt
    :show-inheritance:
 
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~SerialRefAnt.is_multi_vis_task
-
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~SerialRefAnt.analyse
-      ~SerialRefAnt.execute
       ~SerialRefAnt.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

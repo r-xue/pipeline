@@ -17,7 +17,6 @@ Analyzealpha
    .. autosummary::
 
       ~Analyzealpha.analyse
-      ~Analyzealpha.execute
       ~Analyzealpha.prepare
 
    .. rubric:: Attributes Documentation
@@ -27,5 +26,4 @@ Analyzealpha
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare

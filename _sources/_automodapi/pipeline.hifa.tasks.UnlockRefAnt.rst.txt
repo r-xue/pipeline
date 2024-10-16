@@ -6,26 +6,14 @@ UnlockRefAnt
 .. autoclass:: UnlockRefAnt
    :show-inheritance:
 
-   .. rubric:: Attributes Summary
-
-   .. autosummary::
-
-      ~UnlockRefAnt.is_multi_vis_task
-
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~UnlockRefAnt.analyse
-      ~UnlockRefAnt.execute
       ~UnlockRefAnt.prepare
-
-   .. rubric:: Attributes Documentation
-
-   .. autoattribute:: is_multi_vis_task
 
    .. rubric:: Methods Documentation
 
    .. automethod:: analyse
-   .. automethod:: execute
    .. automethod:: prepare
