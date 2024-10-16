@@ -76,10 +76,9 @@ Pipeline Documentation
 
 .. toctree::
    :maxdepth: 3
-   :caption: Pipeline Classes
+   :caption: Pipeline Task/Inputs/Results Classes
 
    classes
-
 
 .. toctree::
    :maxdepth: 2
