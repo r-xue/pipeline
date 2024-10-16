@@ -22,12 +22,11 @@ Fork
 
 .. _NRAO: http://www.nrao.edu
 .. _ESO: https://www.eso.org
-.. _UK ATC: https://www.ukatc.stfc.ac.uk
+.. _UKATC: https://www.ukatc.stfc.ac.uk
 .. _MPIfR: https://www.mpifr-bonn.mpg.de
 .. _NAOJ: https://www.nao.ac.jp
 
 .. |Sphinx Build| image:: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml/badge.svg
     :target: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml
     :alt: Sphinx: Build
-
-  
+    
