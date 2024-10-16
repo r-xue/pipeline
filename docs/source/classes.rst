@@ -1,88 +1,82 @@
 
 
 Classes in ``pipeline.h*.tasks`` modules
-----------------------------------------
+========================================
 
 pipeline.h.tasks
-^^^^^^^^^^^^^^^^^^
+----------------
 
-.. automodapi:: pipeline.hif.tasks
+.. automodapi:: pipeline.h.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading: 
    :sort:
 
 
 pipeline.hif.tasks
-^^^^^^^^^^^^^^^^^^
+------------------
 
 .. automodapi:: pipeline.hif.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading: 
    :sort:
 
 pipeline.hifa.tasks
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 .. automodapi:: pipeline.hifa.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading:  
    :sort:
 
 pipeline.hifv.tasks
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
-.. automodapi:: pipeline.hifa.tasks
+.. automodapi:: pipeline.hifv.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading:  
    :sort:   
 
 pipeline.hsd.tasks
-^^^^^^^^^^^^^^^^^^^
+------------------
 
-.. automodapi:: pipeline.hifa.tasks
+.. automodapi:: pipeline.hsd.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading:  
    :sort:
 
 pipeline.hsdn.tasks
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
-.. automodapi:: pipeline.hifa.tasks
+.. automodapi:: pipeline.hsdn.tasks
    :inheritance-diagram:
    :include-all-objects:
-   :inherited-members:
    :no-heading:  
    :sort:
 
 Inheritance Diagrams
---------------------
+====================
 
-``ImportData`` Classes
-^^^^^^^^^^^^^^^^^^^^^^
+``ImportData`` Classes as an example
+----------------------------------------
 
 |importdataclasses_diagram|
 
-``Task`` Classes
-^^^^^^^^^^^^^^^^
+All ``Task`` Classes
+--------------------
 
 |taskclasses_diagram|
 
-``Inputs`` Classes
-^^^^^^^^^^^^^^^^^^
+All ``Inputs`` Classes
+----------------------
 
 |inputsclasses_diagram|
 
-``Results`` Classes
-^^^^^^^^^^^^^^^^^^^
+All ``Results`` Classes
+-----------------------
 
 |resultsclasses_diagram|

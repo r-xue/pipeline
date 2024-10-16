@@ -90,6 +90,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.inheritance_diagram',
               'sphinx_automodapi.automodapi',
+              'sphinx_automodapi.smart_resolver',
               # 'sphinxcontrib.bibtex',
               # 'sphinx_astrorefs',
               'recommonmark',
@@ -179,6 +180,7 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pipeline_doc'
 
+html_baseurl=''
 
 # -- Options for LaTeX output ------------------------------------------
 
