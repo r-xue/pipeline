@@ -395,12 +395,16 @@ class ACreNorm(object):
             sortlist='ANTENNA1'
 
         mytb.open(self.msname)
-        ddid=str(list(self.msmeta.datadescids(spw)))
+        if isinstance(scan, (list, np.ndarray)):
+            scans = str(np.asarray(scan).tolist())
+        else:
+            scans = str(scan)
+        ddid=str(self.msmeta.datadescids(spw).tolist())
         if field is not None:  # i.e. science data
-            quer='SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2 && FIELD_ID=='+str(field) 
+            quer='SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2 && FIELD_ID=='+str(field)
         else:
             # because the getTsysSpectra passes scans but wont pass the field or Bandpass doesn't pass field actually
-            quer='SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2' 
+            quer='SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2'
 
         if len(stateid)>0:
             quer=quer+'&& STATE_ID IN '+str(stateid)
@@ -451,9 +455,13 @@ class ACreNorm(object):
             casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
             raise RuntimeError(str(datacolumn)+' does not exist.')
 
-        ddid=str(list(self.msmeta.datadescids(spw)))
-        st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
-        cd=st.getcol(datacolumn)  ## WARNING CASA6.2 might not obey row order 
+        ddid=str(self.msmeta.datadescids(spw).tolist())
+        if isinstance(scan, (list, np.ndarray)):
+            scans = str(np.asarray(scan).tolist())
+        else:
+            scans = str(scan)
+        st=mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
+        cd=st.getcol(datacolumn)  ## WARNING CASA6.2 might not obey row order
         a1=st.getcol('ANTENNA1')
         a2=st.getcol('ANTENNA2')
         st.close()
@@ -473,9 +481,13 @@ class ACreNorm(object):
             casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
             raise RuntimeError(str(datacolumn)+' does not exist.')
 
-        ddid=str(list(self.msmeta.datadescids(spw)))
-        st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
-        cd=st.getcol(datacolumn) 
+        ddid=str(self.msmeta.datadescids(spw).tolist())
+        if isinstance(scan, (list, np.ndarray)):
+            scans = str(np.asarray(scan).tolist())
+        else:
+            scans = str(scan)
+        st=mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
+        cd=st.getcol(datacolumn)
         a1=st.getcol('ANTENNA1')
         a2=st.getcol('ANTENNA2')
         st.close()
@@ -504,8 +516,12 @@ class ACreNorm(object):
         casalog.post('  Writing CROSS-correlation data to spw='+str(spw)+' and scan='+str(scan)+' and field='+str(field))
 
         mytb.open(self.msname,nomodify=False)
-        ddid=str(list(self.msmeta.datadescids(spw)))
-        st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
+        ddid=str(self.msmeta.datadescids(spw).tolist())
+        if isinstance(scan, (list, np.ndarray)):
+            scans = str(np.asarray(scan).tolist())
+        else:
+            scans = str(scan)
+        st=mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
         d=st.putcol(datacolumn,cd)
         st.close()
         mytb.close()
