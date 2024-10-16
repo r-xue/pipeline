@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -156,12 +152,12 @@
 
 
 <div class="viewcode-block" id="SingleDishMomentMapPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer.html#pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishMomentMapPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JsonPlotRenderer for imaging plots.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SingleDishMomentMapPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer.html#pipeline.hsd.tasks.imaging.renderer.SingleDishMomentMapPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update JSON dictionary in place.</span>
 
@@ -178,7 +174,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsSingleDishImagingRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.renderer.T2_4MDetailsSingleDishImagingRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.renderer.T2_4MDetailsSingleDishImagingRenderer.html#pipeline.hsd.tasks.imaging.renderer.T2_4MDetailsSingleDishImagingRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsSingleDishImagingRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;hsd_imaging.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Image single dish data&#39;</span><span class="p">,</span>
@@ -186,8 +182,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsSingleDishImagingRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsSingleDishImagingRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.renderer.T2_4MDetailsSingleDishImagingRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># whether or not virtual spw id handling is necessary</span>
         <span class="n">dovirtual</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">require_virtual_spw_id_handling</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="p">)</span>
@@ -318,8 +312,7 @@
                 <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;profilemap_entries&#39;</span><span class="p">:</span> <span class="n">profilemap_entries</span><span class="p">,</span> <span class="s1">&#39;rms_table&#39;</span><span class="p">:</span> <span class="n">rms_table</span><span class="p">})</span>
 
         <span class="k">if</span> <span class="s1">&#39;rms_table&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">:</span>
-            <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;rms_table&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span></div>
-
+            <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;rms_table&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_plots_per_field_with_type</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">type_string</span><span class="p">):</span>
@@ -434,8 +427,6 @@
 
         <span class="k">return</span> <span class="n">summary_plots</span>
 
-<div class="viewcode-block" id="T2_4MDetailsSingleDishImagingRenderer.get_field_key">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.renderer.T2_4MDetailsSingleDishImagingRenderer.get_field_key">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_field_key</span><span class="p">(</span><span class="n">plot_dict</span><span class="p">,</span> <span class="n">field_domain</span><span class="p">):</span>
         <span class="n">field_candidates</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
@@ -446,7 +437,6 @@
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="n">field_key</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">field_key</span></div>
-</div>
 
 
 </pre></div>

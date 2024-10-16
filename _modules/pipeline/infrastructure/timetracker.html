@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.timetracker &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.timetracker</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.infrastructure.timetracker</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The timetracker module contains classes that track execution duration based on</span>
+<span class="sd">the reception of lifecycle events.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shelve</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">eventbus</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">ContextLifecycleEvent</span><span class="p">,</span> <span class="n">ContextCreatedEvent</span><span class="p">,</span> <span class="n">ContextResumedEvent</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">ResultLifecycleEvent</span><span class="p">,</span> <span class="n">ResultAcceptingEvent</span><span class="p">,</span> <span class="n">ResultAcceptedEvent</span><span class="p">,</span> <span class="n">ResultAcceptErrorEvent</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">TaskLifecycleEvent</span><span class="p">,</span> <span class="n">TaskStartedEvent</span><span class="p">,</span> <span class="n">TaskCompleteEvent</span><span class="p">,</span> <span class="n">TaskAbnormalExitEvent</span>
+<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">WebLogStageLifecycleEvent</span><span class="p">,</span> <span class="n">WebLogStageRenderingStartedEvent</span><span class="p">,</span> <span class="n">WebLogStageRenderingCompleteEvent</span><span class="p">,</span> \
+    <span class="n">WebLogStageRenderingAbnormalExitEvent</span>
+<span class="kn">from</span> <span class="nn">.mpihelpers</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;time_tracker&#39;</span><span class="p">]</span>
+
+<span class="c1"># A simple named tuple to hold start and end timestamps</span>
+<span class="n">ExecutionState</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ExecutionState&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;stage&#39;</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="TaskTimeTracker">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker">[docs]</a>
+<span class="k">class</span> <span class="nc">TaskTimeTracker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TaskTimeTracker listens for pipeline lifecycle events, recording the start</span>
+<span class="sd">    and end times on event reception so that the duration of the corresponding</span>
+<span class="sd">    pipeline execution phase can be calculated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new time tracker for events affecting the named Context.</span>
+
+<span class="sd">        :param context_name: Context name to match</span>
+<span class="sd">        :param output_dir: output directory for tracker db and JSON.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_name</span> <span class="o">=</span> <span class="n">context_name</span>
+        <span class="c1"># shelve will add .db suffix to this filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">context_name</span><span class="si">}</span><span class="s1">.timetracker&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">context_name</span><span class="si">}</span><span class="s1">.timetracker.json&#39;</span><span class="p">)</span>
+        <span class="n">eventbus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_task_lifecycle_event</span><span class="p">,</span> <span class="n">TaskLifecycleEvent</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>
+        <span class="n">eventbus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_weblog_stage_lifecycle_event</span><span class="p">,</span> <span class="n">WebLogStageLifecycleEvent</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>
+        <span class="n">eventbus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_result_lifecycle_event</span><span class="p">,</span> <span class="n">ResultLifecycleEvent</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TaskTimeTracker.on_lifecycle_event">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker.on_lifecycle_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_lifecycle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">db_key</span><span class="p">,</span> <span class="n">start_event</span><span class="p">,</span> <span class="n">stop_events</span><span class="p">,</span> <span class="n">export_on</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process lifecycle event, recording duration of a lifecycle phase as</span>
+<span class="sd">        the applicable lifecycle events are received.</span>
+
+<span class="sd">        :param event: lifecycle event to process</span>
+<span class="sd">        :param db_key: category label for JSON output</span>
+<span class="sd">        :param start_event: event that starts the clock for lifecycle</span>
+<span class="sd">        :param stop_events: event(s) that stop the clock for lifecycle</span>
+<span class="sd">        :param export_on: optional lifecycle event(s) to trigger export</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">context_name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_name</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">stage_number</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">stage_number</span>
+
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">shelve</span><span class="o">.</span><span class="n">DbfilenameShelf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">db_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">db_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">start_event</span><span class="p">):</span>
+                <span class="n">tes</span> <span class="o">=</span> <span class="n">ExecutionState</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="n">stage_number</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">stop_events</span><span class="p">):</span>
+                <span class="n">old_tes</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">db_key</span><span class="p">][</span><span class="n">stage_number</span><span class="p">]</span>
+                <span class="n">tes</span> <span class="o">=</span> <span class="n">ExecutionState</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="n">stage_number</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">old_tes</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">now</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unhandled event type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+            <span class="n">db</span><span class="p">[</span><span class="n">db_key</span><span class="p">][</span><span class="n">stage_number</span><span class="p">]</span> <span class="o">=</span> <span class="n">tes</span>
+
+        <span class="k">if</span> <span class="n">export_on</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">export_on</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TaskTimeTracker.on_weblog_stage_lifecycle_event">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker.on_weblog_stage_lifecycle_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_weblog_stage_lifecycle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">WebLogStageLifecycleEvent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback function for weblog stage rendering lifecycle events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_lifecycle_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s1">&#39;weblog&#39;</span><span class="p">,</span> <span class="n">WebLogStageRenderingStartedEvent</span><span class="p">,</span> <span class="p">(</span><span class="n">WebLogStageRenderingCompleteEvent</span><span class="p">,</span> <span class="n">WebLogStageRenderingAbnormalExitEvent</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TaskTimeTracker.on_task_lifecycle_event">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker.on_task_lifecycle_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_task_lifecycle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">TaskLifecycleEvent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback function for Task lifecycle events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_lifecycle_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="n">TaskStartedEvent</span><span class="p">,</span> <span class="p">(</span><span class="n">TaskCompleteEvent</span><span class="p">,</span> <span class="n">TaskAbnormalExitEvent</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TaskTimeTracker.on_result_lifecycle_event">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker.on_result_lifecycle_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_result_lifecycle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ResultLifecycleEvent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback function for Result lifecycle events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_lifecycle_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="n">ResultAcceptingEvent</span><span class="p">,</span> <span class="p">(</span><span class="n">ResultAcceptedEvent</span><span class="p">,</span> <span class="n">ResultAcceptErrorEvent</span><span class="p">),</span>
+                                <span class="n">export_on</span><span class="o">=</span><span class="p">(</span><span class="n">ResultAcceptedEvent</span><span class="p">,</span> <span class="n">ResultAcceptErrorEvent</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TaskTimeTracker.export">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker.export">[docs]</a>
+    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exports lifecycle duration database to JSON file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">shelve</span><span class="o">.</span><span class="n">DbfilenameShelf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">))</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">stages</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">stages</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">duration</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="n">e</span><span class="o">.</span><span class="n">start</span>
+                    <span class="n">duration_secs</span> <span class="o">=</span> <span class="n">duration</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+                    <span class="n">duration_hms</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">format_timedelta</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+                    <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">e</span><span class="o">.</span><span class="n">stage</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">duration_secs</span><span class="p">,</span> <span class="s1">&#39;hms&#39;</span><span class="p">:</span> <span class="n">duration_hms</span><span class="p">}</span>
+
+            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">stage_number</span><span class="p">,</span> <span class="n">task_state</span> <span class="ow">in</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;tasks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result_state</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">stage_number</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">duration</span> <span class="o">=</span> <span class="n">result_state</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="n">task_state</span><span class="o">.</span><span class="n">start</span>
+                <span class="n">duration_secs</span> <span class="o">=</span> <span class="n">duration</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+                <span class="n">duration_hms</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">format_timedelta</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+                <span class="n">r</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">][</span><span class="n">result_state</span><span class="o">.</span><span class="n">stage</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">duration_secs</span><span class="p">,</span> <span class="s1">&#39;hms&#39;</span><span class="p">:</span> <span class="n">duration_hms</span><span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ContextTimeTracker">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.timetracker.ContextTimeTracker.html#pipeline.infrastructure.timetracker.ContextTimeTracker">[docs]</a>
+<span class="k">class</span> <span class="nc">ContextTimeTracker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ContextTimeTracker listens for events related to the creation/resumption</span>
+<span class="sd">    of a pipeline Context. As a Context is created or resumed, this class</span>
+<span class="sd">    creates a TaskTimeTracker to record the execution duration for processes</span>
+<span class="sd">    affecting that context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracking</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># do not track times if running on an MPI worker</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span> <span class="ow">or</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">:</span>
+            <span class="n">eventbus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="n">ContextCreatedEvent</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>
+            <span class="n">eventbus</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span> <span class="n">ContextResumedEvent</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">ContextLifecycleEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">context_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">context_name</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Tracking execution duration for context: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">context_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracking</span><span class="p">[</span><span class="n">context_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">TaskTimeTracker</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="n">context_name</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+
+
+<span class="n">time_tracker</span> <span class="o">=</span> <span class="n">ContextTimeTracker</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -4,18 +4,38 @@ pipeline.hif.tasks.makeimages
 .. automodule:: pipeline.hif.tasks.makeimages
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       MakeImages
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    makeimages
    qa
    resultobjects
+

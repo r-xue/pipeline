@@ -4,18 +4,32 @@ pipeline.h.tasks.applycal.applycal
 .. automodule:: pipeline.h.tasks.applycal.applycal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       contains_uvcont_table
       jobs_with_calapply
       jobs_without_calapply
       reshape_flagdata_summary
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Applycal
       ApplycalInputs
@@ -25,3 +39,11 @@ pipeline.h.tasks.applycal.applycal
       IntervalCalState
       SerialApplycal
    
+   
+
+   
+   
+   
+
+
+

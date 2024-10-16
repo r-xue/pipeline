@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casatools.atmosphere &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casatools.atmosphere</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casatools.atmosphere</h1><div class="highlight"><pre>
+<span></span><span class="c1">##################### generated by xml-casa (v2) from atmosphere.xml ################</span>
+<span class="c1">##################### e79b0bbe7303e5be53ed0d1656b65f07 ##############################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span> 
+<span class="kn">from</span> <span class="nn">.__casac__.atmosphere</span> <span class="kn">import</span> <span class="n">atmosphere</span> <span class="k">as</span> <span class="n">_atmosphere</span>
+
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">create_error_string</span>
+<span class="kn">from</span> <span class="nn">.typecheck</span> <span class="kn">import</span> <span class="n">CasaValidator</span> <span class="k">as</span> <span class="n">_validator</span>
+<span class="n">_pc</span> <span class="o">=</span> <span class="n">_validator</span><span class="p">(</span> <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.coercetype</span> <span class="kn">import</span> <span class="n">coerce</span> <span class="k">as</span> <span class="n">_coerce</span>
+
+
+<span class="k">class</span> <span class="nc">atmosphere</span><span class="p">:</span>
+    <span class="n">_info_group_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;atmosphere&quot;&quot;&quot;</span>
+    <span class="n">_info_desc_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Atmosphere model&quot;&quot;&quot;</span>
+    <span class="c1">### self</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This is used to construct an {tt atmosphere} tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;swig_object&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">_atmosphere</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getAtmVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the version of ATM library implemented to this tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAtmVersion</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">listAtmosphereTypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of index numbers and corresponding atmosphere types</span>
+<span class="sd">        used by the ATM library.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">listAtmosphereTypes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">initAtmProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">5000.</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">},</span> <span class="n">temperature</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">270.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">},</span> <span class="n">pressure</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">560.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mbar&#39;</span><span class="p">},</span> <span class="n">maxAltitude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">48.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;km&#39;</span><span class="p">},</span> <span class="n">humidity</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mf">20.0</span><span class="p">),</span> <span class="n">dTem_dh</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">5.6</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;K/km&#39;</span><span class="p">},</span> <span class="n">dP</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">10.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mbar&#39;</span><span class="p">},</span> <span class="n">dPm</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mf">1.2</span><span class="p">),</span> <span class="n">h0</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;km&#39;</span><span class="p">},</span> <span class="n">atmType</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">layerBoundaries</span><span class="o">=</span><span class="p">[</span>  <span class="p">],</span> <span class="n">layerTemperature</span><span class="o">=</span><span class="p">[</span>  <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An atmospheric profile is composed of 4 quantities as a function of</span>
+<span class="sd">        altitude z:</span>
+<span class="sd">        </span>
+<span class="sd">        * the layer thickness</span>
+<span class="sd">        * the pressure P</span>
+<span class="sd">        * the temperature T and</span>
+<span class="sd">        * the gas densities for H2O, O3, CO and N2O.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        This method is needed for computing the absorption and phase</span>
+<span class="sd">        coefficients, as well as for performing radiative transfer</span>
+<span class="sd">        calculations (only layer thickness/T are needed).</span>
+<span class="sd">        </span>
+<span class="sd">        This method builds an atmospheric profile that can be used to calculate</span>
+<span class="sd">        absorption and phase coefficients, as well as to perform forward</span>
+<span class="sd">        and/or retrieval radiative transfer calculations. It is composed of a</span>
+<span class="sd">        set of parameters needed to build a layer thickness/P/T/gas densities</span>
+<span class="sd">        densities profile from simple parameters currently available at</span>
+<span class="sd">        observatories (from weather stations for example) using functions from</span>
+<span class="sd">        the ATM library. The set of input parameters consists of the pressure</span>
+<span class="sd">        P, the temperature T and the relative humidity at the ground, the</span>
+<span class="sd">        altitude of the site, the tropospheric temperature lapse rate,... The</span>
+<span class="sd">        profile is built as: thickness of the considered atmospheric layers</span>
+<span class="sd">        above the site, and mean P,T,H2O,O3,CO,N2O in them. The total number</span>
+<span class="sd">        of atmospheric layers in the particular profile is also available (a</span>
+<span class="sd">        negative value indicates an error).  The zenith column of water vapor</span>
+<span class="sd">        can be calculated by simply integrating the H2O profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">initAtmProfile</span><span class="p">(</span><span class="n">altitude</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">maxAltitude</span><span class="p">,</span> <span class="n">humidity</span><span class="p">,</span> <span class="n">dTem_dh</span><span class="p">,</span> <span class="n">dP</span><span class="p">,</span> <span class="n">dPm</span><span class="p">,</span> <span class="n">h0</span><span class="p">,</span> <span class="n">atmType</span><span class="p">,</span> <span class="n">layerBoundaries</span><span class="p">,</span> <span class="n">layerTemperature</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">updateAtmProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">5000.</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">},</span> <span class="n">temperature</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">270.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">},</span> <span class="n">pressure</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">560.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mbar&#39;</span><span class="p">},</span> <span class="n">humidity</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mf">20.0</span><span class="p">),</span> <span class="n">dTem_dh</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">5.6</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;K/km&#39;</span><span class="p">},</span> <span class="n">h0</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;km&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This is used to update the {tt atmosphere} tool when basic</span>
+<span class="sd">        atmospheric parameters.change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">updateAtmProfile</span><span class="p">(</span><span class="n">altitude</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">pressure</span><span class="p">,</span> <span class="n">humidity</span><span class="p">,</span> <span class="n">dTem_dh</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getBasicAtmParms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getBasicAtmParms</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getNumLayers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNumLayers</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getGroundWH2O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to get the zenith column  of water vapor. It is computed by</span>
+<span class="sd">        simply integrating the H2O profile:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getGroundWH2O</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getProfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the atmospheric profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getProfile</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">initSpectralWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbands</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">fCenter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mi">90</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">},</span> <span class="n">fWidth</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.64</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">},</span> <span class="n">fRes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;function that defines a spectral window, computes absorption and emmision coefficients for this window,</span>
+<span class="sd">        using the atmospheric model profile.</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: This method should be invoked after setting atmospheric profile model by initAtmProfile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">initSpectralWindow</span><span class="p">(</span><span class="n">nbands</span><span class="p">,</span> <span class="n">fCenter</span><span class="p">,</span> <span class="n">fWidth</span><span class="p">,</span> <span class="n">fRes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">addSpectralWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fCenter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mi">350</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">},</span> <span class="n">fWidth</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.008</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">},</span> <span class="n">fRes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.002</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;GHz&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new spectral window, uniformly sampled, this spectral window</span>
+<span class="sd">        having no sideband.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">addSpectralWindow</span><span class="p">(</span><span class="n">fCenter</span><span class="p">,</span> <span class="n">fWidth</span><span class="p">,</span> <span class="n">fRes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNumSpectralWindows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNumSpectralWindows</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getNumChan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of channels of ith band ( passes in as parameter ).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNumChan</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getRefChan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference channel of the given spectral window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getRefChan</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getRefFreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference frequency of the given spectral window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getRefFreq</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getChanSep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the channel separation of the given spectral window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getChanSep</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getChanFreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chanNum</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the channel frequency for a given grid point for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getChanFreq</span><span class="p">(</span><span class="n">chanNum</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getSpectralWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the spectral grid for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getSpectralWindow</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getChanNum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the channel number for given frequency in the specified</span>
+<span class="sd">        spectral window relative to the reference channel number.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getChanNum</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getBandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the frequency range encompassing the list of frequency grid points for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getBandwidth</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getMinFreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get lowest frequency channel for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getMinFreq</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getMaxFreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get highest frequency channel for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getMaxFreq</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDryOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated Dry Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDryOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDryContOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated Dry Continuum Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDryContOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getO2LinesOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated O2 Lines Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getO2LinesOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getO3LinesOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated O3 Lines Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getO3LinesOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getCOLinesOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated CO Lines Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getCOLinesOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getN2OLinesOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated N2O Lines Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getN2OLinesOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getWetOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith Wet Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getWetOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getH2OLinesOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith H2O Lines Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getH2OLinesOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getH2OContOpacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith H2O Continuum Opacity for one channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getH2OContOpacity</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDryOpacitySpec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated Dry opacity along the atmospheric path on each channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDryOpacitySpec</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getWetOpacitySpec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Getthe integrated zenith Wet Opacity along the atmospheric path on each channel in a band.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getWetOpacitySpec</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDispersivePhaseDelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith H2O Atmospheric Phase Delay (Dispersive part)</span>
+<span class="sd">        for the current conditions, for channel number nc of spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDispersivePhaseDelay</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDispersiveWetPhaseDelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to retrievethe the integrated Atmospheric Phase Delay</span>
+<span class="sd">        (Dispersive part) along the atmospheric path corresponding to the 1st</span>
+<span class="sd">        guess water column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDispersiveWetPhaseDelay</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersiveWetPhaseDelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to retrieve the integrated wet Atmospheric Phase Delay</span>
+<span class="sd">        (NonDispersive part) along the atmospheric path corresponding to the 1st</span>
+<span class="sd">        guess water column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersiveWetPhaseDelay</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersiveDryPhaseDelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to retrieve the integrated dry Atmospheric Phase Delay</span>
+<span class="sd">        (NonDispersive part) along the atmospheric path corresponding to the 1st</span>
+<span class="sd">        guess water column.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersiveDryPhaseDelay</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersivePhaseDelay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith H2O Atmospheric Phase Delay (Non-Dispersive</span>
+<span class="sd">        part) for the current conditions, for channel number nc of spectral</span>
+<span class="sd">        window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersivePhaseDelay</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDispersivePathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated zenith H2O Atmospheric Path length (Dispersive part)</span>
+<span class="sd">        along the atmospheric path corresponding to the user water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDispersivePathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getDispersiveWetPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated wet Atmospheric Path length (Dispersive part)</span>
+<span class="sd">        along the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getDispersiveWetPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersiveWetPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated wet Atmospheric Path length (NonDispersive part)</span>
+<span class="sd">        along the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersiveWetPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersiveDryPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated dry Atmospheric Path length (NonDispersive part)</span>
+<span class="sd">        along the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersiveDryPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getO2LinesPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated Atmospheric Path length (due to O2 Lines) along</span>
+<span class="sd">        the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getO2LinesPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getO3LinesPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated Atmospheric Path length (due to O3 Lines) along</span>
+<span class="sd">        the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getO3LinesPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getCOLinesPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated Atmospheric Path length (due to CO Lines)</span>
+<span class="sd">        along the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getCOLinesPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getN2OLinesPathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the integrated Atmospheric Path length (due to N2O Lines)</span>
+<span class="sd">        along the atmospheric path corresponding to the 1st guess water column</span>
+<span class="sd">        for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getN2OLinesPathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getNonDispersivePathLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integrated zenith H2O Atmospheric Path length (Non-Dispersive part)</span>
+<span class="sd">        for the current conditions, for channel nc in spectral window spwid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getNonDispersivePathLength</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsH2OLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to get H2O lines Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and channel nf.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsH2OLines</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsH2OCont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get H2O continuum Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsH2OCont</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsO2Lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get O2 lines Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsO2Lines</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsDryCont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get Dry Continuum Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsDryCont</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsO3Lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get O3 lines Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsO3Lines</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsCOLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get CO lines Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsCOLines</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsN2OLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get N2O lines Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsN2OLines</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsTotalDry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get total dry Absorption Coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsTotalDry</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAbsTotalWet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get total wet absorption coefficient at layer nl,</span>
+<span class="sd">        spectral window spwid and frequency channel nf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAbsTotalWet</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setUserWH2O</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set user zenith water vapor column for forward radiative transfer</span>
+<span class="sd">        calculations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">setUserWH2O</span><span class="p">(</span><span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getUserWH2O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get user zenith water vapor column for forward radiative transfer</span>
+<span class="sd">        calculations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getUserWH2O</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setAirMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">airmass</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setter for air mass in SkyStatus without performing water vapor retrieval.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">setAirMass</span><span class="p">(</span><span class="n">airmass</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAirMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to get airmass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAirMass</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setSkyBackgroundTemperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tbgr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="mf">2.73</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sky background temperature in SkyStatus without performing water vapor retrieval</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">setSkyBackgroundTemperature</span><span class="p">(</span><span class="n">tbgr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getSkyBackgroundTemperature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sky background temperature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getSkyBackgroundTemperature</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getAverageTebbSky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the average Equivalent Blackbody Temperature in spectral</span>
+<span class="sd">        window spwid, for the current conditions and a perfect sky coupling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAverageTebbSky</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getTebbSky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the Equivalent Blackbody Temperature in spectral window spwid and</span>
+<span class="sd">        channel nc, for the current (user) Water Vapor Column wh2o,</span>
+<span class="sd">        the current Air Mass, and perfect Sky Coupling to the sky.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getTebbSky</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getTebbSkySpec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the Equivalent Blackbody Temperatures in a spectral window spwid</span>
+<span class="sd">        for the current (user) Water Vapor Column wh2o, the current Air Mass, and</span>
+<span class="sd">        perfect Sky Coupling to the sky.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getTebbSkySpec</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getAverageTrjSky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the average Rayleigh-Jeans Temperature in spectral</span>
+<span class="sd">        window spwid, for the current (user) Water Vapor Column wh2o,</span>
+<span class="sd">        the current Air Mass, and perfect Sky Coupling to the sky.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getAverageTrjSky</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getTrjSky</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the Rayleigh-Jeans Temperature in spectral window spwid and</span>
+<span class="sd">        channel nc, for the current (user) Water Vapor Column wh2o, the</span>
+<span class="sd">        current Air Mass, and perfect Sky Coupling to the sky.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getTrjSky</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getTrjSkySpec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">wh2o</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;mm&#39;</span><span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the Rayleigh-Jeans Temperatures in a spectral window spwid</span>
+<span class="sd">        for the current (user) Water Vapor Column wh2o, the current Air</span>
+<span class="sd">        Mass, and perfect Sky Coupling to the sky.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getTrjSkySpec</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">wh2o</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

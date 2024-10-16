@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -153,7 +149,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsGfluxscaleflagRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.renderer.T2_4MDetailsGfluxscaleflagRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gfluxscaleflag.renderer.T2_4MDetailsGfluxscaleflagRenderer.html#pipeline.hifa.tasks.polcalflag.renderer.T2_4MDetailsGfluxscaleflagRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsGfluxscaleflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renders detailed HTML output for the Gfluxscaleflag task.</span>
@@ -168,8 +164,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cafrenderer</span> <span class="o">=</span> <span class="n">T2_4MDetailsCorrectedampflagRenderer</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsGfluxscaleflagRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.renderer.T2_4MDetailsGfluxscaleflagRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1">#</span>
         <span class="c1"># Get flagging reports, summaries</span>
@@ -192,12 +186,11 @@
 
         <span class="c1"># PIPE-615: store callibrary tables in the weblog directory</span>
         <span class="n">copy_callibrary</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_plot_dicts">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.renderer.get_plot_dicts">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.renderer.get_plot_dicts.html#pipeline.hifa.tasks.polcalflag.renderer.get_plot_dicts">[docs]</a>
 <span class="k">def</span> <span class="nf">get_plot_dicts</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plot_type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the flagging diagnostic plots for the given x axis.</span>
@@ -231,7 +224,7 @@
 
 
 <div class="viewcode-block" id="relocate_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gfluxscaleflag.html#pipeline.hifa.tasks.gfluxscaleflag.renderer.relocate_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gfluxscaleflag.renderer.relocate_plots.html#pipeline.hifa.tasks.polcalflag.renderer.relocate_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">relocate_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">dest_dir</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Relocate a list of plots, returning a list of Plot objects that reflect</span>

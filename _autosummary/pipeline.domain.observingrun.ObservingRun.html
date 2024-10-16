@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.observingrun.ObservingRun &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.domain.polarization" href="pipeline.domain.polarization.html" />
+    <link rel="prev" title="pipeline.domain.observingrun.MeasurementSet" href="pipeline.domain.observingrun.MeasurementSet.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Antenna.html">pipeline.domain.Antenna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.AntennaArray.html">pipeline.domain.AntennaArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataDescription.html">pipeline.domain.DataDescription</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataTable.html">pipeline.domain.DataTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataType.html">pipeline.domain.DataType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Field.html">pipeline.domain.Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.FluxMeasurement.html">pipeline.domain.FluxMeasurement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.MeasurementSet.html">pipeline.domain.MeasurementSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.ObservingRun.html">pipeline.domain.ObservingRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Polarization.html">pipeline.domain.Polarization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Scan.html">pipeline.domain.Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Source.html">pipeline.domain.Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.SpectralWindow.html">pipeline.domain.SpectralWindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.SpectralWindowWithChannelSelection.html">pipeline.domain.SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.State.html">pipeline.domain.State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.antenna.html">pipeline.domain.antenna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.antennaarray.html">pipeline.domain.antennaarray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datadescription.html">pipeline.domain.datadescription</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datatable.html">pipeline.domain.datatable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datatype.html">pipeline.domain.datatype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.field.html">pipeline.domain.field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.fluxmeasurement.html">pipeline.domain.fluxmeasurement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.measurementset.html">pipeline.domain.measurementset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.measures.html">pipeline.domain.measures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.domain.observingrun.html">pipeline.domain.observingrun</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.observingrun.sort_measurement_set.html">pipeline.domain.observingrun.sort_measurement_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.observingrun.DataType.html">pipeline.domain.observingrun.DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.observingrun.MeasurementSet.html">pipeline.domain.observingrun.MeasurementSet</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline.domain.observingrun.ObservingRun</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun"><code class="docutils literal notranslate"><span class="pre">ObservingRun</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.polarization.html">pipeline.domain.polarization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.scan.html">pipeline.domain.scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.singledish.html">pipeline.domain.singledish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.source.html">pipeline.domain.source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.spectralwindow.html">pipeline.domain.spectralwindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.state.html">pipeline.domain.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.unitformat.html">pipeline.domain.unitformat</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.domain.html">pipeline.domain</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.domain.observingrun.html">pipeline.domain.observingrun</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.observingrun.ObservingRun</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.domain.observingrun.ObservingRun.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-domain-observingrun-observingrun">
+<h1>pipeline.domain.observingrun.ObservingRun<a class="headerlink" href="#pipeline-domain-observingrun-observingrun" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObservingRun</span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_measurement_set</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_fields" title="pipeline.domain.observingrun.ObservingRun.get_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fields</span></code></a></p></td>
+<td><p>Returns fields matching the given arguments from all measurement sets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_measurement_sets" title="pipeline.domain.observingrun.ObservingRun.get_measurement_sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_measurement_sets</span></code></a></p></td>
+<td><p>Returns measurement sets matching the given arguments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_measurement_sets_of_type" title="pipeline.domain.observingrun.ObservingRun.get_measurement_sets_of_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_measurement_sets_of_type</span></code></a></p></td>
+<td><p>Return a list of MeasurementSet domain object with matching DataType.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_ms" title="pipeline.domain.observingrun.ObservingRun.get_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ms</span></code></a></p></td>
+<td><p>Returns the first measurement set matching the given identifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name" title="pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_real_spw_id_by_name</span></code></a></p></td>
+<td><p>Translate a (science) spw name to the real spw ID for a given MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_real_spwsel" title="pipeline.domain.observingrun.ObservingRun.get_real_spwsel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_real_spwsel</span></code></a></p></td>
+<td><p>Translate a virtual (science) spw selection to the real one for a given MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.get_virtual_spw_id_by_name" title="pipeline.domain.observingrun.ObservingRun.get_virtual_spw_id_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_virtual_spw_id_by_name</span></code></a></p></td>
+<td><p>Translate a (science) spw name to the virtual spw ID for this pipeline run.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.real2virtual_spw_id" title="pipeline.domain.observingrun.ObservingRun.real2virtual_spw_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real2virtual_spw_id</span></code></a></p></td>
+<td><p>Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.observingrun.ObservingRun.virtual2real_spw_id" title="pipeline.domain.observingrun.ObservingRun.virtual2real_spw_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">virtual2real_spw_id</span></code></a></p></td>
+<td><p>Translate a virtual (science) spw ID to the real one for a given MS.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_datetime</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">execblock_ids</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">observers</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_ids</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">schedblock_ids</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_datetime</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_fields">
+<span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_fields" title="Link to this definition"></a></dt>
+<dd><p>Returns fields matching the given arguments from all measurement sets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_measurement_sets">
+<span class="sig-name descname"><span class="pre">get_measurement_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_measurement_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_measurement_sets" title="Link to this definition"></a></dt>
+<dd><p>Returns measurement sets matching the given arguments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_measurement_sets_of_type">
+<span class="sig-name descname"><span class="pre">get_measurement_sets_of_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msonly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.h.tasks.common.commonhelpermethods.MeasurementSet.html#pipeline.h.tasks.common.commonhelpermethods.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.renderer.regression.OrderedDict.html#pipeline.infrastructure.renderer.regression.OrderedDict" title="collections.OrderedDict"><span class="pre">OrderedDict</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_measurement_sets_of_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_measurement_sets_of_type" title="Link to this definition"></a></dt>
+<dd><p>Return a list of MeasurementSet domain object with matching DataType.</p>
+<p>The method returns a list of MSes of the first matching DataType in the
+list of dtypes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtypes</strong> – Search order of DataType. The search starts with the
+first DataType in the list and fallbacks to another DataType
+in the list only if no MS is found with the searched DataType.
+The search order of DataType is in the order of elements in
+list. Search stops at the first DataType with which at least
+one MS is found.</p></li>
+<li><p><strong>msonly</strong> – If True, return a list of MS domain object only.</p></li>
+<li><p><strong>source</strong> – Filter for particular source name selection (comma
+separated list of names).</p></li>
+<li><p><strong>spw</strong> – Filter for particular virtual spw specification (comma
+separated list of virtual IDs).</p></li>
+<li><p><strong>vis</strong> – Filter for list of MS names (list of strings)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>When msonly is True, a list of MeasurementSet domain objects of
+a matching DataType (and optionally sources and spws) is returned.
+Otherwise, a tuple of an ordered dictionary and a matched DataType
+(and optionally sources and spws) is returned. The ordered
+dictionary stores matching MS domain objects as keys and matching
+data column names as values. The order of elements is that appears
+in measurement_sets list attribute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_ms">
+<span class="sig-name descname"><span class="pre">get_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_ms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_ms" title="Link to this definition"></a></dt>
+<dd><p>Returns the first measurement set matching the given identifier.
+Identifier precedence is name then intent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_real_spw_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_real_spw_id_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name" title="Link to this definition"></a></dt>
+<dd><p>Translate a (science) spw name to the real spw ID for a given MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_name</strong> (<em>string</em>) – the spw name to convert</p></li>
+<li><p><strong>target_ms</strong> (<a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><em>domain.MeasurementSet</em></a>) – the MS to map spw_name to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_real_spwsel">
+<span class="sig-name descname"><span class="pre">get_real_spwsel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwsel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_real_spwsel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_real_spwsel" title="Link to this definition"></a></dt>
+<dd><p>Translate a virtual (science) spw selection to the real one for a given MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spwsel</strong> (<em>list</em><em> of </em><em>strings</em>) – the list of spw selections to convert</p></li>
+<li><p><strong>vis</strong> (<em>list</em><em> of </em><em>MS names</em>) – the list of MS names to map spwsel to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_virtual_spw_id_by_name">
+<span class="sig-name descname"><span class="pre">get_virtual_spw_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_virtual_spw_id_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_virtual_spw_id_by_name" title="Link to this definition"></a></dt>
+<dd><p>Translate a (science) spw name to the virtual spw ID for this pipeline run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spw_name</strong> (<em>string</em>) – the spw name to convert</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.real2virtual_spw_id">
+<span class="sig-name descname"><span class="pre">real2virtual_spw_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.real2virtual_spw_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.real2virtual_spw_id" title="Link to this definition"></a></dt>
+<dd><p>Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_id</strong> (<em>integer</em><em> or </em><em>str</em>) – the spw id to convert</p></li>
+<li><p><strong>target_ms</strong> (<a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><em>domain.MeasurementSet</em></a>) – the MS to map spw_id to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.virtual2real_spw_id">
+<span class="sig-name descname"><span class="pre">virtual2real_spw_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.virtual2real_spw_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.virtual2real_spw_id" title="Link to this definition"></a></dt>
+<dd><p>Translate a virtual (science) spw ID to the real one for a given MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_id</strong> (<em>integer</em><em> or </em><em>str</em>) – the spw id to convert</p></li>
+<li><p><strong>target_ms</strong> (<a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><em>domain.MeasurementSet</em></a>) – the MS to map spw_id to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.domain.observingrun.MeasurementSet.html" class="btn btn-neutral float-left" title="pipeline.domain.observingrun.MeasurementSet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.domain.polarization.html" class="btn btn-neutral float-right" title="pipeline.domain.polarization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

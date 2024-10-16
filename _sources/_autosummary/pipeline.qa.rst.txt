@@ -4,10 +4,26 @@ pipeline.qa
 .. automodule:: pipeline.qa
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    bpcal
@@ -16,3 +32,4 @@ pipeline.qa
    scorecalculator
    scorecalculator_test
    utility
+

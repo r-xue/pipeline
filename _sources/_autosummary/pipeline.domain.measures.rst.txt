@@ -4,9 +4,21 @@ pipeline.domain.measures
 .. automodule:: pipeline.domain.measures
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ArcUnits
       ComparableUnit
@@ -27,3 +39,11 @@ pipeline.domain.measures
       TemporalCollection
       TimeInterval
    
+   
+
+   
+   
+   
+
+
+

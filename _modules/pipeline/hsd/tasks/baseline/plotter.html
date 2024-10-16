@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -172,7 +168,7 @@
 
 
 <div class="viewcode-block" id="PlotterPool">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.PlotterPool.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotterPool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pool class to hold resources for plotting.</span>
 
@@ -185,7 +181,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="PlotterPool.create_plotter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool.create_plotter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.PlotterPool.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool.create_plotter">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plotter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                        <span class="n">num_ra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                        <span class="n">num_dec</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -215,7 +211,7 @@
 
 
 <div class="viewcode-block" id="PlotterPool.done">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool.done">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.PlotterPool.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool.done">[docs]</a>
     <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close plotters registered to the pool.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">plotter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -225,7 +221,7 @@
 
 
 <div class="viewcode-block" id="PlotDataStorage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotDataStorage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Storage class to hold array data for plotting.&quot;&quot;&quot;</span>
 
@@ -264,7 +260,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">integrated_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrated_mask_storage</span>
 
 <div class="viewcode-block" id="PlotDataStorage.resize_storage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.resize_storage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.resize_storage">[docs]</a>
     <span class="k">def</span> <span class="nf">resize_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_ra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_pol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize storage.</span>
 
@@ -296,7 +292,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionDataManager">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionDataManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to produce data of baseline subtraction plot and quality statistics.&quot;&quot;&quot;</span>
 
@@ -324,7 +320,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prefit_averaged_data</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaselineSubtractionDataManager.resize_storage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.resize_storage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.resize_storage">[docs]</a>
     <span class="k">def</span> <span class="nf">resize_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_ra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_dec</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_pol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize storage as necessary.</span>
 
@@ -339,7 +335,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionDataManager.store_result_get_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.store_result_get_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.store_result_get_data">[docs]</a>
     <span class="k">def</span> <span class="nf">store_result_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">num_ra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                               <span class="n">num_dec</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -400,7 +396,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionDataManager.analyze_plot_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.analyze_plot_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.analyze_plot_table">[docs]</a>
     <span class="k">def</span> <span class="nf">analyze_plot_table</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">origin_ms_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -484,7 +480,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionDataManager.get_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.get_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.get_data">[docs]</a>
     <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">infile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -673,7 +669,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionPlotManager</span><span class="p">(</span><span class="n">BaselineSubtractionDataManager</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages any operation necessary to produce baseline subtraction plot.&quot;&quot;&quot;</span>
 
@@ -699,7 +695,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">PlotterPool</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager.finalize">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize">[docs]</a>
     <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalize plot manager.</span>
 
@@ -734,7 +730,7 @@
                 <span class="k">yield</span> <span class="n">new_row_entry</span>
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager.generate_plot_meta_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate_plot_meta_table</span><span class="p">(</span>
         <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -805,7 +801,7 @@
                 <span class="k">yield</span> <span class="n">new_row_entry</span>
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager.generate_plot_rowlist">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">generate_plot_rowlist</span><span class="p">(</span>
         <span class="n">origin_ms_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1007,7 +1003,7 @@
         <span class="k">return</span> <span class="n">ret</span>
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager.plot_profile_map_with_fit">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_profile_map_with_fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prefit_figfile_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1172,7 +1168,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionPlotManager.plot_flatness_profile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_flatness_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">postfit_figfile_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1208,7 +1204,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionQualityManager">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionQualityManager</span><span class="p">(</span><span class="n">BaselineSubtractionDataManager</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to calculate quality statistics.&quot;&quot;&quot;</span>
 
@@ -1227,7 +1223,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">binned_data</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaselineSubtractionQualityManager.analyze_flatness">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.analyze_flatness">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.analyze_flatness">[docs]</a>
     <span class="k">def</span> <span class="nf">analyze_flatness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                          <span class="n">line_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
                          <span class="n">deviation_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
@@ -1330,7 +1326,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionQualityManager.plot_flatness">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.plot_flatness">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.plot_flatness">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_flatness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                       <span class="n">line_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
                       <span class="n">deviation_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
@@ -1415,7 +1411,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionQualityManager.calculate_baseline_quality_stat">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.calculate_baseline_quality_stat">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.calculate_baseline_quality_stat">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_baseline_quality_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ant_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                         <span class="n">postfit_integrated_data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">,</span>
                                         <span class="n">npol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
@@ -1509,7 +1505,7 @@
 
 
 <div class="viewcode-block" id="generate_grid_panel_map">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.generate_grid_panel_map">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.generate_grid_panel_map.html#pipeline.hsd.tasks.baseline.plotter.generate_grid_panel_map">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_grid_panel_map</span><span class="p">(</span><span class="n">ngrid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">npanel</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_plane</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield list of grid table indices that belong to the sparse map panel.</span>
 
@@ -1537,7 +1533,7 @@
 
 
 <div class="viewcode-block" id="configure_1d_panel">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.configure_1d_panel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.configure_1d_panel.html#pipeline.hsd.tasks.baseline.plotter.configure_1d_panel">[docs]</a>
 <span class="k">def</span> <span class="nf">configure_1d_panel</span><span class="p">(</span>
     <span class="n">nx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">ny</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1582,7 +1578,7 @@
 
 
 <div class="viewcode-block" id="configure_2d_panel">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.configure_2d_panel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.configure_2d_panel.html#pipeline.hsd.tasks.baseline.plotter.configure_2d_panel">[docs]</a>
 <span class="k">def</span> <span class="nf">configure_2d_panel</span><span class="p">(</span>
     <span class="n">xpanel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">ypanel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -1614,7 +1610,7 @@
 
 
 <div class="viewcode-block" id="get_lines">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.get_lines">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.get_lines.html#pipeline.hsd.tasks.baseline.plotter.get_lines">[docs]</a>
 <span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span>
     <span class="n">datatable</span><span class="p">:</span> <span class="s1">&#39;DataTable&#39;</span><span class="p">,</span>
     <span class="n">num_ra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1656,7 +1652,7 @@
 
 
 <div class="viewcode-block" id="get_lines2">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.get_lines2">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.get_lines2.html#pipeline.hsd.tasks.baseline.plotter.get_lines2">[docs]</a>
 <span class="k">def</span> <span class="nf">get_lines2</span><span class="p">(</span>
     <span class="n">infile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">datatable</span><span class="p">:</span> <span class="s1">&#39;DataTable&#39;</span><span class="p">,</span>
@@ -1724,7 +1720,7 @@
 
 
 <div class="viewcode-block" id="binned_mean_ma">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.binned_mean_ma">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.binned_mean_ma.html#pipeline.hsd.tasks.baseline.plotter.binned_mean_ma">[docs]</a>
 <span class="k">def</span> <span class="nf">binned_mean_ma</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">masked_data</span><span class="p">:</span> <span class="n">MaskedArray</span><span class="p">,</span>
                    <span class="n">nbin</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">MaskedArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1772,7 +1768,7 @@
 
 
 <div class="viewcode-block" id="sort_with_key">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.plotter.sort_with_key">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.sort_with_key.html#pipeline.hsd.tasks.baseline.plotter.sort_with_key">[docs]</a>
 <span class="k">def</span> <span class="nf">sort_with_key</span><span class="p">(</span> <span class="n">arr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reverse</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sort the list of dictionaries with the value of the specified key in each list component</span>

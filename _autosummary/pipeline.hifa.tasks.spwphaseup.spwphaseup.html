@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap.html" />
+    <link rel="prev" title="pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer" href="pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.html">pipeline.hifa</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.html">pipeline.hifa.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.spwphaseup.html">pipeline.hifa.tasks.spwphaseup</a></li>
       <li class="breadcrumb-item active">pipeline.hifa.tasks.spwphaseup.spwphaseup</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.rst.txt" rel="nofollow"> View page source</a>
@@ -137,16 +140,16 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_spwmap</span></code>(scispws)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_spwmap</span></code></a></p></td>
 <td><p>Returns a spectral window map where each science spectral window is mapped to the lowest science spectral window ID that matches its Spectral Spec.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_n2wspwmap</span></code>(scispws, maxnarrowbw, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.simple_n2wspwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.simple_n2wspwmap" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.simple_n2wspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_n2wspwmap</span></code></a></p></td>
 <td><p>Compute a simple phase up wide to narrow spectral window map.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">snr_n2wspwmap</span></code>(scispws, snrs, goodsnrs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.snr_n2wspwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.snr_n2wspwmap" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.snr_n2wspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">snr_n2wspwmap</span></code></a></p></td>
 <td><p>Compute a spectral window map based on signal-to-noise information.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_spwmap_for_band_to_band</span></code>(spwmap, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.update_spwmap_for_band_to_band.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.update_spwmap_for_band_to_band" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.update_spwmap_for_band_to_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_spwmap_for_band_to_band</span></code></a></p></td>
 <td><p>This method updates the input SpW mapping to remap diffgain on-source SpWs to associated diffgain reference SpWs within the same baseband, and returns the updated SpW mapping.</p></td>
 </tr>
 </tbody>
@@ -154,28 +157,28 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalResults</span></code>([final, pool, subtask_results])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.GaincalResults.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.GaincalResults" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.GaincalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalResults</span></code></a></p></td>
 <td><p>GaincalResults is the results class common to all pipeline gaincal calibration tasks.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntentField</span></code>(intent, field)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.IntentField.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.IntentField" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.IntentField"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntentField</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code>(name[, session])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.MeasurementSet.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.MeasurementSet" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
 <td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics</span></code>(inputsin, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseStabilityHeuristics</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwMapping</span></code>(combine, spwmap, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwMapping.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwMapping" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwMapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwMapping</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseup</span></code></a>(inputs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseup</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseupInputs</span></code></a>(context[, vis, output_dir, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseupInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseupResults</span></code></a>([vis, phasecal_mapping, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPhaseupResults</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -185,7 +188,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

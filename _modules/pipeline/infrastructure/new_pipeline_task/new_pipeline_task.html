@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
     <span class="kn">from</span> <span class="nn">mako.template</span> <span class="kn">import</span> <span class="n">Template</span>
 
 <div class="viewcode-block" id="NewTask">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.new_pipeline_task.NewTask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.new_pipeline_task.new_pipeline_task.NewTask.html#pipeline.infrastructure.new_pipeline_task.new_pipeline_task.NewTask">[docs]</a>
 <span class="k">class</span> <span class="nc">NewTask</span><span class="p">():</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -164,8 +160,6 @@
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">repository_path</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="NewTask.parse_command_line">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.new_pipeline_task.NewTask.parse_command_line">[docs]</a>
     <span class="k">def</span> <span class="nf">parse_command_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
 
         <span class="n">script_args</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -202,11 +196,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">module_name</span> <span class="o">=</span> <span class="n">task_name</span>
 
-        <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">module_name</span></div>
+        <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">module_name</span>
 
-
-<div class="viewcode-block" id="NewTask.create">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.new_pipeline_task.NewTask.create">[docs]</a>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">):</span>
 
         <span class="kn">from</span> <span class="nn">mako.template</span> <span class="kn">import</span> <span class="n">Template</span>
@@ -361,7 +352,6 @@
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">temp_mako</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Now use &#39;python3 setup.py install&#39; to make the new pipeline task visible within CASA.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
-</div>
 
 
 

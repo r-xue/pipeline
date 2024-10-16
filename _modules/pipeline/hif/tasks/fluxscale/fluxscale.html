@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -156,7 +152,7 @@
 
 
 <div class="viewcode-block" id="FluxscaleInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.fluxscale.html#pipeline.hif.tasks.FluxscaleInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.fluxscale.fluxscale.FluxscaleInputs.html#pipeline.hif.tasks.FluxscaleInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxscaleInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span> <span class="nf">fluxtable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -214,7 +210,7 @@
     <span class="n">transintent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;PHASE,BANDPASS,CHECK&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FluxscaleInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.fluxscale.html#pipeline.hif.tasks.FluxscaleInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.fluxscale.fluxscale.FluxscaleInputs.html#pipeline.hif.tasks.FluxscaleInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FluxscaleInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="c1"># delete pipeline-only properties that shouldn&#39;t be passed to</span>

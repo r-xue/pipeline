@@ -4,9 +4,16 @@ pipeline.infrastructure.utils
 .. automodule:: pipeline.infrastructure.utils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       absolute_path
       ant_arg_to_id
@@ -114,17 +121,31 @@ pipeline.infrastructure.utils
       velocity_to_frequency
       write_errorexit_file
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       IERSInfo
       OrderedDefaultdict
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    casa_data
@@ -150,3 +171,4 @@ pipeline.infrastructure.utils
    utils_test
    weblog
    weblog_test
+

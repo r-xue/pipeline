@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -156,7 +152,7 @@
 
 
 <div class="viewcode-block" id="enable_memstats">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.diagnostics.enable_memstats">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.enable_memstats.html#pipeline.infrastructure.utils.diagnostics.enable_memstats">[docs]</a>
 <span class="k">def</span> <span class="nf">enable_memstats</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cannot measure memory on OS X.&#39;</span><span class="p">)</span>
@@ -215,6 +211,8 @@
 <span class="n">enable_memstats</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
 
 
+<div class="viewcode-block" id="Interval">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.diagnostics.Interval.html#pipeline.infrastructure.utils.diagnostics.Interval">[docs]</a>
 <span class="k">class</span> <span class="nc">Interval</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -229,14 +227,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="Interval.__call__">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.diagnostics.Interval.html#pipeline.infrastructure.utils.diagnostics.Interval.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handler function for calling the partial and continuting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># mark not running</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># reset the timer for the next go</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">()</span>  <span class="c1"># call the partial function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">()</span>  <span class="c1"># call the partial function</span></div>
 
+
+<div class="viewcode-block" id="Interval.start">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.diagnostics.Interval.html#pipeline.infrastructure.utils.diagnostics.Interval.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the interval and lets it run.</span>
@@ -248,8 +251,11 @@
         <span class="c1"># Create the timer object, start and set state.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span></div>
 
+
+<div class="viewcode-block" id="Interval.stop">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.diagnostics.Interval.html#pipeline.infrastructure.utils.diagnostics.Interval.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the interval (no more function calls).</span>
@@ -257,11 +263,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="enable_fd_logs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.diagnostics.enable_fd_logs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.enable_fd_logs.html#pipeline.infrastructure.utils.diagnostics.enable_fd_logs">[docs]</a>
 <span class="k">def</span> <span class="nf">enable_fd_logs</span><span class="p">(</span><span class="n">interval_secs</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Log file descriptors to the CASA log every n seconds.</span>

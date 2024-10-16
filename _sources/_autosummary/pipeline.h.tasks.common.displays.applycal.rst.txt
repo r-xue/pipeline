@@ -4,15 +4,29 @@ pipeline.h.tasks.common.displays.applycal
 .. automodule:: pipeline.h.tasks.common.displays.applycal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       is_singledish_ms
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AmpVsFrequencyDetailChart
       AmpVsFrequencyFieldSummaryChart
@@ -63,3 +77,11 @@ pipeline.h.tasks.common.displays.applycal
       SpwFieldSummaryChart
       SpwSummaryChart
    
+   
+
+   
+   
+   
+
+
+

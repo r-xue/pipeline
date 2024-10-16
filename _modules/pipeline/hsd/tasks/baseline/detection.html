@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -168,7 +164,7 @@
 
 
 <div class="viewcode-block" id="DetectLineInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLineInputs.html#pipeline.hsd.tasks.baseline.detection.DetectLineInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">DetectLineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for spectral line detection task.&quot;&quot;&quot;</span>
 
@@ -234,7 +230,7 @@
 
 
 <div class="viewcode-block" id="DetectLineResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLineResults.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults">[docs]</a>
 <span class="k">class</span> <span class="nc">DetectLineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of spectral line detection task.&quot;&quot;&quot;</span>
 
@@ -252,7 +248,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">DetectLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DetectLineResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLineResults.html#pipeline.hsd.tasks.baseline.detection.DetectLineResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -285,7 +281,7 @@
 
 
 <div class="viewcode-block" id="DetectLine">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine">[docs]</a>
 <span class="k">class</span> <span class="nc">DetectLine</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Spectral line detection task.&quot;&quot;&quot;</span>
 
@@ -306,7 +302,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">line_finder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LineFinder</span><span class="p">()</span>
 
 <div class="viewcode-block" id="DetectLine.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">datatable_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                 <span class="n">grid_table</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]],</span>
@@ -473,7 +469,7 @@
 
 
 <div class="viewcode-block" id="DetectLine.plot_detectrange">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.plot_detectrange">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine.plot_detectrange">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_detectrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                          <span class="n">sp</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                          <span class="n">protected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -498,7 +494,7 @@
 
 
 <div class="viewcode-block" id="DetectLine.MaskBinning">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.MaskBinning">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine.MaskBinning">[docs]</a>
     <span class="k">def</span> <span class="nf">MaskBinning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                     <span class="n">Bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -520,7 +516,7 @@
 
 
 <div class="viewcode-block" id="DetectLine.SpBinning">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.SpBinning">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine.SpBinning">[docs]</a>
     <span class="k">def</span> <span class="nf">SpBinning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                   <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                   <span class="n">Bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -542,7 +538,7 @@
 
 
 <div class="viewcode-block" id="DetectLine.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.DetectLine.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.DetectLine.html#pipeline.hsd.tasks.baseline.detection.DetectLine.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">DetectLineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DetectLineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse result.</span>
 
@@ -636,7 +632,7 @@
 
 
 <div class="viewcode-block" id="LineWindowParser">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.LineWindowParser.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser">[docs]</a>
 <span class="k">class</span> <span class="nc">LineWindowParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;LineWindowParser is a parser for line window parameter.</span>
 
@@ -694,7 +690,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
 
 <div class="viewcode-block" id="LineWindowParser.parse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.parse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.LineWindowParser.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.parse">[docs]</a>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse given parameter into dictionary.</span>
 
@@ -762,7 +758,7 @@
 
 
 <div class="viewcode-block" id="LineWindowParser.get_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.get_result">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.LineWindowParser.html#pipeline.hsd.tasks.baseline.detection.LineWindowParser.get_result">[docs]</a>
     <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return parsed line windows for given spw id.</span>
 
@@ -1039,7 +1035,7 @@
 <span class="c1"># TODO: move this to detection_test.py when appropriate MS data is available</span>
 <span class="c1">#       or testable ms domain object can be created</span>
 <div class="viewcode-block" id="test_parser">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.detection.test_parser">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.detection.test_parser.html#pipeline.hsd.tasks.baseline.detection.test_parser">[docs]</a>
 <span class="k">def</span> <span class="nf">test_parser</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test LineWindowParser.</span>
 

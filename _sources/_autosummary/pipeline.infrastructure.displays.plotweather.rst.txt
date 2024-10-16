@@ -4,9 +4,16 @@ pipeline.infrastructure.displays.plotweather
 .. automodule:: pipeline.infrastructure.displays.plotweather
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       ComputeDewPointCFromRHAndTempC
       RescaleXAxisTimeTicks
@@ -15,3 +22,15 @@ pipeline.infrastructure.displays.plotweather
       plot_weather
       resizeFonts
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

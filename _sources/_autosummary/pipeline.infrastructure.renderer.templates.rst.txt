@@ -4,10 +4,27 @@ pipeline.infrastructure.renderer.templates
 .. automodule:: pipeline.infrastructure.renderer.templates
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    resources
+

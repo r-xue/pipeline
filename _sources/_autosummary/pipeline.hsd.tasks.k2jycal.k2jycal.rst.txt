@@ -4,18 +4,40 @@ pipeline.hsd.tasks.k2jycal.k2jycal
 .. automodule:: pipeline.hsd.tasks.k2jycal.k2jycal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       export_jyperk
       relative_path
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDK2JyCal
       SDK2JyCalInputs
       SDK2JyCalResults
    
+   
+
+   
+   
+   
+
+
+

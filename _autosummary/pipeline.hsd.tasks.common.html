@@ -19,9 +19,13 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.TableSelector" href="pipeline.hsd.tasks.common.TableSelector.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults" href="pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +50,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +122,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
       <li class="breadcrumb-item active">pipeline.hsd.tasks.common</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hsd.tasks.common.rst.txt" rel="nofollow"> View page source</a>
@@ -137,25 +141,25 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TableSelector</span></code>(name, query)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.TableSelector.html#pipeline.hsd.tasks.common.TableSelector" title="pipeline.hsd.tasks.common.TableSelector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TableSelector</span></code></a></p></td>
 <td><p>Retun a CASA table tool instance of selected rows of a table.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">asdm_name_from_ms</span></code>(ms_domain)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.asdm_name_from_ms.html#pipeline.hsd.tasks.common.asdm_name_from_ms" title="pipeline.hsd.tasks.common.asdm_name_from_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asdm_name_from_ms</span></code></a></p></td>
 <td><p>Parse a name of MeasurementSet (MS) and return the ASDM name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_list_for_ms</span></code>(datatable, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.get_index_list_for_ms.html#pipeline.hsd.tasks.common.get_index_list_for_ms" title="pipeline.hsd.tasks.common.get_index_list_for_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_list_for_ms</span></code></a></p></td>
 <td><p>Return an array of row IDs in datatable that matches selection.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ms_idx</span></code>(context, msname)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.get_ms_idx.html#pipeline.hsd.tasks.common.get_ms_idx" title="pipeline.hsd.tasks.common.get_ms_idx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ms_idx</span></code></a></p></td>
 <td><p>Return an index of a given MeasurementSet (MS) in Pipeline Context.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_valid_ms_members</span></code>(group_desc, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.get_valid_ms_members.html#pipeline.hsd.tasks.common.get_valid_ms_members" title="pipeline.hsd.tasks.common.get_valid_ms_members"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_valid_ms_members</span></code></a></p></td>
 <td><p>Yield IDs of reduction groups that matches selection criteria.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_to_datestring</span></code>(t[, unit])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.mjd_to_datestring.html#pipeline.hsd.tasks.common.mjd_to_datestring" title="pipeline.hsd.tasks.common.mjd_to_datestring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_to_datestring</span></code></a></p></td>
 <td><p>Convert a given Modified Julian Date (MJD) to a date string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parseEdge</span></code>(edge)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.parseEdge.html#pipeline.hsd.tasks.common.parseEdge" title="pipeline.hsd.tasks.common.parseEdge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parseEdge</span></code></a></p></td>
 <td><p>Convert a given edge value to a two-element-tuple.</p></td>
 </tr>
 </tbody>
@@ -163,15 +167,14 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProgressTimer</span></code>([length, maxCount, LogLevel])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.ProgressTimer.html#pipeline.hsd.tasks.common.ProgressTimer" title="pipeline.hsd.tasks.common.ProgressTimer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProgressTimer</span></code></a></p></td>
 <td><p>Show the progress bar on the console.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleDishResults</span></code>([task, success, outcome])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.SingleDishResults.html#pipeline.hsd.tasks.common.SingleDishResults" title="pipeline.hsd.tasks.common.SingleDishResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleDishResults</span></code></a></p></td>
 <td><p>Single Dish Results class.</p></td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.common.html#module-pipeline.hsd.tasks.common.common" title="pipeline.hsd.tasks.common.common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">common</span></code></a></p></td>
@@ -208,7 +211,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.TableSelector.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.TableSelector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

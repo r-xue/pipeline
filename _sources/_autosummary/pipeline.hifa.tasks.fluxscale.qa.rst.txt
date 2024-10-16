@@ -4,9 +4,16 @@ pipeline.hifa.tasks.fluxscale.qa
 .. automodule:: pipeline.hifa.tasks.fluxscale.qa
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       compute_aggregate_bandwidth
       frequency_min_max_after_aliasing
@@ -15,9 +22,16 @@ pipeline.hifa.tasks.fluxscale.qa
       score_kspw
       sqrt
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BandInfo
       CaltableWrapper
@@ -35,3 +49,11 @@ pipeline.hifa.tasks.fluxscale.qa
       MeasurementSet
       SpectralWindow
    
+   
+
+   
+   
+   
+
+
+

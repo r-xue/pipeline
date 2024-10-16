@@ -4,9 +4,21 @@ pipeline.hifv.tasks.finalcals.renderer
 .. automodule:: pipeline.hifv.tasks.finalcals.renderer
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ApplycalAmpVsFreqPlotRenderer
       ApplycalAmpVsFreqSciencePlotRenderer
@@ -21,3 +33,11 @@ pipeline.hifv.tasks.finalcals.renderer
       T2_4MDetailsfinalcalsRenderer
       VLASubPlotRenderer
    
+   
+
+   
+   
+   
+
+
+

@@ -4,9 +4,16 @@ pipeline.infrastructure.renderer.rendererutils
 .. automodule:: pipeline.infrastructure.renderer.rendererutils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       format_notification
       format_score
@@ -36,10 +43,25 @@ pipeline.infrastructure.renderer.rendererutils
       sort_row_by
       summarise_fields
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       QAScore
       WebLogLocation
    
+   
+
+   
+   
+   
+
+
+

@@ -4,17 +4,31 @@ pipeline.hsd.heuristics.sdbeamsize
 .. automodule:: pipeline.hsd.heuristics.sdbeamsize
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       getcontext
       localcontext
       setcontext
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AntennaDiameter
       Context
@@ -23,9 +37,14 @@ pipeline.hsd.heuristics.sdbeamsize
       SingleDishBeamSize
       SingleDishBeamSizeFromName
    
+   
+
+   
+   
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree:
    
       Clamped
       ConversionSyntax
@@ -42,3 +61,7 @@ pipeline.hsd.heuristics.sdbeamsize
       Subnormal
       Underflow
    
+   
+
+
+

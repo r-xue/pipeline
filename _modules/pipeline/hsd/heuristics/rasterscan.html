@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -160,14 +156,14 @@
 
 
 <div class="viewcode-block" id="RasterScanHeuristicsFailure">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsFailure">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.tasks.importdata.inspection.RasterScanHeuristicsFailure.html#pipeline.qa.scorecalculator.RasterScanHeuristicsFailure">[docs]</a>
 <span class="k">class</span> <span class="nc">RasterScanHeuristicsFailure</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates failure of RasterScanHeuristics.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="HeuristicsParameter">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.HeuristicsParameter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.HeuristicsParameter.html#pipeline.qa.scorecalculator.HeuristicsParameter">[docs]</a>
 <span class="k">class</span> <span class="nc">HeuristicsParameter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Holds tunable parameters for RasterScanHeuristic.&quot;&quot;&quot;</span>
 
@@ -197,7 +193,7 @@
 
 
 <div class="viewcode-block" id="distance">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.distance">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.distance.html#pipeline.qa.scorecalculator.distance">[docs]</a>
 <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">x0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute distance between two points (x0, y0) and (x1, y1).</span>
@@ -215,7 +211,7 @@
 
 
 <div class="viewcode-block" id="generate_histogram">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.generate_histogram">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.generate_histogram.html#pipeline.qa.scorecalculator.generate_histogram">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_histogram</span><span class="p">(</span>
     <span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">bin_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -242,7 +238,7 @@
 
 
 <div class="viewcode-block" id="detect_peak">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.detect_peak">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.detect_peak.html#pipeline.qa.scorecalculator.detect_peak">[docs]</a>
 <span class="k">def</span> <span class="nf">detect_peak</span><span class="p">(</span>
     <span class="n">hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -292,7 +288,7 @@
 
 
 <div class="viewcode-block" id="find_histogram_peak">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_histogram_peak">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_histogram_peak.html#pipeline.qa.scorecalculator.find_histogram_peak">[docs]</a>
 <span class="k">def</span> <span class="nf">find_histogram_peak</span><span class="p">(</span><span class="n">hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find histogram peaks.</span>
 
@@ -338,7 +334,7 @@
 
 
 <div class="viewcode-block" id="shift_angle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.shift_angle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.shift_angle.html#pipeline.qa.scorecalculator.shift_angle">[docs]</a>
 <span class="k">def</span> <span class="nf">shift_angle</span><span class="p">(</span>
     <span class="n">angle</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span>
@@ -359,7 +355,7 @@
 
 
 <div class="viewcode-block" id="find_most_frequent">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_most_frequent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_most_frequent.html#pipeline.qa.scorecalculator.find_most_frequent">[docs]</a>
 <span class="k">def</span> <span class="nf">find_most_frequent</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the most frequent value in an input array.</span>
@@ -386,7 +382,7 @@
 
 
 <div class="viewcode-block" id="refine_gaps">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.refine_gaps">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.refine_gaps.html#pipeline.qa.scorecalculator.refine_gaps">[docs]</a>
 <span class="k">def</span> <span class="nf">refine_gaps</span><span class="p">(</span><span class="n">gap_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Refine gap list by eliminating unreasonable gaps.</span>
 
@@ -435,7 +431,7 @@
 
 
 <div class="viewcode-block" id="create_range">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.create_range">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.create_range.html#pipeline.qa.scorecalculator.create_range">[docs]</a>
 <span class="k">def</span> <span class="nf">create_range</span><span class="p">(</span>
     <span class="n">peak_values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">acceptable_deviation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -483,7 +479,7 @@
 
 
 <div class="viewcode-block" id="find_angle_gap_by_range">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap_by_range">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_angle_gap_by_range.html#pipeline.qa.scorecalculator.find_angle_gap_by_range">[docs]</a>
 <span class="k">def</span> <span class="nf">find_angle_gap_by_range</span><span class="p">(</span>
     <span class="n">angle_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">acceptable_ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
@@ -522,7 +518,7 @@
 
 
 <div class="viewcode-block" id="find_distance_gap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_distance_gap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_distance_gap.html#pipeline.qa.scorecalculator.find_distance_gap">[docs]</a>
 <span class="k">def</span> <span class="nf">find_distance_gap</span><span class="p">(</span><span class="n">delta_ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">delta_dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find distance gap.</span>
 
@@ -581,7 +577,7 @@
 
 
 <div class="viewcode-block" id="find_angle_gap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_angle_gap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_angle_gap.html#pipeline.qa.scorecalculator.find_angle_gap">[docs]</a>
 <span class="k">def</span> <span class="nf">find_angle_gap</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find angle gap.</span>
 
@@ -649,7 +645,7 @@
 
 
 <div class="viewcode-block" id="find_raster_row">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_row">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_raster_row.html#pipeline.qa.scorecalculator.find_raster_row">[docs]</a>
 <span class="k">def</span> <span class="nf">find_raster_row</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find raster rows using angle gap as primary and distance gap as secondary.</span>
 
@@ -688,7 +684,7 @@
 
 
 <div class="viewcode-block" id="get_raster_distance">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.get_raster_distance">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.get_raster_distance.html#pipeline.qa.scorecalculator.get_raster_distance">[docs]</a>
 <span class="k">def</span> <span class="nf">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute distances between raster rows and the first row.</span>
@@ -719,7 +715,7 @@
 
 
 <div class="viewcode-block" id="RasterScanHeuristicsResult">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.scorecalculator.RasterScanHeuristicsResult.html#pipeline.qa.scorecalculator.RasterScanHeuristicsResult">[docs]</a>
 <span class="k">class</span> <span class="nc">RasterScanHeuristicsResult</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Result class of raster scan analysis.&quot;&quot;&quot;</span>
 
@@ -741,7 +737,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__antenna</span>
     
 <div class="viewcode-block" id="RasterScanHeuristicsResult.set_result_fail">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.set_result_fail">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.scorecalculator.RasterScanHeuristicsResult.html#pipeline.qa.scorecalculator.RasterScanHeuristicsResult.set_result_fail">[docs]</a>
     <span class="k">def</span> <span class="nf">set_result_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set False means raster analysis failure to self.antenna dictionary that is used for getting fail antennas.</span>
 
@@ -768,7 +764,7 @@
         <span class="n">field</span><span class="p">[</span><span class="n">fieldid</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="RasterScanHeuristicsResult.get_antennas_rasterscan_failed">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristicsResult.get_antennas_rasterscan_failed">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.scorecalculator.RasterScanHeuristicsResult.html#pipeline.qa.scorecalculator.RasterScanHeuristicsResult.get_antennas_rasterscan_failed">[docs]</a>
     <span class="k">def</span> <span class="nf">get_antennas_rasterscan_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get antennas which have had some error in raster scan analysis of the self.ms.</span>
 
@@ -787,7 +783,7 @@
 
 
 <div class="viewcode-block" id="find_raster_gap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.find_raster_gap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.find_raster_gap.html#pipeline.qa.scorecalculator.find_raster_gap">[docs]</a>
 <span class="k">def</span> <span class="nf">find_raster_gap</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dec</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]])</span> \
         <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -848,12 +844,12 @@
 
 
 <div class="viewcode-block" id="RasterScanHeuristic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic.html#pipeline.qa.scorecalculator.RasterScanHeuristic">[docs]</a>
 <span class="k">class</span> <span class="nc">RasterScanHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Heuristic to analyze raster scan pattern.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="RasterScanHeuristic.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.rasterscan.RasterScanHeuristic.html#pipeline.qa.scorecalculator.RasterScanHeuristic.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">dec</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">])</span> \
                       <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect gaps that separate individual raster rows and raster maps.</span>

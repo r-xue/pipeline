@@ -4,15 +4,29 @@ pipeline.domain.spectralwindow
 .. automodule:: pipeline.domain.spectralwindow
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       compress
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ArithmeticProgression
       Channel
@@ -20,3 +34,11 @@ pipeline.domain.spectralwindow
       SpectralWindow
       SpectralWindowWithChannelSelection
    
+   
+
+   
+   
+   
+
+
+

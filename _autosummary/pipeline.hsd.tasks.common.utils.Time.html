@@ -1,0 +1,1188 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.utils.Time &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.utils.casa_table" href="pipeline.hsd.tasks.common.utils.casa_table.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.common.utils.SpwSimpleView" href="pipeline.hsd.tasks.common.utils.SpwSimpleView.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.html">pipeline.hsd.tasks.common</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.utils.html">pipeline.hsd.tasks.common.utils</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.utils.Time</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hsd.tasks.common.utils.Time.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-tasks-common-utils-time">
+<h1>pipeline.hsd.tasks.common.utils.Time<a class="headerlink" href="#pipeline-hsd-tasks-common-utils-time" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_subfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_subfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TimeBase</span></code></p>
+<p>Represent and manipulate times and dates for astronomy.</p>
+<p>A <cite>Time</cite> object is initialized with one or more times in the <code class="docutils literal notranslate"><span class="pre">val</span></code>
+argument.  The input times in <code class="docutils literal notranslate"><span class="pre">val</span></code> must conform to the specified
+<code class="docutils literal notranslate"><span class="pre">format</span></code> and must correspond to the specified time <code class="docutils literal notranslate"><span class="pre">scale</span></code>.  The
+optional <code class="docutils literal notranslate"><span class="pre">val2</span></code> time input should be supplied only for numeric input
+formats (e.g. JD) where very high precision (better than 64-bit precision)
+is required.</p>
+<p>The allowed values for <code class="docutils literal notranslate"><span class="pre">format</span></code> can be listed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Time</span><span class="o">.</span><span class="n">FORMATS</span><span class="p">)</span>
+<span class="go">[&#39;jd&#39;, &#39;mjd&#39;, &#39;decimalyear&#39;, &#39;unix&#39;, &#39;unix_tai&#39;, &#39;cxcsec&#39;, &#39;gps&#39;, &#39;plot_date&#39;,</span>
+<span class="go"> &#39;stardate&#39;, &#39;datetime&#39;, &#39;ymdhms&#39;, &#39;iso&#39;, &#39;isot&#39;, &#39;yday&#39;, &#39;datetime64&#39;,</span>
+<span class="go"> &#39;fits&#39;, &#39;byear&#39;, &#39;jyear&#39;, &#39;byear_str&#39;, &#39;jyear_str&#39;]</span>
+</pre></div>
+</div>
+<p>See also: <a class="reference external" href="http://docs.astropy.org/en/stable/time/">http://docs.astropy.org/en/stable/time/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val</strong> (sequence, ndarray, number, str, bytes, or <cite>~astropy.time.Time</cite> object) – Value(s) to initialize the time or times.  Bytes are decoded as ascii.</p></li>
+<li><p><strong>val2</strong> (<em>sequence, ndarray, or number; optional</em>) – Value(s) to initialize the time or times.  Only used for numerical
+input, to help preserve precision.</p></li>
+<li><p><strong>format</strong> (<em>str, optional</em>) – Format of input value(s), specifying how to interpret them (e.g., ISO, JD, or
+Unix time). By default, the same format will be used for output representation.</p></li>
+<li><p><strong>scale</strong> (<em>str, optional</em>) – Time scale of input value(s), must be one of the following:
+(‘tai’, ‘tcb’, ‘tcg’, ‘tdb’, ‘tt’, ‘ut1’, ‘utc’)</p></li>
+<li><p><strong>precision</strong> (<em>int, optional</em>) – Digits of precision in string representation of time</p></li>
+<li><p><strong>in_subfmt</strong> (<em>str, optional</em>) – Unix glob to select subformats for parsing input times</p></li>
+<li><p><strong>out_subfmt</strong> (<em>str, optional</em>) – Unix glob to select subformat for outputting times</p></li>
+<li><p><strong>location</strong> (<cite>~astropy.coordinates.EarthLocation</cite> or tuple, optional) – If given as an tuple, it should be able to initialize an
+an EarthLocation instance, i.e., either contain 3 items with units of
+length for geocentric coordinates, or contain a longitude, latitude,
+and an optional height for geodetic coordinates.
+Can be a single location, or one for each input time.
+If not given, assumed to be the center of the Earth for time scale
+transformations to and from the solar-system barycenter.</p></li>
+<li><p><strong>copy</strong> (<em>bool, optional</em>) – Make a copy of the input values</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.argmax" title="pipeline.hsd.tasks.common.utils.Time.argmax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argmax</span></code></a></p></td>
+<td><p>Return indices of the maximum values along the given axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.argmin" title="pipeline.hsd.tasks.common.utils.Time.argmin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argmin</span></code></a></p></td>
+<td><p>Return indices of the minimum values along the given axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.argsort" title="pipeline.hsd.tasks.common.utils.Time.argsort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argsort</span></code></a></p></td>
+<td><p>Returns the indices that would sort the time array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.copy" title="pipeline.hsd.tasks.common.utils.Time.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<td><p>Return a fully independent copy the Time object, optionally changing the format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.diagonal" title="pipeline.hsd.tasks.common.utils.Time.diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagonal</span></code></a></p></td>
+<td><p>Return an instance with the specified diagonals.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.earth_rotation_angle" title="pipeline.hsd.tasks.common.utils.Time.earth_rotation_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">earth_rotation_angle</span></code></a></p></td>
+<td><p>Calculate local Earth rotation angle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.filled" title="pipeline.hsd.tasks.common.utils.Time.filled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filled</span></code></a></p></td>
+<td><p>Get a copy of the underlying data, with masked values filled in.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.flatten" title="pipeline.hsd.tasks.common.utils.Time.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a></p></td>
+<td><p>Return a copy with the array collapsed into one dimension.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.get_delta_ut1_utc" title="pipeline.hsd.tasks.common.utils.Time.get_delta_ut1_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_delta_ut1_utc</span></code></a></p></td>
+<td><p>Find UT1 - UTC differences by interpolating in IERS Table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.insert" title="pipeline.hsd.tasks.common.utils.Time.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a></p></td>
+<td><p>Insert values before the given indices in the column and return a new <cite>~astropy.time.Time</cite> or  <cite>~astropy.time.TimeDelta</cite> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.isclose" title="pipeline.hsd.tasks.common.utils.Time.isclose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isclose</span></code></a></p></td>
+<td><p>Returns a boolean or boolean array where two Time objects are element-wise equal within a time tolerance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.light_travel_time" title="pipeline.hsd.tasks.common.utils.Time.light_travel_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">light_travel_time</span></code></a></p></td>
+<td><p>Light travel time correction to the barycentre or heliocentre.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.max" title="pipeline.hsd.tasks.common.utils.Time.max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max</span></code></a></p></td>
+<td><p>Maximum along a given axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.mean" title="pipeline.hsd.tasks.common.utils.Time.mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean</span></code></a></p></td>
+<td><p>Mean along a given axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.min" title="pipeline.hsd.tasks.common.utils.Time.min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min</span></code></a></p></td>
+<td><p>Minimum along a given axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.now" title="pipeline.hsd.tasks.common.utils.Time.now"><code class="xref py py-obj docutils literal notranslate"><span class="pre">now</span></code></a></p></td>
+<td><p>Creates a new object corresponding to the instant in time this method is called.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="pipeline.hsd.tasks.common.utils.Time.ptp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ptp</span></code></a></p></td>
+<td><p>Peak to peak (maximum - minimum) along a given axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ravel" title="pipeline.hsd.tasks.common.utils.Time.ravel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ravel</span></code></a></p></td>
+<td><p>Return an instance with the array collapsed into one dimension.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.replicate" title="pipeline.hsd.tasks.common.utils.Time.replicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replicate</span></code></a></p></td>
+<td><p>Return a replica of the Time object, optionally changing the format.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.reshape" title="pipeline.hsd.tasks.common.utils.Time.reshape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reshape</span></code></a></p></td>
+<td><p>Returns an instance containing the same data with a new shape.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.sidereal_time" title="pipeline.hsd.tasks.common.utils.Time.sidereal_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sidereal_time</span></code></a></p></td>
+<td><p>Calculate sidereal time.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.sort" title="pipeline.hsd.tasks.common.utils.Time.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a></p></td>
+<td><p>Return a copy sorted along the specified axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.squeeze" title="pipeline.hsd.tasks.common.utils.Time.squeeze"><code class="xref py py-obj docutils literal notranslate"><span class="pre">squeeze</span></code></a></p></td>
+<td><p>Return an instance with single-dimensional shape entries removed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.strftime" title="pipeline.hsd.tasks.common.utils.Time.strftime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strftime</span></code></a></p></td>
+<td><p>Convert Time to a string or a numpy.array of strings according to a format specification.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.strptime" title="pipeline.hsd.tasks.common.utils.Time.strptime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strptime</span></code></a></p></td>
+<td><p>Parse a string to a Time according to a format specification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.swapaxes" title="pipeline.hsd.tasks.common.utils.Time.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a></p></td>
+<td><p>Return an instance with the given axes interchanged.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.take" title="pipeline.hsd.tasks.common.utils.Time.take"><code class="xref py py-obj docutils literal notranslate"><span class="pre">take</span></code></a></p></td>
+<td><p>Return a new instance formed from the elements at the given indices.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.to_datetime" title="pipeline.hsd.tasks.common.utils.Time.to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_datetime</span></code></a></p></td>
+<td><p>Convert to (potentially timezone-aware) <cite>~datetime.datetime</cite> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.to_string" title="pipeline.hsd.tasks.common.utils.Time.to_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_string</span></code></a></p></td>
+<td><p>Output a string representation of the Time or TimeDelta object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.to_value" title="pipeline.hsd.tasks.common.utils.Time.to_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_value</span></code></a></p></td>
+<td><p>Get time values expressed in specified output format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.transpose" title="pipeline.hsd.tasks.common.utils.Time.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a></p></td>
+<td><p>Return an instance with the data transposed.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.FORMATS" title="pipeline.hsd.tasks.common.utils.Time.FORMATS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FORMATS</span></code></a></p></td>
+<td><p>Dict of time formats</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.SCALES" title="pipeline.hsd.tasks.common.utils.Time.SCALES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SCALES</span></code></a></p></td>
+<td><p>List of time scales</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.T" title="pipeline.hsd.tasks.common.utils.Time.T"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code></a></p></td>
+<td><p>Return an instance with the data transposed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.cache" title="pipeline.hsd.tasks.common.utils.Time.cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cache</span></code></a></p></td>
+<td><p>Return the cache associated with this instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.delta_tdb_tt" title="pipeline.hsd.tasks.common.utils.Time.delta_tdb_tt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_tdb_tt</span></code></a></p></td>
+<td><p>TDB - TT time scale offset</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.delta_ut1_utc" title="pipeline.hsd.tasks.common.utils.Time.delta_ut1_utc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delta_ut1_utc</span></code></a></p></td>
+<td><p>UT1 - UTC time scale offset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.format" title="pipeline.hsd.tasks.common.utils.Time.format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code></a></p></td>
+<td><p>Get or set time format.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.in_subfmt" title="pipeline.hsd.tasks.common.utils.Time.in_subfmt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_subfmt</span></code></a></p></td>
+<td><p>Unix wildcard pattern to select subformats for parsing string input times.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></p></td>
+<td><p>Container for meta information like name, description, format.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isscalar</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.jd1" title="pipeline.hsd.tasks.common.utils.Time.jd1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jd1</span></code></a></p></td>
+<td><p>First of the two doubles that internally store time value(s) in JD.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.jd2" title="pipeline.hsd.tasks.common.utils.Time.jd2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jd2</span></code></a></p></td>
+<td><p>Second of the two doubles that internally store time value(s) in JD.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">masked</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ndim" title="pipeline.hsd.tasks.common.utils.Time.ndim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndim</span></code></a></p></td>
+<td><p>The number of dimensions of the instance and underlying arrays.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.out_subfmt" title="pipeline.hsd.tasks.common.utils.Time.out_subfmt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">out_subfmt</span></code></a></p></td>
+<td><p>Unix wildcard pattern to select subformats for outputting times.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.precision" title="pipeline.hsd.tasks.common.utils.Time.precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">precision</span></code></a></p></td>
+<td><p>Decimal precision when outputting seconds as floating point (int value between 0 and 9 inclusive).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.scale" title="pipeline.hsd.tasks.common.utils.Time.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p></td>
+<td><p>Time scale.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.shape" title="pipeline.hsd.tasks.common.utils.Time.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>The shape of the time instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.size" title="pipeline.hsd.tasks.common.utils.Time.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a></p></td>
+<td><p>The size of the object, as calculated from its shape.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.unmasked" title="pipeline.hsd.tasks.common.utils.Time.unmasked"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unmasked</span></code></a></p></td>
+<td><p>Get an instance without the mask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.value" title="pipeline.hsd.tasks.common.utils.Time.value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">value</span></code></a></p></td>
+<td><p>Time value(s) in current format.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">writeable</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.FORMATS">
+<span class="sig-name descname"><span class="pre">FORMATS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'byear':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeBesselianEpoch'&gt;,</span> <span class="pre">'byear_str':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeBesselianEpochString'&gt;,</span> <span class="pre">'cxcsec':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeCxcSec'&gt;,</span> <span class="pre">'datetime':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeDatetime'&gt;,</span> <span class="pre">'datetime64':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeDatetime64'&gt;,</span> <span class="pre">'decimalyear':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeDecimalYear'&gt;,</span> <span class="pre">'fits':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeFITS'&gt;,</span> <span class="pre">'gps':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeGPS'&gt;,</span> <span class="pre">'iso':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeISO'&gt;,</span> <span class="pre">'isot':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeISOT'&gt;,</span> <span class="pre">'jd':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeJD'&gt;,</span> <span class="pre">'jyear':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeJulianEpoch'&gt;,</span> <span class="pre">'jyear_str':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeJulianEpochString'&gt;,</span> <span class="pre">'mjd':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeMJD'&gt;,</span> <span class="pre">'plot_date':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimePlotDate'&gt;,</span> <span class="pre">'stardate':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeStardate'&gt;,</span> <span class="pre">'unix':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeUnix'&gt;,</span> <span class="pre">'unix_tai':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeUnixTai'&gt;,</span> <span class="pre">'yday':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeYearDayTime'&gt;,</span> <span class="pre">'ymdhms':</span> <span class="pre">&lt;class</span> <span class="pre">'astropy.time.formats.TimeYMDHMS'&gt;}</span></em><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.FORMATS" title="Link to this definition"></a></dt>
+<dd><p>Dict of time formats</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.SCALES">
+<span class="sig-name descname"><span class="pre">SCALES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('tai',</span> <span class="pre">'tcb',</span> <span class="pre">'tcg',</span> <span class="pre">'tdb',</span> <span class="pre">'tt',</span> <span class="pre">'ut1',</span> <span class="pre">'utc',</span> <span class="pre">'local')</span></em><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.SCALES" title="Link to this definition"></a></dt>
+<dd><p>List of time scales</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.T">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.T" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with the data transposed.</p>
+<p>Parameters are as for <code class="xref py py-attr docutils literal notranslate"><span class="pre">T</span></code>.  All internal
+data are views of the data of the original.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.argmax">
+<span class="sig-name descname"><span class="pre">argmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.argmax" title="Link to this definition"></a></dt>
+<dd><p>Return indices of the maximum values along the given axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">argmax()</span></code>, but adapted to ensure
+that the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code>
+is used.  See <code class="xref py py-func docutils literal notranslate"><span class="pre">argmax()</span></code> for detailed documentation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.argmin">
+<span class="sig-name descname"><span class="pre">argmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.argmin" title="Link to this definition"></a></dt>
+<dd><p>Return indices of the minimum values along the given axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">argmin()</span></code>, but adapted to ensure
+that the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code>
+is used.  See <code class="xref py py-func docutils literal notranslate"><span class="pre">argmin()</span></code> for detailed documentation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.argsort">
+<span class="sig-name descname"><span class="pre">argsort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'stable'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.argsort" title="Link to this definition"></a></dt>
+<dd><p>Returns the indices that would sort the time array.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">argsort()</span></code>, but adapted to ensure that
+the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is used, and
+that corresponding attributes are copied.  Internally, it uses
+<code class="xref py py-func docutils literal notranslate"><span class="pre">lexsort()</span></code>, and hence no sort method can be chosen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int, optional</em>) – Axis along which to sort. Default is -1, which means sort along the last
+axis.</p></li>
+<li><p><strong>kind</strong> (<em>‘stable’, optional</em>) – Sorting is done with <code class="xref py py-func docutils literal notranslate"><span class="pre">lexsort()</span></code> so this argument is ignored, but
+kept for compatibility with <code class="xref py py-func docutils literal notranslate"><span class="pre">argsort()</span></code>. The sorting is stable,
+meaning that the order of equal elements is preserved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>indices</strong> – An array of indices that sort the time array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.cache">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cache</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.cache" title="Link to this definition"></a></dt>
+<dd><p>Return the cache associated with this instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.copy" title="Link to this definition"></a></dt>
+<dd><p>Return a fully independent copy the Time object, optionally changing
+the format.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">format</span></code> is supplied then the time format of the returned Time
+object will be set accordingly, otherwise it will be unchanged from the
+original.</p>
+<p>In this method a full copy of the internal time arrays will be made.
+The internal time arrays are normally not changeable by the user so in
+most cases the <code class="docutils literal notranslate"><span class="pre">replicate()</span></code> method should be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>format</strong> (<em>str, optional</em>) – Time format of the copy.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tm</strong> – Copy of this object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.delta_tdb_tt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delta_tdb_tt</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.delta_tdb_tt" title="Link to this definition"></a></dt>
+<dd><p>TDB - TT time scale offset</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.delta_ut1_utc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delta_ut1_utc</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.delta_ut1_utc" title="Link to this definition"></a></dt>
+<dd><p>UT1 - UTC time scale offset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.diagonal">
+<span class="sig-name descname"><span class="pre">diagonal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.diagonal" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with the specified diagonals.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">diagonal()</span></code>.  All internal
+data are views of the data of the original.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.earth_rotation_angle">
+<span class="sig-name descname"><span class="pre">earth_rotation_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.earth_rotation_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.earth_rotation_angle" title="Link to this definition"></a></dt>
+<dd><p>Calculate local Earth rotation angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>longitude</strong> (<cite>~astropy.units.Quantity</cite>, <cite>~astropy.coordinates.EarthLocation</cite>, str, or None; optional) – The longitude on the Earth at which to compute the Earth rotation
+angle (taken from a location as needed).  If <cite>None</cite> (default), taken
+from the <code class="docutils literal notranslate"><span class="pre">location</span></code> attribute of the Time instance. If the special
+string ‘tio’, the result will be relative to the Terrestrial
+Intermediate Origin (TIO) (i.e., the output of <cite>~erfa.era00</cite>).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Local Earth rotation angle with units of hourangle.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.coordinates.Longitude</cite></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.time.Time.sidereal_time</span></code></p>
+</div>
+<p class="rubric">References</p>
+<p>IAU 2006 NFA Glossary
+(currently located at: <a class="reference external" href="https://syrte.obspm.fr/iauWGnfa/NFA_Glossary.html">https://syrte.obspm.fr/iauWGnfa/NFA_Glossary.html</a>)</p>
+<p class="rubric">Notes</p>
+<p>The difference between apparent sidereal time and Earth rotation angle
+is the equation of the origins, which is the angle between the Celestial
+Intermediate Origin (CIO) and the equinox. Applying apparent sidereal
+time to the hour angle yields the true apparent Right Ascension with
+respect to the equinox, while applying the Earth rotation angle yields
+the intermediate (CIRS) Right Ascension with respect to the CIO.</p>
+<p>The result includes the TIO locator (s’), which positions the Terrestrial
+Intermediate Origin on the equator of the Celestial Intermediate Pole (CIP)
+and is rigorously corrected for polar motion.
+(except when <code class="docutils literal notranslate"><span class="pre">longitude='tio'</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.filled">
+<span class="sig-name descname"><span class="pre">filled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.filled" title="Link to this definition"></a></dt>
+<dd><p>Get a copy of the underlying data, with masked values filled in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fill_value</strong> (<em>object</em>) – Value to replace masked values with.  Note that if this value is masked</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.time.Time.unmasked</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.flatten">
+<span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.flatten" title="Link to this definition"></a></dt>
+<dd><p>Return a copy with the array collapsed into one dimension.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">flatten()</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.format">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.format" title="Link to this definition"></a></dt>
+<dd><p>Get or set time format.</p>
+<p>The format defines the way times are represented when accessed via the
+<code class="docutils literal notranslate"><span class="pre">.value</span></code> attribute.  By default it is the same as the format used for
+initializing the <cite>Time</cite> instance, but it can be set to any other value
+that could be used for initialization.  These can be listed with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Time</span><span class="o">.</span><span class="n">FORMATS</span><span class="p">)</span>
+<span class="go">[&#39;jd&#39;, &#39;mjd&#39;, &#39;decimalyear&#39;, &#39;unix&#39;, &#39;unix_tai&#39;, &#39;cxcsec&#39;, &#39;gps&#39;, &#39;plot_date&#39;,</span>
+<span class="go"> &#39;stardate&#39;, &#39;datetime&#39;, &#39;ymdhms&#39;, &#39;iso&#39;, &#39;isot&#39;, &#39;yday&#39;, &#39;datetime64&#39;,</span>
+<span class="go"> &#39;fits&#39;, &#39;byear&#39;, &#39;jyear&#39;, &#39;byear_str&#39;, &#39;jyear_str&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.get_delta_ut1_utc">
+<span class="sig-name descname"><span class="pre">get_delta_ut1_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iers_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.get_delta_ut1_utc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.get_delta_ut1_utc" title="Link to this definition"></a></dt>
+<dd><p>Find UT1 - UTC differences by interpolating in IERS Table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iers_table</strong> (<cite>~astropy.utils.iers.IERS</cite>, optional) – Table containing UT1-UTC differences from IERS Bulletins A
+and/or B.  Default: <cite>~astropy.utils.iers.earth_orientation_table</cite>
+(which in turn defaults to the combined version provided by
+<cite>~astropy.utils.iers.IERS_Auto</cite>).</p></li>
+<li><p><strong>return_status</strong> (<em>bool</em>) – Whether to return status values.  If <cite>False</cite> (default), iers
+raises <cite>IndexError</cite> if any time is out of the range
+covered by the IERS table.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>ut1_utc</strong> (<em>float or float array</em>) – UT1-UTC, interpolated in IERS Table</p></li>
+<li><p><strong>status</strong> (<em>int or int array</em>) –</p>
+<dl class="simple">
+<dt>Status values (if <code class="docutils literal notranslate"><span class="pre">return_status=`True`</span></code>)::</dt><dd><p><code class="docutils literal notranslate"><span class="pre">astropy.utils.iers.FROM_IERS_B</span></code>
+<code class="docutils literal notranslate"><span class="pre">astropy.utils.iers.FROM_IERS_A</span></code>
+<code class="docutils literal notranslate"><span class="pre">astropy.utils.iers.FROM_IERS_A_PREDICTION</span></code>
+<code class="docutils literal notranslate"><span class="pre">astropy.utils.iers.TIME_BEFORE_IERS_RANGE</span></code>
+<code class="docutils literal notranslate"><span class="pre">astropy.utils.iers.TIME_BEYOND_IERS_RANGE</span></code></p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>In normal usage, UT1-UTC differences are calculated automatically
+on the first instance ut1 is needed.</p>
+<p class="rubric">Examples</p>
+<p>To check in code whether any times are before the IERS table range:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">astropy.utils.iers</span> <span class="kn">import</span> <span class="n">TIME_BEFORE_IERS_RANGE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Time</span><span class="p">([</span><span class="s1">&#39;1961-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2000-01-01&#39;</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delta</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_delta_ut1_utc</span><span class="p">(</span><span class="n">return_status</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span> <span class="o">==</span> <span class="n">TIME_BEFORE_IERS_RANGE</span>  
+<span class="go">array([ True, False]...)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.in_subfmt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_subfmt</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.in_subfmt" title="Link to this definition"></a></dt>
+<dd><p>Unix wildcard pattern to select subformats for parsing string input
+times.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.insert" title="Link to this definition"></a></dt>
+<dd><p>Insert values before the given indices in the column and return
+a new <cite>~astropy.time.Time</cite> or  <cite>~astropy.time.TimeDelta</cite> object.</p>
+<p>The values to be inserted must conform to the rules for in-place setting
+of <code class="docutils literal notranslate"><span class="pre">Time</span></code> objects (see <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">and</span> <span class="pre">set</span> <span class="pre">values</span></code> in the <code class="docutils literal notranslate"><span class="pre">Time</span></code>
+documentation).</p>
+<p>The API signature matches the <code class="docutils literal notranslate"><span class="pre">np.insert</span></code> API, but is more limited.
+The specification of insert index <code class="docutils literal notranslate"><span class="pre">obj</span></code> must be a single integer,
+and the <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be <code class="docutils literal notranslate"><span class="pre">0</span></code> for simple row insertion before the
+index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>int</em>) – Integer index before which <code class="docutils literal notranslate"><span class="pre">values</span></code> is inserted.</p></li>
+<li><p><strong>values</strong> (<em>array-like</em>) – Value(s) to insert.  If the type of <code class="docutils literal notranslate"><span class="pre">values</span></code> is different
+from that of quantity, <code class="docutils literal notranslate"><span class="pre">values</span></code> is converted to the matching type.</p></li>
+<li><p><strong>axis</strong> (<em>int, optional</em>) – Axis along which to insert <code class="docutils literal notranslate"><span class="pre">values</span></code>.  Default is 0, which is the
+only allowed value and will insert a row.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out</strong> – New time object with inserted value(s)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.time.Time</cite> subclass</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.isclose">
+<span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.isclose" title="Link to this definition"></a></dt>
+<dd><p>Returns a boolean or boolean array where two Time objects are
+element-wise equal within a time tolerance.</p>
+<p>This evaluates the expression below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span> <span class="o">-</span> <span class="n">other</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">atol</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<cite>~astropy.time.Time</cite>) – Time object for comparison.</p></li>
+<li><p><strong>atol</strong> (<cite>~astropy.units.Quantity</cite> or <cite>~astropy.time.TimeDelta</cite>) – Absolute tolerance for equality with units of time (e.g. <code class="docutils literal notranslate"><span class="pre">u.s</span></code> or
+<code class="docutils literal notranslate"><span class="pre">u.day</span></code>). Default is two bits in the 128-bit JD time representation,
+equivalent to about 40 picosecs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.jd1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jd1</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.jd1" title="Link to this definition"></a></dt>
+<dd><p>First of the two doubles that internally store time value(s) in JD.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.jd2">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jd2</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.jd2" title="Link to this definition"></a></dt>
+<dd><p>Second of the two doubles that internally store time value(s) in JD.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.light_travel_time">
+<span class="sig-name descname"><span class="pre">light_travel_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">skycoord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'barycentric'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ephemeris</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.light_travel_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.light_travel_time" title="Link to this definition"></a></dt>
+<dd><p>Light travel time correction to the barycentre or heliocentre.</p>
+<p>The frame transformations used to calculate the location of the solar
+system barycentre and the heliocentre rely on the erfa routine epv00,
+which is consistent with the JPL DE405 ephemeris to an accuracy of
+11.2 km, corresponding to a light travel time of 4 microseconds.</p>
+<p>The routine assumes the source(s) are at large distance, i.e., neglects
+finite-distance effects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skycoord</strong> (<cite>~astropy.coordinates.SkyCoord</cite>) – The sky location to calculate the correction for.</p></li>
+<li><p><strong>kind</strong> (<em>str, optional</em>) – <code class="docutils literal notranslate"><span class="pre">'barycentric'</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">'heliocentric'</span></code></p></li>
+<li><p><strong>location</strong> (<cite>~astropy.coordinates.EarthLocation</cite>, optional) – The location of the observatory to calculate the correction for.
+If no location is given, the <code class="docutils literal notranslate"><span class="pre">location</span></code> attribute of the Time
+object is used</p></li>
+<li><p><strong>ephemeris</strong> (<em>str, optional</em>) – Solar system ephemeris to use (e.g., ‘builtin’, ‘jpl’). By default,
+use the one set with <code class="docutils literal notranslate"><span class="pre">astropy.coordinates.solar_system_ephemeris.set</span></code>.
+For more information, see <cite>~astropy.coordinates.solar_system_ephemeris</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>time_offset</strong> – The time offset between the barycentre or Heliocentre and Earth,
+in TDB seconds.  Should be added to the original time to get the
+time in the Solar system barycentre or the Heliocentre.
+Also, the time conversion to BJD will then include the relativistic correction as well.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.time.TimeDelta</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.max">
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.max" title="Link to this definition"></a></dt>
+<dd><p>Maximum along a given axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">max()</span></code>, but adapted to ensure
+that the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code>
+is used, and that corresponding attributes are copied.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
+<code class="docutils literal notranslate"><span class="pre">np.max</span></code>; since <cite>Time</cite> instances are immutable, it is not possible
+to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.mean">
+<span class="sig-name descname"><span class="pre">mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.mean" title="Link to this definition"></a></dt>
+<dd><p>Mean along a given axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">mean()</span></code>, but adapted to ensure
+that the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is
+used, and that corresponding attributes are copied.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
+<code class="docutils literal notranslate"><span class="pre">np.mean</span></code>; since <cite>Time</cite> instances are immutable, it is not possible
+to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
+<p>Similarly, the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is also present for compatibility
+only; it has no meaning for <cite>Time</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>None or int or tuple of ints, optional</em>) – Axis or axes along which the means are computed. The default is to
+compute the mean of the flattened array.</p></li>
+<li><p><strong>dtype</strong> (<em>None</em>) – Only present for compatibility with <code class="xref py py-meth docutils literal notranslate"><span class="pre">mean()</span></code>,
+must be <cite>None</cite>.</p></li>
+<li><p><strong>out</strong> (<em>None</em>) – Only present for compatibility with <code class="xref py py-meth docutils literal notranslate"><span class="pre">mean()</span></code>,
+must be <cite>None</cite>.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool, optional</em>) – If this is set to True, the axes which are reduced are left
+in the result as dimensions with size one. With this option,
+the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>where</strong> (<em>array_like of bool, optional</em>) – Elements to include in the mean. See <cite>~numpy.ufunc.reduce</cite> for
+details.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>m</strong> – A new Time instance containing the mean values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time" title="pipeline.hsd.tasks.common.utils.Time">Time</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.min">
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.min" title="Link to this definition"></a></dt>
+<dd><p>Minimum along a given axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">min()</span></code>, but adapted to ensure
+that the full precision given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code>
+is used, and that corresponding attributes are copied.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
+<code class="docutils literal notranslate"><span class="pre">np.min</span></code>; since <cite>Time</cite> instances are immutable, it is not possible
+to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.ndim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.ndim" title="Link to this definition"></a></dt>
+<dd><p>The number of dimensions of the instance and underlying arrays.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.now">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">now</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.now"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.now" title="Link to this definition"></a></dt>
+<dd><p>Creates a new object corresponding to the instant in time this
+method is called.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“Now” is determined using the <cite>~datetime.datetime.now</cite>
+function, so its accuracy and precision is determined by that
+function.  Generally that means it is set by the accuracy of
+your system clock. The timezone is set to UTC.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nowtime</strong> – A new <cite>Time</cite> object (or a subclass of <cite>Time</cite> if this is called from
+such a subclass) at the current time.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Time</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.out_subfmt">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">out_subfmt</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.out_subfmt" title="Link to this definition"></a></dt>
+<dd><p>Unix wildcard pattern to select subformats for outputting times.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.precision">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">precision</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.precision" title="Link to this definition"></a></dt>
+<dd><p>Decimal precision when outputting seconds as floating point (int
+value between 0 and 9 inclusive).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.ptp">
+<span class="sig-name descname"><span class="pre">ptp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="Link to this definition"></a></dt>
+<dd><p>Peak to peak (maximum - minimum) along a given axis.</p>
+<p>This method is similar to the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ptp()</span></code> function, but
+adapted to ensure that the full precision given by the two doubles
+<code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is used.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
+<cite>~numpy.ptp</cite>; since <cite>Time</cite> instances are immutable, it is not possible
+to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.ravel">
+<span class="sig-name descname"><span class="pre">ravel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.ravel" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with the array collapsed into one dimension.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">ravel()</span></code>. Note that it is
+not always possible to unravel an array without copying the data.
+If you want an error to be raise if the data is copied, you should
+should assign shape <code class="docutils literal notranslate"><span class="pre">(-1,)</span></code> to the shape attribute.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.replicate">
+<span class="sig-name descname"><span class="pre">replicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.replicate" title="Link to this definition"></a></dt>
+<dd><p>Return a replica of the Time object, optionally changing the format.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">format</span></code> is supplied then the time format of the returned Time
+object will be set accordingly, otherwise it will be unchanged from the
+original.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">copy</span></code> is set to <cite>True</cite> then a full copy of the internal time arrays
+will be made.  By default the replica will use a reference to the
+original arrays when possible to save memory.  The internal time arrays
+are normally not changeable by the user so in most cases it should not
+be necessary to set <code class="docutils literal notranslate"><span class="pre">copy</span></code> to <cite>True</cite>.</p>
+<p>The convenience method copy() is available in which <code class="docutils literal notranslate"><span class="pre">copy</span></code> is <cite>True</cite>
+by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> (<em>str, optional</em>) – Time format of the replica.</p></li>
+<li><p><strong>copy</strong> (<em>bool, optional</em>) – Return a true copy instead of using references where possible.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tm</strong> – Replica of this object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Time object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.reshape">
+<span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.reshape" title="Link to this definition"></a></dt>
+<dd><p>Returns an instance containing the same data with a new shape.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">reshape()</span></code>.  Note that it is
+not always possible to change the shape of an array without copying the
+data (see <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code> documentation). If you want an error
+to be raise if the data is copied, you should assign the new shape to
+the shape attribute (note: this may not be implemented for all classes
+using <code class="docutils literal notranslate"><span class="pre">NDArrayShapeMethods</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.scale">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scale</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.scale" title="Link to this definition"></a></dt>
+<dd><p>Time scale.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.shape" title="Link to this definition"></a></dt>
+<dd><p>The shape of the time instances.</p>
+<p>Like <cite>~numpy.ndarray.shape</cite>, can be set to a new shape by assigning a
+tuple.  Note that if different instances share some but not all
+underlying data, setting the shape of one instance can make the other
+instance unusable.  Hence, it is strongly recommended to get new,
+reshaped instances with the <code class="docutils literal notranslate"><span class="pre">reshape</span></code> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the new shape has the wrong total number of elements.</p></li>
+<li><p><strong>AttributeError</strong> – If the shape of the <code class="docutils literal notranslate"><span class="pre">jd1</span></code>, <code class="docutils literal notranslate"><span class="pre">jd2</span></code>, <code class="docutils literal notranslate"><span class="pre">location</span></code>,
+    <code class="docutils literal notranslate"><span class="pre">delta_ut1_utc</span></code>, or <code class="docutils literal notranslate"><span class="pre">delta_tdb_tt</span></code> attributes cannot be changed
+    without the arrays being copied.  For these cases, use the
+    <cite>Time.reshape</cite> method (which copies any arrays that cannot be
+    reshaped in-place).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.sidereal_time">
+<span class="sig-name descname"><span class="pre">sidereal_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.sidereal_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.sidereal_time" title="Link to this definition"></a></dt>
+<dd><p>Calculate sidereal time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> (<em>str</em>) – <code class="docutils literal notranslate"><span class="pre">'mean'</span></code> or <code class="docutils literal notranslate"><span class="pre">'apparent'</span></code>, i.e., accounting for precession
+only, or also for nutation.</p></li>
+<li><p><strong>longitude</strong> (<cite>~astropy.units.Quantity</cite>, <cite>~astropy.coordinates.EarthLocation</cite>, str, or None; optional) – The longitude on the Earth at which to compute the Earth rotation
+angle (taken from a location as needed).  If <cite>None</cite> (default), taken
+from the <code class="docutils literal notranslate"><span class="pre">location</span></code> attribute of the Time instance. If the special
+string  ‘greenwich’ or ‘tio’, the result will be relative to longitude
+0 for models before 2000, and relative to the Terrestrial Intermediate
+Origin (TIO) for later ones (i.e., the output of the relevant ERFA
+function that calculates greenwich sidereal time).</p></li>
+<li><p><strong>model</strong> (<em>str or None; optional</em>) – Precession (and nutation) model to use.  The available ones are:
+- apparent: [‘IAU1994’, ‘IAU2000A’, ‘IAU2000B’, ‘IAU2006A’]
+- mean: [‘IAU1982’, ‘IAU2000’, ‘IAU2006’]
+If <cite>None</cite> (default), the last (most recent) one from the appropriate
+list above is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Local sidereal time, with units of hourangle.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.coordinates.Longitude</cite></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.time.Time.earth_rotation_angle</span></code></p>
+</div>
+<p class="rubric">References</p>
+<p>IAU 2006 NFA Glossary
+(currently located at: <a class="reference external" href="https://syrte.obspm.fr/iauWGnfa/NFA_Glossary.html">https://syrte.obspm.fr/iauWGnfa/NFA_Glossary.html</a>)</p>
+<p class="rubric">Notes</p>
+<p>The difference between apparent sidereal time and Earth rotation angle
+is the equation of the origins, which is the angle between the Celestial
+Intermediate Origin (CIO) and the equinox. Applying apparent sidereal
+time to the hour angle yields the true apparent Right Ascension with
+respect to the equinox, while applying the Earth rotation angle yields
+the intermediate (CIRS) Right Ascension with respect to the CIO.</p>
+<p>For the IAU precession models from 2000 onwards, the result includes the
+TIO locator (s’), which positions the Terrestrial Intermediate Origin on
+the equator of the Celestial Intermediate Pole (CIP) and is rigorously
+corrected for polar motion (except when <code class="docutils literal notranslate"><span class="pre">longitude='tio'</span></code> or <code class="docutils literal notranslate"><span class="pre">'greenwich'</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.size" title="Link to this definition"></a></dt>
+<dd><p>The size of the object, as calculated from its shape.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.sort" title="Link to this definition"></a></dt>
+<dd><p>Return a copy sorted along the specified axis.</p>
+<p>This is similar to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sort()</span></code>, but internally uses
+indexing with <code class="xref py py-func docutils literal notranslate"><span class="pre">lexsort()</span></code> to ensure that the full precision
+given by the two doubles <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is kept, and that
+corresponding attributes are properly sorted and copied as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>int or None</em>) – Axis to be sorted.  If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the flattened array is sorted.
+By default, sort over the last axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.squeeze">
+<span class="sig-name descname"><span class="pre">squeeze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.squeeze" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with single-dimensional shape entries removed.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">squeeze()</span></code>.  All internal
+data are views of the data of the original.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.strftime">
+<span class="sig-name descname"><span class="pre">strftime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_spec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.strftime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.strftime" title="Link to this definition"></a></dt>
+<dd><p>Convert Time to a string or a numpy.array of strings according to a
+format specification.
+See <cite>time.strftime</cite> documentation for format specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>format_spec</strong> (<em>str</em>) – Format definition of return string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>formatted</strong> – String or numpy.array of strings formatted according to the given
+format string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.strptime">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strptime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_string</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.strptime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.strptime" title="Link to this definition"></a></dt>
+<dd><p>Parse a string to a Time according to a format specification.
+See <cite>time.strptime</cite> documentation for format specification.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s1">&#39;2012-Jun-30 23:59:60&#39;</span><span class="p">,</span> <span class="s1">&#39;%Y-%b-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+<span class="go">&lt;Time object: scale=&#39;utc&#39; format=&#39;isot&#39; value=2012-06-30T23:59:60.000&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_string</strong> (<em>str, sequence, or ndarray</em>) – Objects containing time data of type string</p></li>
+<li><p><strong>format_string</strong> (<em>str</em>) – String specifying format of time_string.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Any keyword arguments for <code class="docutils literal notranslate"><span class="pre">Time</span></code>.  If the <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword
+argument is present, this will be used as the Time format.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>time_obj</strong> – A new <cite>~astropy.time.Time</cite> object corresponding to the input
+<code class="docutils literal notranslate"><span class="pre">time_string</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.time.Time</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.swapaxes">
+<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.swapaxes" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with the given axes interchanged.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">swapaxes()</span></code>:
+<code class="docutils literal notranslate"><span class="pre">axis1,</span> <span class="pre">axis2</span></code>.  All internal data are views of the data of the
+original.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.take">
+<span class="sig-name descname"><span class="pre">take</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.take" title="Link to this definition"></a></dt>
+<dd><p>Return a new instance formed from the elements at the given indices.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">take()</span></code>, except that,
+obviously, no output array can be given.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.to_datetime">
+<span class="sig-name descname"><span class="pre">to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timezone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leap_second_strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/astropy/time/core.html#Time.to_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.to_datetime" title="Link to this definition"></a></dt>
+<dd><p>Convert to (potentially timezone-aware) <cite>~datetime.datetime</cite> object.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">timezone</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, return a timezone-aware datetime object.</p>
+<p>Since the <cite>~datetime.datetime</cite> class does not natively handle leap seconds, the
+behavior when converting a time within a leap second is controlled by the
+<code class="docutils literal notranslate"><span class="pre">leap_second_strict</span></code> argument. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s2">&quot;2015-06-30 23:59:60.500&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">leap_second_strict</span><span class="o">=</span><span class="s1">&#39;silent&#39;</span><span class="p">))</span>
+<span class="go">2015-07-01 00:00:00.500000</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timezone</strong> ({<cite>~datetime.tzinfo</cite>, None}, optional) – If not <cite>None</cite>, return timezone-aware datetime.</p></li>
+<li><p><strong>leap_second_strict</strong> (<em>str, optional</em>) – If <code class="docutils literal notranslate"><span class="pre">raise</span></code> (default), raise an exception if the time is within a leap
+second. If <code class="docutils literal notranslate"><span class="pre">warn</span></code> then issue a warning. If <code class="docutils literal notranslate"><span class="pre">silent</span></code> then silently
+handle the leap second.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">timezone</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, output will be timezone-aware.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~datetime.datetime</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.to_string">
+<span class="sig-name descname"><span class="pre">to_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.to_string" title="Link to this definition"></a></dt>
+<dd><p>Output a string representation of the Time or TimeDelta object.</p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">str(self.value)</span></code> (which uses numpy array formatting) but
+array values are evaluated only for the items that actually are output.
+For large arrays this can be a substantial performance improvement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>out</strong> – String representation of the time values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.to_value">
+<span class="sig-name descname"><span class="pre">to_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.to_value" title="Link to this definition"></a></dt>
+<dd><p>Get time values expressed in specified output format.</p>
+<p>This method allows representing the <code class="docutils literal notranslate"><span class="pre">Time</span></code> object in the desired
+output <code class="docutils literal notranslate"><span class="pre">format</span></code> and optional sub-format <code class="docutils literal notranslate"><span class="pre">subfmt</span></code>.  Available
+built-in formats include <code class="docutils literal notranslate"><span class="pre">jd</span></code>, <code class="docutils literal notranslate"><span class="pre">mjd</span></code>, <code class="docutils literal notranslate"><span class="pre">iso</span></code>, and so forth. Each
+format can have its own sub-formats</p>
+<p>For built-in numerical formats like <code class="docutils literal notranslate"><span class="pre">jd</span></code> or <code class="docutils literal notranslate"><span class="pre">unix</span></code>, <code class="docutils literal notranslate"><span class="pre">subfmt</span></code> can
+be one of ‘float’, ‘long’, ‘decimal’, ‘str’, or ‘bytes’.  Here, ‘long’
+uses <code class="docutils literal notranslate"><span class="pre">numpy.longdouble</span></code> for somewhat enhanced precision (with
+the enhancement depending on platform), and ‘decimal’
+<a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.Decimal.html#pipeline.hifa.tasks.fluxscale.qa.Decimal" title="decimal.Decimal"><code class="xref py py-class docutils literal notranslate"><span class="pre">decimal.Decimal</span></code></a> for full precision.  For ‘str’ and ‘bytes’, the
+number of digits is also chosen such that time values are represented
+accurately.</p>
+<p>For built-in date-like string formats, one of ‘date_hms’, ‘date_hm’, or
+‘date’ (or ‘longdate_hms’, etc., for 5-digit years in
+<cite>~astropy.time.TimeFITS</cite>).  For sub-formats including seconds, the
+number of digits used for the fractional seconds is as set by
+<cite>~astropy.time.Time.precision</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>format</strong> (<em>str</em>) – The format in which one wants the time values. Default: the current
+format.</p></li>
+<li><p><strong>subfmt</strong> (<em>str or None, optional</em>) – Value or wildcard pattern to select the sub-format in which the
+values should be given.  The default of ‘*’ picks the first
+available for a given format, i.e., ‘float’ or ‘date_hms’.
+If <cite>None</cite>, use the instance’s <code class="docutils literal notranslate"><span class="pre">out_subfmt</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.transpose">
+<span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.transpose" title="Link to this definition"></a></dt>
+<dd><p>Return an instance with the data transposed.</p>
+<p>Parameters are as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">transpose()</span></code>.  All internal
+data are views of the data of the original.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.unmasked">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unmasked</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.unmasked" title="Link to this definition"></a></dt>
+<dd><p>Get an instance without the mask.</p>
+<p>Note that while one gets a new instance, the underlying data will be shared.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.time.Time.filled</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.value" title="Link to this definition"></a></dt>
+<dd><p>Time value(s) in current format.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.common.utils.SpwSimpleView.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.utils.SpwSimpleView" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.utils.casa_table.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.utils.casa_table" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

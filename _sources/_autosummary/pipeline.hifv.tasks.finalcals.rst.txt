@@ -4,18 +4,37 @@ pipeline.hifv.tasks.finalcals
 .. automodule:: pipeline.hifv.tasks.finalcals
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Applycals
       Finalcals
       FinalcalsResults
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    applycals
@@ -23,3 +42,4 @@ pipeline.hifv.tasks.finalcals
    finalcals
    qa
    renderer
+

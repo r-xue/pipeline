@@ -1,0 +1,1367 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casatasks.private.imagerhelpers.input_parameters &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casatasks.private.imagerhelpers.input_parameters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casatasks.private.imagerhelpers.input_parameters</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">filecmp</span>
+
+
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">synthesisutils</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">table</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">synthesisutils</span><span class="p">,</span> <span class="n">quanta</span>
+<span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">calibrater</span> 
+<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">casalog</span>
+<span class="kn">from</span> <span class="nn">casatasks.private.mslisthelper</span> <span class="kn">import</span> <span class="n">check_mslist</span>
+<span class="kn">from</span> <span class="nn">casatasks.private.mslisthelper</span> <span class="kn">import</span> <span class="n">sort_mslist</span> 
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A set of helper functions for the tasks  tclean</span>
+
+<span class="sd">Summary...</span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1">######################################################</span>
+<span class="c1">######################################################</span>
+<span class="c1">######################################################</span>
+
+<div class="viewcode-block" id="ImagerParameters">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">ImagerParameters</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Input Data: what gets in</span>
+            <span class="n">msname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+            <span class="c1"># Output Data: what goes out</span>
+            <span class="n">imagename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+
+            <span class="c1"># The remaining parameters are Control Parameters:</span>
+            <span class="c1"># they control How what gets in goes out</span>
+
+            <span class="c1">## Data Selection</span>
+            <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">timestr</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">uvdist</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">obs</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">state</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
+            <span class="c1">## Image Definition</span>
+            <span class="n">imsize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">],</span>
+            <span class="n">phasecenter</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span>
+            <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;SIN&#39;</span><span class="p">,</span>
+            <span class="n">startmodel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="c1">## Spectral Parameters</span>
+            <span class="n">specmode</span><span class="o">=</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span>
+            <span class="n">reffreq</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">nchan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">outframe</span><span class="o">=</span><span class="s1">&#39;LSRK&#39;</span><span class="p">,</span>
+            <span class="n">veltype</span><span class="o">=</span><span class="s1">&#39;radio&#39;</span><span class="p">,</span>
+            <span class="n">restfreq</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span>
+            <span class="n">sysvel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">sysvelframe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+            <span class="n">perchanweightdensity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">gridder</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+            <span class="c1"># ftmachine=&#39;gridft&#39;,</span>
+            <span class="n">facets</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">chanchunks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+
+            <span class="n">wprojplanes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+
+            <span class="n">vptable</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">usepointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">mosweight</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">aterm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">psterm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">mterm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">wbawp</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">cfcache</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">dopbcorr</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">conjbeams</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">computepastep</span> <span class="o">=</span><span class="mf">360.0</span><span class="p">,</span>
+            <span class="n">rotatepastep</span> <span class="o">=</span><span class="mf">360.0</span><span class="p">,</span>
+            <span class="n">pointingoffsetsigdev</span> <span class="o">=</span> <span class="p">[</span><span class="mf">30.0</span><span class="p">,</span><span class="mf">30.0</span><span class="p">],</span>
+                 
+            <span class="n">pblimit</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="n">normtype</span><span class="o">=</span><span class="s1">&#39;flatnoise&#39;</span><span class="p">,</span>
+                 
+            <span class="n">psfcutoff</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
+
+            <span class="n">outlierfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">restart</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+
+            <span class="n">weighting</span><span class="o">=</span><span class="s1">&#39;natural&#39;</span><span class="p">,</span>
+            <span class="n">robust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">noise</span><span class="o">=</span><span class="s1">&#39;0.0Jy&#39;</span><span class="p">,</span>
+            <span class="n">npixels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">uvtaper</span><span class="o">=</span><span class="p">[],</span>
+
+            <span class="n">niter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">cycleniter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">loopgain</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;0.0Jy&#39;</span><span class="p">,</span>
+            <span class="n">nsigma</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">cyclefactor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">minpsffraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">maxpsffraction</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fullsummary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">nmajor</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+
+            <span class="n">deconvolver</span><span class="o">=</span><span class="s1">&#39;hogbom&#39;</span><span class="p">,</span>
+            <span class="n">scales</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">nterms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">scalebias</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">restoringbeam</span><span class="o">=</span><span class="p">[],</span>
+            <span class="c1"># mtype=&#39;default&#39;,</span>
+
+            <span class="n">usemask</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">,</span>
+            <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">pbmask</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">maskthreshold</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">maskresolution</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">nmask</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="c1"># autoadjust=False,</span>
+
+            <span class="n">sidelobethreshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+            <span class="n">noisethreshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">lownoisethreshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">negativethreshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">smoothfactor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">minbeamfrac</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+            <span class="n">cutthreshold</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="n">growiterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">dogrowprune</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">minpercentchange</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fastnoise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">fusedthreshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">largestscale</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+
+            <span class="c1"># usescratch=True,</span>
+            <span class="c1"># readonly=True,</span>
+            <span class="n">savemodel</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+
+            <span class="n">workdir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+            <span class="c1">## CFCache params</span>
+            <span class="n">cflist</span><span class="o">=</span><span class="p">[],</span>
+                 
+            <span class="c1">## single-dish imaging params</span>
+            <span class="n">gridfunction</span><span class="o">=</span><span class="s1">&#39;SF&#39;</span><span class="p">,</span>
+            <span class="n">convsupport</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">truncate</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span>
+            <span class="n">gwidth</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span>
+            <span class="n">jwidth</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span>
+            <span class="n">pointingcolumntouse</span><span class="o">=</span><span class="s1">&#39;direction&#39;</span><span class="p">,</span>
+            <span class="n">convertfirst</span><span class="o">=</span><span class="s1">&#39;never&#39;</span><span class="p">,</span>
+            <span class="n">minweight</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">clipminmax</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allparameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">allparameters</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultKey</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+        <span class="c1"># ---- Selection params. For multiple MSs, all are lists.</span>
+        <span class="c1"># For multiple nodes, the selection parameters are modified inside PySynthesisImager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;msname&#39;</span><span class="p">:</span><span class="n">msname</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">:</span><span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span><span class="n">spw</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span><span class="n">scan</span><span class="p">,</span>
+            <span class="s1">&#39;timestr&#39;</span><span class="p">:</span><span class="n">timestr</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span><span class="n">uvdist</span><span class="p">,</span> <span class="s1">&#39;antenna&#39;</span><span class="p">:</span><span class="n">antenna</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">:</span><span class="n">obs</span><span class="p">,</span><span class="s1">&#39;state&#39;</span><span class="p">:</span><span class="n">state</span><span class="p">,</span>
+            <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span><span class="n">datacolumn</span><span class="p">,</span>
+            <span class="s1">&#39;savemodel&#39;</span><span class="p">:</span><span class="n">savemodel</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Imaging/deconvolution parameters</span>
+        <span class="c1"># The outermost dictionary index is image field.</span>
+        <span class="c1"># The &#39;0&#39; or main field&#39;s parameters come from the task parameters</span>
+        <span class="c1"># The outlier &#39;1&#39;, &#39;2&#39;, ....  parameters come from the outlier file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlierfile</span> <span class="o">=</span> <span class="n">outlierfile</span>
+        <span class="c1"># Initialize the parameter lists with the &#39;main&#39; or &#39;0&#39; field&#39;s parameters</span>
+        <span class="c1"># ---- Image definition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultKey</span><span class="p">:</span> <span class="p">{</span>
+                <span class="c1"># Image</span>
+                <span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span>
+                <span class="s1">&#39;nchan&#39;</span><span class="p">:</span> <span class="n">nchan</span><span class="p">,</span>
+                <span class="s1">&#39;imsize&#39;</span><span class="p">:</span> <span class="n">imsize</span><span class="p">,</span>
+                <span class="s1">&#39;cell&#39;</span><span class="p">:</span> <span class="n">cell</span><span class="p">,</span>
+                <span class="s1">&#39;phasecenter&#39;</span><span class="p">:</span> <span class="n">phasecenter</span><span class="p">,</span>
+                <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">stokes</span><span class="p">,</span>
+                <span class="c1"># Frequency axis</span>
+                <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">specmode</span><span class="p">,</span>
+                <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span>
+                <span class="s1">&#39;veltype&#39;</span><span class="p">:</span> <span class="n">veltype</span><span class="p">,</span>
+                <span class="s1">&#39;nterms&#39;</span><span class="p">:</span> <span class="n">nterms</span><span class="p">,</span>
+                <span class="s1">&#39;restfreq&#39;</span><span class="p">:</span> <span class="n">restfreq</span><span class="p">,</span>
+                <span class="c1"># Output frame</span>
+                <span class="s1">&#39;outframe&#39;</span><span class="p">:</span> <span class="n">outframe</span><span class="p">,</span>
+                <span class="s1">&#39;reffreq&#39;</span><span class="p">:</span> <span class="n">reffreq</span><span class="p">,</span>
+                <span class="s1">&#39;sysvel&#39;</span><span class="p">:</span> <span class="n">sysvel</span><span class="p">,</span>
+                <span class="s1">&#39;sysvelframe&#39;</span><span class="p">:</span> <span class="n">sysvelframe</span><span class="p">,</span>
+                <span class="c1"># Projection</span>
+                <span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="n">projection</span><span class="p">,</span>
+                <span class="c1"># Deconvolution</span>
+                <span class="s1">&#39;restart&#39;</span><span class="p">:</span> <span class="n">restart</span><span class="p">,</span>
+                <span class="s1">&#39;startmodel&#39;</span><span class="p">:</span> <span class="n">startmodel</span><span class="p">,</span>
+                <span class="s1">&#39;deconvolver&#39;</span><span class="p">:</span> <span class="n">deconvolver</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Gridding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultKey</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;gridder&#39;</span><span class="p">:</span> <span class="n">gridder</span><span class="p">,</span>
+                <span class="c1"># aterm group</span>
+                <span class="s1">&#39;aterm&#39;</span><span class="p">:</span> <span class="n">aterm</span><span class="p">,</span>
+                <span class="s1">&#39;psterm&#39;</span><span class="p">:</span> <span class="n">psterm</span><span class="p">,</span>
+                <span class="s1">&#39;mterm&#39;</span><span class="p">:</span> <span class="n">mterm</span><span class="p">,</span>
+                <span class="s1">&#39;wbawp&#39;</span><span class="p">:</span> <span class="n">wbawp</span><span class="p">,</span>
+                <span class="c1"># cfcache group</span>
+                <span class="s1">&#39;cfcache&#39;</span><span class="p">:</span> <span class="n">cfcache</span><span class="p">,</span>
+                <span class="s1">&#39;usepointing&#39;</span><span class="p">:</span> <span class="n">usepointing</span><span class="p">,</span>
+                <span class="s1">&#39;dopbcorr&#39;</span><span class="p">:</span> <span class="n">dopbcorr</span><span class="p">,</span>
+                <span class="c1"># conjbeams group</span>
+                <span class="s1">&#39;conjbeams&#39;</span><span class="p">:</span> <span class="n">conjbeams</span><span class="p">,</span>
+                <span class="s1">&#39;computepastep&#39;</span><span class="p">:</span> <span class="n">computepastep</span><span class="p">,</span>
+                <span class="c1">#</span>
+                <span class="s1">&#39;rotatepastep&#39;</span><span class="p">:</span> <span class="n">rotatepastep</span><span class="p">,</span> <span class="c1">#&#39;mtype&#39;:mtype, # &#39;weightlimit&#39;:weightlimit,</span>
+                <span class="s1">&#39;pointingoffsetsigdev&#39;</span><span class="p">:</span> <span class="n">pointingoffsetsigdev</span><span class="p">,</span>
+                <span class="c1"># facets group</span>
+                <span class="s1">&#39;facets&#39;</span><span class="p">:</span> <span class="n">facets</span><span class="p">,</span>
+                <span class="s1">&#39;chanchunks&#39;</span><span class="p">:</span> <span class="n">chanchunks</span><span class="p">,</span>
+                <span class="c1"># interpolation group</span>
+                <span class="s1">&#39;interpolation&#39;</span><span class="p">:</span> <span class="n">interpolation</span><span class="p">,</span>
+                <span class="s1">&#39;wprojplanes&#39;</span><span class="p">:</span> <span class="n">wprojplanes</span><span class="p">,</span>
+                <span class="c1"># deconvolver group</span>
+                <span class="s1">&#39;deconvolver&#39;</span><span class="p">:</span> <span class="n">deconvolver</span><span class="p">,</span>
+                <span class="s1">&#39;vptable&#39;</span><span class="p">:</span> <span class="n">vptable</span><span class="p">,</span>
+                <span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span>
+                <span class="c1"># single-dish specific parameters</span>
+                <span class="c1"># ---- spatial coordinates</span>
+                <span class="s1">&#39;pointingcolumntouse&#39;</span><span class="p">:</span> <span class="n">pointingcolumntouse</span><span class="p">,</span>
+                <span class="s1">&#39;convertfirst&#39;</span><span class="p">:</span> <span class="n">convertfirst</span><span class="p">,</span>
+                <span class="c1"># ---- convolution function</span>
+                <span class="s1">&#39;convfunc&#39;</span><span class="p">:</span> <span class="n">gridfunction</span><span class="p">,</span>
+                <span class="s1">&#39;convsupport&#39;</span><span class="p">:</span> <span class="n">convsupport</span><span class="p">,</span>
+                <span class="c1"># ---- truncate group</span>
+                <span class="s1">&#39;truncate&#39;</span><span class="p">:</span> <span class="n">truncate</span><span class="p">,</span>
+                <span class="s1">&#39;gwidth&#39;</span><span class="p">:</span> <span class="n">gwidth</span><span class="p">,</span>
+                <span class="s1">&#39;jwidth&#39;</span><span class="p">:</span> <span class="n">jwidth</span><span class="p">,</span>
+                <span class="c1"># ---- minweight group</span>
+                <span class="s1">&#39;minweight&#39;</span><span class="p">:</span> <span class="n">minweight</span><span class="p">,</span>
+                <span class="s1">&#39;clipminmax&#39;</span><span class="p">:</span> <span class="n">clipminmax</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Weighting</span>
+        <span class="k">if</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># Compute rmode and self.weightpars</span>
+            <span class="n">rmode</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">weighting</span> <span class="o">==</span> <span class="s1">&#39;briggsabs&#39;</span><span class="p">):</span>
+                <span class="n">rmode</span> <span class="o">=</span> <span class="s1">&#39;abs&#39;</span>
+                <span class="n">weighting</span> <span class="o">=</span> <span class="s1">&#39;briggs&#39;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">weighting</span> <span class="o">==</span> <span class="s1">&#39;briggs&#39;</span><span class="p">):</span>
+                <span class="n">rmode</span> <span class="o">=</span> <span class="s1">&#39;norm&#39;</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">weighting</span> <span class="o">==</span> <span class="s1">&#39;briggsbwtaper&#39;</span><span class="p">):</span>
+                <span class="n">rmode</span> <span class="o">=</span> <span class="s1">&#39;bwtaper&#39;</span>
+                <span class="n">weighting</span> <span class="o">=</span> <span class="s1">&#39;briggs&#39;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">weightpars</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">weighting</span><span class="p">,</span>
+                <span class="s1">&#39;rmode&#39;</span><span class="p">:</span> <span class="n">rmode</span><span class="p">,</span>
+                <span class="s1">&#39;robust&#39;</span><span class="p">:</span> <span class="n">robust</span><span class="p">,</span>
+                <span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="n">noise</span><span class="p">,</span>
+                <span class="s1">&#39;npixels&#39;</span><span class="p">:</span> <span class="n">npixels</span><span class="p">,</span>
+                <span class="s1">&#39;uvtaper&#39;</span><span class="p">:</span> <span class="n">uvtaper</span><span class="p">,</span>
+                <span class="s1">&#39;multifield&#39;</span><span class="p">:</span> <span class="n">mosweight</span><span class="p">,</span>
+                <span class="s1">&#39;usecubebriggs&#39;</span><span class="p">:</span> <span class="n">perchanweightdensity</span>
+            <span class="p">}</span>
+        <span class="c1"># ---- Normalizers ( this is where flat noise, flat sky rules will go... )</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultKey</span> <span class="p">:</span> <span class="p">{</span>
+                <span class="c1"># pblimit group</span>
+                <span class="s1">&#39;pblimit&#39;</span><span class="p">:</span> <span class="n">pblimit</span><span class="p">,</span>
+                <span class="s1">&#39;nterms&#39;</span><span class="p">:</span> <span class="n">nterms</span><span class="p">,</span>
+                <span class="s1">&#39;facets&#39;</span><span class="p">:</span> <span class="n">facets</span><span class="p">,</span>
+                <span class="c1"># normtype group</span>
+                <span class="s1">&#39;normtype&#39;</span><span class="p">:</span> <span class="n">normtype</span><span class="p">,</span>
+                <span class="s1">&#39;workdir&#39;</span><span class="p">:</span> <span class="n">workdir</span><span class="p">,</span>
+                <span class="c1"># deconvolver group</span>
+                <span class="s1">&#39;deconvolver&#39;</span><span class="p">:</span> <span class="n">deconvolver</span><span class="p">,</span>
+                <span class="s1">&#39;imagename&#39;</span><span class="p">:</span> <span class="n">imagename</span><span class="p">,</span>
+                <span class="s1">&#39;restoringbeam&#39;</span><span class="p">:</span> <span class="n">restoringbeam</span><span class="p">,</span>
+                <span class="s1">&#39;psfcutoff&#39;</span><span class="p">:</span> <span class="n">psfcutoff</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Deconvolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultKey</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;deconvolver&#39;</span><span class="p">:</span><span class="n">deconvolver</span><span class="p">,</span> <span class="s1">&#39;nterms&#39;</span><span class="p">:</span><span class="n">nterms</span><span class="p">,</span>
+                <span class="s1">&#39;scales&#39;</span><span class="p">:</span><span class="n">scales</span><span class="p">,</span> <span class="s1">&#39;scalebias&#39;</span><span class="p">:</span><span class="n">scalebias</span><span class="p">,</span> <span class="s1">&#39;restoringbeam&#39;</span><span class="p">:</span><span class="n">restoringbeam</span><span class="p">,</span> <span class="s1">&#39;usemask&#39;</span><span class="p">:</span><span class="n">usemask</span><span class="p">,</span>
+                <span class="s1">&#39;mask&#39;</span><span class="p">:</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;pbmask&#39;</span><span class="p">:</span><span class="n">pbmask</span><span class="p">,</span> <span class="s1">&#39;maskthreshold&#39;</span><span class="p">:</span><span class="n">maskthreshold</span><span class="p">,</span>
+                <span class="s1">&#39;maskresolution&#39;</span><span class="p">:</span><span class="n">maskresolution</span><span class="p">,</span> <span class="s1">&#39;nmask&#39;</span><span class="p">:</span><span class="n">nmask</span><span class="p">,</span>
+                <span class="c1">#&#39;maskresolution&#39;:maskresolution, &#39;nmask&#39;:nmask,&#39;autoadjust&#39;:autoadjust,</span>
+                <span class="s1">&#39;sidelobethreshold&#39;</span><span class="p">:</span><span class="n">sidelobethreshold</span><span class="p">,</span> <span class="s1">&#39;noisethreshold&#39;</span><span class="p">:</span><span class="n">noisethreshold</span><span class="p">,</span>
+                <span class="s1">&#39;lownoisethreshold&#39;</span><span class="p">:</span><span class="n">lownoisethreshold</span><span class="p">,</span> <span class="s1">&#39;negativethreshold&#39;</span><span class="p">:</span><span class="n">negativethreshold</span><span class="p">,</span><span class="s1">&#39;smoothfactor&#39;</span><span class="p">:</span><span class="n">smoothfactor</span><span class="p">,</span>
+                <span class="s1">&#39;fusedthreshold&#39;</span><span class="p">:</span><span class="n">fusedthreshold</span><span class="p">,</span> <span class="s1">&#39;specmode&#39;</span><span class="p">:</span><span class="n">specmode</span><span class="p">,</span><span class="s1">&#39;largestscale&#39;</span><span class="p">:</span><span class="n">largestscale</span><span class="p">,</span>
+
+                <span class="s1">&#39;minbeamfrac&#39;</span><span class="p">:</span><span class="n">minbeamfrac</span><span class="p">,</span> <span class="s1">&#39;cutthreshold&#39;</span><span class="p">:</span><span class="n">cutthreshold</span><span class="p">,</span> <span class="s1">&#39;growiterations&#39;</span><span class="p">:</span><span class="n">growiterations</span><span class="p">,</span>
+                 <span class="s1">&#39;dogrowprune&#39;</span><span class="p">:</span><span class="n">dogrowprune</span><span class="p">,</span> <span class="s1">&#39;minpercentchange&#39;</span><span class="p">:</span><span class="n">minpercentchange</span><span class="p">,</span> <span class="s1">&#39;verbose&#39;</span><span class="p">:</span><span class="n">verbose</span><span class="p">,</span> <span class="s1">&#39;fastnoise&#39;</span><span class="p">:</span><span class="n">fastnoise</span><span class="p">,</span>
+                <span class="s1">&#39;interactive&#39;</span><span class="p">:</span><span class="n">interactive</span><span class="p">,</span> <span class="s1">&#39;startmodel&#39;</span><span class="p">:</span><span class="n">startmodel</span><span class="p">,</span> <span class="s1">&#39;nsigma&#39;</span><span class="p">:</span><span class="n">nsigma</span><span class="p">,</span>  <span class="s1">&#39;imagename&#39;</span><span class="p">:</span><span class="n">imagename</span><span class="p">,</span> <span class="s1">&#39;fullsummary&#39;</span><span class="p">:</span><span class="n">fullsummary</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Iteration control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;niter&#39;</span><span class="p">:</span><span class="n">niter</span><span class="p">,</span> <span class="s1">&#39;cycleniter&#39;</span><span class="p">:</span><span class="n">cycleniter</span><span class="p">,</span> <span class="s1">&#39;threshold&#39;</span><span class="p">:</span><span class="n">threshold</span><span class="p">,</span>
+            <span class="s1">&#39;loopgain&#39;</span><span class="p">:</span><span class="n">loopgain</span><span class="p">,</span> <span class="s1">&#39;interactive&#39;</span><span class="p">:</span><span class="n">interactive</span><span class="p">,</span>
+            <span class="s1">&#39;cyclefactor&#39;</span><span class="p">:</span><span class="n">cyclefactor</span><span class="p">,</span> <span class="s1">&#39;minpsffraction&#39;</span><span class="p">:</span><span class="n">minpsffraction</span><span class="p">,</span>
+            <span class="s1">&#39;maxpsffraction&#39;</span><span class="p">:</span><span class="n">maxpsffraction</span><span class="p">,</span>
+            <span class="s1">&#39;savemodel&#39;</span><span class="p">:</span><span class="n">savemodel</span><span class="p">,</span><span class="s1">&#39;nsigma&#39;</span><span class="p">:</span><span class="n">nsigma</span><span class="p">,</span> <span class="s1">&#39;nmajor&#39;</span><span class="p">:</span><span class="n">nmajor</span><span class="p">,</span> <span class="s1">&#39;fullsummary&#39;</span><span class="p">:</span><span class="n">fullsummary</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- CFCache params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfcachepars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;cflist&#39;</span><span class="p">:</span> <span class="n">cflist</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- Parameters that may be internally modified for savemodel behavior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;savemodel&#39;</span><span class="p">:</span> <span class="n">savemodel</span><span class="p">,</span>
+            <span class="s1">&#39;interactive&#39;</span><span class="p">:</span> <span class="n">interactive</span><span class="p">,</span>
+            <span class="s1">&#39;nsigma&#39;</span><span class="p">:</span> <span class="n">nsigma</span><span class="p">,</span>
+            <span class="s1">&#39;usemask&#39;</span><span class="p">:</span> <span class="n">usemask</span>
+        <span class="p">}</span>
+        <span class="c1"># ---- List of supported parameters in outlier files.</span>
+        <span class="c1"># All other parameters will default to the global values.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outimparlist</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;imagename&#39;</span><span class="p">,</span><span class="s1">&#39;nchan&#39;</span><span class="p">,</span><span class="s1">&#39;imsize&#39;</span><span class="p">,</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">,</span><span class="s1">&#39;startmodel&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;start&#39;</span><span class="p">,</span><span class="s1">&#39;width&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nterms&#39;</span><span class="p">,</span><span class="s1">&#39;reffreq&#39;</span><span class="p">,</span><span class="s1">&#39;specmode&#39;</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outgridparlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gridder&#39;</span><span class="p">,</span><span class="s1">&#39;deconvolver&#39;</span><span class="p">,</span><span class="s1">&#39;wprojplanes&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outweightparlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outdecparlist</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;deconvolver&#39;</span><span class="p">,</span><span class="s1">&#39;startmodel&#39;</span><span class="p">,</span><span class="s1">&#39;nterms&#39;</span><span class="p">,</span><span class="s1">&#39;usemask&#39;</span><span class="p">,</span><span class="s1">&#39;mask&#39;</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outnormparlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;deconvolver&#39;</span><span class="p">,</span><span class="s1">&#39;weightlimit&#39;</span><span class="p">,</span><span class="s1">&#39;nterms&#39;</span><span class="p">]</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkParameters</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="s1">&#39;Found errors in input parameters. Please check.&#39;</span><span class="p">,</span> <span class="s1">&#39;WARN&#39;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">printParameters</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ImagerParameters.resetParameters">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.resetParameters">[docs]</a>
+    <span class="k">def</span> <span class="nf">resetParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;reset parameters to the original settting for interactive, nsigma, auto-multithresh when savemodel!=&#39;none&#39;&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;interactive&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;usemask&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;auto-multithresh&quot;</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;nsigma&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="p">):</span>
+            <span class="c1"># in checkAndFixIterationPars(), when saving model is on, the internal params, readonly and usescrath are set to True and False,</span>
+            <span class="c1"># respectively. So this needs to be undone before calling predictModel.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;modelcolumn&quot;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">:</span>  <span class="c1"># for all MSes</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;readonly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;usescratch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;virtual&quot;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">:</span>  <span class="c1"># for all MSes</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;readonly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;usescratch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="ImagerParameters.getAllPars">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.getAllPars">[docs]</a>
+    <span class="k">def</span> <span class="nf">getAllPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the state of all parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allparameters</span></div>
+
+
+    <span class="k">def</span> <span class="nf">getSelPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span>
+
+    <span class="k">def</span> <span class="nf">getImagePars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span>
+
+    <span class="k">def</span> <span class="nf">getGridPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span>
+
+    <span class="k">def</span> <span class="nf">getWeightPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weightpars</span>
+
+    <span class="k">def</span> <span class="nf">getDecPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span>
+
+    <span class="k">def</span> <span class="nf">getIterPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span>
+
+    <span class="k">def</span> <span class="nf">getNormPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span>
+
+    <span class="k">def</span> <span class="nf">getCFCachePars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfcachepars</span>
+
+    <span class="k">def</span> <span class="nf">setSelPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">selpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">selpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setImagePars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">impars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">impars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">impars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setGridPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gridpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">gridpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">gridpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setWeightPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weightpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">weightpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weightpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">weightpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setDecPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">decpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">decpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setIterPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">iterpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">iterpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">setNormPars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normpars</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">normpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">normpars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">checkParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># casalog.origin(&#39;refimagerhelper.checkParameters&#39;)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Verifying Input Parameters&quot;</span><span class="p">)</span>
+        <span class="c1"># Init the error-string</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">errs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAndFixSelectionPars</span><span class="p">()</span>
+            <span class="n">errs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">makeImagingParamLists</span><span class="p">(</span><span class="n">parallel</span><span class="p">)</span>
+            <span class="n">errs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAndFixIterationPars</span><span class="p">()</span>
+            <span class="n">errs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAndFixNormPars</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">mss</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;specmode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cubedata&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">mss</span><span class="p">][</span><span class="s2">&quot;outframe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Undefined&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;specmode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cubesource&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">mss</span><span class="p">][</span><span class="s2">&quot;outframe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;REST&quot;</span>
+            <span class="c1">### MOVE this segment of code to the constructor so that it&#39;s clear which parameters go where !</span>
+            <span class="c1">### Copy them from &#39;impars&#39; to &#39;normpars&#39; and &#39;decpars&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;allimages&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span>
+                    <span class="s2">&quot;imagename&quot;</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span>
+                    <span class="s2">&quot;imagename&quot;</span>
+                <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;allimages&quot;</span><span class="p">][</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;imagename&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;multiterm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;deconvolver&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mtmfs&quot;</span><span class="p">),</span>
+                <span class="p">}</span>
+
+            <span class="c1">## Integers need to be NOT numpy versions.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">,</span> <span class="s2">&quot;imsize&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">,</span> <span class="s2">&quot;nchan&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">,</span> <span class="s2">&quot;facets&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">,</span> <span class="s2">&quot;chanchunks&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># errs string indicates that maybe this exception was our fault, indicate as such and provide the errs string to the user</span>
+                <span class="k">if</span> <span class="n">is_CASA6</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s2">&quot;Parameter Errors : </span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">These errors may have caused the &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">errs</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Parameter Errors : </span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">errs</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># something unforseen happened, just re-throw the exception</span>
+                <span class="k">raise</span>
+
+        <span class="c1">## If there are errors, print a message and exit.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#            casalog.post(&#39;Parameter Errors : \n&#39; + errs,&#39;WARN&#39;)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Parameter Errors : </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">errs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1">###### Start : Parameter-checking functions ##################</span>
+
+    <span class="k">def</span> <span class="nf">checkAndFixSelectionPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># If it&#39;s already a dict with ms0,ms1,etc...leave it be.</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">kk</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;ms&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">ok</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># casalog.post(&quot;Already in correct format&quot;)</span>
+            <span class="k">return</span> <span class="n">errs</span>
+
+        <span class="c1">#print(&quot;allselpars=&quot;,self.allselpars)</span>
+        <span class="c1"># msname, field, spw, etc must all be equal-length lists of strings, or all except msname must be of length 1.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;msname&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">:</span>
+            <span class="n">errs</span> <span class="o">=</span> <span class="n">errs</span> <span class="o">+</span> <span class="s2">&quot;MS name(s) not specified&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="c1">#(timesortedvislist, times) = sort_mslist(self.allselpars[&#39;msname&#39;])</span>
+                <span class="p">(</span><span class="n">timesortedvislist</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">newindex</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mslist_timesorting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">timesortedvislist</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timesortedvislist</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Sorting the vis list by time. The new vis list:&quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">]))</span>
+                    <span class="k">for</span> <span class="n">selp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span><span class="s1">&#39;field&#39;</span><span class="p">,</span><span class="s1">&#39;timestr&#39;</span><span class="p">,</span><span class="s1">&#39;uvdist&#39;</span><span class="p">,</span><span class="s1">&#39;antenna&#39;</span><span class="p">,</span><span class="s1">&#39;scan&#39;</span><span class="p">,</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="s1">&#39;state&#39;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">selp</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">newindex</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">selp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">selp</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">newindex</span><span class="p">]</span>
+                       
+                <span class="c1">#msdiff = check_mslist(self.allselpars[&#39;msname&#39;], ignore_tables=[&#39;SORTED_TABLE&#39;, &#39;ASDM*&#39;])</span>
+                <span class="n">msdiff</span> <span class="o">=</span> <span class="n">check_mslist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">],</span> <span class="n">ignore_tables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SORTED_TABLE&#39;</span><span class="p">,</span> <span class="s1">&#39;ASDM*&#39;</span><span class="p">],</span> <span class="n">testcontent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+                <span class="c1"># Only call this if vis == list and there is mismatch in wtspec columns</span>
+                <span class="c1"># Maybe expanded for other checks later...</span>
+                <span class="k">if</span> <span class="n">msdiff</span> <span class="o">!=</span> <span class="p">{}:</span>
+                    <span class="c1">#print(&quot;MS diff===&quot;,msdiff)</span>
+                    <span class="n">noWtspecmslist</span><span class="o">=</span><span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">msfile</span><span class="p">,</span> <span class="n">diff_info</span> <span class="ow">in</span> <span class="n">msdiff</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="c1"># check Main </span>
+                        <span class="k">if</span> <span class="s1">&#39;Main&#39;</span> <span class="ow">in</span> <span class="n">diff_info</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">diffkey</span> <span class="ow">in</span> <span class="n">diff_info</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">]:</span>
+                                <span class="k">if</span> <span class="n">diffkey</span> <span class="o">==</span> <span class="s2">&quot;missingcol_a&quot;</span> <span class="ow">or</span> <span class="n">diffkey</span> <span class="o">==</span> <span class="s2">&quot;missingcol_b&quot;</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;WEIGHT_SPECTRUM&#39;</span> <span class="ow">in</span> <span class="n">diff_info</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;missingcol_a&#39;</span><span class="p">]</span> <span class="ow">and</span> 
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">noWtspecmslist</span><span class="p">):</span>
+                                        <span class="n">noWtspecmslist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;WEIGHT_SPECTRUM&#39;</span> <span class="ow">in</span> <span class="n">diff_info</span><span class="p">[</span><span class="s1">&#39;Main&#39;</span><span class="p">][</span><span class="s1">&#39;missingcol_b&#39;</span><span class="p">]</span> <span class="ow">and</span>
+                                        <span class="n">msfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">noWtspecmslist</span><span class="p">):</span>
+                                        <span class="n">noWtspecmslist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msfile</span><span class="p">)</span>
+                                        <span class="c1"># repalce this by addwtspec(list_of_ms_withoutWtSpec)</span>
+                                        <span class="c1">#self.checkmsforwtspec`</span>
+                    <span class="k">if</span> <span class="n">noWtspecmslist</span><span class="o">!=</span><span class="p">[]:</span>
+                        <span class="c1">#print (&quot;OK addwtspec to &quot;+str(noWtspecmslist))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">addwtspec</span><span class="p">(</span><span class="n">noWtspecmslist</span><span class="p">)</span>
+
+            <span class="n">selkeys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+            <span class="c1"># Convert all non-list parameters into lists.</span>
+            <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">selkeys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">]]</span>
+                    
+            <span class="c1"># Check that all are the same length as nvis</span>
+            <span class="c1"># If not, and if they&#39;re single, replicate them nvis times</span>
+            <span class="n">nvis</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s2">&quot;msname&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">nvis</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">errs</span> <span class="o">=</span> <span class="n">errs</span> <span class="o">+</span> <span class="s2">&quot;Input MS list is empty&quot;</span>
+                <span class="k">return</span> <span class="n">errs</span>
+            
+            <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">selkeys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">])</span> <span class="o">!=</span> <span class="n">nvis</span><span class="p">:</span>
+                    <span class="n">errs</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">errs</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; must have a single entry, or &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nvis</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; entries to match vis list </span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">errs</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># Replicate them nvis times if needed.</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nvis</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># Now, all parameters are lists of strings each of length &#39;nvis&#39;.</span>
+            <span class="c1"># Put them into separate dicts per MS.</span>
+            <span class="n">selparlist</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nvis</span><span class="p">):</span>
+                <span class="n">selparlist</span><span class="p">[</span><span class="s2">&quot;ms&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">selkeys</span><span class="p">:</span>
+                    <span class="n">selparlist</span><span class="p">[</span><span class="s2">&quot;ms&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="p">)][</span><span class="n">par</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">par</span><span class="p">][</span><span class="n">ms</span><span class="p">]</span>
+
+                <span class="n">synu</span> <span class="o">=</span> <span class="n">synthesisutils</span><span class="p">()</span>
+                <span class="n">selparlist</span><span class="p">[</span><span class="s2">&quot;ms&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="p">)]</span> <span class="o">=</span> <span class="n">synu</span><span class="o">.</span><span class="n">checkselectionparams</span><span class="p">(</span>
+                    <span class="n">selparlist</span><span class="p">[</span><span class="s2">&quot;ms&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ms</span><span class="p">)]</span>
+                <span class="p">)</span>
+                <span class="n">synu</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="c1"># casalog.post(selparlist)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span> <span class="o">=</span> <span class="n">selparlist</span>
+
+        <span class="k">return</span> <span class="n">errs</span>
+
+    <span class="k">def</span> <span class="nf">makeImagingParamLists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parallel</span><span class="p">):</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1"># casalog.post(&quot;specmode=&quot;,self.allimpars[&#39;0&#39;][&#39;specmode&#39;], &quot; parallel=&quot;,parallel)</span>
+        <span class="c1">## Multiple images have been specified.</span>
+        <span class="c1">## (1) Parse the outlier file and fill a list of imagedefinitions</span>
+        <span class="c1">## OR (2) Parse lists per input parameter into a list of parameter-sets (imagedefinitions)</span>
+        <span class="c1">### The code below implements (1)</span>
+        <span class="n">outlierpars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">parseerrors</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlierfile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outlierpars</span><span class="p">,</span> <span class="n">parseerrors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseOutlierFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outlierfile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;CALLING checkParallelMFMixModes...&quot;</span><span class="p">)</span>
+                <span class="n">errs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkParallelMFMixedModes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">,</span> <span class="n">outlierpars</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errs</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">errs</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parseerrors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">errs</span> <span class="o">=</span> <span class="n">errs</span> <span class="o">+</span> <span class="s2">&quot;Errors in parsing outlier file : &quot;</span> <span class="o">+</span> <span class="n">parseerrors</span>
+            <span class="k">return</span> <span class="n">errs</span>
+
+        <span class="c1"># Initialize outlier parameters with defaults</span>
+        <span class="c1"># Update outlier parameters with modifications from outlier files</span>
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">)):</span>
+            <span class="n">modelid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">immod</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;gridpars&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;decpars&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;normpars&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="n">modelid</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">immod</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1">## Try to eliminate.</span>
+
+        <span class="c1"># casalog.post(self.allimpars)</span>
+
+        <span class="c1">#</span>
+        <span class="c1">#        casalog.post(&quot;REMOVING CHECKS to check...&quot;)</span>
+        <span class="c1">#### This does not handle the conversions of the csys correctly.....</span>
+        <span class="c1">####</span>
+        <span class="c1">#        for immod in self.allimpars.keys() :</span>
+        <span class="c1">#            tempcsys = {}</span>
+        <span class="c1">#            if &#39;csys&#39; in self.allimpars[immod]:</span>
+        <span class="c1">#                tempcsys = self.allimpars[immod][&#39;csys&#39;]</span>
+        <span class="c1">#</span>
+        <span class="c1">#            synu = synthesisutils()</span>
+        <span class="c1">#            self.allimpars[immod] = synu.checkimageparams( self.allimpars[immod] )</span>
+        <span class="c1">#            synu.done()</span>
+        <span class="c1">#</span>
+        <span class="c1">#            if len(tempcsys.keys())==0:</span>
+        <span class="c1">#                self.allimpars[immod][&#39;csys&#39;] = tempcsys</span>
+
+        <span class="c1">## Check for name increments, and copy from impars to decpars and normpars.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handleImageNames</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">errs</span>
+
+    <span class="k">def</span> <span class="nf">handleImageNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">inpname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span>
+
+            <span class="c1">### If a directory name is embedded in the image name, check that the dir exists.</span>
+            <span class="k">if</span> <span class="n">inpname</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                <span class="n">splitname</span> <span class="o">=</span> <span class="n">inpname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="n">splitname</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">splitname</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">dirname</span> <span class="o">=</span> <span class="n">inpname</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">inpname</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)]</span>  <span class="c1"># has &#39;/&#39; at end</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Making directory : &quot;</span> <span class="o">+</span> <span class="n">dirname</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+
+        <span class="c1">### Check for name increments</span>
+        <span class="c1"># if self.reusename == False:</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;restart&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span>
+        <span class="p">):</span>  <span class="c1"># Later, can change this to be field dependent too.</span>
+            <span class="c1">## Get a list of image names for all fields (to sync name increment ids across fields)</span>
+            <span class="n">inpnamelist</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">inpnamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span>
+
+            <span class="n">newnamelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incrementImageNameList</span><span class="p">(</span><span class="n">inpnamelist</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newnamelist</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                    <span class="s2">&quot;Internal Error : Non matching list lengths in refimagerhelper::handleImageNames. Not updating image names&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;WARN&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;imagename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newnamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">checkAndFixIterationPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Bother checking only if deconvolution iterations are requested</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;niter&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Make sure cycleniter is less than or equal to niter.</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;cycleniter&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;cycleniter&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;niter&quot;</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;interactive&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;cycleniter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;niter&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;cycleniter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s2">&quot;niter&quot;</span><span class="p">],</span> <span class="mi">100</span><span class="p">)</span>
+
+            <span class="c1"># saving model is done separately outside of iter. control for interactive clean and or automasking cases</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s1">&#39;savemodel&#39;</span><span class="p">]</span><span class="o">!=</span><span class="s1">&#39;none&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s1">&#39;interactive&#39;</span><span class="p">]</span><span class="o">==</span><span class="kc">True</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="s1">&#39;usemask&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;auto-multithresh&#39;</span> <span class="ow">or</span> \
+                   <span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="s1">&#39;nsigma&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">:</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">[</span><span class="s1">&#39;savemodel&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;none&#39;</span> 
+                   <span class="k">for</span> <span class="n">visid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">:</span>  
+                      <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">visid</span><span class="p">][</span><span class="s1">&#39;readonly&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="n">visid</span><span class="p">][</span><span class="s1">&#39;usescratch&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+
+
+        <span class="k">return</span> <span class="n">errs</span>
+
+    <span class="k">def</span> <span class="nf">checkAndFixNormPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1">#        for modelid in self.allnormpars.keys():</span>
+        <span class="c1">#            if len(self.allnormpars[modelid][&#39;workdir&#39;])==0:</span>
+        <span class="c1">#                self.allnormpars[modelid][&#39;workdir&#39;] = self.allnormpars[&#39;0&#39;][&#39;imagename&#39;] + &#39;.workdir&#39;</span>
+
+        <span class="k">return</span> <span class="n">errs</span>
+
+    <span class="c1">###### End : Parameter-checking functions ##################</span>
+
+    <span class="c1">## Parse outlier file and construct a list of imagedefinitions (dictionaries).</span>
+    <span class="k">def</span> <span class="nf">parseOutlierFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outlierfilename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1">#  must be empty for no error</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlierfilename</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outlierfilename</span><span class="p">):</span>
+            <span class="n">errs</span> <span class="o">+=</span> <span class="s2">&quot;Cannot find outlier file : &quot;</span> <span class="o">+</span> <span class="n">outlierfilename</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="n">returnlist</span><span class="p">,</span> <span class="n">errs</span>
+
+        <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outlierfilename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">thelines</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">tempimpar</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tempgridpar</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tempweightpar</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tempdecpar</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tempnormpar</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">oneline</span> <span class="ow">in</span> <span class="n">thelines</span><span class="p">:</span>
+            <span class="n">aline</span> <span class="o">=</span> <span class="n">oneline</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="c1">#            aline = oneline.replace(&#39; &#39;,&#39;&#39;).replace(&#39;\n&#39;,&#39;&#39;)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aline</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">aline</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">parpair</span> <span class="o">=</span> <span class="n">aline</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+                <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="c1"># casalog.post(parpair)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parpair</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">errs</span> <span class="o">+=</span> <span class="s2">&quot;Error in line containing : &quot;</span> <span class="o">+</span> <span class="n">oneline</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;imagename&quot;</span> <span class="ow">and</span> <span class="n">tempimpar</span> <span class="o">!=</span> <span class="p">{}:</span>
+                    <span class="c1"># returnlist.append({&#39;impars&#39;:tempimpar, &#39;gridpars&#39;:tempgridpar, &#39;weightpars&#39;:tempweightpar, &#39;decpars&#39;:tempdecpar} )</span>
+                    <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;impars&quot;</span><span class="p">:</span> <span class="n">tempimpar</span><span class="p">,</span>
+                            <span class="s2">&quot;gridpars&quot;</span><span class="p">:</span> <span class="n">tempgridpar</span><span class="p">,</span>
+                            <span class="s2">&quot;weightpars&quot;</span><span class="p">:</span> <span class="n">tempweightpar</span><span class="p">,</span>
+                            <span class="s2">&quot;decpars&quot;</span><span class="p">:</span> <span class="n">tempdecpar</span><span class="p">,</span>
+                            <span class="s2">&quot;normpars&quot;</span><span class="p">:</span> <span class="n">tempnormpar</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                    <span class="n">tempimpar</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">tempgridpar</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">tempweightpar</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">tempdecpar</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">tempnormpar</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">usepar</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outimparlist</span><span class="p">:</span>
+                    <span class="n">tempimpar</span><span class="p">[</span><span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">usepar</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outgridparlist</span><span class="p">:</span>
+                    <span class="n">tempgridpar</span><span class="p">[</span><span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">usepar</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outweightparlist</span><span class="p">:</span>
+                    <span class="n">tempweightpar</span><span class="p">[</span><span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">usepar</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdecparlist</span><span class="p">:</span>
+                    <span class="n">tempdecpar</span><span class="p">[</span><span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">usepar</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outnormparlist</span><span class="p">:</span>
+                    <span class="n">tempnormpar</span><span class="p">[</span><span class="n">parpair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">usepar</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">usepar</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Ignoring unknown parameter pair : &quot;</span> <span class="o">+</span> <span class="n">oneline</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">errs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;impars&quot;</span><span class="p">:</span> <span class="n">tempimpar</span><span class="p">,</span>
+                    <span class="s2">&quot;gridpars&quot;</span><span class="p">:</span> <span class="n">tempgridpar</span><span class="p">,</span>
+                    <span class="s2">&quot;weightpars&quot;</span><span class="p">:</span> <span class="n">tempweightpar</span><span class="p">,</span>
+                    <span class="s2">&quot;decpars&quot;</span><span class="p">:</span> <span class="n">tempdecpar</span><span class="p">,</span>
+                    <span class="s2">&quot;normpars&quot;</span><span class="p">:</span> <span class="n">tempnormpar</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="c1">## Extra parsing for a few parameters.</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;impars&quot;</span><span class="p">,</span> <span class="s2">&quot;imsize&quot;</span><span class="p">,</span> <span class="s2">&quot;intvec&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;impars&quot;</span><span class="p">,</span> <span class="s2">&quot;nchan&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;impars&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;strvec&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;impars&quot;</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;decpars&quot;</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;normpars&quot;</span><span class="p">,</span> <span class="s2">&quot;nterms&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evalToTarget</span><span class="p">(</span><span class="n">returnlist</span><span class="p">,</span> <span class="s2">&quot;gridpars&quot;</span><span class="p">,</span> <span class="s2">&quot;wprojplanes&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="c1">#        returnlist = self.evalToTarget( returnlist, &#39;impars&#39;, &#39;reffreq&#39;, &#39;strvec&#39; )</span>
+
+        <span class="c1"># casalog.post(returnlist)</span>
+        <span class="k">return</span> <span class="n">returnlist</span><span class="p">,</span> <span class="n">errs</span>
+
+    <span class="k">def</span> <span class="nf">evalToTarget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globalpars</span><span class="p">,</span> <span class="n">subparkey</span><span class="p">,</span> <span class="n">parname</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">globalpars</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">parname</span> <span class="ow">in</span> <span class="n">globalpars</span><span class="p">[</span><span class="n">fld</span><span class="p">][</span><span class="n">subparkey</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;intvec&quot;</span><span class="p">:</span>
+                        <span class="n">val_e</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">globalpars</span><span class="p">[</span><span class="n">fld</span><span class="p">][</span><span class="n">subparkey</span><span class="p">][</span><span class="n">parname</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;strvec&quot;</span><span class="p">:</span>
+                        <span class="n">tcell</span> <span class="o">=</span> <span class="n">globalpars</span><span class="p">[</span><span class="n">fld</span><span class="p">][</span><span class="n">subparkey</span><span class="p">][</span><span class="n">parname</span><span class="p">]</span>
+                        <span class="n">tcell</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">tcell</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">tcells</span> <span class="o">=</span> <span class="n">tcell</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                        <span class="n">val_e</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">tcells</span><span class="p">:</span>
+                            <span class="n">val_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+                    <span class="n">globalpars</span><span class="p">[</span><span class="n">fld</span><span class="p">][</span><span class="n">subparkey</span><span class="p">][</span><span class="n">parname</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_e</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="s1">&#39;Cannot evaluate outlier field parameter &quot;&#39;</span> <span class="o">+</span> <span class="n">parname</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">globalpars</span>
+
+    <span class="k">def</span> <span class="nf">printParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;SelPars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;ImagePars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allimpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;GridPars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allgridpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;NormPars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allnormpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Weightpars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weightpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;DecPars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alldecpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;IterPars : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterpars</span><span class="p">),</span> <span class="s2">&quot;INFO2&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">incrementImageName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">imagename</span>
+
+        <span class="k">if</span> <span class="n">imagename</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+            <span class="n">splitname</span> <span class="o">=</span> <span class="n">imagename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">splitname</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">splitname</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1">### if it has a leading / then absolute path is assumed</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">imagename</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">imagename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;./&quot;</span> <span class="o">+</span> <span class="n">imagename</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])</span>
+            <span class="p">)</span>  <span class="c1"># has &#39;/&#39; at end</span>
+
+        <span class="n">inamelist</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inamelist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">newimagename</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="n">prefix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+            <span class="n">maxid</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">iname</span> <span class="ow">in</span> <span class="n">inamelist</span><span class="p">:</span>
+                <span class="n">startind</span> <span class="o">=</span> <span class="n">iname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">startind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">idstr</span> <span class="o">=</span> <span class="p">(</span><span class="n">iname</span><span class="p">[</span><span class="n">nlen</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">iname</span><span class="p">)])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">idstr</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">maxid</span><span class="p">:</span>
+                            <span class="n">maxid</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="n">newimagename</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">maxid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Using : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newimagename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">newimagename</span>
+
+    <span class="k">def</span> <span class="nf">incrementImageNameList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inpnamelist</span><span class="p">):</span>
+
+        <span class="n">dirnames</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">prefixes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="n">inpnamelist</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">imagename</span> <span class="o">=</span> <span class="n">inpnamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">imagename</span>
+
+            <span class="k">if</span> <span class="n">imagename</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                <span class="n">splitname</span> <span class="o">=</span> <span class="n">imagename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="n">splitname</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">splitname</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">dirname</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">imagename</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">imagename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;./&quot;</span> <span class="o">+</span> <span class="n">imagename</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])</span>
+                <span class="p">)</span>  <span class="c1"># has &#39;/&#39; at end</span>
+
+            <span class="n">dirnames</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="n">dirname</span>
+            <span class="n">prefixes</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix</span>
+
+        <span class="n">maxid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="n">inpnamelist</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">prefixes</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span>
+            <span class="n">inamelist</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirnames</span><span class="p">[</span><span class="n">immod</span><span class="p">])</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)])</span>
+            <span class="p">]</span>
+            <span class="n">nlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inamelist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">locmax</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">locmax</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">cleanext</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;.image&quot;</span><span class="p">,</span> <span class="s2">&quot;.residual&quot;</span><span class="p">,</span> <span class="s2">&quot;.model&quot;</span><span class="p">,</span> <span class="s2">&quot;.psf&quot;</span><span class="p">,</span> <span class="s2">&quot;.sumwt&quot;</span><span class="p">,</span> <span class="s2">&quot;.tt0&quot;</span><span class="p">]</span>
+            <span class="n">incremented</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">iname</span> <span class="ow">in</span> <span class="n">inamelist</span><span class="p">:</span>
+                <span class="n">rootname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">iname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">cleanext</span><span class="p">:</span>
+                    <span class="n">startind</span> <span class="o">=</span> <span class="n">iname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">startind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">idstr</span> <span class="o">=</span> <span class="p">(</span><span class="n">iname</span><span class="p">[</span><span class="n">nlen</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">iname</span><span class="p">)])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">idstr</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
+                            <span class="n">incremented</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">locmax</span><span class="p">:</span>
+                                <span class="n">locmax</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="k">elif</span> <span class="n">startind</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;.tt0&quot;</span><span class="p">:</span>
+                            <span class="c1"># need one more pass to extract rootname</span>
+                            <span class="n">rootname</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">rootname</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">rootname</span> <span class="o">==</span> <span class="n">prefix</span><span class="p">:</span>
+                            <span class="c1"># the file name with root file name only</span>
+                            <span class="n">incremented</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">incremented</span><span class="p">:</span>
+                <span class="n">locmax</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">locmax</span> <span class="o">&gt;</span> <span class="n">maxid</span><span class="p">:</span>
+                <span class="n">maxid</span> <span class="o">=</span> <span class="n">locmax</span>
+
+        <span class="n">newimagenamelist</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="n">inpnamelist</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">maxid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">newimagenamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpnamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">newimagenamelist</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">dirnames</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="n">prefixes</span><span class="p">[</span><span class="n">immod</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">maxid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="c1">#        casalog.post(&#39;Input : &#39;,  inpnamelist)</span>
+        <span class="c1">#        casalog.post(&#39;Dirs : &#39;, dirnames)</span>
+        <span class="c1">#        casalog.post(&#39;Pre : &#39;, prefixes)</span>
+        <span class="c1">#        casalog.post(&#39;Max id : &#39;, maxid)</span>
+        <span class="c1">#        casalog.post(&#39;Using : &#39;,  newimagenamelist)</span>
+        <span class="k">return</span> <span class="n">newimagenamelist</span>
+
+    <span class="c1">## Guard against numpy int32,int64 types which don&#39;t convert well across tool boundary.</span>
+    <span class="c1">## For CAS-8250. Remove when CAS-6682 is done.</span>
+    <span class="k">def</span> <span class="nf">fixIntParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allpars</span><span class="p">,</span> <span class="n">parname</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="n">allpars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">parname</span> <span class="ow">in</span> <span class="n">allpars</span><span class="p">[</span><span class="n">immod</span><span class="p">]:</span>
+                <span class="n">ims</span> <span class="o">=</span> <span class="n">allpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="n">parname</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ims</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
+                    <span class="n">ims</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ims</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ims</span><span class="p">)):</span>
+                        <span class="n">ims</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ims</span><span class="p">[</span><span class="n">el</span><span class="p">])</span>
+                <span class="n">allpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="n">parname</span><span class="p">]</span> <span class="o">=</span> <span class="n">ims</span>
+
+    <span class="c1"># check for non-supported multifield in mixed modes in parallel</span>
+    <span class="c1">#  (e.g. combination cube and continuum for main and outlier fields)</span>
+    <span class="k">def</span> <span class="nf">checkParallelMFMixedModes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allimpars</span><span class="p">,</span> <span class="n">outlierpars</span><span class="p">):</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;outlierpars==</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">))</span>
+        <span class="n">mainspecmode</span> <span class="o">=</span> <span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;specmode&quot;</span><span class="p">]</span>
+        <span class="n">mainnchan</span> <span class="o">=</span> <span class="n">allimpars</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="s2">&quot;nchan&quot;</span><span class="p">]</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;mainspecmode=</span><span class="si">{}</span><span class="s2"> mainnchan=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mainspecmode</span><span class="p">,</span> <span class="n">mainnchan</span><span class="p">))</span>
+        <span class="n">cubeoutlier</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">contoutlier</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isnchanmatch</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">immod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlierpars</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="s2">&quot;impars&quot;</span> <span class="ow">in</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s2">&quot;nchan&quot;</span> <span class="ow">in</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">][</span><span class="s2">&quot;nchan&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">cubeoutlier</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">][</span><span class="s2">&quot;nchan&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">mainnchan</span><span class="p">:</span>
+                            <span class="n">isnchanmatch</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">contoutlier</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;specmode&quot;</span> <span class="ow">in</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">outlierpars</span><span class="p">[</span><span class="n">immod</span><span class="p">][</span><span class="s2">&quot;impars&quot;</span><span class="p">][</span><span class="s2">&quot;specmode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mfs&quot;</span><span class="p">:</span>
+                            <span class="n">contoutlier</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">mainspecmode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;cube&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">contoutlier</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Mixed cube and continuum mode for multifields is currently not supported for parallel mode&quot;</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># all cube modes, but need to check if the nchans are the same</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">isnchanmatch</span><span class="p">:</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Cubes for multifields with different nchans are currently not supported for parallel mode &quot;</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># mfs</span>
+            <span class="k">if</span> <span class="n">cubeoutlier</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Mixed continuum and cube mode for multifields is currently not supported for parallel mode&quot;</span>
+        <span class="n">errs</span> <span class="o">=</span> <span class="n">errmsg</span>
+        <span class="k">return</span> <span class="n">errs</span>
+
+<div class="viewcode-block" id="ImagerParameters.checkmsforwtspec">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.checkmsforwtspec">[docs]</a>
+    <span class="k">def</span> <span class="nf">checkmsforwtspec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; check if WEIGHT_SPECTRUM column exist when </span>
+<span class="sd">            a list of vis is given. Add the column for an MS</span>
+<span class="sd">            which does not have one if other MSs have the column.</span>
+<span class="sd">            This is a workaround for the issue probably in Vi/VB2</span>
+<span class="sd">            not handling the state change for the optional column</span>
+<span class="sd">            when dealing with multiples MSs</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mycb</span> <span class="o">=</span> <span class="n">calibrater</span><span class="p">()</span>
+        <span class="n">mytb</span> <span class="o">=</span> <span class="n">table</span><span class="p">()</span>
+        <span class="n">haswtspec</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">mswithnowtspec</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">nms</span> <span class="o">=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">])</span><span class="o">==</span><span class="nb">list</span><span class="p">:</span>
+            <span class="n">nms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">])</span>
+            
+        <span class="k">if</span> <span class="n">nms</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">inms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allselpars</span><span class="p">[</span><span class="s1">&#39;msname&#39;</span><span class="p">]:</span>
+                <span class="n">mytb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">inms</span><span class="p">)</span>
+                <span class="n">cols</span> <span class="o">=</span> <span class="n">mytb</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+                <span class="n">mytb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s1">&#39;WEIGHT_SPECTRUM&#39;</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+                    <span class="n">haswtspec</span><span class="o">=</span><span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mswithnowtspec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inms</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">haswtspec</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">mswithnowtspec</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Some of the MSes donot have WEIGHT_SPECTRUM while some other do.&quot;</span><span class="o">+</span>
+                             <span class="s2">&quot; Automatically adding the column and initialize for those don&#39;t to avoid a process failure.&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">)</span> 
+                <span class="k">for</span> <span class="n">inms</span> <span class="ow">in</span> <span class="n">mswithnowtspec</span><span class="p">:</span>    
+                    <span class="n">mycb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">inms</span><span class="p">,</span> <span class="n">addcorr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">addmodel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">mycb</span><span class="o">.</span><span class="n">initweights</span><span class="p">(</span><span class="n">wtmode</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">dowtsp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">mycb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+        <span class="c1"># noOp for nms==1 </span>
+
+<div class="viewcode-block" id="ImagerParameters.mslist_timesorting">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.mslist_timesorting">[docs]</a>
+    <span class="k">def</span> <span class="nf">mslist_timesorting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mslist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">            wrapper for mslisthelper.sort_mslist to get a sorting order w.r.t the original</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="p">(</span><span class="n">thenewmslist</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span> <span class="o">=</span> <span class="n">sort_mslist</span><span class="p">(</span><span class="n">mslist</span><span class="p">)</span>
+        <span class="n">theindex</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vnew</span> <span class="ow">in</span> <span class="n">thenewmslist</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">vold</span> <span class="ow">in</span> <span class="n">mslist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">vnew</span> <span class="o">==</span> <span class="n">vold</span><span class="p">:</span>
+                    <span class="n">theindex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mslist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">vnew</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">thenewmslist</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">theindex</span><span class="p">)</span>            </div>
+
+ 
+<div class="viewcode-block" id="ImagerParameters.addwtspec">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.addwtspec">[docs]</a>
+    <span class="k">def</span> <span class="nf">addwtspec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mslist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">            Add the column for an MS which does not have one if other MSs have the column.</span>
+<span class="sd">            This is a workaround for the issue probably in Vi/VB2</span>
+<span class="sd">            not handling the state change for the optional column</span>
+<span class="sd">            when dealing with multiples MSs</span>
+<span class="sd">        &#39;&#39;&#39;</span> 
+        <span class="n">mycb</span> <span class="o">=</span> <span class="n">calibrater</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mslist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Some of the MSes donot have WEIGHT_SPECTRUM while some other do.&quot;</span><span class="o">+</span>
+                         <span class="s2">&quot; Automatically adding the column and initialize using the existing WEIGHT column for those don&#39;t to avoid a process failure.&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">)</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Adding WEIGHT_SPECTRUM in the following MS(s): &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">mslist</span><span class="p">),</span><span class="s2">&quot;WARN&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">inms</span> <span class="ow">in</span> <span class="n">mslist</span><span class="p">:</span>
+                <span class="n">mycb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">inms</span><span class="p">,</span> <span class="n">addcorr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">addmodel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">mycb</span><span class="o">.</span><span class="n">initweights</span><span class="p">(</span><span class="n">wtmode</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">dowtsp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">mycb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">mycb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span></div>
+</div>
+
+        <span class="c1"># noOp for len(mlist) ==0</span>
+
+    <span class="c1">############################</span>
+
+
+<span class="c1">#################################################################################################</span>
+<span class="k">def</span> <span class="nf">backupoldfile</span><span class="p">(</span><span class="n">thefile</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">copy</span>
+    <span class="kn">import</span> <span class="nn">shutil</span>
+
+    <span class="k">if</span> <span class="n">thefile</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">thefile</span><span class="p">)):</span>
+        <span class="k">return</span>
+    <span class="n">outpathdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">thefile</span><span class="p">))</span>
+    <span class="n">outpathfile</span> <span class="o">=</span> <span class="n">outpathdir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">thefile</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">backupfile</span> <span class="o">=</span> <span class="n">outpathfile</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">prevfile</span> <span class="o">=</span> <span class="s2">&quot;--------&quot;</span>
+    <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">backupfile</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">prevfile</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">backupfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prevfile</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filecmp</span><span class="o">.</span><span class="n">cmp</span><span class="p">(</span><span class="n">outpathfile</span><span class="p">,</span> <span class="n">prevfile</span><span class="p">):</span>
+            <span class="c1">##avoid making multiple copies of the same file</span>
+            <span class="k">return</span>
+        <span class="n">backupfile</span> <span class="o">=</span> <span class="n">outpathfile</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">outpathfile</span><span class="p">,</span> <span class="n">backupfile</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">saveparams2last</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multibackup</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function is a decorator function that allows for</span>
+<span class="sd">    task.last to be saved even if calling without casashell. Also</span>
+<span class="sd">    saves unique revisions ...just like the vax/vms style of revision saving</span>
+<span class="sd">    by default. set multibackup=False to no not have old revisions kept</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">saveparams2last</span><span class="p">,</span> <span class="n">multibackup</span><span class="o">=</span><span class="n">multibackup</span><span class="p">)</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper_saveparams</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#        multibackup=True</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.last&quot;</span>
+        <span class="c1"># print(&#39;args {} and kwargs {}&#39;.format(args, kwargs))</span>
+        <span class="c1"># print(&#39;length of args {}, and kwargs {}&#39;.format(len(args), len(kwargs)))</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">byIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">paramsname</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="c1"># params={paramsname[i]: args[i] for i in range(len(args))}</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">paramsname</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+            <span class="n">byIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span>
+            <span class="n">byIndex</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="c1">###for some reason the dictionary is in reverse</span>
+            <span class="n">byIndex</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="c1"># print(&#39;@@@@MULTIBACKUP {},  params {}&#39;.format(multibackup, params))</span>
+        <span class="k">if</span> <span class="n">multibackup</span><span class="p">:</span>
+            <span class="n">backupoldfile</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">_f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">byIndex</span><span class="p">)):</span>
+                <span class="n">_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%-20s</span><span class="s2"> = </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byIndex</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="nb">repr</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">byIndex</span><span class="p">[</span><span class="n">_i</span><span class="p">]])))</span>
+            <span class="n">_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;( &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">byIndex</span><span class="p">)):</span>
+                <span class="n">_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byIndex</span><span class="p">[</span><span class="n">_i</span><span class="p">],</span> <span class="nb">repr</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">byIndex</span><span class="p">[</span><span class="n">_i</span><span class="p">]])))</span>
+                <span class="k">if</span> <span class="n">_i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; )</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1">###End of stuff before task is called</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1">###we could do something here post task</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">return</span> <span class="n">wrapper_saveparams</span>
+
+
+<span class="c1">######################################################</span>
+
+
+<span class="k">def</span> <span class="nf">determineFreqRange</span><span class="p">(</span>
+    <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">]:</span>
+    <span class="n">_tb</span> <span class="o">=</span> <span class="n">table</span><span class="p">()</span>
+    <span class="n">_ms</span> <span class="o">=</span> <span class="n">ms</span><span class="p">()</span>
+    <span class="n">_su</span> <span class="o">=</span> <span class="n">synthesisutils</span><span class="p">()</span>
+    <span class="n">_qa</span> <span class="o">=</span> <span class="n">quanta</span><span class="p">()</span>
+    <span class="n">minFreq</span> <span class="o">=</span> <span class="mf">1.0e20</span>
+    <span class="n">maxFreq</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">_tb</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+    <span class="n">fieldids</span> <span class="o">=</span> <span class="n">_tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FIELD_ID&quot;</span><span class="p">)</span>
+    <span class="n">_tb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+    <span class="c1"># advisechansel does not work on fieldids not in main</span>
+    <span class="k">if</span> <span class="n">fieldid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fieldids</span><span class="p">:</span>
+        <span class="n">fieldid</span> <span class="o">=</span> <span class="n">fieldids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">frange</span> <span class="o">=</span> <span class="n">_su</span><span class="o">.</span><span class="n">advisechansel</span><span class="p">(</span>
+        <span class="n">msname</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">getfreqrange</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">spwselection</span><span class="o">=</span><span class="n">spw</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">minFreq</span> <span class="o">&gt;</span> <span class="n">_qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="s2">&quot;freqstart&quot;</span><span class="p">],</span> <span class="s2">&quot;Hz&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]:</span>
+        <span class="n">minFreq</span> <span class="o">=</span> <span class="n">_qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="s2">&quot;freqstart&quot;</span><span class="p">],</span> <span class="s2">&quot;Hz&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">maxFreq</span> <span class="o">&lt;</span> <span class="n">_qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="s2">&quot;freqend&quot;</span><span class="p">],</span> <span class="s2">&quot;Hz&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]:</span>
+        <span class="n">maxFreq</span> <span class="o">=</span> <span class="n">_qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">frange</span><span class="p">[</span><span class="s2">&quot;freqend&quot;</span><span class="p">],</span> <span class="s2">&quot;Hz&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">minFreq</span> <span class="o">&gt;</span> <span class="n">maxFreq</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to determine frequency range in ms </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">freqwidth</span> <span class="o">=</span> <span class="n">maxFreq</span> <span class="o">-</span> <span class="n">minFreq</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">minFreq</span><span class="p">,</span> <span class="n">freqwidth</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

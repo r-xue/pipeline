@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="h_init" href="h/h_init_task.html" />
+    <link rel="prev" title="pipeline.runvlapipeline" href="../_autosummary/pipeline.runvlapipeline.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,135 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">List of Heuristics Tasks (Pipeline 2023)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generic">Generic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="h/h_init_task.html">h_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="h/h_resume_task.html">h_resume</a></li>
+<li class="toctree-l3"><a class="reference internal" href="h/h_save_task.html">h_save</a></li>
+<li class="toctree-l3"><a class="reference internal" href="h/h_tsyscal_task.html">h_tsyscal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="h/h_weblog_task.html">h_weblog</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interferometry-generic">Interferometry Generic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_analyzealpha_task.html">hif_analyzealpha</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_antpos_task.html">hif_antpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_applycal_task.html">hif_applycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_bandpass_task.html">hif_bandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_checkproductsize_task.html">hif_checkproductsize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_correctedampflag_task.html">hif_correctedampflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_editimlist_task.html">hif_editimlist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_findcont_task.html">hif_findcont</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_gaincal_task.html">hif_gaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_lowgainflag_task.html">hif_lowgainflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_makecutoutimages_task.html">hif_makecutoutimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_makeimages_task.html">hif_makeimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_makeimlist_task.html">hif_makeimlist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_makermsimages_task.html">hif_makermsimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_mstransform_task.html">hif_mstransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_rawflagchans_task.html">hif_rawflagchans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_refant_task.html">hif_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_selfcal_task.html">hif_selfcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_setjy_task.html">hif_setjy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_setmodels_task.html">hif_setmodels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_transformimagedata_task.html">hif_transformimagedata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif/hif_uvcontsub_task.html">hif_uvcontsub</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interferometry-alma">Interferometry ALMA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_antpos_task.html">hifa_antpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_bandpass_task.html">hifa_bandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_bandpassflag_task.html">hifa_bandpassflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_bpsolint_task.html">hifa_bpsolint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_diffgaincal_task.html">hifa_diffgaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_exportdata_task.html">hifa_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_flagdata_task.html">hifa_flagdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_flagtargets_task.html">hifa_flagtargets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_fluxcalflag_task.html">hifa_fluxcalflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_gaincalsnr_task.html">hifa_gaincalsnr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_gfluxscale_task.html">hifa_gfluxscale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_gfluxscaleflag_task.html">hifa_gfluxscaleflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_imageprecheck_task.html">hifa_imageprecheck</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_importdata_task.html">hifa_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_lock_refant_task.html">hifa_lock_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_polcal_task.html">hifa_polcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_polcalflag_task.html">hifa_polcalflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_renorm_task.html">hifa_renorm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_restoredata_task.html">hifa_restoredata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_session_refant_task.html">hifa_session_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_spwphaseup_task.html">hifa_spwphaseup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_targetflag_task.html">hifa_targetflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_timegaincal_task.html">hifa_timegaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_tsysflag_task.html">hifa_tsysflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_tsysflagcontamination_task.html">hifa_tsysflagcontamination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_unlock_refant_task.html">hifa_unlock_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_wvrgcal_task.html">hifa_wvrgcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifa/hifa_wvrgcalflag_task.html">hifa_wvrgcalflag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interferometry-vla">Interferometry VLA</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_analyzestokescubes_task.html">hifv_analyzestokescubes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_applycals_task.html">hifv_applycals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_checkflag_task.html">hifv_checkflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_circfeedpolcal_task.html">hifv_circfeedpolcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_exportdata_task.html">hifv_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_exportvlassdata_task.html">hifv_exportvlassdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_finalcals_task.html">hifv_finalcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_fixpointing_task.html">hifv_fixpointing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_flagcal_task.html">hifv_flagcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_flagdata_task.html">hifv_flagdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_flagtargetsdata_task.html">hifv_flagtargetsdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_fluxboot_task.html">hifv_fluxboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_hanning_task.html">hifv_hanning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_importdata_task.html">hifv_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_mstransform_task.html">hifv_mstransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_pbcor_task.html">hifv_pbcor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_plotsummary_task.html">hifv_plotsummary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_priorcals_task.html">hifv_priorcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_restoredata_task.html">hifv_restoredata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_restorepims_task.html">hifv_restorepims</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_selfcal_task.html">hifv_selfcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_semiFinalBPdcals_task.html">hifv_semiFinalBPdcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_solint_task.html">hifv_solint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_statwt_task.html">hifv_statwt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_syspower_task.html">hifv_syspower</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_testBPdcals_task.html">hifv_testBPdcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_vlasetjy_task.html">hifv_vlasetjy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv/hifv_vlassmasking_task.html">hifv_vlassmasking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#single-dish">Single Dish</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_applycal_task.html">hsd_applycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_atmcor_task.html">hsd_atmcor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_baseline_task.html">hsd_baseline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_blflag_task.html">hsd_blflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_exportdata_task.html">hsd_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_flagdata_task.html">hsd_flagdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_imaging_task.html">hsd_imaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_importdata_task.html">hsd_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_k2jycal_task.html">hsd_k2jycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_restoredata_task.html">hsd_restoredata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_skycal_task.html">hsd_skycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsd/hsd_tsysflag_task.html">hsd_tsysflag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nobeyama">Nobeyama</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hsdn/hsdn_exportdata_task.html">hsdn_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsdn/hsdn_importdata_task.html">hsdn_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hsdn/hsdn_restoredata_task.html">hsdn_restoredata</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -665,7 +781,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../_autosummary/pipeline.runvlapipeline.html" class="btn btn-neutral float-left" title="pipeline.runvlapipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="h/h_init_task.html" class="btn btn-neutral float-right" title="h_init" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

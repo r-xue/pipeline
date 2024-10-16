@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -157,7 +153,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsBandpassRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsBandpassRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2_4MDetailsBandpassRenderer generates the detailed T2_4M-level plots and</span>
@@ -185,8 +181,6 @@
 <span class="sd">    :rtype a dictionary that can be passed to the matching bandpass Mako </span>
 <span class="sd">        template</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
@@ -297,11 +291,8 @@
                     <span class="s1">&#39;phase_subpages&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_subpages</span><span class="p">,</span>
                     <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">stage_dir</span><span class="p">})</span>
 
-        <span class="k">return</span> <span class="n">ctx</span></div>
+        <span class="k">return</span> <span class="n">ctx</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.get_phaseup_applications">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_phaseup_applications">[docs]</a>
     <span class="k">def</span> <span class="nf">get_phaseup_applications</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="c1"># return early if phase-up was not activated</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phaseup&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
@@ -347,11 +338,8 @@
                                    <span class="n">minsnr</span><span class="p">,</span> <span class="n">flagged</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="p">)</span>
             <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">applications</span></div>
+        <span class="k">return</span> <span class="n">applications</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsBandpassRenderer.get_bandpass_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.T2_4MDetailsBandpassRenderer.get_bandpass_table">[docs]</a>
     <span class="k">def</span> <span class="nf">get_bandpass_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -389,12 +377,11 @@
                 <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">applications</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="BaseBandpassPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseBandpassPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span>
                  <span class="n">score_types</span><span class="p">):</span>
@@ -418,7 +405,7 @@
                 <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseBandpassPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.html#pipeline.hif.tasks.bandpass.renderer.BaseBandpassPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="n">spw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
@@ -466,7 +453,7 @@
 
 
 <div class="viewcode-block" id="BandpassAmpVsFreqPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer.html#pipeline.hif.tasks.bandpass.renderer.BandpassAmpVsFreqPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassAmpVsFreqPlotRenderer</span><span class="p">(</span><span class="n">BaseBandpassPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -484,7 +471,7 @@
 
 
 <div class="viewcode-block" id="BandpassPhaseVsFreqPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer.html#pipeline.hif.tasks.bandpass.renderer.BandpassPhaseVsFreqPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassPhaseVsFreqPlotRenderer</span><span class="p">(</span><span class="n">BaseBandpassPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -505,7 +492,7 @@
 
 
 <div class="viewcode-block" id="make_adopted_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.renderer.make_adopted_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.renderer.make_adopted_table.html#pipeline.hif.tasks.bandpass.renderer.make_adopted_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_adopted_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the flux stat table rows for the results</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>

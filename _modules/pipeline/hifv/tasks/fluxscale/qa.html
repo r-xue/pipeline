@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,22 +145,19 @@
 
 
 <div class="viewcode-block" id="SolintQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.qa.SolintQAHandler.html#pipeline.hifv.tasks.fluxscale.qa.SolintQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">SolintQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">solint</span><span class="o">.</span><span class="n">SolintResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">solint</span><span class="o">.</span><span class="n">Solint</span>
 
-<div class="viewcode-block" id="SolintQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="c1"># Check for existence of the the target MS.</span>
         <span class="n">score1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ms_exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]))</span>
         <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">score1</span><span class="p">]</span>
 
-        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ms_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -175,7 +168,7 @@
 
 
 <div class="viewcode-block" id="SolintListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.qa.SolintListQAHandler.html#pipeline.hifv.tasks.fluxscale.qa.SolintListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">SolintListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing SolintResults.</span>
@@ -184,8 +177,6 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">solint</span><span class="o">.</span><span class="n">SolintResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">solint</span><span class="o">.</span><span class="n">Solint</span>
 
-<div class="viewcode-block" id="SolintListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.SolintListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
@@ -194,19 +185,16 @@
         <span class="n">mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
         <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;No missing target MS(s) for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="n">longmsg</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="FluxbootQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxbootQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">FluxbootResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Fluxboot</span>
 
-<div class="viewcode-block" id="FluxbootQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Get a QA score based on RMS of the residuals per receiver band and source</span>
 
@@ -236,11 +224,10 @@
             <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;Unable to compute flux density bootstrapping residuals.&#39;</span><span class="p">,</span>
                                   <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Fluxboot issue.&#39;</span><span class="p">)]</span>
 
-        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FluxbootQAHandler.getFractionalResiduals">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler.getFractionalResiduals">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootQAHandler.getFractionalResiduals">[docs]</a>
     <span class="k">def</span> <span class="nf">getFractionalResiduals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webdicts</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the fractional residuals between observed and predicted data.</span>
@@ -282,7 +269,7 @@
 
 
 <div class="viewcode-block" id="FluxbootListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.qa.FluxbootListQAHandler.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxbootListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing FluxbootResults.</span>
@@ -290,14 +277,11 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">FluxbootResults</span>
 
-<div class="viewcode-block" id="FluxbootListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.qa.FluxbootListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 </pre></div>
 

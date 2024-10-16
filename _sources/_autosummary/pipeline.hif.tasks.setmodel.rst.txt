@@ -4,17 +4,36 @@ pipeline.hif.tasks.setmodel
 .. automodule:: pipeline.hif.tasks.setmodel
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SetModels
       Setjy
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    display
@@ -22,3 +41,4 @@ pipeline.hif.tasks.setmodel
    renderer
    setjy
    setmodel
+

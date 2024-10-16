@@ -4,9 +4,21 @@ pipeline.hifv.tasks.plotsummary.renderer
 .. automodule:: pipeline.hifv.tasks.plotsummary.renderer
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ApplycalAmpVsFreqPlotRenderer
       ApplycalAmpVsFreqSciencePlotRenderer
@@ -19,3 +31,11 @@ pipeline.hifv.tasks.plotsummary.renderer
       ApplycalPhaseVsUVPlotRenderer
       T2_4MDetailsplotsummaryRenderer
    
+   
+
+   
+   
+   
+
+
+

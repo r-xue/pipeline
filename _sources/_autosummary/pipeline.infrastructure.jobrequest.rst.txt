@@ -4,9 +4,16 @@ pipeline.infrastructure.jobrequest
 .. automodule:: pipeline.infrastructure.jobrequest
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       UUID_to_underscore
       alphasort
@@ -16,11 +23,26 @@ pipeline.infrastructure.jobrequest
       signature
       truncate_paths
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       FunctionArg
       JobRequest
       NamelessArg
    
+   
+
+   
+   
+   
+
+
+

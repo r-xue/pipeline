@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -152,7 +148,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsDiffgaincalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.renderer.T2_4MDetailsDiffgaincalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.diffgaincal.renderer.T2_4MDetailsDiffgaincalRenderer.html#pipeline.hifa.tasks.diffgaincal.renderer.T2_4MDetailsDiffgaincalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsDiffgaincalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renders detailed HTML output for the Diffgaincal task.</span>
@@ -162,8 +158,6 @@
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsDiffgaincalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.renderer.T2_4MDetailsDiffgaincalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># Get info on phase diffgain caltable.</span>
         <span class="n">applications</span> <span class="o">=</span> <span class="n">get_diffgain_applications</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -187,12 +181,11 @@
             <span class="s1">&#39;phase_vs_time_plots&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_summaries</span><span class="p">,</span>
             <span class="s1">&#39;phase_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">phase_vs_time_subpages</span><span class="p">,</span>
         <span class="p">})</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_diffgain_applications">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.renderer.get_diffgain_applications">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.diffgaincal.renderer.get_diffgain_applications.html#pipeline.hifa.tasks.diffgaincal.renderer.get_diffgain_applications">[docs]</a>
 <span class="k">def</span> <span class="nf">get_diffgain_applications</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DiffGainApplication</span><span class="p">]:</span>
     <span class="n">calmode_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase only&#39;</span><span class="p">,</span>
@@ -228,7 +221,7 @@
 
 
 <div class="viewcode-block" id="get_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.diffgaincal.html#pipeline.hifa.tasks.diffgaincal.renderer.get_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.diffgaincal.renderer.get_plots.html#pipeline.hifa.tasks.diffgaincal.renderer.get_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">get_plots</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">],</span> <span class="n">summary_plot_cls</span><span class="p">,</span> <span class="n">detail_plot_cls</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="p">):</span>
     <span class="n">summaries</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">subpages</span> <span class="o">=</span> <span class="p">{}</span>

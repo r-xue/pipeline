@@ -4,9 +4,16 @@ pipeline.extern.almahelpers
 .. automodule:: pipeline.extern.almahelpers
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       areIdentical
       calantsub
@@ -18,9 +25,16 @@ pipeline.extern.almahelpers
       trimSpwmap
       tsysspwmap
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SpwInfo
       SpwMap
@@ -28,3 +42,11 @@ pipeline.extern.almahelpers
       qatool
       tbtool
    
+   
+
+   
+   
+   
+
+
+

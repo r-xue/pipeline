@@ -4,15 +4,29 @@ pipeline.hifv.tasks.finalcals.display
 .. automodule:: pipeline.hifv.tasks.finalcals.display
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_maxphase_maxamp
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       finalAmpFreqCalPerAntennaChart
       finalAmpTimeCalPerAntennaChart
@@ -28,3 +42,11 @@ pipeline.hifv.tasks.finalcals.display
       finalcalsSummaryChart
       finalphaseGainPerAntennaChart
    
+   
+
+   
+   
+   
+
+
+

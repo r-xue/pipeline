@@ -4,9 +4,16 @@ pipeline.h.tasks.common.flagging\_renderer\_utils
 .. automodule:: pipeline.h.tasks.common.flagging_renderer_utils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       adjust_non_science_totals
       flags_by_intent
@@ -14,11 +21,26 @@ pipeline.h.tasks.common.flagging\_renderer\_utils
       flags_for_result
       intents_to_summarise
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       FlagTotal
       MeasurementSet
    
+   
+
+   
+   
+   
+
+
+

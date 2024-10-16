@@ -4,9 +4,29 @@ pipeline.domain.datadescription
 .. automodule:: pipeline.domain.datadescription
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       DataDescription
    
+   
+
+   
+   
+   
+
+
+

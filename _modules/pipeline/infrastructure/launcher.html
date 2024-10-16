@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -159,7 +155,7 @@
 
 
 <div class="viewcode-block" id="Context">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Context">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
 <span class="k">class</span> <span class="nc">Context</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context holds all pipeline state, consisting of metadata describing the</span>
@@ -327,7 +323,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_products_dir</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Context.save">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.context&#39;</span>
@@ -349,7 +345,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Context(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&gt;&quot;</span>
 
 <div class="viewcode-block" id="Context.set_state">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
     <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a context property using the class name, property name and property</span>
@@ -377,7 +373,7 @@
 
 
 <div class="viewcode-block" id="Context.get_oussid">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
     <span class="k">def</span> <span class="nf">get_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the parent OUS &#39;ousstatus&#39; name. This is the sanitized OUS</span>
@@ -391,7 +387,7 @@
 
 
 <div class="viewcode-block" id="Context.get_recipe_name">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
     <span class="k">def</span> <span class="nf">get_recipe_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the recipe name from project structure.</span>
@@ -415,7 +411,7 @@
 
 
 <div class="viewcode-block" id="Pipeline">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
 <span class="k">class</span> <span class="nc">Pipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pipeline is the entry point for initialising the pipeline. It is</span>
@@ -542,7 +538,7 @@
         <span class="k">return</span> <span class="s1">&#39;Pipeline(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_names</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.close">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>

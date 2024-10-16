@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -440,7 +436,7 @@
     <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">nanmean</span> <span class="k">as</span> <span class="n">scipy_nanmean</span>
 
 <div class="viewcode-block" id="version">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.version">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.version.html#pipeline.hif.heuristics.findcont.version">[docs]</a>
 <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="n">showfile</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the CVS revision number.</span>
@@ -452,7 +448,7 @@
 
 
 <div class="viewcode-block" id="casalogPost">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.casalogPost">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.casalogPost.html#pipeline.hif.heuristics.findcont.casalogPost">[docs]</a>
 <span class="k">def</span> <span class="nf">casalogPost</span><span class="p">(</span><span class="n">mystring</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates an INFO message prepended with the version number of findContinuum.</span>
@@ -480,7 +476,7 @@
                        <span class="s1">&#39;meanAboveThresholdOverMad&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">]</span> 
 
 <div class="viewcode-block" id="help">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.help">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.help.html#pipeline.hif.heuristics.findcont.help">[docs]</a>
 <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Print an alphabetized list of all the defined functions at the top level in</span>
@@ -513,13 +509,13 @@
 
 
 <div class="viewcode-block" id="round_half_up">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.round_half_up">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.round_half_up.html#pipeline.hif.heuristics.findcont.round_half_up">[docs]</a>
 <span class="k">def</span> <span class="nf">round_half_up</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">to_integral_value</span><span class="p">(</span><span class="n">rounding</span><span class="o">=</span><span class="n">decimal</span><span class="o">.</span><span class="n">ROUND_HALF_UP</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="is_binary">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.is_binary">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.is_binary.html#pipeline.hif.heuristics.findcont.is_binary">[docs]</a>
 <span class="k">def</span> <span class="nf">is_binary</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -545,7 +541,7 @@
 <span class="c1">#    return False</span>
 
 <div class="viewcode-block" id="getMemorySize">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getMemorySize">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getMemorySize.html#pipeline.hif.heuristics.findcont.getMemorySize">[docs]</a>
 <span class="k">def</span> <span class="nf">getMemorySize</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuum and runFindContinuum.</span>
@@ -561,7 +557,7 @@
 <span class="n">MOM0MINSNR_DEFAULT</span> <span class="o">=</span> <span class="mi">5</span>
 
 <div class="viewcode-block" id="removeIfNecessary">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.removeIfNecessary">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.removeIfNecessary.html#pipeline.hif.heuristics.findcont.removeIfNecessary">[docs]</a>
 <span class="k">def</span> <span class="nf">removeIfNecessary</span><span class="p">(</span><span class="n">imgname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If an image exists, remote its directory tree.</span>
@@ -573,7 +569,7 @@
 
 
 <div class="viewcode-block" id="findContinuum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findContinuum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hif.heuristics.findcont.findContinuum.html#pipeline.hif.heuristics.findcont.findContinuum">[docs]</a>
 <span class="k">def</span> <span class="nf">findContinuum</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">pbcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psfcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                   <span class="n">transition</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                   <span class="n">baselineModeA</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">baselineModeB</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">sigmaCube</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
@@ -3313,7 +3309,7 @@
 <span class="c1"># end of findContinuum   </span>
 
 <div class="viewcode-block" id="cutSomeNarrowRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.cutSomeNarrowRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.cutSomeNarrowRanges.html#pipeline.hif.heuristics.findcont.cutSomeNarrowRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">cutSomeNarrowRanges</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">nkeep</span><span class="o">=</span><span class="n">MAX_RANGES_FOR_IMMOMENTS</span><span class="p">,</span> 
                         <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3342,7 +3338,7 @@
 
 
 <div class="viewcode-block" id="gauss_kern">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.gauss_kern">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.gauss_kern.html#pipeline.hif.heuristics.findcont.gauss_kern">[docs]</a>
 <span class="k">def</span> <span class="nf">gauss_kern</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Returns a normalized 2D gauss kernel array for convolutions.  Used by smooth.</span>
@@ -3354,7 +3350,7 @@
 
 
 <div class="viewcode-block" id="smooth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.smooth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.smooth.html#pipeline.hif.heuristics.findcont.smooth">[docs]</a>
 <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s1">&#39;hanning&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">newMethod</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html</span>
@@ -3422,7 +3418,7 @@
 
 
 <div class="viewcode-block" id="robustMADofContinuumRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.robustMADofContinuumRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.robustMADofContinuumRanges.html#pipeline.hif.heuristics.findcont.robustMADofContinuumRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">robustMADofContinuumRanges</span><span class="p">(</span><span class="n">myChannelList</span><span class="p">,</span> <span class="n">myIntensity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3493,7 +3489,7 @@
 
 
 <div class="viewcode-block" id="gatherWarnings">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.gatherWarnings">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.gatherWarnings.html#pipeline.hif.heuristics.findcont.gatherWarnings">[docs]</a>
 <span class="k">def</span> <span class="nf">gatherWarnings</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">,</span> <span class="n">smallBandwidthFraction</span><span class="p">,</span> <span class="n">smallSpreadFraction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3514,7 +3510,7 @@
 
 
 <div class="viewcode-block" id="compute4LetterCodeAndUpdateLegend">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.compute4LetterCodeAndUpdateLegend">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.compute4LetterCodeAndUpdateLegend.html#pipeline.hif.heuristics.findcont.compute4LetterCodeAndUpdateLegend">[docs]</a>
 <span class="k">def</span> <span class="nf">compute4LetterCodeAndUpdateLegend</span><span class="p">(</span><span class="n">mom8fcPeak</span><span class="p">,</span> <span class="n">mom8fcPeak0</span><span class="p">,</span> <span class="n">mom8fcPeakOutside</span><span class="p">,</span> 
                                       <span class="n">mom8fcPeakOutside0</span><span class="p">,</span> <span class="n">mom8fcSum</span><span class="p">,</span> <span class="n">mom8fcSum0</span><span class="p">,</span> 
                                       <span class="n">mom8fcMAD</span><span class="p">,</span> <span class="n">mom8fcMAD0</span><span class="p">,</span> <span class="n">thresholdForSame</span><span class="p">,</span> <span class="n">areaString</span><span class="p">,</span> 
@@ -3621,7 +3617,7 @@
 
 
 <div class="viewcode-block" id="updateChannelRangesOnPlot">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.updateChannelRangesOnPlot">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.updateChannelRangesOnPlot.html#pipeline.hif.heuristics.findcont.updateChannelRangesOnPlot">[docs]</a>
 <span class="k">def</span> <span class="nf">updateChannelRangesOnPlot</span><span class="p">(</span><span class="n">labelDescs</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">avgspectrumAboveThreshold</span><span class="p">,</span> 
                               <span class="n">skipchan</span><span class="p">,</span> <span class="n">medianTrue</span><span class="p">,</span> <span class="n">positiveThreshold</span><span class="p">,</span> <span class="n">upperXlabel</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> 
                               <span class="n">channelWidth</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">initialPeakOverMad</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
@@ -3660,7 +3656,7 @@
 
 
 <div class="viewcode-block" id="computeNpixCubeMedian">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeNpixCubeMedian">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeNpixCubeMedian.html#pipeline.hif.heuristics.findcont.computeNpixCubeMedian">[docs]</a>
 <span class="k">def</span> <span class="nf">computeNpixCubeMedian</span><span class="p">(</span><span class="n">mom8fcMedian</span><span class="p">,</span> <span class="n">cubeLevel</span><span class="p">,</span> <span class="n">MADCubeOutside</span><span class="p">,</span> <span class="n">mom8fc</span><span class="p">,</span> <span class="n">jointMaskTest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3679,7 +3675,7 @@
 
 
 <div class="viewcode-block" id="computeNpixMom8MedianBadAtm">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeNpixMom8MedianBadAtm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeNpixMom8MedianBadAtm.html#pipeline.hif.heuristics.findcont.computeNpixMom8MedianBadAtm">[docs]</a>
 <span class="k">def</span> <span class="nf">computeNpixMom8MedianBadAtm</span><span class="p">(</span><span class="n">mom8fcMedian</span><span class="p">,</span> <span class="n">mom8levelBadAtm</span><span class="p">,</span> <span class="n">mom8fcMAD</span><span class="p">,</span> <span class="n">mom8fc</span><span class="p">,</span> <span class="n">jointMaskTest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3698,7 +3694,7 @@
 
 
 <div class="viewcode-block" id="computeNpixMom8Median">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeNpixMom8Median">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeNpixMom8Median.html#pipeline.hif.heuristics.findcont.computeNpixMom8Median">[docs]</a>
 <span class="k">def</span> <span class="nf">computeNpixMom8Median</span><span class="p">(</span><span class="n">mom8fcMedian</span><span class="p">,</span> <span class="n">mom8level</span><span class="p">,</span> <span class="n">mom8fcMAD</span><span class="p">,</span> <span class="n">mom8fc</span><span class="p">,</span> <span class="n">jointMaskTest</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3729,7 +3725,7 @@
 
 
 <div class="viewcode-block" id="replaceLineFullRangesWithNoise">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.replaceLineFullRangesWithNoise">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.replaceLineFullRangesWithNoise.html#pipeline.hif.heuristics.findcont.replaceLineFullRangesWithNoise">[docs]</a>
 <span class="k">def</span> <span class="nf">replaceLineFullRangesWithNoise</span><span class="p">(</span><span class="n">intensity</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">scaledMAD</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3757,7 +3753,7 @@
 
 
 <div class="viewcode-block" id="compute4LetterCode">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.compute4LetterCode">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.compute4LetterCode.html#pipeline.hif.heuristics.findcont.compute4LetterCode">[docs]</a>
 <span class="k">def</span> <span class="nf">compute4LetterCode</span><span class="p">(</span><span class="n">mom8fcPeak</span><span class="p">,</span> <span class="n">mom8fcPeak0</span><span class="p">,</span> <span class="n">mom8fcPeakOutside</span><span class="p">,</span> <span class="n">mom8fcPeakOutside0</span><span class="p">,</span> <span class="n">mom8fcSum</span><span class="p">,</span> 
                        <span class="n">mom8fcSum0</span><span class="p">,</span> <span class="n">mom8fcMAD</span><span class="p">,</span> <span class="n">mom8fcMAD0</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">returnRatios</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">momDiffSNR</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3819,7 +3815,7 @@
 
 
 <div class="viewcode-block" id="cubeNoiseLevel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.cubeNoiseLevel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.cubeNoiseLevel.html#pipeline.hif.heuristics.findcont.cubeNoiseLevel">[docs]</a>
 <span class="k">def</span> <span class="nf">cubeNoiseLevel</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">pbcube</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">chans</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">subimage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">imageInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3878,7 +3874,7 @@
 
 
 <div class="viewcode-block" id="tooLittleBandwidth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.tooLittleBandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.tooLittleBandwidth.html#pipeline.hif.heuristics.findcont.tooLittleBandwidth">[docs]</a>
 <span class="k">def</span> <span class="nf">tooLittleBandwidth</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3897,7 +3893,7 @@
 
 
 <div class="viewcode-block" id="computeSpread">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeSpread">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeSpread.html#pipeline.hif.heuristics.findcont.computeSpread">[docs]</a>
 <span class="k">def</span> <span class="nf">computeSpread</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">channelWidth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3915,7 +3911,7 @@
 
 
 <div class="viewcode-block" id="tooLittleSpread">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.tooLittleSpread">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.tooLittleSpread.html#pipeline.hif.heuristics.findcont.tooLittleSpread">[docs]</a>
 <span class="k">def</span> <span class="nf">tooLittleSpread</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.33</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used in Pipeline2020 going forward.</span>
@@ -3932,7 +3928,7 @@
 
 
 <div class="viewcode-block" id="amendMaskYesOrNo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.amendMaskYesOrNo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.amendMaskYesOrNo.html#pipeline.hif.heuristics.findcont.amendMaskYesOrNo">[docs]</a>
 <span class="k">def</span> <span class="nf">amendMaskYesOrNo</span><span class="p">(</span><span class="n">badAtmosphere</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">momSNR</span><span class="p">,</span> <span class="n">momSNRCube</span><span class="p">,</span> <span class="n">Npix</span><span class="p">,</span> <span class="n">NpixBadAtm</span><span class="p">,</span> <span class="n">NpixCube</span><span class="p">,</span> 
                      <span class="n">TenEventSigma</span><span class="p">,</span> <span class="n">MADMomOutside</span><span class="p">,</span> <span class="n">MADCubeOutside</span><span class="p">,</span> <span class="n">momLevel</span><span class="p">,</span> 
                      <span class="n">momLevelBadAtm</span><span class="p">,</span> <span class="n">cubeLevel</span><span class="p">,</span> <span class="n">NpixCube2</span><span class="p">,</span> <span class="n">fractionNegativePixels</span><span class="p">,</span>
@@ -4009,7 +4005,7 @@
 
 
 <div class="viewcode-block" id="extraMaskYesOrNo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.extraMaskYesOrNo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.extraMaskYesOrNo.html#pipeline.hif.heuristics.findcont.extraMaskYesOrNo">[docs]</a>
 <span class="k">def</span> <span class="nf">extraMaskYesOrNo</span><span class="p">(</span><span class="n">badAtmosphere</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">momSNR</span><span class="p">,</span> <span class="n">momSNRCube</span><span class="p">,</span> <span class="n">NpixMom</span><span class="p">,</span> <span class="n">NpixMomBadAtm</span><span class="p">,</span> <span class="n">NpixCubeAnywhere</span><span class="p">,</span> 
                      <span class="n">TenEventSigma</span><span class="p">,</span> <span class="n">MADMomOutside</span><span class="p">,</span> <span class="n">MADCubeOutside</span><span class="p">,</span> <span class="n">momDiffLevel</span><span class="p">,</span> <span class="n">momDiffLevelBadAtm</span><span class="p">,</span> 
                      <span class="n">cubeLevel</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -4065,7 +4061,7 @@
 
 
 <div class="viewcode-block" id="onlyExtraMaskYesOrNo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.onlyExtraMaskYesOrNo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.onlyExtraMaskYesOrNo.html#pipeline.hif.heuristics.findcont.onlyExtraMaskYesOrNo">[docs]</a>
 <span class="k">def</span> <span class="nf">onlyExtraMaskYesOrNo</span><span class="p">(</span><span class="n">badAtmosphere</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">momDiffSNR</span><span class="p">,</span> <span class="n">momDiffSNRCube</span><span class="p">,</span> 
                          <span class="n">NpixMomDiff</span><span class="p">,</span> <span class="n">NpixMomDiffBadAtm</span><span class="p">,</span> 
                          <span class="n">NpixCubeAnywhere</span><span class="p">,</span> <span class="n">TenEventSigma</span><span class="p">,</span> <span class="n">momDiffMAD</span><span class="p">,</span> 
@@ -4135,7 +4131,7 @@
 
 
 <div class="viewcode-block" id="allContinuumSelected">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.allContinuumSelected">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.allContinuumSelected.html#pipeline.hif.heuristics.findcont.allContinuumSelected">[docs]</a>
 <span class="k">def</span> <span class="nf">allContinuumSelected</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="n">ALL_CONTINUUM_CRITERION</span><span class="p">,</span> 
                          <span class="n">fraction2</span><span class="o">=</span><span class="n">ALL_CONTINUUM_CRITERION_TDM_FULLPOL</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4171,7 +4167,7 @@
 
 
 <div class="viewcode-block" id="byteDecode">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.byteDecode">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.byteDecode.html#pipeline.hif.heuristics.findcont.byteDecode">[docs]</a>
 <span class="k">def</span> <span class="nf">byteDecode</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
       <span class="k">if</span> <span class="n">casaVersion</span> <span class="o">&gt;=</span> <span class="s1">&#39;5.9.9&#39;</span><span class="p">:</span>
           <span class="k">return</span> <span class="n">buffer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
@@ -4180,7 +4176,7 @@
 
 
 <div class="viewcode-block" id="maskArgumentMismatch">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.maskArgumentMismatch">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.maskArgumentMismatch.html#pipeline.hif.heuristics.findcont.maskArgumentMismatch">[docs]</a>
 <span class="k">def</span> <span class="nf">maskArgumentMismatch</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">useThresholdWithMask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by checkForMismatch.</span>
@@ -4229,7 +4225,7 @@
 
 
 <div class="viewcode-block" id="centralArcsecArgumentMismatch">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.centralArcsecArgumentMismatch">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.centralArcsecArgumentMismatch.html#pipeline.hif.heuristics.findcont.centralArcsecArgumentMismatch">[docs]</a>
 <span class="k">def</span> <span class="nf">centralArcsecArgumentMismatch</span><span class="p">(</span><span class="n">centralArcsec</span><span class="p">,</span> <span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by checkForMismatch.</span>
@@ -4288,7 +4284,7 @@
 
 
 <div class="viewcode-block" id="plotMeanSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.plotMeanSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.plotMeanSpectrum.html#pipeline.hif.heuristics.findcont.plotMeanSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">plotMeanSpectrum</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Not used by pipeline.</span>
@@ -4344,7 +4340,7 @@
 
 
 <div class="viewcode-block" id="writeContDat">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.writeContDat">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.writeContDat.html#pipeline.hif.heuristics.findcont.writeContDat">[docs]</a>
 <span class="k">def</span> <span class="nf">writeContDat</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">png</span><span class="p">,</span> <span class="n">aggregateBandwidth</span><span class="p">,</span> 
                  <span class="n">firstFreq</span><span class="p">,</span> <span class="n">lastFreq</span><span class="p">,</span> <span class="n">channelWidth</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">imageInfo</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                  <span class="n">numchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lsrkwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -4439,7 +4435,7 @@
 <span class="c1">#        casalogPost(&quot;Failed to write %s&quot; % (contDat))</span>
 
 <div class="viewcode-block" id="getFieldnameFromPipelineImageName">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getFieldnameFromPipelineImageName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getFieldnameFromPipelineImageName.html#pipeline.hif.heuristics.findcont.getFieldnameFromPipelineImageName">[docs]</a>
 <span class="k">def</span> <span class="nf">getFieldnameFromPipelineImageName</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the field name from the pipeline image file name.</span>
@@ -4483,7 +4479,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="combineContDat">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.combineContDat">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.combineContDat.html#pipeline.hif.heuristics.findcont.combineContDat">[docs]</a>
 <span class="k">def</span> <span class="nf">combineContDat</span><span class="p">(</span><span class="n">contdatlist</span><span class="p">,</span> <span class="n">outputfile</span><span class="o">=</span><span class="s1">&#39;cont.dat&#39;</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a list of *.dat files created by findContinuum for a single field/spw</span>
@@ -4541,7 +4537,7 @@
 
 
 <div class="viewcode-block" id="drawYlabel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.drawYlabel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.drawYlabel.html#pipeline.hif.heuristics.findcont.drawYlabel">[docs]</a>
 <span class="k">def</span> <span class="nf">drawYlabel</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">typeOfMeanSpectrum</span><span class="p">,</span> <span class="n">meanSpectrumMethod</span><span class="p">,</span> <span class="n">meanSpectrumThreshold</span><span class="p">,</span>
                <span class="n">peakFilterFWHM</span><span class="p">,</span> <span class="n">fontsize</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">useThresholdWithMask</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4583,7 +4579,7 @@
 
 
 <div class="viewcode-block" id="computeBandwidth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeBandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeBandwidth.html#pipeline.hif.heuristics.findcont.computeBandwidth">[docs]</a>
 <span class="k">def</span> <span class="nf">computeBandwidth</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">channelWidth</span><span class="p">,</span> <span class="n">loc</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum and findContinuum.</span>
@@ -4603,7 +4599,7 @@
 
 
 <div class="viewcode-block" id="buildMeanSpectrumFilename">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.buildMeanSpectrumFilename">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.buildMeanSpectrumFilename.html#pipeline.hif.heuristics.findcont.buildMeanSpectrumFilename">[docs]</a>
 <span class="k">def</span> <span class="nf">buildMeanSpectrumFilename</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">meanSpectrumMethod</span><span class="p">,</span> <span class="n">peakFilterFWHM</span><span class="p">,</span> 
                               <span class="n">amendMaskIterationName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">nbin</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4625,7 +4621,7 @@
 
 
 <div class="viewcode-block" id="tdmSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.tdmSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.tdmSpectrum.html#pipeline.hif.heuristics.findcont.tdmSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">tdmSpectrum</span><span class="p">(</span><span class="n">channelWidth</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">telescope</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum and findContinuum.</span>
@@ -4652,7 +4648,7 @@
 
 
 <div class="viewcode-block" id="atmosphereVariation">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.atmosphereVariation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.atmosphereVariation.html#pipeline.hif.heuristics.findcont.atmosphereVariation">[docs]</a>
 <span class="k">def</span> <span class="nf">atmosphereVariation</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">imageInfo</span><span class="p">,</span> <span class="n">chanInfo</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">pwv</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">removeSlope</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuum.</span>
@@ -4680,7 +4676,7 @@
 
 
 <div class="viewcode-block" id="versionStringToArray">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.versionStringToArray">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.versionStringToArray.html#pipeline.hif.heuristics.findcont.versionStringToArray">[docs]</a>
 <span class="k">def</span> <span class="nf">versionStringToArray</span><span class="p">(</span><span class="n">versionString</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by casaVersionCompare.</span>
@@ -4695,7 +4691,7 @@
 
     
 <div class="viewcode-block" id="casaVersionCompare">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.casaVersionCompare">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.casaVersionCompare.html#pipeline.hif.heuristics.findcont.casaVersionCompare">[docs]</a>
 <span class="k">def</span> <span class="nf">casaVersionCompare</span><span class="p">(</span><span class="n">comparitor</span><span class="p">,</span> <span class="n">versionString</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrum.</span>
@@ -4734,7 +4730,7 @@
 
 
 <div class="viewcode-block" id="getFreqType">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getFreqType">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getFreqType.html#pipeline.hif.heuristics.findcont.getFreqType">[docs]</a>
 <span class="k">def</span> <span class="nf">getFreqType</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum and cubeFrameToTopo.</span>
@@ -4749,7 +4745,7 @@
 
 
 <div class="viewcode-block" id="getEquinox">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getEquinox">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getEquinox.html#pipeline.hif.heuristics.findcont.getEquinox">[docs]</a>
 <span class="k">def</span> <span class="nf">getEquinox</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">myia</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by cubeFrameToTopo.</span>
@@ -4768,7 +4764,7 @@
 
 
 <div class="viewcode-block" id="getTelescope">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getTelescope">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getTelescope.html#pipeline.hif.heuristics.findcont.getTelescope">[docs]</a>
 <span class="k">def</span> <span class="nf">getTelescope</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">myia</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by CalcAtmTransmissionForImage and cubeFrameToTopo.</span>
@@ -4788,7 +4784,7 @@
 
 
 <div class="viewcode-block" id="getDateObs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getDateObs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getDateObs.html#pipeline.hif.heuristics.findcont.getDateObs">[docs]</a>
 <span class="k">def</span> <span class="nf">getDateObs</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">myia</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by cubeFrameToTopo.</span>
@@ -4809,7 +4805,7 @@
 
 
 <div class="viewcode-block" id="removeInitialQuadraticIfNeeded">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.removeInitialQuadraticIfNeeded">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.removeInitialQuadraticIfNeeded.html#pipeline.hif.heuristics.findcont.removeInitialQuadraticIfNeeded">[docs]</a>
 <span class="k">def</span> <span class="nf">removeInitialQuadraticIfNeeded</span><span class="p">(</span><span class="n">avgSpectrum</span><span class="p">,</span> <span class="n">initialQuadraticImprovementThreshold</span><span class="o">=</span><span class="mf">1.6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum when meanSpectrumMethod=&#39;mom0mom8jointMask&#39;.</span>
@@ -4842,7 +4838,7 @@
 
 
 <div class="viewcode-block" id="checkForMismatch">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.checkForMismatch">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.checkForMismatch.html#pipeline.hif.heuristics.findcont.checkForMismatch">[docs]</a>
 <span class="k">def</span> <span class="nf">checkForMismatch</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">useThresholdWithMask</span><span class="p">,</span> 
                      <span class="n">fitsTable</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">centralArcsec</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4868,7 +4864,7 @@
 
 
 <div class="viewcode-block" id="pick_sFC_TDM">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pick_sFC_TDM">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pick_sFC_TDM.html#pipeline.hif.heuristics.findcont.pick_sFC_TDM">[docs]</a>
 <span class="k">def</span> <span class="nf">pick_sFC_TDM</span><span class="p">(</span><span class="n">meanSpectrumMethod</span><span class="p">,</span> <span class="n">singleContinuum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -4891,7 +4887,7 @@
 
 
 <div class="viewcode-block" id="setYLimitsAvoidingEdgeChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.setYLimitsAvoidingEdgeChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.setYLimitsAvoidingEdgeChannels.html#pipeline.hif.heuristics.findcont.setYLimitsAvoidingEdgeChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">setYLimitsAvoidingEdgeChannels</span><span class="p">(</span><span class="n">avgspectrumAboveThreshold</span><span class="p">,</span> <span class="n">mad</span><span class="p">,</span> <span class="n">chan</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Called by runFindContinuum to set the y-axis limits..</span>
@@ -4917,7 +4913,7 @@
 
 
 <div class="viewcode-block" id="ExpandYLimitsForLegend">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.ExpandYLimitsForLegend">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.ExpandYLimitsForLegend.html#pipeline.hif.heuristics.findcont.ExpandYLimitsForLegend">[docs]</a>
 <span class="k">def</span> <span class="nf">ExpandYLimitsForLegend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Called by runFindContinuum.</span>
@@ -4931,7 +4927,7 @@
 
 
 <div class="viewcode-block" id="pickRandomErrors">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickRandomErrors">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickRandomErrors.html#pipeline.hif.heuristics.findcont.pickRandomErrors">[docs]</a>
 <span class="k">def</span> <span class="nf">pickRandomErrors</span><span class="p">(</span><span class="n">nvalues</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Picks a series of random values from a Gaussian distribution with mean 0 and standard </span>
@@ -4945,7 +4941,7 @@
 
 
 <div class="viewcode-block" id="pickRandomError">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickRandomError">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickRandomError.html#pipeline.hif.heuristics.findcont.pickRandomError">[docs]</a>
 <span class="k">def</span> <span class="nf">pickRandomError</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Picks a random value from a Gaussian distribution with mean 0 and standard deviation = 1.</span>
@@ -4967,7 +4963,7 @@
 
 
 <div class="viewcode-block" id="createNoisyQuadratic">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.createNoisyQuadratic">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.createNoisyQuadratic.html#pipeline.hif.heuristics.findcont.createNoisyQuadratic">[docs]</a>
 <span class="k">def</span> <span class="nf">createNoisyQuadratic</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">nsigma</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function meant simply to test removeStatContQuadratic.</span>
@@ -4987,7 +4983,7 @@
 
     
 <div class="viewcode-block" id="removeStatContQuadratic">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.removeStatContQuadratic">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.removeStatContQuadratic.html#pipeline.hif.heuristics.findcont.removeStatContQuadratic">[docs]</a>
 <span class="k">def</span> <span class="nf">removeStatContQuadratic</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">nsigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">returnExtra</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">minPercentage</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">makeMovie</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">img</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keepContinuum</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iteratively removes outlier points down to nsigma, then fits a quadratic to the remaining </span>
@@ -5069,7 +5065,7 @@
 
 
 <div class="viewcode-block" id="runFindContinuum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.runFindContinuum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.runFindContinuum.html#pipeline.hif.heuristics.findcont.runFindContinuum">[docs]</a>
 <span class="k">def</span> <span class="nf">runFindContinuum</span><span class="p">(</span><span class="n">img</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">pbcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psfcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> 
                      <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                      <span class="n">baselineModeA</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">baselineModeB</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span>
@@ -6492,7 +6488,7 @@
 <span class="c1">#                    [avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask, nbin, initialPeakOverMad] = result</span>
 
 <div class="viewcode-block" id="invertChannelRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.invertChannelRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.invertChannelRanges.html#pipeline.hif.heuristics.findcont.invertChannelRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">invertChannelRanges</span><span class="p">(</span><span class="n">invertstring</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">startchan</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                         <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -6540,7 +6536,7 @@
 
 
 <div class="viewcode-block" id="plotChannelSelections">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.plotChannelSelections">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.plotChannelSelections.html#pipeline.hif.heuristics.findcont.plotChannelSelections">[docs]</a>
 <span class="k">def</span> <span class="nf">plotChannelSelections</span><span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">avgspectrumAboveThreshold</span><span class="p">,</span> 
                           <span class="n">skipchan</span><span class="p">,</span> <span class="n">medianTrue</span><span class="p">,</span> 
                           <span class="n">threshold</span><span class="p">,</span> <span class="n">secondSelectionAdded</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lineColor</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
@@ -6583,7 +6579,7 @@
 
 
 <div class="viewcode-block" id="findWidestContiguousListInOtherHalf">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findWidestContiguousListInOtherHalf">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findWidestContiguousListInOtherHalf.html#pipeline.hif.heuristics.findcont.findWidestContiguousListInOtherHalf">[docs]</a>
 <span class="k">def</span> <span class="nf">findWidestContiguousListInOtherHalf</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">lowerHalf</span><span class="p">,</span> <span class="n">nchan</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a list of channels, find the longest contiguous list in the first half or second half</span>
@@ -6609,7 +6605,7 @@
 
 
 <div class="viewcode-block" id="findChannelsInChannelRangeWithComparableIntensity">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findChannelsInChannelRangeWithComparableIntensity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findChannelsInChannelRangeWithComparableIntensity.html#pipeline.hif.heuristics.findcont.findChannelsInChannelRangeWithComparableIntensity">[docs]</a>
 <span class="k">def</span> <span class="nf">findChannelsInChannelRangeWithComparableIntensity</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channelRange</span><span class="p">,</span> <span class="n">continuumChannels</span><span class="p">,</span>
                                                       <span class="n">intensity</span><span class="p">,</span> <span class="n">withinSigma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -6638,7 +6634,7 @@
 
     
 <div class="viewcode-block" id="findWidestContiguousListInChannelRange">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findWidestContiguousListInChannelRange">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findWidestContiguousListInChannelRange.html#pipeline.hif.heuristics.findcont.findWidestContiguousListInChannelRange">[docs]</a>
 <span class="k">def</span> <span class="nf">findWidestContiguousListInChannelRange</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">channelRange</span><span class="p">,</span> <span class="n">continuumChannels</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a list of channels, find the longest contiguous list in the first half or second half</span>
@@ -6669,7 +6665,7 @@
 
 
 <div class="viewcode-block" id="aboveBelow">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.aboveBelow">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.aboveBelow.html#pipeline.hif.heuristics.findcont.aboveBelow">[docs]</a>
 <span class="k">def</span> <span class="nf">aboveBelow</span><span class="p">(</span><span class="n">avgSpectrumNansReplaced</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -6702,7 +6698,7 @@
 
 
 <div class="viewcode-block" id="writeMeanSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.writeMeanSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.writeMeanSpectrum.html#pipeline.hif.heuristics.findcont.writeMeanSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">writeMeanSpectrum</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">avgspectrum</span><span class="p">,</span> 
                       <span class="n">avgSpectrumNansReplaced</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edgesUsed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                       <span class="n">nanmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">centralArcsec</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -6746,7 +6742,7 @@
 
 
 <div class="viewcode-block" id="findContinuumChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findContinuumChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findContinuumChannels.html#pipeline.hif.heuristics.findcont.findContinuumChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">findContinuumChannels</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="n">nBaselineChannels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">sigmaFindContinuum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
                           <span class="n">nanmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baselineMode</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">trimChannels</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
                           <span class="n">narrow</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maxTrim</span><span class="o">=</span><span class="n">maxTrimDefault</span><span class="p">,</span> 
@@ -7293,7 +7289,7 @@
 
 
 <div class="viewcode-block" id="rejectNarrowInnerWindowsChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.rejectNarrowInnerWindowsChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.rejectNarrowInnerWindowsChannels.html#pipeline.hif.heuristics.findcont.rejectNarrowInnerWindowsChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">rejectNarrowInnerWindowsChannels</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">fCCiteration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -7337,7 +7333,7 @@
 
 
 <div class="viewcode-block" id="splitListIntoContiguousListsAndRejectNarrow">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.splitListIntoContiguousListsAndRejectNarrow">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.splitListIntoContiguousListsAndRejectNarrow.html#pipeline.hif.heuristics.findcont.splitListIntoContiguousListsAndRejectNarrow">[docs]</a>
 <span class="k">def</span> <span class="nf">splitListIntoContiguousListsAndRejectNarrow</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">narrow</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -7364,7 +7360,7 @@
 
 
 <div class="viewcode-block" id="splitListIntoContiguousListsAndTrim">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.splitListIntoContiguousListsAndTrim">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.splitListIntoContiguousListsAndTrim.html#pipeline.hif.heuristics.findcont.splitListIntoContiguousListsAndTrim">[docs]</a>
 <span class="k">def</span> <span class="nf">splitListIntoContiguousListsAndTrim</span><span class="p">(</span><span class="n">totalChannels</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">trimChannels</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> 
                                         <span class="n">maxTrim</span><span class="o">=</span><span class="n">maxTrimDefault</span><span class="p">,</span> 
                                         <span class="n">maxTrimFraction</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -7431,7 +7427,7 @@
 
 
 <div class="viewcode-block" id="maxLengthOfLists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.maxLengthOfLists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.maxLengthOfLists.html#pipeline.hif.heuristics.findcont.maxLengthOfLists">[docs]</a>
 <span class="k">def</span> <span class="nf">maxLengthOfLists</span><span class="p">(</span><span class="n">lists</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -7446,7 +7442,7 @@
 
 
 <div class="viewcode-block" id="roundFigures">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.roundFigures">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.roundFigures.html#pipeline.hif.heuristics.findcont.roundFigures">[docs]</a>
 <span class="k">def</span> <span class="nf">roundFigures</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">digits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum and drawYlabel.</span>
@@ -7467,7 +7463,7 @@
 
 
 <div class="viewcode-block" id="pickAutoTrimChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickAutoTrimChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickAutoTrimChannels.html#pipeline.hif.heuristics.findcont.pickAutoTrimChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">pickAutoTrimChannels</span><span class="p">(</span><span class="n">totalChannels</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">maxTrim</span><span class="p">,</span> <span class="n">medianWidthOfRanges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by splitListIntoContiguousListsAndTrim and pickTrimString.</span>
@@ -7487,7 +7483,7 @@
 
 
 <div class="viewcode-block" id="pickTrimString">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickTrimString">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickTrimString.html#pipeline.hif.heuristics.findcont.pickTrimString">[docs]</a>
 <span class="k">def</span> <span class="nf">pickTrimString</span><span class="p">(</span><span class="n">totalChannels</span><span class="p">,</span> <span class="n">trimChannels</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">maxTrim</span><span class="p">,</span> <span class="n">selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -7509,7 +7505,7 @@
 
 
 <div class="viewcode-block" id="pickNarrowString">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickNarrowString">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickNarrowString.html#pipeline.hif.heuristics.findcont.pickNarrowString">[docs]</a>
 <span class="k">def</span> <span class="nf">pickNarrowString</span><span class="p">(</span><span class="n">narrow</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">narrowValueModified</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -7528,7 +7524,7 @@
 
 
 <div class="viewcode-block" id="pickNarrow">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pickNarrow">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pickNarrow.html#pipeline.hif.heuristics.findcont.pickNarrow">[docs]</a>
 <span class="k">def</span> <span class="nf">pickNarrow</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by pickNarrowString and findContinuumChannels.</span>
@@ -7548,7 +7544,7 @@
 
 
 <div class="viewcode-block" id="sigmaCorrectionFactor">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.sigmaCorrectionFactor">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.sigmaCorrectionFactor.html#pipeline.hif.heuristics.findcont.sigmaCorrectionFactor">[docs]</a>
 <span class="k">def</span> <span class="nf">sigmaCorrectionFactor</span><span class="p">(</span><span class="n">baselineMode</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">percentile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -7568,7 +7564,7 @@
 
 
 <div class="viewcode-block" id="medianCorrected">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.medianCorrected">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.medianCorrected.html#pipeline.hif.heuristics.findcont.medianCorrected">[docs]</a>
 <span class="k">def</span> <span class="nf">medianCorrected</span><span class="p">(</span><span class="n">baselineMode</span><span class="p">,</span> <span class="n">percentile</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">mad</span><span class="p">,</span> <span class="n">signalRatio</span><span class="p">,</span> 
                     <span class="n">useLowBaseline</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -7589,7 +7585,7 @@
 
 
 <div class="viewcode-block" id="computeMedianCorrectionFactor">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeMedianCorrectionFactor">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeMedianCorrectionFactor.html#pipeline.hif.heuristics.findcont.computeMedianCorrectionFactor">[docs]</a>
 <span class="k">def</span> <span class="nf">computeMedianCorrectionFactor</span><span class="p">(</span><span class="n">baselineMode</span><span class="p">,</span> <span class="n">percentile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels and medianCorrected.</span>
@@ -7604,7 +7600,7 @@
 
 
 <div class="viewcode-block" id="getImageInfo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getImageInfo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getImageInfo.html#pipeline.hif.heuristics.findcont.getImageInfo">[docs]</a>
 <span class="k">def</span> <span class="nf">getImageInfo</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">returnBeamAreaPerChannel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuum and meanSpectrum.</span>
@@ -7687,7 +7683,7 @@
 
                                                             
 <div class="viewcode-block" id="numberOfChannelsInCube">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.numberOfChannelsInCube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hif.heuristics.findcont.numberOfChannelsInCube.html#pipeline.hif.heuristics.findcont.numberOfChannelsInCube">[docs]</a>
 <span class="k">def</span> <span class="nf">numberOfChannelsInCube</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">returnFreqs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnChannelWidth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">myia</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -7733,7 +7729,7 @@
 
 
 <div class="viewcode-block" id="nanmean">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.nanmean">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.nanmean.html#pipeline.hif.heuristics.findcont.nanmean">[docs]</a>
 <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels, runFindContinuum, and avgOverCube.</span>
@@ -7778,7 +7774,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">overwrite_input</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="nanmedian">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.nanmedian">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.nanmedian.html#pipeline.hif.heuristics.findcont.nanmedian">[docs]</a>
 <span class="k">def</span> <span class="nf">nanmedian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">preop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by MAD, avgOverCube, and meanSpectrum.</span>
@@ -7845,7 +7841,7 @@
 
 
 <div class="viewcode-block" id="findSpectralAxis">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findSpectralAxis">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findSpectralAxis.html#pipeline.hif.heuristics.findcont.findSpectralAxis">[docs]</a>
 <span class="k">def</span> <span class="nf">findSpectralAxis</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by computeStatisticalSpectrumFromMask, getImageInfo, </span>
@@ -7872,7 +7868,7 @@
 
 
 <div class="viewcode-block" id="countUnmaskedPixels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.countUnmaskedPixels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.countUnmaskedPixels.html#pipeline.hif.heuristics.findcont.countUnmaskedPixels">[docs]</a>
 <span class="k">def</span> <span class="nf">countUnmaskedPixels</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">useImstat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrumFromMom0Mom8JointMask.</span>
@@ -7917,7 +7913,7 @@
 
 
 <div class="viewcode-block" id="countPixelsAboveZero">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.countPixelsAboveZero">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.countPixelsAboveZero.html#pipeline.hif.heuristics.findcont.countPixelsAboveZero">[docs]</a>
 <span class="k">def</span> <span class="nf">countPixelsAboveZero</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">pbmom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">useImstat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrumFromMom0Mom8JointMask.</span>
@@ -7954,7 +7950,7 @@
 
 
 <div class="viewcode-block" id="flattenMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.flattenMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.flattenMask.html#pipeline.hif.heuristics.findcont.flattenMask">[docs]</a>
 <span class="k">def</span> <span class="nf">flattenMask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a multi-channel CASA image mask and propagates all pixels to a </span>
@@ -7974,7 +7970,7 @@
 
 
 <div class="viewcode-block" id="imagePercentileNoMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.imagePercentileNoMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.imagePercentileNoMask.html#pipeline.hif.heuristics.findcont.imagePercentileNoMask">[docs]</a>
 <span class="k">def</span> <span class="nf">imagePercentileNoMask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    percentiles: a single value or a list</span>
@@ -7995,7 +7991,7 @@
 
 
 <div class="viewcode-block" id="meanSpectrumFromMom0Mom8JointMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.meanSpectrumFromMom0Mom8JointMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.meanSpectrumFromMom0Mom8JointMask.html#pipeline.hif.heuristics.findcont.meanSpectrumFromMom0Mom8JointMask">[docs]</a>
 <span class="k">def</span> <span class="nf">meanSpectrumFromMom0Mom8JointMask</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">imageInfo</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">pbcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psfcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> 
                                       <span class="n">projectCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">overwriteMoments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                                       <span class="n">overwriteMasks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">phase2</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
@@ -8574,7 +8570,7 @@
 <span class="c1"># immoment</span>
 
 <div class="viewcode-block" id="locatePBCube">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.locatePBCube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.locatePBCube.html#pipeline.hif.heuristics.findcont.locatePBCube">[docs]</a>
 <span class="k">def</span> <span class="nf">locatePBCube</span><span class="p">(</span><span class="n">cube</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">cube</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.residual&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span> 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">cube</span><span class="p">):</span>
@@ -8597,7 +8593,7 @@
 
 
 <div class="viewcode-block" id="oneEvent">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.oneEvent">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.oneEvent.html#pipeline.hif.heuristics.findcont.oneEvent">[docs]</a>
 <span class="k">def</span> <span class="nf">oneEvent</span><span class="p">(</span><span class="n">npts</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrumFromMom0Mom8JointMask.</span>
@@ -8618,7 +8614,7 @@
 
 
 <div class="viewcode-block" id="cornersEmptyEdgesNotEmpty">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.cornersEmptyEdgesNotEmpty">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.cornersEmptyEdgesNotEmpty.html#pipeline.hif.heuristics.findcont.cornersEmptyEdgesNotEmpty">[docs]</a>
 <span class="k">def</span> <span class="nf">cornersEmptyEdgesNotEmpty</span><span class="p">(</span><span class="n">pbcube</span><span class="p">,</span> <span class="n">imageInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">middleChannel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks if the four corner pixels of an image are masked while the four</span>
@@ -8650,7 +8646,7 @@
 
     
 <div class="viewcode-block" id="findOuterAnnulusForPBCube">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.findOuterAnnulusForPBCube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.findOuterAnnulusForPBCube.html#pipeline.hif.heuristics.findcont.findOuterAnnulusForPBCube">[docs]</a>
 <span class="k">def</span> <span class="nf">findOuterAnnulusForPBCube</span><span class="p">(</span><span class="n">pbcube</span><span class="p">,</span> <span class="n">imstatListit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">imstatVerbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                               <span class="n">subimage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">imageInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -8696,7 +8692,7 @@
 
 
 <div class="viewcode-block" id="computeStatisticalSpectrumFromMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeStatisticalSpectrumFromMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeStatisticalSpectrumFromMask.html#pipeline.hif.heuristics.findcont.computeStatisticalSpectrumFromMask">[docs]</a>
 <span class="k">def</span> <span class="nf">computeStatisticalSpectrumFromMask</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">jointmask</span><span class="p">,</span> <span class="n">pbimg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imageInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                        <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">normalizeByMAD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                        <span class="n">projectCode</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">higherAnnulusLevel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lowerAnnulusLevel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
@@ -8861,7 +8857,7 @@
 
 
 <div class="viewcode-block" id="create_casa_quantity">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.create_casa_quantity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.create_casa_quantity.html#pipeline.hif.heuristics.findcont.create_casa_quantity">[docs]</a>
 <span class="k">def</span> <span class="nf">create_casa_quantity</span><span class="p">(</span><span class="n">myqatool</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">unit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by CalcAtmTransmissionForImage, frames, and lsrkToRest.</span>
@@ -8880,7 +8876,7 @@
 
 
 <div class="viewcode-block" id="MAD">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.MAD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.MAD.html#pipeline.hif.heuristics.findcont.MAD">[docs]</a>
 <span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by removeInitialQuadraticIfNeeded, findContinuumChannels,</span>
@@ -8898,7 +8894,7 @@
 
 
 <div class="viewcode-block" id="splitListIntoContiguousLists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.splitListIntoContiguousLists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.splitListIntoContiguousLists.html#pipeline.hif.heuristics.findcont.splitListIntoContiguousLists">[docs]</a>
 <span class="k">def</span> <span class="nf">splitListIntoContiguousLists</span><span class="p">(</span><span class="n">mylist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -8921,7 +8917,7 @@
 
 
 <div class="viewcode-block" id="splitListIntoContiguousListsAndRejectZeroStd">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.splitListIntoContiguousListsAndRejectZeroStd">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.splitListIntoContiguousListsAndRejectZeroStd.html#pipeline.hif.heuristics.findcont.splitListIntoContiguousListsAndRejectZeroStd">[docs]</a>
 <span class="k">def</span> <span class="nf">splitListIntoContiguousListsAndRejectZeroStd</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">nanmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -8950,7 +8946,7 @@
 
 
 <div class="viewcode-block" id="convertChannelListIntoSelection">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.convertChannelListIntoSelection">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.convertChannelListIntoSelection.html#pipeline.hif.heuristics.findcont.convertChannelListIntoSelection">[docs]</a>
 <span class="k">def</span> <span class="nf">convertChannelListIntoSelection</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuumChannels.</span>
@@ -8972,7 +8968,7 @@
 
 
 <div class="viewcode-block" id="widenSelections">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.widenSelections">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.widenSelections.html#pipeline.hif.heuristics.findcont.widenSelections">[docs]</a>
 <span class="k">def</span> <span class="nf">widenSelections</span><span class="p">(</span><span class="n">datfiles</span><span class="p">,</span> <span class="n">eachside</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read a list of _findContinuum.dat files, and widen each channel range</span>
@@ -9017,7 +9013,7 @@
 
 
 <div class="viewcode-block" id="widenSelection">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.widenSelection">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.widenSelection.html#pipeline.hif.heuristics.findcont.widenSelection">[docs]</a>
 <span class="k">def</span> <span class="nf">widenSelection</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">eachside</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">channelWidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> 
                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -9057,7 +9053,7 @@
 
 
 <div class="viewcode-block" id="convertSelectionIntoChannelList">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.convertSelectionIntoChannelList">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.convertSelectionIntoChannelList.html#pipeline.hif.heuristics.findcont.convertSelectionIntoChannelList">[docs]</a>
 <span class="k">def</span> <span class="nf">convertSelectionIntoChannelList</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts an arbitrary CASA selection string into an array of channel numbers</span>
@@ -9078,7 +9074,7 @@
 
     
 <div class="viewcode-block" id="CalcAtmTransmissionForImage">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.CalcAtmTransmissionForImage">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.CalcAtmTransmissionForImage.html#pipeline.hif.heuristics.findcont.CalcAtmTransmissionForImage">[docs]</a>
 <span class="k">def</span> <span class="nf">CalcAtmTransmissionForImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">imageInfo</span><span class="p">,</span> <span class="n">chanInfo</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">airmass</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">pwv</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
                                 <span class="n">spectralaxis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;transmission&#39;</span><span class="p">,</span> <span class="n">P</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">H</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> 
                                 <span class="n">T</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">altitude</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -9188,7 +9184,7 @@
 
 
 <div class="viewcode-block" id="mjdToUT">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.mjdToUT">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.mjdToUT.html#pipeline.hif.heuristics.findcont.mjdToUT">[docs]</a>
 <span class="k">def</span> <span class="nf">mjdToUT</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="n">use_metool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by getDateObs.</span>
@@ -9204,7 +9200,7 @@
 
         
 <div class="viewcode-block" id="mjdSecondsToMJDandUT">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.mjdSecondsToMJDandUT">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.mjdSecondsToMJDandUT.html#pipeline.hif.heuristics.findcont.mjdSecondsToMJDandUT">[docs]</a>
 <span class="k">def</span> <span class="nf">mjdSecondsToMJDandUT</span><span class="p">(</span><span class="n">mjdsec</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by mjdToUT.</span>
@@ -9228,7 +9224,7 @@
 
 
 <div class="viewcode-block" id="cubeFrameToTopo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.cubeFrameToTopo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.cubeFrameToTopo.html#pipeline.hif.heuristics.findcont.cubeFrameToTopo">[docs]</a>
 <span class="k">def</span> <span class="nf">cubeFrameToTopo</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">imageInfo</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                     <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -9326,7 +9322,7 @@
 
 
 <div class="viewcode-block" id="fieldIDForName">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.fieldIDForName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.fieldIDForName.html#pipeline.hif.heuristics.findcont.fieldIDForName">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldIDForName</span><span class="p">(</span><span class="n">mymsmd</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns field ID for source name, ignoring those fields which are not used</span>
@@ -9355,7 +9351,7 @@
 
 
 <div class="viewcode-block" id="getObservationStartDate">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getObservationStartDate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getObservationStartDate.html#pipeline.hif.heuristics.findcont.getObservationStartDate">[docs]</a>
 <span class="k">def</span> <span class="nf">getObservationStartDate</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">measuresToolFormat</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uses the tb tool to read the start time of the observation and reports the date.</span>
@@ -9377,7 +9373,7 @@
 
 
 <div class="viewcode-block" id="rad2radec">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.rad2radec">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.rad2radec.html#pipeline.hif.heuristics.findcont.rad2radec">[docs]</a>
 <span class="k">def</span> <span class="nf">rad2radec</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
               <span class="n">replaceDecDotsWithColons</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hmsdms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="p">,</span>
               <span class="n">prependEquinox</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hmdm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -9429,7 +9425,7 @@
 
 
 <div class="viewcode-block" id="convertColonDelimitersToHMSDMS">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.convertColonDelimitersToHMSDMS">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.convertColonDelimitersToHMSDMS.html#pipeline.hif.heuristics.findcont.convertColonDelimitersToHMSDMS">[docs]</a>
 <span class="k">def</span> <span class="nf">convertColonDelimitersToHMSDMS</span><span class="p">(</span><span class="n">mystring</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">usePeriodsForDeclination</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by rad2radec.</span>
@@ -9461,7 +9457,7 @@
 
     
 <div class="viewcode-block" id="casaRestToTopo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.casaRestToTopo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.casaRestToTopo.html#pipeline.hif.heuristics.findcont.casaRestToTopo">[docs]</a>
 <span class="k">def</span> <span class="nf">casaRestToTopo</span><span class="p">(</span><span class="n">restFrequency</span><span class="p">,</span> <span class="n">restFrequency2</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a range of SOURCE frame frequencies to TOPO channels in a </span>
@@ -9488,7 +9484,7 @@
 
 
 <div class="viewcode-block" id="lsrkToTopo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.lsrkToTopo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.lsrkToTopo.html#pipeline.hif.heuristics.findcont.lsrkToTopo">[docs]</a>
 <span class="k">def</span> <span class="nf">lsrkToTopo</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> 
                <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -9512,7 +9508,7 @@
 
 
 <div class="viewcode-block" id="lsrkToRest">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.lsrkToRest">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.lsrkToRest.html#pipeline.hif.heuristics.findcont.lsrkToRest">[docs]</a>
 <span class="k">def</span> <span class="nf">lsrkToRest</span><span class="p">(</span><span class="n">lsrkFrequency</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> 
                <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -9552,7 +9548,7 @@
 
 
 <div class="viewcode-block" id="restToTopo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.restToTopo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.restToTopo.html#pipeline.hif.heuristics.findcont.restToTopo">[docs]</a>
 <span class="k">def</span> <span class="nf">restToTopo</span><span class="p">(</span><span class="n">restFrequency</span><span class="p">,</span> <span class="n">velocityLSRK</span><span class="p">,</span> <span class="n">datestring</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s1">&#39;J2000&#39;</span><span class="p">,</span> 
                <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,</span> <span class="n">veltype</span><span class="o">=</span><span class="s1">&#39;radio&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -9575,7 +9571,7 @@
 
 
 <div class="viewcode-block" id="frames">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.frames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.frames.html#pipeline.hif.heuristics.findcont.frames">[docs]</a>
 <span class="k">def</span> <span class="nf">frames</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="mf">286.7</span><span class="p">,</span> <span class="n">datestring</span><span class="o">=</span><span class="s2">&quot;2005/11/01/00:00:00&quot;</span><span class="p">,</span>
            <span class="n">ra</span><span class="o">=</span><span class="s2">&quot;05:35:28.105&quot;</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="s2">&quot;-069.16.10.99&quot;</span><span class="p">,</span> <span class="n">equinox</span><span class="o">=</span><span class="s2">&quot;J2000&quot;</span><span class="p">,</span> 
            <span class="n">observatory</span><span class="o">=</span><span class="s2">&quot;ALMA&quot;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">myme</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">myqa</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -9648,7 +9644,7 @@
 
 
 <div class="viewcode-block" id="parseFrequencyArgumentToGHz">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.parseFrequencyArgumentToGHz">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.parseFrequencyArgumentToGHz.html#pipeline.hif.heuristics.findcont.parseFrequencyArgumentToGHz">[docs]</a>
 <span class="k">def</span> <span class="nf">parseFrequencyArgumentToGHz</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by frames and lsrkToRest.</span>
@@ -9663,7 +9659,7 @@
 
 
 <div class="viewcode-block" id="parseFrequencyArgumentToHz">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.parseFrequencyArgumentToHz">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.parseFrequencyArgumentToHz.html#pipeline.hif.heuristics.findcont.parseFrequencyArgumentToHz">[docs]</a>
 <span class="k">def</span> <span class="nf">parseFrequencyArgumentToHz</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a frequency string into floating point in Hz, based on the units.</span>
@@ -9676,7 +9672,7 @@
 
 
 <div class="viewcode-block" id="parseFrequencyArgument">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.parseFrequencyArgument">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.parseFrequencyArgument.html#pipeline.hif.heuristics.findcont.parseFrequencyArgument">[docs]</a>
 <span class="k">def</span> <span class="nf">parseFrequencyArgument</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by parseFrequencyArgumentToGHz, topoFreqToChannel and cubeFrameToTopo.</span>
@@ -9702,7 +9698,7 @@
 
 
 <div class="viewcode-block" id="intersectChannelSelections">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.intersectChannelSelections">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.intersectChannelSelections.html#pipeline.hif.heuristics.findcont.intersectChannelSelections">[docs]</a>
 <span class="k">def</span> <span class="nf">intersectChannelSelections</span><span class="p">(</span><span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Take the intersection of two ranges.</span>
@@ -9714,7 +9710,7 @@
 
 
 <div class="viewcode-block" id="channelSelectionRangesToIndexArray">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.channelSelectionRangesToIndexArray">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.channelSelectionRangesToIndexArray.html#pipeline.hif.heuristics.findcont.channelSelectionRangesToIndexArray">[docs]</a>
 <span class="k">def</span> <span class="nf">channelSelectionRangesToIndexArray</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -9729,7 +9725,7 @@
 
 
 <div class="viewcode-block" id="linfit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.linfit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.linfit.html#pipeline.hif.heuristics.findcont.linfit">[docs]</a>
 <span class="k">def</span> <span class="nf">linfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerror</span><span class="p">,</span> <span class="n">pinit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by atmosphereVariation in Cycle 4+5+6 and by</span>
@@ -9759,7 +9755,7 @@
 
 
 <div class="viewcode-block" id="polyfit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.polyfit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.polyfit.html#pipeline.hif.heuristics.findcont.polyfit">[docs]</a>
 <span class="k">def</span> <span class="nf">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerror</span><span class="p">,</span> <span class="n">pinit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by removeInitialQuadraticIfNeeded in Cycle 6, and by</span>
@@ -9789,7 +9785,7 @@
 
 
 <div class="viewcode-block" id="channelsInLargestGroup">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.channelsInLargestGroup">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.channelsInLargestGroup.html#pipeline.hif.heuristics.findcont.channelsInLargestGroup">[docs]</a>
 <span class="k">def</span> <span class="nf">channelsInLargestGroup</span><span class="p">(</span><span class="n">selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -9810,7 +9806,7 @@
 
 
 <div class="viewcode-block" id="countChannelsInRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.countChannelsInRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hif.heuristics.findcont.countChannelsInRanges.html#pipeline.hif.heuristics.findcont.countChannelsInRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">countChannelsInRanges</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -9828,7 +9824,7 @@
 
 
 <div class="viewcode-block" id="countChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.countChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.countChannels.html#pipeline.hif.heuristics.findcont.countChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">countChannels</span><span class="p">(</span><span class="n">channels</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by runFindContinuum.</span>
@@ -9864,7 +9860,7 @@
 
 
 <div class="viewcode-block" id="grep">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.grep">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.grep.html#pipeline.hif.heuristics.findcont.grep">[docs]</a>
 <span class="k">def</span> <span class="nf">grep</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called only by maskArgumentMismatch and centralArcsecArgumentMismatch.</span>
@@ -9876,7 +9872,7 @@
 
 
 <div class="viewcode-block" id="topoFreqToChannel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.topoFreqToChannel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.topoFreqToChannel.html#pipeline.hif.heuristics.findcont.topoFreqToChannel">[docs]</a>
 <span class="k">def</span> <span class="nf">topoFreqToChannel</span><span class="p">(</span><span class="n">freqlist</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++ This function is used by pipeline in writeContDat()</span>
@@ -9917,7 +9913,7 @@
 
     
 <div class="viewcode-block" id="topoFreqRangeListToChannel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.topoFreqRangeListToChannel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.topoFreqRangeListToChannel.html#pipeline.hif.heuristics.findcont.topoFreqRangeListToChannel">[docs]</a>
 <span class="k">def</span> <span class="nf">topoFreqRangeListToChannel</span><span class="p">(</span><span class="n">contdatline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">vispath</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">freqlist</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                                <span class="n">returnFlatlist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">writeChannelsInIncreasingOrder</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -9983,7 +9979,7 @@
 
 
 <div class="viewcode-block" id="gaussianBeamOffset">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.gaussianBeamOffset">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.gaussianBeamOffset.html#pipeline.hif.heuristics.findcont.gaussianBeamOffset">[docs]</a>
 <span class="k">def</span> <span class="nf">gaussianBeamOffset</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++ This function is used by pipeline in computeStatisticalSpectrumFromMask().</span>
@@ -9999,7 +9995,7 @@
 
     
 <div class="viewcode-block" id="gaussianBeamResponse">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.gaussianBeamResponse">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.gaussianBeamResponse.html#pipeline.hif.heuristics.findcont.gaussianBeamResponse">[docs]</a>
 <span class="k">def</span> <span class="nf">gaussianBeamResponse</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++ This function is used by pipeline in computeStatisticalSpectrumFromMask().</span>
@@ -10015,7 +10011,7 @@
 
 
 <div class="viewcode-block" id="imageSNRAnnulus">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.imageSNRAnnulus">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.imageSNRAnnulus.html#pipeline.hif.heuristics.findcont.imageSNRAnnulus">[docs]</a>
 <span class="k">def</span> <span class="nf">imageSNRAnnulus</span><span class="p">(</span><span class="n">mymomDiff</span><span class="p">,</span> <span class="n">jointMaskTest</span><span class="p">,</span> <span class="n">jointMaskTestWithAnnulus</span><span class="p">,</span> <span class="n">applyMaskToAll</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>                   
     <span class="c1"># Need 2 calls to get peak anywhere outside the joint mask, but median from annulus, and MAD the lower of the two possibilities</span>
     <span class="n">ignore2</span><span class="p">,</span> <span class="n">momDiffPeakOutside</span><span class="p">,</span> <span class="n">ignore0</span><span class="p">,</span> <span class="n">ignore1</span> <span class="o">=</span> <span class="n">imageSNR</span><span class="p">(</span><span class="n">mymomDiff</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">jointMaskTest</span><span class="p">,</span>
@@ -10027,7 +10023,7 @@
 
 
 <div class="viewcode-block" id="imageSNR">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.imageSNR">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.imageSNR.html#pipeline.hif.heuristics.findcont.imageSNR">[docs]</a>
 <span class="k">def</span> <span class="nf">imageSNR</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[],</span> <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">maskWithAnnulus</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">useAnnulus</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
              <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">applyMaskToAll</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnAllStats</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
              <span class="n">usepb</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">chans</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -10084,7 +10080,7 @@
 
 
 <div class="viewcode-block" id="getSpwFromPipelineImageName">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getSpwFromPipelineImageName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getSpwFromPipelineImageName.html#pipeline.hif.heuristics.findcont.getSpwFromPipelineImageName">[docs]</a>
 <span class="k">def</span> <span class="nf">getSpwFromPipelineImageName</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the spw ID from the pipeline image file name.</span>
@@ -10109,7 +10105,7 @@
 
 
 <div class="viewcode-block" id="representativeSpwBandwidth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.representativeSpwBandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.representativeSpwBandwidth.html#pipeline.hif.heuristics.findcont.representativeSpwBandwidth">[docs]</a>
 <span class="k">def</span> <span class="nf">representativeSpwBandwidth</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uses updateSBSummary to learn the name of the representativeWindow, then </span>
@@ -10171,7 +10167,7 @@
 
     
 <div class="viewcode-block" id="updateSBSummary">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.updateSBSummary">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.updateSBSummary.html#pipeline.hif.heuristics.findcont.updateSBSummary">[docs]</a>
 <span class="k">def</span> <span class="nf">updateSBSummary</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">representativeFrequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                     <span class="n">minAcceptableAngResolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                     <span class="n">maxAcceptableAngResolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -10362,7 +10358,7 @@
 
 
 <div class="viewcode-block" id="representativeFrequency">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.representativeFrequency">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.representativeFrequency.html#pipeline.hif.heuristics.findcont.representativeFrequency">[docs]</a>
 <span class="k">def</span> <span class="nf">representativeFrequency</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the representative frequency from the ASDM_SBSUMMARY table of a</span>
@@ -10414,7 +10410,7 @@
 
 
 <div class="viewcode-block" id="surmiseRepresentativeSpw">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.surmiseRepresentativeSpw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.surmiseRepresentativeSpw.html#pipeline.hif.heuristics.findcont.surmiseRepresentativeSpw">[docs]</a>
 <span class="k">def</span> <span class="nf">surmiseRepresentativeSpw</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the representative frequency from the measurement set, then computes </span>
@@ -10447,7 +10443,7 @@
 
 
 <div class="viewcode-block" id="getScienceSpwsForFrequency">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getScienceSpwsForFrequency">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getScienceSpwsForFrequency.html#pipeline.hif.heuristics.findcont.getScienceSpwsForFrequency">[docs]</a>
 <span class="k">def</span> <span class="nf">getScienceSpwsForFrequency</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">nearestOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of science spws that cover a given frequency.</span>
@@ -10479,7 +10475,7 @@
 
 
 <div class="viewcode-block" id="getScienceSpwBandwidths">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getScienceSpwBandwidths">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getScienceSpwBandwidths.html#pipeline.hif.heuristics.findcont.getScienceSpwBandwidths">[docs]</a>
 <span class="k">def</span> <span class="nf">getScienceSpwBandwidths</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">,</span> 
                              <span class="n">tdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sqld</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                              <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnDict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnMHz</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -10511,7 +10507,7 @@
 
 
 <div class="viewcode-block" id="getScienceSpws">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getScienceSpws">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getScienceSpws.html#pipeline.hif.heuristics.findcont.getScienceSpws">[docs]</a>
 <span class="k">def</span> <span class="nf">getScienceSpws</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">,</span> <span class="n">returnString</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                    <span class="n">returnListOfStrings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                    <span class="n">sqld</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">returnFreqRanges</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -10585,7 +10581,7 @@
 <span class="c1">################################################################################</span>
 
 <div class="viewcode-block" id="readContDat">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readContDat">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readContDat.html#pipeline.hif.heuristics.findcont.readContDat">[docs]</a>
 <span class="k">def</span> <span class="nf">readContDat</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the channel selection for a _findContinuum.dat file</span>
@@ -10598,7 +10594,7 @@
 
 
 <div class="viewcode-block" id="readContDatPNG">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readContDatPNG">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readContDatPNG.html#pipeline.hif.heuristics.findcont.readContDatPNG">[docs]</a>
 <span class="k">def</span> <span class="nf">readContDatPNG</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the png name from a _findContinuum.dat file</span>
@@ -10611,7 +10607,7 @@
 
 
 <div class="viewcode-block" id="readContDatAggregateContinuum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readContDatAggregateContinuum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readContDatAggregateContinuum.html#pipeline.hif.heuristics.findcont.readContDatAggregateContinuum">[docs]</a>
 <span class="k">def</span> <span class="nf">readContDatAggregateContinuum</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the aggregate continuum from a _findContinuum.dat file.</span>
@@ -10625,7 +10621,7 @@
 
 
 <div class="viewcode-block" id="readContDatChanWidth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readContDatChanWidth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readContDatChanWidth.html#pipeline.hif.heuristics.findcont.readContDatChanWidth">[docs]</a>
 <span class="k">def</span> <span class="nf">readContDatChanWidth</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts aggBW and channel number to chanWidth (in GHz).</span>
@@ -10639,7 +10635,7 @@
 
 
 <div class="viewcode-block" id="readContDatLSRKRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readContDatLSRKRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readContDatLSRKRanges.html#pipeline.hif.heuristics.findcont.readContDatLSRKRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">readContDatLSRKRanges</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the LSRK ranges from a _findContinuum.dat file and returns one</span>
@@ -10654,7 +10650,7 @@
 
 
 <div class="viewcode-block" id="imageChannelFrequency">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.imageChannelFrequency">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.imageChannelFrequency.html#pipeline.hif.heuristics.findcont.imageChannelFrequency">[docs]</a>
 <span class="k">def</span> <span class="nf">imageChannelFrequency</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">myia</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the frequency (in GHz) of the specified channel of any CASA or FITS</span>
@@ -10718,7 +10714,7 @@
 
              
 <div class="viewcode-block" id="recalcMomDiffSNR">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.recalcMomDiffSNR">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.recalcMomDiffSNR.html#pipeline.hif.heuristics.findcont.recalcMomDiffSNR">[docs]</a>
 <span class="k">def</span> <span class="nf">recalcMomDiffSNR</span><span class="p">(</span><span class="n">priorValuesFile</span><span class="p">,</span> <span class="n">img</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intersectRanges</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                      <span class="n">subimage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnulus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">datfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                      <span class="n">outdir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">includeMom10</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">imageInfo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -10912,7 +10908,7 @@
 
 
 <div class="viewcode-block" id="printPickleFile">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.printPickleFile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.printPickleFile.html#pipeline.hif.heuristics.findcont.printPickleFile">[docs]</a>
 <span class="k">def</span> <span class="nf">printPickleFile</span><span class="p">(</span><span class="n">priorValuesFile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the contents of the specified pickle file of prior values</span>
@@ -10933,7 +10929,7 @@
 
 
 <div class="viewcode-block" id="modifyContinuumChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.modifyContinuumChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.modifyContinuumChannels.html#pipeline.hif.heuristics.findcont.modifyContinuumChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">modifyContinuumChannels</span><span class="p">(</span><span class="n">avgSpectrumNansReplaced</span><span class="p">,</span> <span class="n">minlevel</span><span class="p">,</span> <span class="n">maxlevel</span><span class="p">,</span> <span class="n">intersectRanges</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                             <span class="n">trimChannels</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">narrow</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">maxTrim</span><span class="o">=</span><span class="n">maxTrimDefault</span><span class="p">,</span> <span class="n">maxTrimFraction</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                             <span class="n">avoidance</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -10967,7 +10963,7 @@
 
 
 <div class="viewcode-block" id="plotPickleFile">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.plotPickleFile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.plotPickleFile.html#pipeline.hif.heuristics.findcont.plotPickleFile">[docs]</a>
 <span class="k">def</span> <span class="nf">plotPickleFile</span><span class="p">(</span><span class="n">priorValuesFile</span><span class="p">,</span> <span class="n">sigmaFindContinuum</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">contdat</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                    <span class="n">narrow</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">trimChannels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intersectRanges</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                    <span class="n">computeMomDiffSNR</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnulus</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">subimage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
@@ -11186,7 +11182,7 @@
 
 
 <div class="viewcode-block" id="meanSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.meanSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.meanSpectrum.html#pipeline.hif.heuristics.findcont.meanSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">meanSpectrum</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">nBaselineChannels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">sigmaCube</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                  <span class="n">nanBufferChannels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">useAbsoluteValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">baselineMode</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">continuumThreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -11664,7 +11660,7 @@
 
 
 <div class="viewcode-block" id="getMaxpixpos">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getMaxpixpos">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getMaxpixpos.html#pipeline.hif.heuristics.findcont.getMaxpixpos">[docs]</a>
 <span class="k">def</span> <span class="nf">getMaxpixpos</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by findContinuum, but only in Cycle 4+5 heuristic.</span>
@@ -11677,7 +11673,7 @@
 
 
 <div class="viewcode-block" id="submask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.submask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.submask.html#pipeline.hif.heuristics.findcont.submask">[docs]</a>
 <span class="k">def</span> <span class="nf">submask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrum, but only in Cycle 4+5 heuristic.</span>
@@ -11690,7 +11686,7 @@
 
 
 <div class="viewcode-block" id="avgOverCube">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.avgOverCube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.avgOverCube.html#pipeline.hif.heuristics.findcont.avgOverCube">[docs]</a>
 <span class="k">def</span> <span class="nf">avgOverCube</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="n">useAbsoluteValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">median</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                 <span class="n">mask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">usermask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">useIAGetProfile</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -11763,7 +11759,7 @@
 
 
 <div class="viewcode-block" id="propagateMaskToAllChannels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.propagateMaskToAllChannels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.propagateMaskToAllChannels.html#pipeline.hif.heuristics.findcont.propagateMaskToAllChannels">[docs]</a>
 <span class="k">def</span> <span class="nf">propagateMaskToAllChannels</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called by meanSpectrum.</span>
@@ -11781,7 +11777,7 @@
 
 
 <div class="viewcode-block" id="widthOfMaskArcsec">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.widthOfMaskArcsec">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.widthOfMaskArcsec.html#pipeline.hif.heuristics.findcont.widthOfMaskArcsec">[docs]</a>
 <span class="k">def</span> <span class="nf">widthOfMaskArcsec</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">maskInfo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++ This function is not used by pipeline when meanSpectrumMethod=&#39;mom0mom8jointMask&#39; or if mask=&#39;&#39;</span>
@@ -11809,7 +11805,7 @@
 
 
 <div class="viewcode-block" id="checkForTriangularWavePattern">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.checkForTriangularWavePattern">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.checkForTriangularWavePattern.html#pipeline.hif.heuristics.findcont.checkForTriangularWavePattern">[docs]</a>
 <span class="k">def</span> <span class="nf">checkForTriangularWavePattern</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">triangleFraction</span><span class="o">=</span><span class="mf">0.83</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    +++++++ This function is not used for meanSpectrumMethod == &#39;mom0mom8jointMask&#39;.</span>
@@ -11861,7 +11857,7 @@
 
     
 <div class="viewcode-block" id="computeMadSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.computeMadSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.computeMadSpectrum.html#pipeline.hif.heuristics.findcont.computeMadSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">computeMadSpectrum</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    +++++++ This function is not used for meanSpectrumMethod == &#39;mom0mom8jointMask&#39;.</span>
@@ -11884,7 +11880,7 @@
 
 
 <div class="viewcode-block" id="isSingleContinuum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.isSingleContinuum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.isSingleContinuum.html#pipeline.hif.heuristics.findcont.isSingleContinuum">[docs]</a>
 <span class="k">def</span> <span class="nf">isSingleContinuum</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;OBSERVE_TARGET&#39;</span><span class="p">,</span> 
                       <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -11924,7 +11920,7 @@
 
     
 <div class="viewcode-block" id="sanitizeNames">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.sanitizeNames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.sanitizeNames.html#pipeline.hif.heuristics.findcont.sanitizeNames">[docs]</a>
 <span class="k">def</span> <span class="nf">sanitizeNames</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">newchar</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replaces various special characters with specified character.</span>
@@ -11943,7 +11939,7 @@
 
 
 <div class="viewcode-block" id="transitions">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.transitions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.transitions.html#pipeline.hif.heuristics.findcont.transitions">[docs]</a>
 <span class="k">def</span> <span class="nf">transitions</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;OBSERVE_TARGET&#39;</span><span class="p">,</span> 
                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mymsmd</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -12018,7 +12014,7 @@
 
 
 <div class="viewcode-block" id="getObservationStart">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getObservationStart">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getObservationStart.html#pipeline.hif.heuristics.findcont.getObservationStart">[docs]</a>
 <span class="k">def</span> <span class="nf">getObservationStart</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the start time of the observation from the OBSERVATION table (using tb tool)</span>
@@ -12056,7 +12052,7 @@
 
 
 <div class="viewcode-block" id="getObservatoryName">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getObservatoryName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getObservatoryName.html#pipeline.hif.heuristics.findcont.getObservatoryName">[docs]</a>
 <span class="k">def</span> <span class="nf">getObservatoryName</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    +++++++ This function is not used by pipeline, because it is only used by getScienceSpws.</span>
@@ -12075,7 +12071,7 @@
 
 
 <div class="viewcode-block" id="makeUvcontsub">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.makeUvcontsub">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.makeUvcontsub.html#pipeline.hif.heuristics.findcont.makeUvcontsub">[docs]</a>
 <span class="k">def</span> <span class="nf">makeUvcontsub</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s1">&#39;*.dat&#39;</span><span class="p">,</span> <span class="n">fitorder</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">useFrequency</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    +++++++ This function is not used anywhere else in this file.</span>
@@ -12134,7 +12130,7 @@
 
 
 <div class="viewcode-block" id="getcube">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.getcube">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.getcube.html#pipeline.hif.heuristics.findcont.getcube">[docs]</a>
 <span class="k">def</span> <span class="nf">getcube</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;cubelist.txt&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++ This function is not used by pipeline.</span>
@@ -12155,7 +12151,7 @@
 
 
 <div class="viewcode-block" id="readViewerOutputFile">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readViewerOutputFile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readViewerOutputFile.html#pipeline.hif.heuristics.findcont.readViewerOutputFile">[docs]</a>
 <span class="k">def</span> <span class="nf">readViewerOutputFile</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++++ This function is not used by the pipeline.</span>
@@ -12192,7 +12188,7 @@
 
 
 <div class="viewcode-block" id="readMeanSpectrumFITSFile">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readMeanSpectrumFITSFile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readMeanSpectrumFITSFile.html#pipeline.hif.heuristics.findcont.readMeanSpectrumFITSFile">[docs]</a>
 <span class="k">def</span> <span class="nf">readMeanSpectrumFITSFile</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nanBufferChannels</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++++ This function is not used by the pipeline.</span>
@@ -12232,7 +12228,7 @@
 
 
 <div class="viewcode-block" id="readPreviousMeanSpectrum">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.readPreviousMeanSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.readPreviousMeanSpectrum.html#pipeline.hif.heuristics.findcont.readPreviousMeanSpectrum">[docs]</a>
 <span class="k">def</span> <span class="nf">readPreviousMeanSpectrum</span><span class="p">(</span><span class="n">meanSpectrumFile</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ++++++ This function is not used by the pipeline.</span>
@@ -12343,7 +12339,7 @@
 
 
 <div class="viewcode-block" id="removeNaNs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.removeNaNs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.removeNaNs.html#pipeline.hif.heuristics.findcont.removeNaNs">[docs]</a>
 <span class="k">def</span> <span class="nf">removeNaNs</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">replaceWithMin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nanBufferChannels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
                <span class="n">replaceWithZero</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -12414,7 +12410,7 @@
 
 
 <div class="viewcode-block" id="splitListIntoHomogeneousLists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.splitListIntoHomogeneousLists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.splitListIntoHomogeneousLists.html#pipeline.hif.heuristics.findcont.splitListIntoHomogeneousLists">[docs]</a>
 <span class="k">def</span> <span class="nf">splitListIntoHomogeneousLists</span><span class="p">(</span><span class="n">mylist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function is called only by removeNaNs, and hence is not used in Cycle 6-onward pipeline.</span>
@@ -12434,7 +12430,7 @@
 
     
 <div class="viewcode-block" id="removeZeros">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.removeZeros">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.removeZeros.html#pipeline.hif.heuristics.findcont.removeZeros">[docs]</a>
 <span class="k">def</span> <span class="nf">removeZeros</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    +++++ This function is not used for meanSpectrumMethod=&#39;mom0mom8jointMask&#39;.</span>
@@ -12459,7 +12455,7 @@
 
 
 <div class="viewcode-block" id="plotStatisticalSpectrumFromMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.plotStatisticalSpectrumFromMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.plotStatisticalSpectrumFromMask.html#pipeline.hif.heuristics.findcont.plotStatisticalSpectrumFromMask">[docs]</a>
 <span class="k">def</span> <span class="nf">plotStatisticalSpectrumFromMask</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">jointMask</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">pbcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                                     <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">normalizeByMAD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                                     <span class="n">png</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">jointMaskForNormalize</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">subimage</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -12503,7 +12499,7 @@
 
     
 <div class="viewcode-block" id="pruneMask">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.pruneMask">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.pruneMask.html#pipeline.hif.heuristics.findcont.pruneMask">[docs]</a>
 <span class="k">def</span> <span class="nf">pruneMask</span><span class="p">(</span><span class="n">mymask</span><span class="p">,</span> <span class="n">psfcube</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbeamfrac</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">prunesize</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
               <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pbmom</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -12576,7 +12572,7 @@
 
 
 <div class="viewcode-block" id="sortRangesByMax">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.sortRangesByMax">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.sortRangesByMax.html#pipeline.hif.heuristics.findcont.sortRangesByMax">[docs]</a>
 <span class="k">def</span> <span class="nf">sortRangesByMax</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs imstat on each individual channel range of a selection string, sorts the</span>
@@ -12595,7 +12591,7 @@
 
 
 <div class="viewcode-block" id="plotSigmaCorrectionFactor">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.plotSigmaCorrectionFactor">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.plotSigmaCorrectionFactor.html#pipeline.hif.heuristics.findcont.plotSigmaCorrectionFactor">[docs]</a>
 <span class="k">def</span> <span class="nf">plotSigmaCorrectionFactor</span><span class="p">(</span><span class="n">percentile</span><span class="o">=</span><span class="mi">19</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a plot of sigmaCorrectionFactor for the principle options</span>
@@ -12621,7 +12617,7 @@
 
 
 <div class="viewcode-block" id="countMaskedPixels">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.findContinuum.countMaskedPixels">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.findContinuum.countMaskedPixels.html#pipeline.hif.heuristics.findcont.countMaskedPixels">[docs]</a>
 <span class="k">def</span> <span class="nf">countMaskedPixels</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The mask internal to an image will have a value of False where masked, </span>

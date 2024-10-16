@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -152,7 +148,7 @@
 
 <span class="c1"># This class holds the project summary information</span>
 <div class="viewcode-block" id="ProjectSummary">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ProjectSummary">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.ProjectSummary.html#pipeline.infrastructure.project.ProjectSummary">[docs]</a>
 <span class="k">class</span> <span class="nc">ProjectSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal_code</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proposal_title</span><span class="o">=</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="n">piname</span><span class="o">=</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span>
                  <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA Joint Observatory&#39;</span><span class="p">,</span> <span class="n">telescope</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">):</span>
@@ -170,7 +166,7 @@
 
 <span class="c1"># This class holds the ALMA project structure information.</span>
 <div class="viewcode-block" id="ProjectStructure">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ProjectStructure">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.ProjectStructure.html#pipeline.infrastructure.project.ProjectStructure">[docs]</a>
 <span class="k">class</span> <span class="nc">ProjectStructure</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ous_entity_type</span><span class="o">=</span><span class="s1">&#39;ObsProject&#39;</span><span class="p">,</span> <span class="n">ous_entity_id</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">ous_part_id</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
                  <span class="n">ous_title</span><span class="o">=</span><span class="s1">&#39;undefined&#39;</span><span class="p">,</span> <span class="n">ous_type</span><span class="o">=</span><span class="s1">&#39;Member&#39;</span><span class="p">,</span> <span class="n">ps_entity_type</span><span class="o">=</span><span class="s1">&#39;ProjectStatus&#39;</span><span class="p">,</span> <span class="n">ps_entity_id</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span>
@@ -198,7 +194,7 @@
 
 <span class="c1"># This class holds the ALMA OUS performance parameters information.</span>
 <div class="viewcode-block" id="PerformanceParameters">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.PerformanceParameters">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.PerformanceParameters.html#pipeline.infrastructure.project.PerformanceParameters">[docs]</a>
 <span class="k">class</span> <span class="nc">PerformanceParameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desired_angular_resolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span> <span class="n">min_angular_resolution</span><span class="o">=</span><span class="s1">&#39;0.0arcsec&#39;</span><span class="p">,</span>
@@ -235,16 +231,19 @@
 
 
 
+<div class="viewcode-block" id="get_state">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.get_state.html#pipeline.infrastructure.project.get_state">[docs]</a>
 <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
     <span class="c1"># create a new vanilla instance so we can compare against the defaults</span>
     <span class="n">defaults</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
     <span class="n">modified</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">defaults</span><span class="p">,</span> <span class="n">k</span><span class="p">)}</span>
     <span class="n">cls_name</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="k">return</span> <span class="p">[(</span><span class="n">cls_name</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">modified</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">cls_name</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">modified</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span></div>
+
 
 
 <div class="viewcode-block" id="ModificationListener">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationListener">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.ModificationListener.html#pipeline.infrastructure.project.ModificationListener">[docs]</a>
 <span class="k">class</span> <span class="nc">ModificationListener</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for listener classes that want to be notified when an object</span>
@@ -259,45 +258,33 @@
 <span class="sd">    Python data model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ModificationListener.on_delattr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationListener.on_delattr">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">on_delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
-
-<div class="viewcode-block" id="ModificationListener.on_setattr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationListener.on_setattr">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">raise</span> <span class="bp">NotImplemented</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="LoggingModificationListener">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.LoggingModificationListener">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.LoggingModificationListener.html#pipeline.infrastructure.project.LoggingModificationListener">[docs]</a>
 <span class="k">class</span> <span class="nc">LoggingModificationListener</span><span class="p">(</span><span class="n">ModificationListener</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ModificationListener that logs INFO messages when the target is modified.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="LoggingModificationListener.on_delattr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.LoggingModificationListener.on_delattr">[docs]</a>
     <span class="k">def</span> <span class="nf">on_delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Deleting property: </span><span class="si">{!s}</span><span class="s1">.</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modified_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Deleting property: </span><span class="si">{!s}</span><span class="s1">.</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modified_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
 
-
-<div class="viewcode-block" id="LoggingModificationListener.on_setattr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.LoggingModificationListener.on_setattr">[docs]</a>
     <span class="k">def</span> <span class="nf">on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modified_obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Modifying property: </span><span class="si">{!s}</span><span class="s1">.</span><span class="si">{!s}</span><span class="s1"> = </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modified_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ModificationPublisher">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationPublisher">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.project.ModificationPublisher.html#pipeline.infrastructure.project.ModificationPublisher">[docs]</a>
 <span class="k">class</span> <span class="nc">ModificationPublisher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class that publishes an event to registered listeners when public</span>
@@ -338,25 +325,16 @@
             <span class="k">for</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
                 <span class="n">listener</span><span class="o">.</span><span class="n">on_delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ModificationPublisher.add_listener">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationPublisher.add_listener">[docs]</a>
     <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ModificationPublisher.remove_listener">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationPublisher.remove_listener">[docs]</a>
     <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ModificationPublisher.as_dict">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.project.ModificationPublisher.as_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_listeners&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">state</span></div>
-
+        <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># do not persist listeners across pickles. This empty set will be</span>

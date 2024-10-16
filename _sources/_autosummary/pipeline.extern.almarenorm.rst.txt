@@ -4,9 +4,16 @@ pipeline.extern.almarenorm
 .. automodule:: pipeline.extern.almarenorm
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       acos
       acosh
@@ -63,9 +70,16 @@ pipeline.extern.almarenorm
       trunc
       ulp
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ACreNorm
       attool
@@ -77,3 +91,11 @@ pipeline.extern.almarenorm
       qatool
       tbtool
    
+   
+
+   
+   
+   
+
+
+

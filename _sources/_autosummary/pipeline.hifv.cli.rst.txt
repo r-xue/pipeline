@@ -4,9 +4,16 @@ pipeline.hifv.cli
 .. automodule:: pipeline.hifv.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       hifv_analyzestokescubes
       hifv_applycals
@@ -43,3 +50,15 @@ pipeline.hifv.cli
       hifv_vlasetjy
       hifv_vlassmasking
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

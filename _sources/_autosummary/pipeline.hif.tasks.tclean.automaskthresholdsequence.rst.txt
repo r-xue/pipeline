@@ -4,10 +4,30 @@ pipeline.hif.tasks.tclean.automaskthresholdsequence
 .. automodule:: pipeline.hif.tasks.tclean.automaskthresholdsequence
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AutoMaskThresholdSequence
       BaseCleanSequence
    
+   
+
+   
+   
+   
+
+
+

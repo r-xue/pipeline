@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -138,7 +134,7 @@
 
 
 <div class="viewcode-block" id="TaskMapping">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskMapping">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskMapping.html#pipeline.infrastructure.taskregistry.TaskMapping">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskMapping</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">casa_task</span><span class="p">,</span> <span class="n">pipeline_class</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">casa_task</span> <span class="o">=</span> <span class="n">casa_task</span>
@@ -151,7 +147,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># The object used to map pipeline classes to CASA tasks</span>
     <span class="n">task_mapping_class</span> <span class="o">=</span> <span class="n">TaskMapping</span>
@@ -160,7 +156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">task_map</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="TaskRegistry.get_casa_task">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_casa_task">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_casa_task">[docs]</a>
     <span class="k">def</span> <span class="nf">get_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the CASA task for a pipeline class.</span>
@@ -177,7 +173,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.get_comment">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_comment">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_comment">[docs]</a>
     <span class="k">def</span> <span class="nf">get_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the casa_commands.log entry for a pipeline class.</span>
@@ -203,7 +199,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.get_pipeline_class">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_pipeline_class">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_pipeline_class">[docs]</a>
     <span class="k">def</span> <span class="nf">get_pipeline_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a pipeline class by name.</span>
@@ -220,7 +216,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.get_pipeline_class_for_task">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_pipeline_class_for_task">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.get_pipeline_class_for_task">[docs]</a>
     <span class="k">def</span> <span class="nf">get_pipeline_class_for_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the pipeline class used to execute a CASA task.</span>
@@ -237,7 +233,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.set_casa_commands_comment">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_casa_commands_comment">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_casa_commands_comment">[docs]</a>
     <span class="k">def</span> <span class="nf">set_casa_commands_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A decorator that is used to register the descriptive text that</span>
 <span class="sd">        preceeds the list of CASA commands invoked by this task, as seen in</span>
@@ -253,7 +249,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.set_comment_for_class">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_comment_for_class">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_comment_for_class">[docs]</a>
     <span class="k">def</span> <span class="nf">set_comment_for_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_class</span><span class="p">,</span> <span class="n">comment</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the comment for a task mapping.</span>
@@ -279,7 +275,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.set_equivalent_casa_task">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_equivalent_casa_task">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_equivalent_casa_task">[docs]</a>
     <span class="k">def</span> <span class="nf">set_equivalent_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli_task</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A decorator that is used to register the mapping between a pipeline</span>
 <span class="sd">        class and its identity in the CASA command line interface.</span>
@@ -294,7 +290,7 @@
 
 
 <div class="viewcode-block" id="TaskRegistry.set_task_identifier">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_task_identifier">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.taskregistry.TaskRegistry.html#pipeline.infrastructure.taskregistry.TaskRegistry.set_task_identifier">[docs]</a>
     <span class="k">def</span> <span class="nf">set_task_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">casa_task</span><span class="p">,</span> <span class="n">pipeline_class</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the CASA task for a task mapping.</span>

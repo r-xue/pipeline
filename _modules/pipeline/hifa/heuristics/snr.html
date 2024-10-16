@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -178,7 +174,7 @@
 
 
 <div class="viewcode-block" id="estimate_gaincalsnr">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.estimate_gaincalsnr.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr">[docs]</a>
 <span class="k">def</span> <span class="nf">estimate_gaincalsnr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="p">,</span>
                         <span class="n">max_fracflagged</span><span class="p">,</span> <span class="n">edge_fraction</span><span class="p">):</span>
 
@@ -246,7 +242,7 @@
 
 
 <div class="viewcode-block" id="estimate_bpsolint">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.estimate_bpsolint">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.estimate_bpsolint.html#pipeline.hifa.heuristics.snr.estimate_bpsolint">[docs]</a>
 <span class="k">def</span> <span class="nf">estimate_bpsolint</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="p">,</span>
                       <span class="n">minphaseupints</span><span class="p">,</span> <span class="n">bpsnr</span><span class="p">,</span> <span class="n">minbpnchan</span><span class="p">,</span> <span class="n">evenbpsolints</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the optimal solint for the selected bandpass data and return</span>
@@ -331,7 +327,7 @@
 
 
 <div class="viewcode-block" id="get_fluxinfo">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_fluxinfo">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.get_fluxinfo.html#pipeline.hifa.heuristics.snr.get_fluxinfo">[docs]</a>
 <span class="k">def</span> <span class="nf">get_fluxinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the fluxes of selected sources from the pipeline context</span>
 <span class="sd">    as a function of spw id and return the results in a dictinary indexed</span>
@@ -400,7 +396,7 @@
 
 
 <div class="viewcode-block" id="get_tsysinfo">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_tsysinfo">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.get_tsysinfo.html#pipeline.hifa.heuristics.snr.get_tsysinfo">[docs]</a>
 <span class="k">def</span> <span class="nf">get_tsysinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the tsys information as functions of spw and return a dictionary.</span>
 
@@ -567,7 +563,7 @@
 
 
 <div class="viewcode-block" id="make_tsyslists">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.make_tsyslists">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.make_tsyslists.html#pipeline.hifa.heuristics.snr.make_tsyslists">[docs]</a>
 <span class="k">def</span> <span class="nf">make_tsyslists</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">tsysdict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility routine for constructing the tsys spw list and the observing</span>
 <span class="sd">    scan list from the tysdict produced by get_tsysinfo.</span>
@@ -596,7 +592,7 @@
 
 
 <div class="viewcode-block" id="get_mediantemp">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_mediantemp">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.get_mediantemp.html#pipeline.hifa.heuristics.snr.get_mediantemp">[docs]</a>
 <span class="k">def</span> <span class="nf">get_mediantemp</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsys_spwlist</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">temptype</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get median Tsys, Trx, or Tsky temperatures as a function of spw and return</span>
 <span class="sd">    a dictionary</span>
@@ -815,7 +811,7 @@
 
 
 <div class="viewcode-block" id="get_obsinfo">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.get_obsinfo">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.get_obsinfo.html#pipeline.hifa.heuristics.snr.get_obsinfo">[docs]</a>
 <span class="k">def</span> <span class="nf">get_obsinfo</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldnamelist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">compute_nantennas</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_fracflagged</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the observing information as a function of spw id  and return a dictionary.</span>
 
@@ -977,7 +973,7 @@
 
 
 <div class="viewcode-block" id="join_dicts">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.join_dicts">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.join_dicts.html#pipeline.hifa.heuristics.snr.join_dicts">[docs]</a>
 <span class="k">def</span> <span class="nf">join_dicts</span><span class="p">(</span><span class="n">spwlist</span><span class="p">,</span> <span class="n">tsys_dict</span><span class="p">,</span> <span class="n">flux_dict</span><span class="p">,</span> <span class="n">tsystemp_dict</span><span class="p">,</span> <span class="n">obs_dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine all the input dictionaries and output the spw dictionary.</span>
 <span class="sd">    This dictionary contains all the information needed to compute the SNR</span>
@@ -1081,7 +1077,7 @@
 
 
 <div class="viewcode-block" id="compute_gaincalsnr">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_gaincalsnr">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.compute_gaincalsnr.html#pipeline.hifa.heuristics.snr.compute_gaincalsnr">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_gaincalsnr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">edge_fraction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the gain to signal-to-noise given the spw list and the spw</span>
 <span class="sd">    dictionary.</span>
@@ -1206,7 +1202,7 @@
 
 
 <div class="viewcode-block" id="compute_bpsolint">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.compute_bpsolint">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.compute_bpsolint.html#pipeline.hifa.heuristics.snr.compute_bpsolint">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_bpsolint</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">spw_dict</span><span class="p">,</span> <span class="n">reqPhaseupSnr</span><span class="p">,</span> <span class="n">minBpNintervals</span><span class="p">,</span> <span class="n">reqBpSnr</span><span class="p">,</span> <span class="n">minBpNchan</span><span class="p">,</span> <span class="n">evenbpsolints</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the optimal bandpass frequency solution intervals given the spw list</span>
 <span class="sd">    and the spw dictionary.</span>
@@ -1420,7 +1416,7 @@
 
 
 <div class="viewcode-block" id="nextHighestDivisibleInt">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.snr.nextHighestDivisibleInt.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt">[docs]</a>
 <span class="k">def</span> <span class="nf">nextHighestDivisibleInt</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks whether an integer is evenly divisible by a second</span>

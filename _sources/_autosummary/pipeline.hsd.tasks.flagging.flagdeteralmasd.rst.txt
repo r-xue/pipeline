@@ -4,15 +4,29 @@ pipeline.hsd.tasks.flagging.flagdeteralmasd
 .. automodule:: pipeline.hsd.tasks.flagging.flagdeteralmasd
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       update_flag_pointing
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       DataTable
       FlagDeterALMASingleDish
@@ -20,3 +34,11 @@ pipeline.hsd.tasks.flagging.flagdeteralmasd
       FlagDeterALMASingleDishResults
       SerialFlagDeterALMASingleDish
    
+   
+
+   
+   
+   
+
+
+

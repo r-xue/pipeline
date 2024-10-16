@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -165,7 +161,7 @@
 
 
 <div class="viewcode-block" id="ALMAPhcorBandpassInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpassInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bandpassflag.bandpassflag.ALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.ALMAPhcorBandpassInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ALMAPhcorBandpassInputs</span><span class="p">(</span><span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassModeInputs</span><span class="p">):</span>
     <span class="n">bpnsols</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
     <span class="n">bpsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
@@ -230,7 +226,7 @@
 
 
 <div class="viewcode-block" id="ALMAPhcorBandpass">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpass">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAPhcorBandpass.html#pipeline.hifa.tasks.ALMAPhcorBandpass">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_bandpass&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove &#39;</span>
@@ -240,7 +236,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMAPhcorBandpassInputs</span>
 
 <div class="viewcode-block" id="ALMAPhcorBandpass.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpass.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAPhcorBandpass.html#pipeline.hifa.tasks.ALMAPhcorBandpass.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -762,7 +758,7 @@
 
 
 <div class="viewcode-block" id="SessionALMAPhcorBandpassInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.SessionALMAPhcorBandpassInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SessionALMAPhcorBandpassInputs</span><span class="p">(</span><span class="n">ALMAPhcorBandpassInputs</span><span class="p">):</span>
     <span class="c1"># We want to apply bandpass calibrations from BANDPASS scans, not</span>
     <span class="c1"># fall back to calibration against PHASE or AMPLITUDE scans</span>
@@ -789,7 +785,7 @@
 
 
 <div class="viewcode-block" id="SessionALMAPhcorBandpass">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;session_bandpass&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SessionALMAPhcorBandpass</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SessionALMAPhcorBandpassInputs</span>
@@ -797,7 +793,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="SessionALMAPhcorBandpass.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -827,7 +823,7 @@
 
 
 <div class="viewcode-block" id="SessionALMAPhcorBandpass.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
         <span class="c1"># all results will be added to this object</span>
         <span class="n">final_result</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
@@ -926,6 +922,8 @@
 
 
 
+<div class="viewcode-block" id="centre_datetime_from_epochs">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bandpass.almaphcorbandpass.centre_datetime_from_epochs.html#pipeline.hifa.tasks.centre_datetime_from_epochs">[docs]</a>
 <span class="k">def</span> <span class="nf">centre_datetime_from_epochs</span><span class="p">(</span><span class="n">epoch1</span><span class="p">,</span> <span class="n">epoch2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the time midpoint between two epochs.</span>
@@ -941,9 +939,12 @@
     <span class="c1"># arguments</span>
     <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">time1</span><span class="p">,</span> <span class="n">time2</span><span class="p">])</span>
     <span class="n">end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">time1</span><span class="p">,</span> <span class="n">time2</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span></div>
 
 
+
+<div class="viewcode-block" id="get_time_delta_seconds">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bandpass.almaphcorbandpass.get_time_delta_seconds.html#pipeline.hifa.tasks.get_time_delta_seconds">[docs]</a>
 <span class="k">def</span> <span class="nf">get_time_delta_seconds</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">scan</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the absolute time difference between a time t and a scan&#39;s time</span>
@@ -959,7 +960,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">scan_centre</span> <span class="o">=</span> <span class="n">centre_datetime_from_epochs</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">time</span> <span class="o">-</span> <span class="n">scan_centre</span>
-    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span></div>
+
 </pre></div>
 
            </div>

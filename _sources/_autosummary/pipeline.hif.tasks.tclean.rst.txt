@@ -4,16 +4,35 @@ pipeline.hif.tasks.tclean
 .. automodule:: pipeline.hif.tasks.tclean
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Tclean
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    automaskthresholdsequence
@@ -33,3 +52,4 @@ pipeline.hif.tasks.tclean
    tclean
    vlaautomaskthresholdsequence
    vlassmaskthresholdsequence
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -167,7 +163,7 @@
 
 
 <div class="viewcode-block" id="distance">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.distance">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.distance.html#pipeline.hsd.tasks.common.rasterutil.distance">[docs]</a>
 <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">x0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute distance between two points (x0, y0) and (x1, y1).</span>
@@ -187,7 +183,7 @@
 
 
 <div class="viewcode-block" id="is_multi_beam">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.is_multi_beam">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.is_multi_beam.html#pipeline.hsd.tasks.common.rasterutil.is_multi_beam">[docs]</a>
 <span class="k">def</span> <span class="nf">is_multi_beam</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if given dataset is multi-beam or not.</span>
@@ -203,7 +199,7 @@
 
 
 <div class="viewcode-block" id="extract_dtrow_list">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.extract_dtrow_list">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.extract_dtrow_list.html#pipeline.hsd.tasks.common.rasterutil.extract_dtrow_list">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_dtrow_list</span><span class="p">(</span><span class="n">timetable</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span> <span class="n">for_small_gap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert timetable into datatable row id list.&quot;&quot;&quot;</span>
     <span class="n">tt_idx</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">for_small_gap</span> <span class="k">else</span> <span class="mi">1</span>
@@ -212,7 +208,7 @@
 
 
 <div class="viewcode-block" id="read_readonly_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_readonly_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.read_readonly_data.html#pipeline.hsd.tasks.common.rasterutil.read_readonly_data">[docs]</a>
 <span class="k">def</span> <span class="nf">read_readonly_data</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract necerrary data from datatable instance.</span>
@@ -238,7 +234,7 @@
 
 
 <div class="viewcode-block" id="read_readwrite_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_readwrite_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.read_readwrite_data.html#pipeline.hsd.tasks.common.rasterutil.read_readwrite_data">[docs]</a>
 <span class="k">def</span> <span class="nf">read_readwrite_data</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract necessary data from datatable instance.</span>
@@ -256,7 +252,7 @@
 
 
 <div class="viewcode-block" id="read_datatable">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.read_datatable">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.read_datatable.html#pipeline.hsd.tasks.common.rasterutil.read_datatable">[docs]</a>
 <span class="k">def</span> <span class="nf">read_datatable</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaDataSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract necessary data from datatable instance.</span>
@@ -286,7 +282,7 @@
 
 
 <div class="viewcode-block" id="from_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.from_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.from_context.html#pipeline.hsd.tasks.common.rasterutil.from_context">[docs]</a>
 <span class="k">def</span> <span class="nf">from_context</span><span class="p">(</span><span class="n">context_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MetaDataSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read DataTable located in the context directory.</span>
@@ -334,7 +330,7 @@
 
 
 <div class="viewcode-block" id="get_science_target_fields">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_science_target_fields">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_science_target_fields.html#pipeline.hsd.tasks.common.rasterutil.get_science_target_fields">[docs]</a>
 <span class="k">def</span> <span class="nf">get_science_target_fields</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a list of unique field IDs of science targets.</span>
@@ -350,7 +346,7 @@
 
 
 <div class="viewcode-block" id="get_science_spectral_windows">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_science_spectral_windows">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_science_spectral_windows.html#pipeline.hsd.tasks.common.rasterutil.get_science_spectral_windows">[docs]</a>
 <span class="k">def</span> <span class="nf">get_science_spectral_windows</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a list of unique spw IDs of science targets.</span>
@@ -366,7 +362,7 @@
 
 
 <div class="viewcode-block" id="get_raster_distance">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_raster_distance">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_raster_distance.html#pipeline.hsd.tasks.common.rasterutil.get_raster_distance">[docs]</a>
 <span class="k">def</span> <span class="nf">get_raster_distance</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute distances between raster rows and the first row.</span>
@@ -397,7 +393,7 @@
 
 
 <div class="viewcode-block" id="flag_incomplete_raster">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_incomplete_raster">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.flag_incomplete_raster.html#pipeline.hsd.tasks.common.rasterutil.flag_incomplete_raster">[docs]</a>
 <span class="k">def</span> <span class="nf">flag_incomplete_raster</span><span class="p">(</span><span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">nd_raster</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nd_row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return IDs of incomplete raster map.</span>
@@ -443,7 +439,7 @@
 
 
 <div class="viewcode-block" id="flag_worm_eaten_raster">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_worm_eaten_raster">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.flag_worm_eaten_raster.html#pipeline.hsd.tasks.common.rasterutil.flag_worm_eaten_raster">[docs]</a>
 <span class="k">def</span> <span class="nf">flag_worm_eaten_raster</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">MetaDataSet</span><span class="p">,</span> <span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">nd_row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.</span>
@@ -491,7 +487,7 @@
 
 
 <div class="viewcode-block" id="get_raster_flag_list">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_raster_flag_list">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_raster_flag_list.html#pipeline.hsd.tasks.common.rasterutil.get_raster_flag_list">[docs]</a>
 <span class="k">def</span> <span class="nf">get_raster_flag_list</span><span class="p">(</span><span class="n">flagged1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">flagged2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">raster_index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge flag result and convert raster id to list of data index.</span>
@@ -512,7 +508,7 @@
 
 
 <div class="viewcode-block" id="flag_raster_map">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.flag_raster_map">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.flag_raster_map.html#pipeline.hsd.tasks.common.rasterutil.flag_raster_map">[docs]</a>
 <span class="k">def</span> <span class="nf">flag_raster_map</span><span class="p">(</span><span class="n">datatable</span><span class="p">:</span> <span class="n">DataTableImpl</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">rasterscan</span><span class="o">.</span><span class="n">RasterScanHeuristicsResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of index to be flagged by flagging heuristics for raster scan.</span>
@@ -645,7 +641,7 @@
 
 
 <div class="viewcode-block" id="find_most_frequent">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.find_most_frequent">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.find_most_frequent.html#pipeline.hsd.tasks.common.rasterutil.find_most_frequent">[docs]</a>
 <span class="k">def</span> <span class="nf">find_most_frequent</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the most frequent value in an input array.</span>
@@ -672,7 +668,7 @@
 
 
 <div class="viewcode-block" id="get_aspect">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_aspect">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_aspect.html#pipeline.hsd.tasks.common.rasterutil.get_aspect">[docs]</a>
 <span class="k">def</span> <span class="nf">get_aspect</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute aspect ratio of matplotlib figure.</span>
@@ -697,7 +693,7 @@
 
 
 <div class="viewcode-block" id="get_angle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.get_angle">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.get_angle.html#pipeline.hsd.tasks.common.rasterutil.get_angle">[docs]</a>
 <span class="k">def</span> <span class="nf">get_angle</span><span class="p">(</span><span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute tangential angle taking into account aspect ratio.</span>
@@ -717,7 +713,7 @@
 
 
 <div class="viewcode-block" id="anim_gen">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.anim_gen">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.anim_gen.html#pipeline.hsd.tasks.common.rasterutil.anim_gen">[docs]</a>
 <span class="k">def</span> <span class="nf">anim_gen</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">dist_list</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cmap</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate position, color and boolean flag for generate_animation.</span>
@@ -755,7 +751,7 @@
 
 
 <div class="viewcode-block" id="animate">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.animate">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.animate.html#pipeline.hsd.tasks.common.rasterutil.animate">[docs]</a>
 <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Line2D</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate plot corresponding to single frame.</span>
@@ -785,7 +781,7 @@
 
 
 <div class="viewcode-block" id="generate_animation">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.rasterutil.generate_animation">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.rasterutil.generate_animation.html#pipeline.hsd.tasks.common.rasterutil.generate_animation">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_animation</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dtrow_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">figfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;movie.gif&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate animation GIF file to illustrate observing pattern.</span>

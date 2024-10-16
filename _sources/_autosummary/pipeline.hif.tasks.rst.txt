@@ -4,9 +4,21 @@ pipeline.hif.tasks
 .. automodule:: pipeline.hif.tasks
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Analyzealpha
       Antpos
@@ -44,10 +56,17 @@ pipeline.hif.tasks
       Transformimagedata
       UVcontSub
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    analyzealpha
@@ -76,3 +95,4 @@ pipeline.hif.tasks
    tclean
    transformimagedata
    uvcontsub
+

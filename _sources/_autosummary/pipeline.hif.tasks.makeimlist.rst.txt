@@ -4,19 +4,39 @@ pipeline.hif.tasks.makeimlist
 .. automodule:: pipeline.hif.tasks.makeimlist
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       MakeImList
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    cleantarget
    makeimlist
    qa
    resultobjects
+

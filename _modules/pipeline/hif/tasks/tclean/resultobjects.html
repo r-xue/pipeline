@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,7 +143,7 @@
 
 
 <div class="viewcode-block" id="BoxResult">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.BoxResult">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.basecleansequence.BoxResult">[docs]</a>
 <span class="k">class</span> <span class="nc">BoxResult</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BoxResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -156,7 +152,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanmask</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BoxResult.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.BoxResult.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.basecleansequence.BoxResult.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
@@ -168,7 +164,7 @@
 
 
 <div class="viewcode-block" id="TcleanResult">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult">[docs]</a>
 <span class="k">class</span> <span class="nc">TcleanResult</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">sourcename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -245,7 +241,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">im_names</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="TcleanResult.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Calculated beams for later stages</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -270,12 +266,9 @@
             <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="TcleanResult.empty">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.empty">[docs]</a>
     <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux</span> <span class="ow">or</span> 
-          <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="o">!=</span><span class="p">{})</span></div>
-
+          <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="o">!=</span><span class="p">{})</span>
 
     <span class="c1"># this is used to generate a pipeline product, not used by weblog</span>
     <span class="nd">@property</span>
@@ -289,11 +282,8 @@
     <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux</span>
 
-<div class="viewcode-block" id="TcleanResult.set_flux">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_flux">[docs]</a>
     <span class="k">def</span> <span class="nf">set_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flux</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flux</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cleanmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
@@ -303,21 +293,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_cleanmask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_cleanmask">[docs]</a>
     <span class="k">def</span> <span class="nf">set_cleanmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;cleanmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;cleanmask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">imaging_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;imaging_params&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TcleanResult.set_imaging_params">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_imaging_params">[docs]</a>
     <span class="k">def</span> <span class="nf">set_imaging_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">imaging_parameters</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;imaging_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imaging_parameters</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;imaging_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imaging_parameters</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -327,11 +311,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -341,11 +322,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_model">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_model">[docs]</a>
     <span class="k">def</span> <span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cube_sigma_fc_chans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -353,7 +331,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cube_sigma_fc_chans&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_cube_sigma_fc_chans">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_cube_sigma_fc_chans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_cube_sigma_fc_chans">[docs]</a>
     <span class="k">def</span> <span class="nf">set_cube_sigma_fc_chans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">cube_sigma_fc_chans</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets sigma of cube computed from line-free channels of non-primary beam corrected cube</span>
@@ -368,7 +346,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cube_scaledMAD_fc_chans&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_cube_scaledMAD_fc_chans">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_cube_scaledMAD_fc_chans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_cube_scaledMAD_fc_chans">[docs]</a>
     <span class="k">def</span> <span class="nf">set_cube_scaledMAD_fc_chans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">cube_scaledMAD_fc_chans</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets channel scaled MAD of cube computed from line-free channels of non-primary beam corrected cube</span>
@@ -383,7 +361,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom0_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom0_fc">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom0_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom0_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom0_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 0 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -398,7 +376,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -413,7 +391,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_min&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_min">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_image_min">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_min</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image minimum of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -428,7 +406,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_max&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_max">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_image_max">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_max</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image maximum of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -443,7 +421,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_median_all&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_median_all">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_image_median_all">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_median_all">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_median_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_all</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image median of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -458,7 +436,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_median_annulus&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_median_annulus">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_image_median_annulus">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_median_annulus">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_median_annulus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_annulus</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image annulus median of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -473,7 +451,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_mad&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_mad">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_image_mad">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_mad">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_mad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_mad</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -488,7 +466,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_peak_snr&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_peak_snr">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_peak_snr">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_peak_snr">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_peak_snr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets peak SNR of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -503,7 +481,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_n_pixels&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_n_pixels">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_n_pixels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_n_pixels">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_n_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">n_pixels</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets number of unmasked pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -518,7 +496,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_frac_max_segment&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_frac_max_segment">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_frac_max_segment">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_frac_max_segment">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_frac_max_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">frac_max_segment</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets fraction of maximum moment 8 image segment compared to overall size.</span>
@@ -532,7 +510,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_max_segment_beams&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_max_segment_beams">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_fc_max_segment_beams">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_max_segment_beams">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_max_segment_beams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">max_segment_beams</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets size of maximum moment 8 image segment in beams.</span>
@@ -546,7 +524,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -561,7 +539,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_min&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_min">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_image_min">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_min</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image minimum of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -576,7 +554,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_max&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_max">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_image_max">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_max</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image maximum of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -591,7 +569,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_median_all&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_median_all">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_image_median_all">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_median_all">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_median_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_all</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image median of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -606,7 +584,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_median_annulus&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_median_annulus">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_image_median_annulus">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_median_annulus">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_median_annulus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_annulus</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image annulus median of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -621,7 +599,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_mad&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_mad">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_image_mad">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_mad">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_mad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_mad</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image MAD of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -636,7 +614,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_n_pixels&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_n_pixels">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom10_fc_n_pixels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_n_pixels">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_n_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">n_pixels</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets number of unmasked pixels of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -651,7 +629,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_10_fc_histogram_asymmetry&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_10_fc_histogram_asymmetry">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8_10_fc_histogram_asymmetry">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_10_fc_histogram_asymmetry">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_10_fc_histogram_asymmetry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">histogram_asymmetry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets histogram asymmetry value.</span>
@@ -665,7 +643,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom0&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom0">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom0">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom0">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 0 image computed from all channels of non-primary beam corrected cube</span>
@@ -680,7 +658,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_mom8">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 8 image computed from all channels of non-primary beam corrected cube</span>
@@ -693,11 +671,8 @@
     <span class="k">def</span> <span class="nf">psf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span>
 
-<div class="viewcode-block" id="TcleanResult.set_psf">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_psf">[docs]</a>
     <span class="k">def</span> <span class="nf">set_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -707,228 +682,160 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_residual">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_residual">[docs]</a>
     <span class="k">def</span> <span class="nf">set_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;residual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="nb">iter</span><span class="p">][</span><span class="s1">&#39;residual&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pblimit_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_image</span>
 
-<div class="viewcode-block" id="TcleanResult.set_pblimit_image">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_pblimit_image">[docs]</a>
     <span class="k">def</span> <span class="nf">set_pblimit_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pblimit_image</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_image</span> <span class="o">=</span> <span class="n">pblimit_image</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_image</span> <span class="o">=</span> <span class="n">pblimit_image</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pblimit_cleanmask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_cleanmask</span>
 
-<div class="viewcode-block" id="TcleanResult.set_pblimit_cleanmask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_pblimit_cleanmask">[docs]</a>
     <span class="k">def</span> <span class="nf">set_pblimit_cleanmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pblimit_cleanmask</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_cleanmask</span> <span class="o">=</span> <span class="n">pblimit_cleanmask</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pblimit_cleanmask</span> <span class="o">=</span> <span class="n">pblimit_cleanmask</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">aggregate_bw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_bw</span>
 
-<div class="viewcode-block" id="TcleanResult.set_aggregate_bw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_aggregate_bw">[docs]</a>
     <span class="k">def</span> <span class="nf">set_aggregate_bw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregate_bw</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_bw</span> <span class="o">=</span> <span class="n">aggregate_bw</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_bw</span> <span class="o">=</span> <span class="n">aggregate_bw</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">eff_ch_bw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eff_ch_bw</span>
 
-<div class="viewcode-block" id="TcleanResult.set_eff_ch_bw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_eff_ch_bw">[docs]</a>
     <span class="k">def</span> <span class="nf">set_eff_ch_bw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eff_ch_bw</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_eff_ch_bw</span> <span class="o">=</span> <span class="n">eff_ch_bw</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eff_ch_bw</span> <span class="o">=</span> <span class="n">eff_ch_bw</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sensitivity</span>
 
-<div class="viewcode-block" id="TcleanResult.set_sensitivity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_sensitivity">[docs]</a>
     <span class="k">def</span> <span class="nf">set_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">sensitivity</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sensitivity</span> <span class="o">=</span> <span class="n">sensitivity</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dr_corrected_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dr_corrected_sensitivity</span>
 
-<div class="viewcode-block" id="TcleanResult.set_dr_corrected_sensitivity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_dr_corrected_sensitivity">[docs]</a>
     <span class="k">def</span> <span class="nf">set_dr_corrected_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dr_corrected_sensitivity</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dr_corrected_sensitivity</span> <span class="o">=</span> <span class="n">dr_corrected_sensitivity</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dr_corrected_sensitivity</span> <span class="o">=</span> <span class="n">dr_corrected_sensitivity</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span>
 
-<div class="viewcode-block" id="TcleanResult.set_threshold">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_threshold">[docs]</a>
     <span class="k">def</span> <span class="nf">set_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span> <span class="o">=</span> <span class="n">threshold</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span> <span class="o">=</span> <span class="n">threshold</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dirty_dynamic_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_dynamic_range</span>
 
-<div class="viewcode-block" id="TcleanResult.set_dirty_dynamic_range">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_dirty_dynamic_range">[docs]</a>
     <span class="k">def</span> <span class="nf">set_dirty_dynamic_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_dynamic_range</span> <span class="o">=</span> <span class="n">dirty_dynamic_range</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_dynamic_range</span> <span class="o">=</span> <span class="n">dirty_dynamic_range</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">DR_correction_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DR_correction_factor</span>
 
-<div class="viewcode-block" id="TcleanResult.set_DR_correction_factor">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_DR_correction_factor">[docs]</a>
     <span class="k">def</span> <span class="nf">set_DR_correction_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DR_correction_factor</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_DR_correction_factor</span> <span class="o">=</span> <span class="n">DR_correction_factor</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_DR_correction_factor</span> <span class="o">=</span> <span class="n">DR_correction_factor</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">maxEDR_used</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxEDR_used</span>
 
-<div class="viewcode-block" id="TcleanResult.set_maxEDR_used">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_maxEDR_used">[docs]</a>
     <span class="k">def</span> <span class="nf">set_maxEDR_used</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxEDR_used</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_maxEDR_used</span> <span class="o">=</span> <span class="n">maxEDR_used</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxEDR_used</span> <span class="o">=</span> <span class="n">maxEDR_used</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_min</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_min">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_min</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_min</span> <span class="o">=</span> <span class="n">image_min</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_min</span> <span class="o">=</span> <span class="n">image_min</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_min_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_min_iquv</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_min_iquv">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_min_iquv">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_min_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_min_iquv</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_min_iquv</span> <span class="o">=</span> <span class="n">image_min_iquv</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_min_iquv</span> <span class="o">=</span> <span class="n">image_min_iquv</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_max</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_max">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_max</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_max</span> <span class="o">=</span> <span class="n">image_max</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_max</span> <span class="o">=</span> <span class="n">image_max</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_max_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_max_iquv</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_max_iquv">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_max_iquv">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_max_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_max_iquv</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_max_iquv</span> <span class="o">=</span> <span class="n">image_max_iquv</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_max_iquv</span> <span class="o">=</span> <span class="n">image_max_iquv</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_rms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_rms">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_rms</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms</span> <span class="o">=</span> <span class="n">image_rms</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms</span> <span class="o">=</span> <span class="n">image_rms</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_rms_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_iquv</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_rms_iquv">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_rms_iquv">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_rms_iquv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_rms_iquv</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_iquv</span> <span class="o">=</span> <span class="n">image_rms_iquv</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_iquv</span> <span class="o">=</span> <span class="n">image_rms_iquv</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_rms_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_min</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_rms_min">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_rms_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_rms_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_rms_min</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_min</span> <span class="o">=</span> <span class="n">image_rms_min</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_min</span> <span class="o">=</span> <span class="n">image_rms_min</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_rms_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_max</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_rms_max">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_rms_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_rms_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_rms_max</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_max</span> <span class="o">=</span> <span class="n">image_rms_max</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_rms_max</span> <span class="o">=</span> <span class="n">image_rms_max</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">image_robust_rms_and_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_robust_rms_and_spectra</span>
 
-<div class="viewcode-block" id="TcleanResult.set_image_robust_rms_and_spectra">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_image_robust_rms_and_spectra">[docs]</a>
     <span class="k">def</span> <span class="nf">set_image_robust_rms_and_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_robust_rms_and_spectra</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_robust_rms_and_spectra</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_robust_rms_and_spectra</span> <span class="o">=</span> <span class="n">image_robust_rms_and_spectra</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tclean_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_command</span>
 
-<div class="viewcode-block" id="TcleanResult.set_tclean_command">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_tclean_command">[docs]</a>
     <span class="k">def</span> <span class="nf">set_tclean_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_command</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_command</span> <span class="o">=</span> <span class="n">tclean_command</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_command</span> <span class="o">=</span> <span class="n">tclean_command</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tclean_stopcode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopcode</span>
 
-<div class="viewcode-block" id="TcleanResult.set_tclean_stopcode">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_tclean_stopcode">[docs]</a>
     <span class="k">def</span> <span class="nf">set_tclean_stopcode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopcode</span> <span class="o">=</span> <span class="n">tclean_stopcode</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopcode</span> <span class="o">=</span> <span class="n">tclean_stopcode</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tclean_stopreason</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopreason</span>
 
-<div class="viewcode-block" id="TcleanResult.set_tclean_stopreason">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_tclean_stopreason">[docs]</a>
     <span class="k">def</span> <span class="nf">set_tclean_stopreason</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">):</span>
         <span class="c1"># tclean exit conditions:</span>
         <span class="c1">#   https://casadocs.readthedocs.io/en/latest/notebooks/synthesis_imaging.html#Returned-Dictionary</span>
@@ -945,18 +852,14 @@
                        <span class="s1">&#39;the major cycle limit (nmajor) reached&#39;</span><span class="p">]</span>
         <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">tclean_stopcode</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stopreasons</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> \
             <span class="s2">&quot;tclean stop code </span><span class="si">{}</span><span class="s2"> does not index into stop reasons list&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tclean_stopcode</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopreason</span> <span class="o">=</span> <span class="n">stopreasons</span><span class="p">[</span><span class="n">tclean_stopcode</span><span class="p">]</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_stopreason</span> <span class="o">=</span> <span class="n">stopreasons</span><span class="p">[</span><span class="n">tclean_stopcode</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tclean_iterdone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_iterdone</span>
 
-<div class="viewcode-block" id="TcleanResult.set_tclean_iterdone">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_tclean_iterdone">[docs]</a>
     <span class="k">def</span> <span class="nf">set_tclean_iterdone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_iterdone</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_iterdone</span> <span class="o">=</span> <span class="n">tclean_iterdone</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tclean_iterdone</span> <span class="o">=</span> <span class="n">tclean_iterdone</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nmajordone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -966,11 +869,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_nmajordone">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_nmajordone">[docs]</a>
     <span class="k">def</span> <span class="nf">set_nmajordone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">nmajordone</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;nmajordone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nmajordone</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;nmajordone&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nmajordone</span>
 
     <span class="nd">@property</span>
     <span class="c1"># Cumulative minor iteration array</span>
@@ -981,11 +881,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_nminordone_array">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_nminordone_array">[docs]</a>
     <span class="k">def</span> <span class="nf">set_nminordone_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">nminordone_array</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;nminordone_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nminordone_array</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;nminordone_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nminordone_array</span>
 
     <span class="nd">@property</span>
     <span class="c1"># Cleaned peak RMS as a function of minor iteration number</span>
@@ -996,11 +893,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_peakresidual_array">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_peakresidual_array">[docs]</a>
     <span class="k">def</span> <span class="nf">set_peakresidual_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">peakresidual_array</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;peakresidual_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peakresidual_array</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;peakresidual_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peakresidual_array</span>
 
     <span class="nd">@property</span>
     <span class="c1"># Cleaned Plane id as a function of minor iteration number</span>
@@ -1011,11 +905,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_planeid_array">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_planeid_array">[docs]</a>
     <span class="k">def</span> <span class="nf">set_planeid_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">planeid_array</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;planeid_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">planeid_array</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;planeid_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">planeid_array</span>
 
     <span class="nd">@property</span>
     <span class="c1"># SummaryMinor dictionary from CASA/tclean return, as a function of minor iteration number</span>
@@ -1026,11 +917,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_summaryminor">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_summaryminor">[docs]</a>
     <span class="k">def</span> <span class="nf">set_summaryminor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">summaryminor</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summaryminor</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;summaryminor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">summaryminor</span>
 
     <span class="nd">@property</span>
     <span class="c1"># Total cleaned flux as a function of minor iteration number</span>
@@ -1041,11 +929,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_totalflux_array">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_totalflux_array">[docs]</a>
     <span class="k">def</span> <span class="nf">set_totalflux_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">totalflux_array</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;totalflux_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">totalflux_array</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;totalflux_array&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">totalflux_array</span>
 
     <span class="nd">@property</span>
     <span class="c1"># Fractional flux outside of clean mask</span>
@@ -1056,11 +941,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanResult.set_outmaskratio">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanResult.set_outmaskratio">[docs]</a>
     <span class="k">def</span> <span class="nf">set_outmaskratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">outmaskratio</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;outmaskratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outmaskratio</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iteration</span><span class="p">][</span><span class="s1">&#39;outmaskratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outmaskratio</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">repr</span> <span class="o">=</span> <span class="s1">&#39;Tclean:</span><span class="se">\n</span><span class="s1">&#39;</span>

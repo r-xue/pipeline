@@ -4,9 +4,16 @@ pipeline.hsd.heuristics.baselineparamconfig
 .. automodule:: pipeline.hsd.heuristics.baselineparamconfig
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       DEBUG
       TRACE
@@ -15,9 +22,16 @@ pipeline.hsd.heuristics.baselineparamconfig
       no_switching
       write_blparam
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BLP
       BaselineFitParamConfig
@@ -25,3 +39,11 @@ pipeline.hsd.heuristics.baselineparamconfig
       DataTable
       MeasurementSet
    
+   
+
+   
+   
+   
+
+
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -166,7 +162,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsApplycalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.T2_4MDetailsApplycalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsApplycalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;applycal.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Apply calibrations from context&#39;</span><span class="p">,</span>
@@ -174,8 +170,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsApplycalRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
 
@@ -448,11 +442,8 @@
             <span class="s1">&#39;callib_map&#39;</span><span class="p">:</span> <span class="n">callib_map</span><span class="p">,</span>
             <span class="s1">&#39;flag_table_intents&#39;</span><span class="p">:</span> <span class="n">flag_table_intents</span><span class="p">,</span>
             <span class="s1">&#39;outliers_path_link&#39;</span><span class="p">:</span> <span class="n">outliers_path_link</span>
-        <span class="p">})</span></div>
+        <span class="p">})</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_uv_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_uv_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_uv_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">weblog_dir</span><span class="p">):</span>
         <span class="n">uv_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -467,11 +458,10 @@
             <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">uv_plots</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">uv_plots</span></div>
-
+        <span class="k">return</span> <span class="n">uv_plots</span>
 
 <div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_science_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_science_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.T2_4MDetailsApplycalRenderer.create_science_plots">[docs]</a>
     <span class="k">def</span> <span class="nf">create_science_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create plots for the science targets, returning two dictionaries of</span>
@@ -572,7 +562,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.science_plots_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.science_plots_for_result">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.T2_4MDetailsApplycalRenderer.science_plots_for_result">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">science_plots_for_result</span><span class="p">(</span>
             <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
@@ -636,7 +626,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.create_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.create_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.T2_4MDetailsApplycalRenderer.create_plots">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create plots and return (dictionary of vis:[Plots], dict of vis:subpage URL).</span>
@@ -654,8 +644,6 @@
         <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">subpages</span></div>
 
 
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.plots_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.plots_for_result">[docs]</a>
     <span class="k">def</span> <span class="nf">plots_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -675,21 +663,15 @@
                 <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
                 <span class="n">path</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">path</span>
 
-        <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">path</span></div>
+        <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">path</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.calapps_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.calapps_for_result">[docs]</a>
     <span class="k">def</span> <span class="nf">calapps_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
             <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
             <span class="n">calapps</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">calapps</span></div>
+        <span class="k">return</span> <span class="n">calapps</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.caltypes_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.caltypes_for_result">[docs]</a>
     <span class="k">def</span> <span class="nf">caltypes_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">type_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;bandpass&#39;</span><span class="p">:</span> <span class="s1">&#39;Bandpass&#39;</span><span class="p">,</span>
@@ -711,11 +693,8 @@
 
                 <span class="n">d</span><span class="p">[</span><span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span><span class="p">]</span> <span class="o">=</span> <span class="n">caltype</span>
 
-        <span class="k">return</span> <span class="n">d</span></div>
+        <span class="k">return</span> <span class="n">d</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsApplycalRenderer.get_gain_solution_type">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.get_gain_solution_type">[docs]</a>
     <span class="k">def</span> <span class="nf">get_gain_solution_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">):</span>
         <span class="c1"># CAS-9835: hif_applycal() &quot;type&quot; descriptions are misleading /</span>
         <span class="c1"># incomplete in weblog table</span>
@@ -764,12 +743,11 @@
         <span class="k">if</span> <span class="n">no_amp_soln</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">no_phase_soln</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39; (phase only)&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ApplycalAmpVsFreqPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsFreqPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsFreqPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -784,7 +762,7 @@
 
 
 <div class="viewcode-block" id="ApplycalPhaseVsFreqPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalPhaseVsFreqPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalPhaseVsFreqPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -799,7 +777,7 @@
 
 
 <div class="viewcode-block" id="ApplycalAmpVsFreqSciencePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsFreqSciencePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsFreqSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -814,7 +792,7 @@
 
 
 <div class="viewcode-block" id="ApplycalAmpVsFreqPerAntSciencePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to render &#39;per antenna&#39; Amp vs Freq plots for applycal</span>
@@ -844,7 +822,7 @@
 
 
 <div class="viewcode-block" id="ApplycalAmpVsUVSciencePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsUVSciencePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsUVSciencePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -859,7 +837,7 @@
 
 
 <div class="viewcode-block" id="ApplycalAmpVsUVPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsUVPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsUVPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -874,7 +852,7 @@
 
 
 <div class="viewcode-block" id="ApplycalPhaseVsUVPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalPhaseVsUVPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalPhaseVsUVPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -889,7 +867,7 @@
 
 
 <div class="viewcode-block" id="ApplycalAmpVsTimePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalAmpVsTimePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalAmpVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -904,7 +882,7 @@
 
 
 <div class="viewcode-block" id="ApplycalPhaseVsTimePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer.html#pipeline.hsdn.tasks.restoredata.renderer.ApplycalPhaseVsTimePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalPhaseVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -965,7 +943,7 @@
 
 
 <div class="viewcode-block" id="get_brightest_field">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.get_brightest_field">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.get_brightest_field.html#pipeline.hsdn.tasks.restoredata.renderer.get_brightest_field">[docs]</a>
 <span class="k">def</span> <span class="nf">get_brightest_field</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analyse all fields associated with a source, identifying the brightest</span>
@@ -1020,7 +998,7 @@
 
 
 <div class="viewcode-block" id="copy_callibrary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.copy_callibrary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.renderer.copy_callibrary.html#pipeline.hsdn.tasks.restoredata.renderer.copy_callibrary">[docs]</a>
 <span class="k">def</span> <span class="nf">copy_callibrary</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">,</span> <span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copy callibrary files across to the weblog stage directory, returning a</span>
@@ -1048,7 +1026,7 @@
 
 
 <div class="viewcode-block" id="deduplicate">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.deduplicate">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.renderer.deduplicate.html#pipeline.hsdn.tasks.restoredata.renderer.deduplicate">[docs]</a>
 <span class="k">def</span> <span class="nf">deduplicate</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">all_plots</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Process a dict mapping vis to plots, deduplicating the plot list for</span>

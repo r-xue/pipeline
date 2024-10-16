@@ -4,9 +4,16 @@ pipeline.extern.adopted
 .. automodule:: pipeline.extern.adopted
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       MAD
       call_qa_time
@@ -16,3 +23,15 @@ pipeline.extern.adopted
       readpwv
       readwvr
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

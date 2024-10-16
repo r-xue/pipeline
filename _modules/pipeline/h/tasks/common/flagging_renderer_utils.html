@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -153,7 +149,7 @@
 
 
 <div class="viewcode-block" id="flags_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_for_result">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.flagging_renderer_utils.flags_for_result.html#pipeline.hif.tasks.correctedampflag.renderer.flags_for_result">[docs]</a>
 <span class="k">def</span> <span class="nf">flags_for_result</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
                      <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
                      <span class="n">intents_to_summarise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -178,7 +174,7 @@
 
 
 <div class="viewcode-block" id="flags_by_intent">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_by_intent">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.flagging_renderer_utils.flags_by_intent.html#pipeline.hif.tasks.correctedampflag.renderer.flags_by_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">flags_by_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
                     <span class="n">summaries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
                     <span class="n">intents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FlagTotal</span><span class="p">]]:</span>
@@ -232,7 +228,7 @@
 
 
 <div class="viewcode-block" id="flags_by_science_spws">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.flags_by_science_spws">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.flagging_renderer_utils.flags_by_science_spws.html#pipeline.hif.tasks.correctedampflag.renderer.flags_by_science_spws">[docs]</a>
 <span class="k">def</span> <span class="nf">flags_by_science_spws</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">summaries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FlagTotal</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns:</span>
@@ -267,7 +263,7 @@
 
 
 <div class="viewcode-block" id="adjust_non_science_totals">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.adjust_non_science_totals">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.flagging_renderer_utils.adjust_non_science_totals.html#pipeline.hif.tasks.correctedampflag.renderer.adjust_non_science_totals">[docs]</a>
 <span class="k">def</span> <span class="nf">adjust_non_science_totals</span><span class="p">(</span><span class="n">flagtotals</span><span class="p">,</span> <span class="n">non_science_agents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a copy of the FlagSummary dictionaries, with totals reduced to</span>
@@ -317,7 +313,7 @@
 
 
 <div class="viewcode-block" id="intents_to_summarise">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.flagging_renderer_utils.intents_to_summarise">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.flagging_renderer_utils.intents_to_summarise.html#pipeline.hif.tasks.correctedampflag.renderer.intents_to_summarise">[docs]</a>
 <span class="k">def</span> <span class="nf">intents_to_summarise</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">all_flag_summary_intents</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find out which intents to list in the flagging table.</span>

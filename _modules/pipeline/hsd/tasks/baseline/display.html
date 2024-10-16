@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -173,7 +169,7 @@
 
 
 <div class="viewcode-block" id="ClusterValidationAxesManager">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterValidationAxesManager">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterValidationAxesManager.html#pipeline.hsd.tasks.baseline.display.ClusterValidationAxesManager">[docs]</a>
 <span class="k">class</span> <span class="nc">ClusterValidationAxesManager</span><span class="p">(</span><span class="n">MapAxesManagerBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates and manages Axes instances for cluster validation plot.</span>
 
@@ -380,7 +376,7 @@
 
 
 <div class="viewcode-block" id="ClusterDisplay">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterDisplay.html#pipeline.hsd.tasks.baseline.display.ClusterDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">ClusterDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plotter to create plots that visualize clustering analysis.</span>
 
@@ -506,7 +502,7 @@
 
 
 <div class="viewcode-block" id="ClusterDisplayWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker.html#pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">ClusterDisplayWorker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for plotter class.&quot;&quot;&quot;</span>
 
@@ -533,7 +529,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stage_dir</span> <span class="o">=</span> <span class="n">stage_dir</span>
 
 <div class="viewcode-block" id="ClusterDisplayWorker.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker.html#pipeline.hsd.tasks.baseline.display.ClusterDisplayWorker.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create plots.</span>
 
@@ -593,7 +589,7 @@
 
 
 <div class="viewcode-block" id="ClusterPropertyDisplay">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterPropertyDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterPropertyDisplay.html#pipeline.hsd.tasks.baseline.display.ClusterPropertyDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">ClusterPropertyDisplay</span><span class="p">(</span><span class="n">ClusterDisplayWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plotter to create cluster property display.&quot;&quot;&quot;</span>
 
@@ -645,7 +641,7 @@
 
 
 <div class="viewcode-block" id="ClusterValidationDisplay">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.display.ClusterValidationDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.ClusterValidationDisplay.html#pipeline.hsd.tasks.baseline.display.ClusterValidationDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">ClusterValidationDisplay</span><span class="p">(</span><span class="n">ClusterDisplayWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display class for cluster validation result.&quot;&quot;&quot;</span>
 

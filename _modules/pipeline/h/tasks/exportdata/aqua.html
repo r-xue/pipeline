@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -209,7 +205,7 @@
 
 
 <div class="viewcode-block" id="register_aqua_metric">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.register_aqua_metric">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.register_aqua_metric.html#pipeline.hsd.tasks.exportdata.almasdaqua.register_aqua_metric">[docs]</a>
 <span class="k">def</span> <span class="nf">register_aqua_metric</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register a &#39;QA metric to XML&#39; conversion function.</span>
@@ -225,14 +221,14 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator">[docs]</a>
 <span class="k">class</span> <span class="nc">AquaXmlGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to create the XML for an AQUA pipeline report.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_report_xml">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_report_xml">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_report_xml">[docs]</a>
     <span class="k">def</span> <span class="nf">get_report_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return the AQUA report XML for the results stored in a</span>
@@ -274,7 +270,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_project_structure">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_project_structure">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_project_structure">[docs]</a>
     <span class="k">def</span> <span class="nf">get_project_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the project structure element.</span>
@@ -303,7 +299,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_qa_summary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_qa_summary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_qa_summary">[docs]</a>
     <span class="k">def</span> <span class="nf">get_qa_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the AQUA summary XML element.</span>
@@ -338,7 +334,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_per_stage_qa">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_per_stage_qa">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_per_stage_qa">[docs]</a>
     <span class="k">def</span> <span class="nf">get_per_stage_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">all_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for all stages.</span>
@@ -470,7 +466,7 @@
         <span class="k">return</span> <span class="n">elements</span>
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_topics_qa">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_topics_qa">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_topics_qa">[docs]</a>
     <span class="k">def</span> <span class="nf">get_topics_qa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">all_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for all results, divided into sections by topic.</span>
@@ -507,7 +503,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_calibration_topic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_calibration_topic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_calibration_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_calibration_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">topic_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for the calibration topic.</span>
@@ -521,7 +517,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_dataset_topic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_dataset_topic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_dataset_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_dataset_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">topic_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for the dataset topic.</span>
@@ -535,7 +531,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_flagging_topic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_flagging_topic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_flagging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_flagging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">topic_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for the flagging topic.</span>
@@ -549,7 +545,7 @@
 
 
 <div class="viewcode-block" id="AquaXmlGenerator.get_imaging_topic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.AquaXmlGenerator.get_imaging_topic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.AquaXmlGenerator.get_imaging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_imaging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">topic_results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the XML for the imaging topic.</span>
@@ -582,7 +578,7 @@
 
 
 <div class="viewcode-block" id="export_to_disk">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.export_to_disk">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportdata.vlaifaqua.export_to_disk.html#pipeline.hsd.tasks.exportdata.almasdaqua.export_to_disk">[docs]</a>
 <span class="k">def</span> <span class="nf">export_to_disk</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an XML document to a nicely formatted XML string and save it in a</span>
@@ -601,7 +597,7 @@
 
 
 <div class="viewcode-block" id="vis_to_asdm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.vis_to_asdm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.vis_to_asdm.html#pipeline.hsd.tasks.exportdata.almasdaqua.vis_to_asdm">[docs]</a>
 <span class="k">def</span> <span class="nf">vis_to_asdm</span><span class="p">(</span><span class="n">vispath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the expected ASDM name from the path of a measurement set.</span>
@@ -614,7 +610,7 @@
 
 
 <div class="viewcode-block" id="xml_generator_for_metric">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_generator_for_metric">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.xml_generator_for_metric.html#pipeline.hsd.tasks.exportdata.almasdaqua.xml_generator_for_metric">[docs]</a>
 <span class="k">def</span> <span class="nf">xml_generator_for_metric</span><span class="p">(</span><span class="n">qa_label</span><span class="p">,</span> <span class="n">value_spec</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that converts a matching QAScore to XML.</span>
@@ -636,7 +632,7 @@
 
 
 <div class="viewcode-block" id="MetricXmlGenerator">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.MetricXmlGenerator">[docs]</a>
 <span class="k">class</span> <span class="nc">MetricXmlGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a AQUA report XML element for QA scores.</span>
@@ -667,12 +663,15 @@
         <span class="k">if</span> <span class="n">formatters</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attr_formatters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">formatters</span><span class="p">)</span>
 
+<div class="viewcode-block" id="MetricXmlGenerator.__call__">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.MetricXmlGenerator.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qa_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span><span class="p">]]:</span>
         <span class="n">scores_to_process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">qa_scores</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">to_xml</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores_to_process</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">to_xml</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores_to_process</span><span class="p">]</span></div>
+
 
 <div class="viewcode-block" id="MetricXmlGenerator.handles">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.handles">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.MetricXmlGenerator.handles">[docs]</a>
     <span class="k">def</span> <span class="nf">handles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if this class can generate XML for the given metric.</span>
@@ -684,7 +683,7 @@
 
 
 <div class="viewcode-block" id="MetricXmlGenerator.filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.filter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.MetricXmlGenerator.filter">[docs]</a>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qa_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduce a list of entries to those entries that require XML to be generated.</span>
@@ -696,7 +695,7 @@
 
 
 <div class="viewcode-block" id="MetricXmlGenerator.to_xml">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.to_xml">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.MetricXmlGenerator.to_xml">[docs]</a>
     <span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qa_score</span><span class="p">:</span> <span class="n">QAScore</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the XML representation of a QA score and associated metric.</span>
@@ -724,7 +723,7 @@
 
 
 <div class="viewcode-block" id="LowestScoreMetricXmlGenerator">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.LowestScoreMetricXmlGenerator">[docs]</a>
 <span class="k">class</span> <span class="nc">LowestScoreMetricXmlGenerator</span><span class="p">(</span><span class="n">MetricXmlGenerator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Metric XML Generator that only returns XML for the lowest QA score that it</span>
@@ -735,7 +734,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">LowestScoreMetricXmlGenerator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">metric_name</span><span class="p">,</span> <span class="n">formatters</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LowestScoreMetricXmlGenerator.filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.filter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.LowestScoreMetricXmlGenerator.filter">[docs]</a>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qa_scores</span><span class="p">):</span>
         <span class="n">handled</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vis</span><span class="p">,</span> <span class="n">qa_score</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">qa_scores</span>
                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handles</span><span class="p">(</span><span class="n">qa_score</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">metric_name</span><span class="p">)]</span>
@@ -750,7 +749,7 @@
 
 
 <div class="viewcode-block" id="GenericMetricXmlGenerator">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.GenericMetricXmlGenerator">[docs]</a>
 <span class="k">class</span> <span class="nc">GenericMetricXmlGenerator</span><span class="p">(</span><span class="n">MetricXmlGenerator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Metric XML Generator that processes any score it is given, formatting the</span>
@@ -763,7 +762,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">GenericMetricXmlGenerator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;Generic metric&#39;</span><span class="p">,</span> <span class="n">formatters</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GenericMetricXmlGenerator.handles">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator.handles">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.GenericMetricXmlGenerator.html#pipeline.hsd.tasks.exportdata.almasdaqua.GenericMetricXmlGenerator.handles">[docs]</a>
     <span class="k">def</span> <span class="nf">handles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 </div>
@@ -834,7 +833,7 @@
 
 
 <div class="viewcode-block" id="sensitivity_xml_for_stages">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.sensitivity_xml_for_stages">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.sensitivity_xml_for_stages.html#pipeline.hsd.tasks.exportdata.almasdaqua.sensitivity_xml_for_stages">[docs]</a>
 <span class="k">def</span> <span class="nf">sensitivity_xml_for_stages</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the XML for all sensitivities reported by all tasks.</span>
@@ -862,7 +861,7 @@
 
 
 <div class="viewcode-block" id="xml_for_sensitivity_stage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity_stage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity_stage.html#pipeline.hsd.tasks.exportdata.almasdaqua.xml_for_sensitivity_stage">[docs]</a>
 <span class="k">def</span> <span class="nf">xml_for_sensitivity_stage</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">stage_results</span><span class="p">,</span> <span class="n">exporter</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Translate the sensitivity dictionaries contained in a task result to XML.</span>
@@ -894,7 +893,7 @@
 
 
 <div class="viewcode-block" id="xml_for_sensitivity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.aqua.xml_for_sensitivity.html#pipeline.hsd.tasks.exportdata.almasdaqua.xml_for_sensitivity">[docs]</a>
 <span class="k">def</span> <span class="nf">xml_for_sensitivity</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the XML representation for a sensitivity dictionary.</span>

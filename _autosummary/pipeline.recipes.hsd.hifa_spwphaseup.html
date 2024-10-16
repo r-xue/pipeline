@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.hsd.hifa_spwphaseup &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.hsd.hifa_targetflag" href="pipeline.recipes.hsd.hifa_targetflag.html" />
+    <link rel="prev" title="pipeline.recipes.hsd.hifa_session_refant" href="pipeline.recipes.hsd.hifa_session_refant.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.hsd.html">pipeline.recipes.hsd</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.hsd.hifa_spwphaseup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.hsd.hifa_spwphaseup.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-hsd-hifa-spwphaseup">
+<h1>pipeline.recipes.hsd.hifa_spwphaseup<a class="headerlink" href="#pipeline-recipes-hsd-hifa-spwphaseup" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.hsd.hifa_spwphaseup">
+<span class="sig-name descname"><span class="pre">hifa_spwphaseup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_spwmapmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnarrowbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minfracmaxbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samebb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasesnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwedgefrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nantennas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfracflagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unregister_existing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_spwphaseup.html#hifa_spwphaseup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hsd.hifa_spwphaseup" title="Link to this definition"></a></dt>
+<dd><p>hifa_spwphaseup —- Compute phase calibration spw map and per spw phase offsets</p>
+<p>The spw map for phase calibration is computed. Phase offsets as a function of
+spectral window are computed using high signal-to-noise calibration observations.</p>
+<p>Previous calibrations are applied on the fly.</p>
+<p>hifa_spwphaseup performs two functions:</p>
+<ul class="simple">
+<li><p>Determines the spectral window mapping or combination mode, for each phase
+and check source, to use when solving for phase as a function of time
+(gfluxscale and timegaincal), and when applying those solutions to
+targets.</p></li>
+<li><p>Computes the per-spectral-window phase offset table that will be applied
+to the data to remove mean phase differences between the spectral windows.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘auto’, then the spectral window map is computed for
+each SpectralSpec and each source with phase or check intent, using the
+following algorithm:</p>
+<ul class="simple">
+<li><p>Estimate the per-spectral-window (spw) per-scan signal-to-noise ratio for
+each phase and check source based on catalog flux densities, Tsys, number
+of antennas, and integration scan time.</p></li>
+<li><p>If the signal-to-noise of all spws is greater than <code class="docutils literal notranslate"><span class="pre">phasesnr</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘default’ mapping is used in which each spw is used
+to calibrate itself.</p></li>
+<li><p>If the signal-to-noise of only some spws are greater than the value of
+<code class="docutils literal notranslate"><span class="pre">phasesnr</span></code>, then each lower-SNR spw is mapped to the highest SNR spw
+in the same SpectralSpec.</p></li>
+<li><p>If all spws have low SNR, or SNR cannot be computed for any reason (for
+example, there is no flux information), then <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘combine’.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘combine’, hifa_spwphaseup maps all the science windows
+to a single science spectral window. For example, if the list of science
+spectral windows is [9, 11, 13, 15] then all the science spectral windows
+in the data will be combined and mapped to the science window 9 in the
+combined phase vs time calibration table.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘simple’, a mapping from narrow science to wider
+science spectral windows is computed using the following algorithm:</p>
+<ul class="simple">
+<li><p>Construct a list of the bandwidths of all the science spectral windows.</p></li>
+<li><p>Determine the maximum bandwidth in this list as ‘maxbandwidth’</p></li>
+<li><p>For each science spectral window with bandwidth less than ‘maxbandwidth’
+construct a list of spectral windows with bandwidths greater than
+<code class="docutils literal notranslate"><span class="pre">minfracmaxbw</span></code> * ‘maxbandwidth’, then select the spectral window in this
+list whose band center most closely matches the band center of the narrow
+spectral window, and preferentially match within the same baseband if
+<code class="docutils literal notranslate"><span class="pre">samebb</span></code> = True.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode</span></code> = ‘default’ the spw mapping is assumed to be one to one.</p>
+<p>Phase offsets per spectral window are determined by computing a phase only gain
+calibration on the selected data, normally the high signal-to-noise bandpass
+calibrator observations, using the solution interval ‘inf’.</p>
+<p>At the end of the task the spectral window map and the phase offset calibration
+table in the pipeline are stored in the context for use by later tasks.</p>
+<p>Finally, the SNR of the calibration solutions are inspected and if the median value
+on a per-spw basis does not reach specific thresholds, then issue a warning and reduced
+QA score, with thresholds at <code class="docutils literal notranslate"><span class="pre">phasesnr</span></code> <a href="#id1"><span class="problematic" id="id2">*</span></a>0.75 (blue), <a href="#id3"><span class="problematic" id="id4">*</span></a>0.5 (yellow) and <a href="#id5"><span class="problematic" id="id6">*</span></a>0.33 (red).</p>
+<p>Output:</p>
+<blockquote>
+<div><p>results – The results object for the pipeline task is returned.</p>
+</div></blockquote>
+<p>——— parameter descriptions ———————————————</p>
+<dl>
+<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.</p>
+<p>Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p>
+</dd>
+<dt>caltable</dt><dd><p>The list of output calibration tables. Defaults to the standard
+pipeline naming convention.</p>
+<p>Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p>
+</dd>
+<dt>field</dt><dd><p>The list of field names or field ids for which phase offset solutions
+are to be computed. Defaults to all fields with the default intent.</p>
+<p>Example: field=’3C279’, field=’3C279, M82’</p>
+</dd>
+<dt>intent</dt><dd><p>A string containing a comma delimited list of intents against
+which the selected fields are matched. Defaults to the BANDPASS
+observations.</p>
+<p>Example: intent=’PHASE’</p>
+</dd>
+<dt>spw</dt><dd><p>The list of spectral windows and channels for which gain solutions are
+computed. Defaults to all the science spectral windows.</p>
+<p>Example: spw=’13,15’</p>
+</dd>
+<dt>hm_spwmapmode</dt><dd><p>The spectral window mapping mode. The options are: ‘auto’,
+‘combine’, ‘simple’, and ‘default’. In ‘auto’ mode hifa_spwphaseup
+estimates the SNR of the phase calibrator observations and uses these
+estimates to choose between ‘combine’ mode (low SNR) and ‘default’ mode
+(high SNR). In combine mode all spectral windows are combined and mapped to
+one spectral window. In ‘simple’ mode narrow spectral windows are mapped to
+wider ones using an algorithm defined by ‘maxnarrowbw’, ‘minfracmaxbw’, and
+‘samebb’. In ‘default’ mode the spectral window map defaults to the
+standard one to one mapping.</p>
+<p>Example: hm_spwmapmode=’combine’</p>
+</dd>
+<dt>maxnarrowbw</dt><dd><p>The maximum bandwidth defining narrow spectral windows. Values
+must be in CASA compatible frequency units.</p>
+<p>Example: maxnarrowbw=’’</p>
+</dd>
+<dt>minfracmaxbw</dt><dd><p>The minimum fraction of the maximum bandwidth in the set of
+spws to use for matching.</p>
+<p>Example: minfracmaxbw=0.75</p>
+</dd>
+<dt>samebb</dt><dd><p>Match within the same baseband if possible.</p>
+<p>Example: samebb=False</p>
+</dd>
+<dt>phasesnr</dt><dd><p>The required gaincal solution signal-to-noise.</p>
+<p>Example: phaseupsnr=20.0</p>
+</dd>
+<dt>bwedgefrac</dt><dd><p>The fraction of the bandwidth edges that is flagged.</p>
+<p>Example: bwedgefrac=0.0</p>
+</dd>
+<dt>hm_nantennas</dt><dd><p>The heuristics for determines the number of antennas to use
+in the signal-to-noise estimate. The options are ‘all’ and ‘unflagged’.
+The ‘unflagged’ options is not currently supported.</p>
+<p>Example: hm_nantennas=’unflagged’</p>
+</dd>
+<dt>maxfracflagged</dt><dd><p>The maximum fraction of an antenna that can be flagged
+before it is excluded from the signal-to-noise estimate.</p>
+<p>Example: maxfracflagged=0.80</p>
+</dd>
+<dt>combine</dt><dd><p>Data axes to combine for solving. Options are ‘’, ‘scan’, ‘spw’,
+‘field’ or any comma-separated combination.</p>
+<p>Example: combine=’’</p>
+</dd>
+<dt>refant</dt><dd><p>Reference antenna name(s) in priority order. Defaults to most recent
+values set in the pipeline context.  If no reference antenna is defined in
+the pipeline context the CASA defaults are used.</p>
+<p>Example: refant=’DV01’, refant=’DV05,DV07’</p>
+</dd>
+<dt>minblperant</dt><dd><p>Minimum number of baselines required per antenna for each solve.
+Antennas with fewer baselines are excluded from solutions.</p>
+<p>Example: minblperant=2</p>
+</dd>
+<dt>minsnr</dt><dd><p>Solutions below this SNR are rejected.</p>
+</dd>
+<dt>unregister_existing</dt><dd><p>Unregister previous spwphaseup calibrations from the pipeline context
+before registering the new calibrations from this task.</p>
+</dd>
+</dl>
+<p>——— examples ———————————————————–</p>
+<p>1. Compute the default spectral window map and the per spectral window phase
+offsets:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_spwphaseup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. Compute the default spectral window map and the per spectral window phase
+offsets set the spectral window mapping mode to ‘simple’:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_spwphaseup</span><span class="p">(</span><span class="n">hm_spwmapmode</span><span class="o">=</span><span class="s1">&#39;simple&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.hsd.hifa_session_refant.html" class="btn btn-neutral float-left" title="pipeline.recipes.hsd.hifa_session_refant" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.hsd.hifa_targetflag.html" class="btn btn-neutral float-right" title="pipeline.recipes.hsd.hifa_targetflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

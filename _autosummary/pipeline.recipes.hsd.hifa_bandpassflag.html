@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.hsd.hifa_bandpassflag &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.hsd.hifa_bpsolint" href="pipeline.recipes.hsd.hifa_bpsolint.html" />
+    <link rel="prev" title="pipeline.recipes.hsd.hifa_bandpass" href="pipeline.recipes.hsd.hifa_bandpass.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.hsd.html">pipeline.recipes.hsd</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.hsd.hifa_bandpassflag</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.hsd.hifa_bandpassflag.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-hsd-hifa-bandpassflag">
+<h1>pipeline.recipes.hsd.hifa_bandpassflag<a class="headerlink" href="#pipeline-recipes-hsd-hifa-bandpassflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.hsd.hifa_bandpassflag">
+<span class="sig-name descname"><span class="pre">hifa_bandpassflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_phaseup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupnsols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_bandpass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxchannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evenbpints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minbpsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpnsols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmantint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxed_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_auto_fillgaps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_bandpassflag.html#hifa_bandpassflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hsd.hifa_bandpassflag" title="Link to this definition"></a></dt>
+<dd><p>hifa_bandpassflag —- Bandpass calibration flagging</p>
+<p>This task performs a preliminary phased-up bandpass solution and temporarily
+applies it, then computes the flagging heuristics by calling
+hif_correctedampflag which looks for outlier visibility points by statistically
+examining the scalar difference of the corrected amplitudes minus model
+amplitudes, and then flags those outliers. The philosophy is that only outlier
+data points that have remained outliers after calibration will be flagged. Note
+that the phase of the data is not assessed.</p>
+<p>Plots are generated at two points in this workflow: after bandpass calibration
+but before flagging heuristics are run, and after flagging heuristics have been
+run and applied. If no points were flagged, the ‘after’ plots are not generated
+or displayed.</p>
+<p>Output:</p>
+<blockquote>
+<div><p>results – The results object for the pipeline task is returned.</p>
+</div></blockquote>
+<p>——— parameter descriptions ———————————————</p>
+<dl>
+<dt>vis</dt><dd><p>List of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.</p>
+<p>Example: vis=[‘ngc5921.ms’]</p>
+</dd>
+<dt>caltable</dt><dd><p>List of names for the output calibration tables. Defaults
+to the standard pipeline naming convention.</p>
+<p>Example: caltable=[‘ngc5921.gcal’]</p>
+</dd>
+<dt>intent</dt><dd><p>A string containing a comma delimited list of intents against
+which the selected fields are matched. Set to intent=’’ by default, which
+means the task will select all data with the BANDPASS intent.</p>
+<p>Example: intent=’<cite>*PHASE*</cite>’</p>
+</dd>
+<dt>field</dt><dd><p>The list of field names or field ids for which bandpasses are
+computed. Set to field=’’ by default, which means the task
+will select all fields.</p>
+<p>Example: field=’3C279’, field=’3C279,M82’</p>
+</dd>
+<dt>spw</dt><dd><p>The list of spectral windows and channels for which bandpasses are
+computed. Set to spw=’’ by default, which means the task will select all
+science spectral windows.</p>
+<p>Example: spw=’11,13,15,17’</p>
+</dd>
+<dt>antenna</dt><dd><p>Set of data selection antenna IDs</p>
+</dd>
+<dt>hm_phaseup</dt><dd><p>The pre-bandpass solution phaseup gain heuristics. The options are:</p>
+<p>‘snr’: compute solution required to achieve the specified SNR</p>
+<p>‘manual’: use manual solution parameters</p>
+<p>‘’: skip phaseup</p>
+<p>Example: hm_phaseup=’manual’</p>
+</dd>
+<dt>phaseupsolint</dt><dd><p>The phase correction solution interval in CASA syntax.
+Used when <code class="docutils literal notranslate"><span class="pre">hm_phaseup</span></code> = ‘manual’ or as a default if the
+<code class="docutils literal notranslate"><span class="pre">hm_phaseup</span></code> = ‘snr’ heuristic computation fails.</p>
+<p>Example: phaseupsolint=’300s’</p>
+</dd>
+<dt>phaseupbw</dt><dd><p>Bandwidth to be used for phaseup. Used when
+<code class="docutils literal notranslate"><span class="pre">hm_phaseup</span></code> = ‘manual’.</p>
+<p>Example:</p>
+<p>phaseupbw=’’ to use entire bandpass</p>
+<p>phaseupbw=’500MHz’ to use central 500MHz</p>
+</dd>
+<dt>phaseupsnr</dt><dd><p>The required SNR for the phaseup solution. Used only if
+hm_phaseup=’snr’.</p>
+<p>Example: phaseupsnr=10.0</p>
+</dd>
+<dt>phaseupnsols</dt><dd><p>The minimum number of phaseup gain solutions. Used only if
+hm_phaseup=’snr’.</p>
+<p>Example: phaseupnsols=4</p>
+</dd>
+<dt>hm_bandpass</dt><dd><p>The bandpass solution heuristics. The options are:</p>
+<p>‘snr’: compute the solution required to achieve the specified SNR</p>
+<p>‘smoothed’: simple ‘smoothing’ i.e. spectral solint&gt;1chan</p>
+<p>‘fixed’: use the user defined parameters for all spws</p>
+</dd>
+<dt>solint</dt><dd><p>Time and channel solution intervals in CASA syntax.
+Default is solint=’inf’, which is used when
+<code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘fixed’.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’, then the task will attempt to
+compute and use an optimal SNR-based solint (and warn if this
+solint is not good enough).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘smoothed’, the task will override the
+spectral solint with bandwidth/maxchannels.</p>
+</dd>
+<dt>maxchannels</dt><dd><p>The bandpass solution ‘smoothing’ factor in channels, i.e.
+spectral solint will be set to bandwidth/maxchannels
+Set to 0 for no smoothing.
+Used if <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘smoothed’.</p>
+<p>Example: maxchannels=240</p>
+</dd>
+<dt>evenbpints</dt><dd><p>Force the per spw frequency solint to be evenly divisible
+into the spw bandpass if <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’.</p>
+<p>Example: evenbpints=False</p>
+</dd>
+<dt>bpsnr</dt><dd><p>The required SNR for the bandpass solution. Used only if
+<code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’.</p>
+<p>Example: bpsnr=30.0</p>
+</dd>
+<dt>minbpsnr</dt><dd><p>The minimum required SNR for the bandpass solution
+when strong atmospheric lines exist in Tsys spectra.
+Used only if <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’.</p>
+<p>Example: minbpsnr=10.0</p>
+</dd>
+<dt>bpnsols</dt><dd><p>The minimum number of bandpass solutions. Used only if
+<code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’.</p>
+<p>Example: bpnsols=8</p>
+</dd>
+<dt>combine</dt><dd><p>Data axes to combine for solving. Axes are ‘’, ‘scan’, ‘spw’,
+‘field’ or any comma-separated combination.</p>
+<p>Example: combine=’scan,field’</p>
+</dd>
+<dt>refant</dt><dd><p>List of reference antenna names. Defaults to the value(s) stored in the
+pipeline context. If undefined in the pipeline context defaults to
+the CASA reference antenna naming scheme.</p>
+<p>Example: refant=’DV06,DV07’</p>
+</dd>
+<dt>minblperant</dt><dd><p>Minimum number of baselines required per antenna for each solve.
+Antennas with fewer baselines are excluded from solutions.</p>
+<p>Example: minblperant=4</p>
+</dd>
+<dt>minsnr</dt><dd><p>Solutions below this SNR are rejected.</p>
+<p>Example: minsnr=3.0</p>
+</dd>
+<dt>solnorm</dt><dd><p>Normalise the bandpass solution; defaults to True.</p>
+</dd>
+<dt>antnegsig</dt><dd><p>Lower sigma threshold for identifying outliers as a result of
+bad antennas within individual timestamps.</p>
+<p>Example: antnegsig=4.0</p>
+</dd>
+<dt>antpossig</dt><dd><p>Upper sigma threshold for identifying outliers as a result of
+bad antennas within individual timestamps.</p>
+<p>Example: antpossig=4.6</p>
+</dd>
+<dt>tmantint</dt><dd><p>Threshold for maximum fraction of timestamps that are allowed
+to contain outliers.</p>
+<p>Example: tmantint=0.063</p>
+</dd>
+<dt>tmint</dt><dd><p>Initial threshold for maximum fraction of ‘outlier timestamps’
+over ‘total timestamps’ that a baseline may be a part of.</p>
+<p>Example: tmint=0.085</p>
+</dd>
+<dt>tmbl</dt><dd><p>Initial threshold for maximum fraction of ‘bad baselines’ over
+‘all baselines’ that an antenna may be a part of.</p>
+<p>Example: tmbl=0.175</p>
+</dd>
+<dt>antblnegsig</dt><dd><p>Lower sigma threshold for identifying outliers as a result of
+‘bad baselines’ and/or ‘bad antennas’ within baselines (across all
+timestamps).</p>
+<p>Example: antblnegsig=3.4</p>
+</dd>
+<dt>antblpossig</dt><dd><p>Upper sigma threshold for identifying outliers as a result of
+‘bad baselines’ and/or ‘bad antennas’ within baselines (across all
+timestamps).</p>
+<p>Example: antblpossig=3.2</p>
+</dd>
+<dt>relaxed_factor</dt><dd><p>Relaxed value to set the threshold scaling factor to under
+certain conditions (see documentation of the underlying correctedampflag task).</p>
+<p>Example: relaxed_factor=2.0</p>
+</dd>
+<dt>niter</dt><dd><p>Maximum number of times to iterate on evaluation of flagging
+heuristics. If an iteration results in no new flags, then subsequent
+iterations are skipped.</p>
+<p>Example: niter=2</p>
+</dd>
+<dt>hm_auto_fillgaps</dt><dd><p>If True, then the <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘snr’ or ‘smoothed’
+modes, that solve bandpass per SpW, are performed with
+CASA bandpass task parameter ‘fillgaps’ set to a quarter
+of the respective SpW bandwidth (in channels).</p>
+<p>If False, then these bandpass solves will use
+fillgaps=0.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">hm_bandpass</span></code> = ‘fixed’ mode is unaffected by
+<code class="docutils literal notranslate"><span class="pre">hm_auto_fillgaps</span></code> and always uses fillgaps=0.</p>
+</dd>
+</dl>
+<p>——— examples ———————————————————–</p>
+<p>1. run with recommended settings to create bandpass solution with flagging
+using recommended thresholds:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_bandpassflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.hsd.hifa_bandpass.html" class="btn btn-neutral float-left" title="pipeline.recipes.hsd.hifa_bandpass" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.hsd.hifa_bpsolint.html" class="btn btn-neutral float-right" title="pipeline.recipes.hsd.hifa_bpsolint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -142,7 +138,7 @@
 
 
 <div class="viewcode-block" id="erfScorer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.scorers.erfScorer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.erfScorer.html#pipeline.qa.utility.scorers.erfScorer">[docs]</a>
 <span class="k">class</span> <span class="nc">erfScorer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">good_level</span><span class="p">,</span> <span class="n">bad_level</span><span class="p">,</span> <span class="n">lowest_score</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
@@ -160,13 +156,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="mf">6.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">good_level</span> <span class="o">-</span> <span class="n">bad_level</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">good_level</span> <span class="o">/</span> <span class="p">(</span><span class="n">good_level</span> <span class="o">-</span> <span class="n">bad_level</span><span class="p">))</span>
 
+<div class="viewcode-block" id="erfScorer.__call__">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.erfScorer.html#pipeline.qa.utility.scorers.erfScorer.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowest_score</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">erf</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowest_score</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="gaussScorer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.scorers.gaussScorer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.gaussScorer.html#pipeline.qa.utility.scorers.gaussScorer">[docs]</a>
 <span class="k">class</span> <span class="nc">gaussScorer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gauss function based scorer using the difference to the</span>
@@ -177,13 +176,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
 
+<div class="viewcode-block" id="gaussScorer.__call__">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.gaussScorer.html#pipeline.qa.utility.scorers.gaussScorer.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="linScorer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.scorers.linScorer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.linScorer.html#pipeline.qa.utility.scorers.linScorer">[docs]</a>
 <span class="k">class</span> <span class="nc">linScorer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Linear function scorer to map a metric range to a score</span>
@@ -205,11 +207,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">score_low</span> <span class="o">=</span> <span class="n">score_low</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_high</span> <span class="o">=</span> <span class="n">score_high</span>
 
+<div class="viewcode-block" id="linScorer.__call__">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.scorers.linScorer.html#pipeline.qa.utility.scorers.linScorer.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
 
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_low</span> <span class="o">&lt;=</span> <span class="n">metric</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_high</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Metric must be in [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_low</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_high</span><span class="si">}</span><span class="s2">].&quot;</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_high</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_low</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">metric</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_low</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_low</span></div>
+</div>
 
 </pre></div>
 

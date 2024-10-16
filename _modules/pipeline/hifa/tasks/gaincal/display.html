@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -144,7 +140,7 @@
 
 
 <div class="viewcode-block" id="GaincalSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalSummaryChart.html#pipeline.hifa.tasks.gaincal.display.GaincalSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per spw</span>
@@ -174,18 +170,15 @@
                                                 <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="n">yaxis</span><span class="p">,</span> <span class="n">ant</span><span class="o">=</span><span class="n">ant</span><span class="p">,</span>
                                                 <span class="n">plotrange</span><span class="o">=</span><span class="n">plotrange</span><span class="p">,</span> <span class="n">coloraxis</span><span class="o">=</span><span class="n">coloraxis</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GaincalSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plot_wrappers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plotters</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">plot_wrappers</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="GaincalDetailChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalDetailChart.html#pipeline.hifa.tasks.gaincal.display.GaincalDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalDetailChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per spw and antenna</span>
@@ -216,18 +209,15 @@
                                                     <span class="n">plotrange</span><span class="o">=</span><span class="n">plotrange</span><span class="p">,</span> <span class="n">coloraxis</span><span class="o">=</span><span class="n">coloraxis</span><span class="p">,</span>
                                                     <span class="n">ysamescale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GaincalDetailChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalDetailChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plot_wrappers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">plot_wrappers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plotters</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">plot_wrappers</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="GaincalAmpVsTimeSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeSummaryChart.html#pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalAmpVsTimeSummaryChart</span><span class="p">(</span><span class="n">GaincalSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna as selected by ant,</span>
@@ -240,7 +230,7 @@
 
 
 <div class="viewcode-block" id="GaincalAmpVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeDetailChart.html#pipeline.hifa.tasks.gaincal.display.GaincalAmpVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalAmpVsTimeDetailChart</span><span class="p">(</span><span class="n">GaincalDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a phase vs time plot for each spw/antenna combination.</span>
@@ -252,7 +242,7 @@
 
 
 <div class="viewcode-block" id="GaincalPhaseVsTimeSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeSummaryChart.html#pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalPhaseVsTimeSummaryChart</span><span class="p">(</span><span class="n">GaincalSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a phase vs time plot for each spw, overplotting by antenna, and</span>
@@ -267,7 +257,7 @@
 
 
 <div class="viewcode-block" id="GaincalPhaseVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeDetailChart.html#pipeline.hifa.tasks.gaincal.display.GaincalPhaseVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalPhaseVsTimeDetailChart</span><span class="p">(</span><span class="n">GaincalDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a phase vs time plot for each spw/antenna combination.</span>

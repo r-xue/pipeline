@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -144,7 +140,7 @@
 
 
 <div class="viewcode-block" id="UnitOfMagnitude">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitOfMagnitude">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.unitformat.UnitOfMagnitude.html#pipeline.domain.unitformat.UnitOfMagnitude">[docs]</a>
 <span class="k">class</span> <span class="nc">UnitOfMagnitude</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Models a unit of magnitude such as &#39;Kilobyte&#39;, &#39;milimetre&#39; or &#39;hectare&#39;.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="p">):</span>
@@ -152,11 +148,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="nb">format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">html</span>
 
-<div class="viewcode-block" id="UnitOfMagnitude.adjust">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitOfMagnitude.adjust">[docs]</a>
     <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span></div>
-
+        <span class="k">return</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">magnitude</span>
@@ -179,14 +172,14 @@
 
 
 <div class="viewcode-block" id="UnitFormat">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.unitformat.UnitFormat.html#pipeline.domain.unitformat.UnitFormat">[docs]</a>
 <span class="k">class</span> <span class="nc">UnitFormat</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefer_integers</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prefer_integers</span> <span class="o">=</span> <span class="n">prefer_integers</span>
 
 <div class="viewcode-block" id="UnitFormat.addUnitOfMagnitude">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.addUnitOfMagnitude">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.unitformat.UnitFormat.html#pipeline.domain.unitformat.UnitFormat.addUnitOfMagnitude">[docs]</a>
     <span class="k">def</span> <span class="nf">addUnitOfMagnitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a unit to this format. For example, to add support for centimetres</span>
@@ -198,24 +191,16 @@
         <span class="n">bisect</span><span class="o">.</span><span class="n">insort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">UnitOfMagnitude</span><span class="p">(</span><span class="n">magnitude</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">html</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="UnitFormat.format">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.format">[docs]</a>
     <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
         <span class="n">bestUnit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bestUnitForObject</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
         <span class="n">numberAdjusted</span> <span class="o">=</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="UnitFormat.html">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.html">[docs]</a>
     <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
         <span class="n">bestUnit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bestUnitForObject</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
         <span class="n">numberAdjusted</span> <span class="o">=</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">bestUnit</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numberAdjusted</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="UnitFormat.bestUnitForObject">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.UnitFormat.bestUnitForObject">[docs]</a>
     <span class="k">def</span> <span class="nf">bestUnitForObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">()</span>
@@ -260,7 +245,6 @@
             <span class="k">return</span> <span class="n">next_best_unit</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">best_unit</span></div>
-</div>
 
 
 
@@ -280,7 +264,7 @@
 
 <span class="c1"># Create a Unit for measuring frequencies</span>
 <div class="viewcode-block" id="get_frequency_format">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.unitformat.get_frequency_format">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.unitformat.get_frequency_format.html#pipeline.domain.unitformat.get_frequency_format">[docs]</a>
 <span class="k">def</span> <span class="nf">get_frequency_format</span><span class="p">(</span><span class="n">precision</span><span class="p">):</span>
     <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;{0:.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">precision</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;f}&#39;</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">UnitFormat</span><span class="p">()</span>

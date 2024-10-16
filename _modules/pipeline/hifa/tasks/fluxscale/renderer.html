@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -167,7 +163,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsGFluxscaleRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;gfluxscale.mako&#39;</span><span class="p">,</span> 
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Transfer fluxscale from amplitude calibrator&#39;</span><span class="p">,</span>
@@ -175,8 +171,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsGFluxscaleRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># All antenna, sort by baseband</span>
         <span class="n">ampuv_allant_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
@@ -214,20 +208,14 @@
             <span class="s1">&#39;flagtable&#39;</span><span class="p">:</span> <span class="n">flagtable</span><span class="p">,</span>
             <span class="s1">&#39;flux_plots&#39;</span><span class="p">:</span> <span class="n">flux_comparison_plots</span><span class="p">,</span>
             <span class="s1">&#39;table_rows&#39;</span><span class="p">:</span> <span class="n">table_rows</span>
-        <span class="p">})</span></div>
+        <span class="p">})</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.sort_plots_by_baseband">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.sort_plots_by_baseband">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">sort_plots_by_baseband</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">plots</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">plots</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">plot</span><span class="p">:</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;baseband&#39;</span><span class="p">])</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span></div>
+            <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">plots</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_flux_comparison_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_flux_comparison_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -237,11 +225,10 @@
             <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
             <span class="n">d</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">d</span></div>
-
+        <span class="k">return</span> <span class="n">d</span>
 
 <div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create plots and return a dictionary of vis:[Plots].  No antenna or UVrange selection.</span>
@@ -255,7 +242,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.create_plots_ants">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots_ants">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.create_plots_ants">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plots_ants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create plots and return a dictionary of vis:[Plots].</span>
@@ -273,8 +260,6 @@
         <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="T2_4MDetailsGFluxscaleRenderer.plots_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.T2_4MDetailsGFluxscaleRenderer.plots_for_result">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">plots_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
@@ -297,7 +282,6 @@
                 <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>        
 
         <span class="k">return</span> <span class="n">d</span></div>
-</div>
 
 
 
@@ -305,7 +289,7 @@
 
 
 <div class="viewcode-block" id="make_flag_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_flag_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.make_flag_table.html#pipeline.hifa.tasks.fluxscale.renderer.make_flag_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_flag_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;stage</span><span class="si">{</span><span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">flagtable</span> <span class="o">=</span> <span class="p">{}</span>
@@ -321,7 +305,7 @@
 
 
 <div class="viewcode-block" id="write_flagcmds_to_disk">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.write_flagcmds_to_disk">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.write_flagcmds_to_disk.html#pipeline.hifa.tasks.fluxscale.renderer.write_flagcmds_to_disk">[docs]</a>
 <span class="k">def</span> <span class="nf">write_flagcmds_to_disk</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weblog_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="s2">-flag_commands.txt&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flagfile</span><span class="p">:</span>
@@ -335,7 +319,7 @@
 
 
 <div class="viewcode-block" id="make_flux_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_flux_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.make_flux_table.html#pipeline.hifa.tasks.fluxscale.renderer.make_flux_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_flux_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the flux stat table rows for the results</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -498,7 +482,7 @@
 
 
 <div class="viewcode-block" id="make_adopted_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.make_adopted_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.make_adopted_table.html#pipeline.hifa.tasks.fluxscale.renderer.make_adopted_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_adopted_table</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the flux stat table rows for the results</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -516,7 +500,7 @@
 
 
 <div class="viewcode-block" id="create_flux_comparison_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.create_flux_comparison_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.create_flux_comparison_plots.html#pipeline.hifa.tasks.fluxscale.renderer.create_flux_comparison_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">create_flux_comparison_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">showatm</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
@@ -667,7 +651,7 @@
 
 
 <div class="viewcode-block" id="scale_flux">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.renderer.scale_flux">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.renderer.scale_flux.html#pipeline.hifa.tasks.fluxscale.renderer.scale_flux">[docs]</a>
 <span class="k">def</span> <span class="nf">scale_flux</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">spix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns flux at a frequency by extrapolating via the spectral index.</span>
 

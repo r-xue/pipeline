@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -148,7 +144,7 @@
 
 
 <div class="viewcode-block" id="finalcalsSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalcalsSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -157,16 +153,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">basevis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="c1"># self.caltable = result.final[0].gaintable</span>
 
-<div class="viewcode-block" id="finalcalsSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># science_spws = self.ms.get_spectral_windows(science_windows_only=True)</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="finalcalsSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -176,18 +167,12 @@
                          <span class="n">title</span><span class="o">=</span><span class="s1">&#39;K table: finaldelay.tbl   Antenna: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;0~2&#39;</span><span class="p">),</span>
                          <span class="n">titlefont</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">xaxisfont</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">yaxisfont</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">showgui</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">)</span>
 
-        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
+        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="finalcalsSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;finalcalsjunk&#39;</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;finalcalsjunk&#39;</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="finalcalsSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalcalsSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -206,12 +191,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalDelaysPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalDelaysPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalDelaysPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalDelaysPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalDelaysPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -223,8 +207,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finaldelays-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalDelaysPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalDelaysPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -295,12 +277,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalphaseGainPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalphaseGainPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalphaseGainPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalphaseGainPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalphaseGainPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -312,8 +293,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalphasegain-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalphaseGainPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalphaseGainPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -387,12 +366,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalbpSolAmpPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalbpSolAmpPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -405,8 +383,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalbpsolamp-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalbpSolAmpPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -480,12 +456,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalbpSolAmpPerAntennaPerSpwChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaPerSpwChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaPerSpwChart.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaPerSpwChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalbpSolAmpPerAntennaPerSpwChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -498,8 +473,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalbpsolamp-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalbpSolAmpPerAntennaPerSpwChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolAmpPerAntennaPerSpwChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -580,12 +553,11 @@
                             <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalbpSolPhasePerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalbpSolPhasePerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -598,8 +570,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalbpsolphase-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalbpSolPhasePerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -674,12 +644,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalbpSolPhasePerAntennaPerSpwChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaPerSpwChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaPerSpwChart.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaPerSpwChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalbpSolPhasePerAntennaPerSpwChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -692,8 +661,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalbpsolphase-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalbpSolPhasePerAntennaPerSpwChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhasePerAntennaPerSpwChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -775,12 +742,11 @@
                             <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalbpSolPhaseShortPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhaseShortPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalbpSolPhaseShortPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhaseShortPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalbpSolPhaseShortPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -793,8 +759,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalbpsolphaseshort-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalbpSolPhaseShortPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalbpSolPhaseShortPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -869,12 +833,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalAmpTimeCalPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalAmpTimeCalPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -887,8 +850,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalamptimecal-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalAmpTimeCalPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -972,12 +933,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalAmpTimeCalPerAntennaPerSpwChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaPerSpwChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaPerSpwChart.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaPerSpwChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalAmpTimeCalPerAntennaPerSpwChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -990,8 +950,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalamptimecal-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalAmpTimeCalPerAntennaPerSpwChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpTimeCalPerAntennaPerSpwChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -1082,12 +1040,11 @@
                             <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalAmpFreqCalPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpFreqCalPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalAmpFreqCalPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalAmpFreqCalPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalAmpFreqCalPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -1100,8 +1057,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalampfreqcal-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalAmpFreqCalPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalAmpFreqCalPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -1181,12 +1136,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalPhaseGainCalPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaChart.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalPhaseGainCalPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -1199,8 +1153,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalphasegaincal-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalPhaseGainCalPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -1275,12 +1227,11 @@
                     <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="finalPhaseGainCalPerAntennaPerSpwChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaPerSpwChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaPerSpwChart.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaPerSpwChart">[docs]</a>
 <span class="k">class</span> <span class="nc">finalPhaseGainCalPerAntennaPerSpwChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -1293,8 +1244,6 @@
                                           <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="s1">&#39;finalphasegaincal-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finalPhaseGainCalPerAntennaPerSpwChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.finalPhaseGainCalPerAntennaPerSpwChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -1377,12 +1326,11 @@
                             <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_maxphase_maxamp">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.display.get_maxphase_maxamp">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.display.get_maxphase_maxamp.html#pipeline.hifv.tasks.finalcals.display.get_maxphase_maxamp">[docs]</a>
 <span class="k">def</span> <span class="nf">get_maxphase_maxamp</span><span class="p">(</span><span class="n">bpcaltable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the max amplitude and max phase for a given bpcaltable</span>

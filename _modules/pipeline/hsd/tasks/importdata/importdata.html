@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -163,7 +159,7 @@
 
 
 <div class="viewcode-block" id="SDImportDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SDImportDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.importdata.SDImportDataInputs.html#pipeline.hsd.tasks.SDImportDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImportDataInputs</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of SDImportData.</span>
 
@@ -232,7 +228,7 @@
 
 
 <div class="viewcode-block" id="SDImportDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SDImportDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.qa.scorecalculator.SDImportDataResults.html#pipeline.hsd.tasks.SDImportDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SDImportDataResults is an equivalent class with ImportDataResults.</span>
 
@@ -272,7 +268,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataResults</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">mses</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDImportDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SDImportDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.qa.scorecalculator.SDImportDataResults.html#pipeline.hsd.tasks.SDImportDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
 
@@ -306,7 +302,7 @@
 
 
 <div class="viewcode-block" id="SerialSDImportData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SerialSDImportData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.importdata.SerialSDImportData.html#pipeline.hsd.tasks.SerialSDImportData">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialSDImportData</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data import execution task of SingleDish.</span>
 
@@ -316,7 +312,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDImportDataInputs</span>
 
 <div class="viewcode-block" id="SerialSDImportData.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SerialSDImportData.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.importdata.SerialSDImportData.html#pipeline.hsd.tasks.SerialSDImportData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SDImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare job requests for execution.</span>
 
@@ -373,7 +369,7 @@
 
 <span class="c1"># Tier-0 parallelization</span>
 <div class="viewcode-block" id="SDImportData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SDImportData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImportData.html#pipeline.hsd.tasks.SDImportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_importdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;If required, ASDMs are converted to MeasurementSets.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SDImportData</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>

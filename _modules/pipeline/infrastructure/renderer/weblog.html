@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -183,7 +179,7 @@
 
 
 <div class="viewcode-block" id="register_mako_templates">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.register_mako_templates">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.register_mako_templates.html#pipeline.infrastructure.renderer.weblog.register_mako_templates">[docs]</a>
 <span class="k">def</span> <span class="nf">register_mako_templates</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find Mako templates in the given directory, registering them to the module</span>
@@ -221,7 +217,7 @@
 
 
 <div class="viewcode-block" id="WebLogRendererRegistry">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogRendererRegistry</span><span class="p">(</span><span class="n">RendererRegistry</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">WebLogRendererRegistry</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -229,7 +225,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_render_ungrouped</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="WebLogRendererRegistry.add_renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.add_renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.add_renderer">[docs]</a>
     <span class="k">def</span> <span class="nf">add_renderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">group_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Register a renderer to be used to generate HTML for results from a given</span>
@@ -266,17 +262,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_render_by_session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">task_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="WebLogRendererRegistry.render_by_session">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.render_by_session">[docs]</a>
     <span class="k">def</span> <span class="nf">render_by_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_by_session</span></div>
+        <span class="k">return</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_by_session</span>
 
-
-<div class="viewcode-block" id="WebLogRendererRegistry.render_ungrouped">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.WebLogRendererRegistry.render_ungrouped">[docs]</a>
     <span class="k">def</span> <span class="nf">render_ungrouped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_ungrouped</span></div>
-</div>
 
 
 
@@ -286,7 +276,7 @@
 <span class="c1"># this function exists at the module level to retain compatibility with</span>
 <span class="c1"># pre-RenderRegistry code.</span>
 <div class="viewcode-block" id="add_renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.weblog.add_renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.add_renderer.html#pipeline.infrastructure.renderer.weblog.add_renderer">[docs]</a>
 <span class="k">def</span> <span class="nf">add_renderer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">registry</span><span class="o">.</span><span class="n">add_renderer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 

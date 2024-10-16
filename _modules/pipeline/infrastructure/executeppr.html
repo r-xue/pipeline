@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -163,7 +159,7 @@
 
 
 <div class="viewcode-block" id="executeppr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.executeppr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.executeppr.executeppr.html#pipeline.infrastructure.executeppr.executeppr">[docs]</a>
 <span class="k">def</span> <span class="nf">executeppr</span><span class="p">(</span><span class="n">pprXmlFile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">importonly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">breakpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="n">bpaction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ignore&#39;</span><span class="p">,</span>
                <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -451,7 +447,7 @@
 
 
 <div class="viewcode-block" id="save_existing_context">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.save_existing_context">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.executevlappr.save_existing_context.html#pipeline.infrastructure.executeppr.save_existing_context">[docs]</a>
 <span class="k">def</span> <span class="nf">save_existing_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save existing context to disk.</span>
 
@@ -478,7 +474,7 @@
 
 
 <div class="viewcode-block" id="export_on_exception">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.executeppr.export_on_exception">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.executeppr.export_on_exception.html#pipeline.infrastructure.executeppr.export_on_exception">[docs]</a>
 <span class="k">def</span> <span class="nf">export_on_exception</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">errorfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># Define path for exporting output products, and ensure path exists.</span>
     <span class="n">products_dir</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_products_dir</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>

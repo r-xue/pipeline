@@ -4,9 +4,16 @@ pipeline.hif.tasks.tclean.renderer
 .. automodule:: pipeline.hif.tasks.tclean.renderer
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_cycle_stats
       get_plot
@@ -16,9 +23,16 @@ pipeline.hif.tasks.tclean.renderer
       randint
       triadwise
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ImageRow
       PolImagePaths
@@ -27,3 +41,11 @@ pipeline.hif.tasks.tclean.renderer
       TCleanPlotsRenderer
       TCleanTablesRenderer
    
+   
+
+   
+   
+   
+
+
+

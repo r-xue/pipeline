@@ -4,15 +4,29 @@ pipeline.hsd.tasks.common.observatory\_policy
 .. automodule:: pipeline.hsd.tasks.common.observatory_policy
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_imaging_policy
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ALMAImagingPolicy
       Context
@@ -20,3 +34,11 @@ pipeline.hsd.tasks.common.observatory\_policy
       NROImagingPolicy
       ObservatoryImagingPolicy
    
+   
+
+   
+   
+   
+
+
+

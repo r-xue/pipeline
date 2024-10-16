@@ -4,9 +4,16 @@ pipeline.extern.almarenorm\_pl2023
 .. automodule:: pipeline.extern.almarenorm_pl2023
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       acos
       acosh
@@ -63,9 +70,16 @@ pipeline.extern.almarenorm\_pl2023
       trunc
       ulp
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ACreNorm
       attool
@@ -76,3 +90,11 @@ pipeline.extern.almarenorm\_pl2023
       qatool
       tbtool
    
+   
+
+   
+   
+   
+
+
+

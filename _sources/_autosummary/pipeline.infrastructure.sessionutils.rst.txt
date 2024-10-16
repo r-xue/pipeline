@@ -4,9 +4,16 @@ pipeline.infrastructure.sessionutils
 .. automodule:: pipeline.infrastructure.sessionutils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       as_list
       get_spwmap
@@ -20,11 +27,26 @@ pipeline.infrastructure.sessionutils
       signature
       validate_args
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ParallelTemplate
       VDPTaskFactory
       VisResultTuple
    
+   
+
+   
+   
+   
+
+
+

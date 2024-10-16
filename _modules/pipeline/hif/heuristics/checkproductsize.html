@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,14 +142,12 @@
 
 
 <div class="viewcode-block" id="CheckProductSizeHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">CheckProductSizeHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
 
-<div class="viewcode-block" id="CheckProductSizeHeuristics.calculate_sizes">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.calculate_sizes">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imlist</span><span class="p">):</span>
         <span class="n">cubesizes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">productsizes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -180,11 +174,8 @@
             <span class="n">total_productsize</span> <span class="o">+=</span> <span class="n">productsize</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cube size for Field </span><span class="si">%s</span><span class="s1"> SPW </span><span class="si">%s</span><span class="s1"> nchan </span><span class="si">%d</span><span class="s1"> nbin </span><span class="si">%d</span><span class="s1"> imsize </span><span class="si">%d</span><span class="s1"> x </span><span class="si">%d</span><span class="s1"> is </span><span class="si">%.3g</span><span class="s1"> GB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">nbin</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">cubesize</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">cubesizes</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">cubesizes</span><span class="p">),</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span></div>
+        <span class="k">return</span> <span class="n">cubesizes</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">cubesizes</span><span class="p">),</span> <span class="n">productsizes</span><span class="p">,</span> <span class="n">total_productsize</span>
 
-
-<div class="viewcode-block" id="CheckProductSizeHeuristics.mitigate_sizes">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_sizes">[docs]</a>
     <span class="k">def</span> <span class="nf">mitigate_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">synthesized_beams</span>
@@ -554,12 +545,11 @@
                    <span class="kc">False</span><span class="p">,</span> \
                    <span class="p">{</span><span class="s1">&#39;longmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation needed&#39;</span><span class="p">,</span> \
                     <span class="s1">&#39;shortmsg&#39;</span><span class="p">:</span> <span class="s1">&#39;No size mitigation&#39;</span><span class="p">},</span> \
-                   <span class="n">known_synthesized_beams</span></div>
-
+                   <span class="n">known_synthesized_beams</span>
 
 
 <div class="viewcode-block" id="CheckProductSizeHeuristics.mitigate_imsize">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_imsize">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.html#pipeline.hif.heuristics.checkproductsize.CheckProductSizeHeuristics.mitigate_imsize">[docs]</a>
     <span class="k">def</span> <span class="nf">mitigate_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Mitigate product size by adjusting ppb and imsize only. This is used in the VLA imaging heuristic, see</span>

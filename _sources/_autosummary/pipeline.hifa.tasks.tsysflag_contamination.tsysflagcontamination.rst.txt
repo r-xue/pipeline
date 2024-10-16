@@ -4,9 +4,21 @@ pipeline.hifa.tasks.tsysflag\_contamination.tsysflagcontamination
 .. automodule:: pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ExternFunctionArguments
       QAScore
@@ -17,9 +29,18 @@ pipeline.hifa.tasks.tsysflag\_contamination.tsysflagcontamination
       TsysFlagContaminationInputs
       TsysflagResults
    
+   
+
+   
+   
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree:
    
       PipelineException
    
+   
+
+
+

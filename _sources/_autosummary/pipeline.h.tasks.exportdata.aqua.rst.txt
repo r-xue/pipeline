@@ -4,9 +4,16 @@ pipeline.h.tasks.exportdata.aqua
 .. automodule:: pipeline.h.tasks.exportdata.aqua
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       export_to_disk
       register_aqua_metric
@@ -16,9 +23,16 @@ pipeline.h.tasks.exportdata.aqua
       xml_for_sensitivity_stage
       xml_generator_for_metric
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AquaXmlGenerator
       GenericMetricXmlGenerator
@@ -26,3 +40,11 @@ pipeline.h.tasks.exportdata.aqua
       MetricXmlGenerator
       QAScore
    
+   
+
+   
+   
+   
+
+
+

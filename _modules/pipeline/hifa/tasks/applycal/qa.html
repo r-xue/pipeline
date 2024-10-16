@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -208,7 +204,7 @@
 
 
 <div class="viewcode-block" id="ALMAApplycalListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">ALMAApplycalListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA plugin to process lists of ALMA applycal results.</span>
@@ -223,8 +219,6 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">hif_applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span>
 
-<div class="viewcode-block" id="ALMAApplycalListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
@@ -233,12 +227,11 @@
         <span class="c1"># from all representative scores</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">],</span>
                                        <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ALMAApplycalQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">ALMAApplycalQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA plugin to handle an applycal result for a single ALMA EB.</span>
@@ -253,8 +246,6 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">hif_applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span>
 
-<div class="viewcode-block" id="ALMAApplycalQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.ALMAApplycalQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -293,12 +284,11 @@
         <span class="c1"># pick the minimum score of all (flagging and outliers) as</span>
         <span class="c1"># representative, i.e. task score</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">representative</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_qa_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.get_qa_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.get_qa_scores.html#pipeline.hifa.tasks.applycal.qa.get_qa_scores">[docs]</a>
 <span class="k">def</span> <span class="nf">get_qa_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">export_outliers</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">outlier_score</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate amp/phase vs freq outliers for an EB and convert to QA scores.</span>
@@ -360,7 +350,7 @@
 
 
 <div class="viewcode-block" id="QAMessage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.QAMessage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.QAMessage.html#pipeline.hifa.tasks.applycal.qa.QAMessage">[docs]</a>
 <span class="k">class</span> <span class="nc">QAMessage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QAMessage constructs a user-friendly QA message for an Outlier.</span>
@@ -417,7 +407,7 @@
 
 
 <div class="viewcode-block" id="outliers_to_qa_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores.html#pipeline.hifa.tasks.applycal.qa.outliers_to_qa_scores">[docs]</a>
 <span class="k">def</span> <span class="nf">outliers_to_qa_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
                           <span class="n">outliers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ampphase_vs_freq_qa</span><span class="o">.</span><span class="n">Outlier</span><span class="p">],</span>
                           <span class="n">outlier_score</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
@@ -476,7 +466,7 @@
 
 
 <div class="viewcode-block" id="to_data_selection">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.to_data_selection">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.to_data_selection.html#pipeline.hifa.tasks.applycal.qa.to_data_selection">[docs]</a>
 <span class="k">def</span> <span class="nf">to_data_selection</span><span class="p">(</span><span class="n">tds</span><span class="p">:</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a pipeline QA TargetDataSelection object to a DataSelection tuple.</span>
@@ -487,7 +477,7 @@
 
 
 <div class="viewcode-block" id="in_casa_format">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.in_casa_format">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.in_casa_format.html#pipeline.hifa.tasks.applycal.qa.in_casa_format">[docs]</a>
 <span class="k">def</span> <span class="nf">in_casa_format</span><span class="p">(</span><span class="n">data_selections</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Restate data selections in concise CASA format.</span>
@@ -515,7 +505,7 @@
 
 
 <div class="viewcode-block" id="summarise_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.summarise_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.summarise_scores.html#pipeline.hifa.tasks.applycal.qa.summarise_scores">[docs]</a>
 <span class="k">def</span> <span class="nf">summarise_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">WebLogLocation</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Process a list of QAscores, replacing the detailed and highly specific</span>
@@ -606,7 +596,7 @@
 
 
 <div class="viewcode-block" id="combine_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.combine_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.combine_scores.html#pipeline.hifa.tasks.applycal.qa.combine_scores">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_scores</span><span class="p">(</span><span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span>
                    <span class="n">hierarchy_base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                    <span class="n">discard</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -672,7 +662,7 @@
 
 
 <div class="viewcode-block" id="take_min_as_representative">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.take_min_as_representative">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.take_min_as_representative.html#pipeline.hifa.tasks.applycal.qa.take_min_as_representative">[docs]</a>
 <span class="k">def</span> <span class="nf">take_min_as_representative</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filter out all but the worst score per data selection.</span>
@@ -715,7 +705,7 @@
 
 
 <div class="viewcode-block" id="discard_dimension">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.discard_dimension">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.discard_dimension.html#pipeline.hifa.tasks.applycal.qa.discard_dimension">[docs]</a>
 <span class="k">def</span> <span class="nf">discard_dimension</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">,</span> <span class="n">attrs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Aggregate QA scores held in one or more DataSelection dimensions,</span>
@@ -745,7 +735,7 @@
 
 
 <div class="viewcode-block" id="map_data_selection_to_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores.html#pipeline.hifa.tasks.applycal.qa.map_data_selection_to_scores">[docs]</a>
 <span class="k">def</span> <span class="nf">map_data_selection_to_scores</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Expand QAScores to a dict-based data structure that maps data selections</span>
@@ -758,7 +748,7 @@
 
 
 <div class="viewcode-block" id="compress_data_selections">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.qa.compress_data_selections">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.qa.compress_data_selections.html#pipeline.hifa.tasks.applycal.qa.compress_data_selections">[docs]</a>
 <span class="k">def</span> <span class="nf">compress_data_selections</span><span class="p">(</span><span class="n">to_merge</span><span class="p">:</span> <span class="n">DataSelectionToScores</span><span class="p">,</span>
                              <span class="n">attrs_to_merge</span><span class="p">:</span> <span class="n">Reversible</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DataSelectionToScores</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

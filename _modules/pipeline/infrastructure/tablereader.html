@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -160,7 +156,7 @@
 
 
 <div class="viewcode-block" id="find_EVLA_band">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.find_EVLA_band">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.find_EVLA_band.html#pipeline.infrastructure.tablereader.find_EVLA_band">[docs]</a>
 <span class="k">def</span> <span class="nf">find_EVLA_band</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span> <span class="n">bandlimits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">BBAND</span><span class="o">=</span><span class="s1">&#39;?4PLSCXUKAQ?&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;identify VLA band&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">bandlimits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -194,10 +190,8 @@
 
 
 <div class="viewcode-block" id="ObservingRunReader">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ObservingRunReader">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.ObservingRunReader.html#pipeline.infrastructure.tablereader.ObservingRunReader">[docs]</a>
 <span class="k">class</span> <span class="nc">ObservingRunReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="ObservingRunReader.get_observing_run">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ObservingRunReader.get_observing_run">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_observing_run</span><span class="p">(</span><span class="n">ms_files</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ms_files</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -208,15 +202,12 @@
             <span class="n">ms</span> <span class="o">=</span> <span class="n">MeasurementSetReader</span><span class="o">.</span><span class="n">get_measurement_set</span><span class="p">(</span><span class="n">ms_file</span><span class="p">)</span>
             <span class="n">observing_run</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">observing_run</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="MeasurementSetReader">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.MeasurementSetReader.html#pipeline.infrastructure.tablereader.MeasurementSetReader">[docs]</a>
 <span class="k">class</span> <span class="nc">MeasurementSetReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="MeasurementSetReader.get_scans">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.get_scans">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_scans</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Analysing scans in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
@@ -297,11 +288,10 @@
 
                 <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">scan</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">scans</span></div>
-
+        <span class="k">return</span> <span class="n">scans</span>
 
 <div class="viewcode-block" id="MeasurementSetReader.add_band_to_spws">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.add_band_to_spws">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.MeasurementSetReader.html#pipeline.infrastructure.tablereader.MeasurementSetReader.add_band_to_spws">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_band_to_spws</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -379,15 +369,10 @@
                 <span class="n">spw</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">EVLA_band_dict</span><span class="p">[</span><span class="n">EVLA_band</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="MeasurementSetReader.add_spectralspec_spwmap">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.add_spectralspec_spwmap">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_spectralspec_spwmap</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-        <span class="n">ms</span><span class="o">.</span><span class="n">spectralspec_spwmap</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">)</span></div>
+        <span class="n">ms</span><span class="o">.</span><span class="n">spectralspec_spwmap</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.add_spectralspec_to_spws">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.add_spectralspec_to_spws">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_spectralspec_to_spws</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
         <span class="c1"># For ALMA, extract spectral spec from spw name.</span>
@@ -395,11 +380,8 @@
             <span class="k">if</span> <span class="s1">&#39;ALMA&#39;</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
                 <span class="n">i</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                    <span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span></div>
+                    <span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.link_intents_to_spws">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.link_intents_to_spws">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">link_intents_to_spws</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="c1"># we can&#39;t use msmd.intentsforspw directly as we may have a modified</span>
@@ -425,11 +407,8 @@
             <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
                 <span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
 
-            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Intents for spw #</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="p">)))</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Intents for spw #</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="p">)))</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.link_fields_to_states">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.link_fields_to_states">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">link_fields_to_states</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="c1"># for each field..</span>
@@ -463,11 +442,8 @@
 
             <span class="n">field</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">states_for_field</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states_for_field</span><span class="p">:</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span></div>
+                <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.link_fields_to_sources">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.link_fields_to_sources">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">link_fields_to_sources</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>        
         <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
@@ -476,11 +452,8 @@
 
             <span class="n">source</span><span class="o">.</span><span class="n">fields</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">fields</span>
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span></div>
+                <span class="n">field</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.link_spws_to_fields">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.link_spws_to_fields">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">link_spws_to_fields</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">spwsforfields</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">spwsforfields</span><span class="p">()</span>
@@ -489,11 +462,8 @@
                 <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span> <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">spwsforfields</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)]]</span>
                 <span class="n">field</span><span class="o">.</span><span class="n">valid_spws</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Field &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; not in spwsforfields dictionary.&quot;</span><span class="p">)</span></div>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Field &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; not in spwsforfields dictionary.&quot;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="MeasurementSetReader.get_measurement_set">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.get_measurement_set">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_measurement_set</span><span class="p">(</span><span class="n">ms_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Analysing </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_file</span><span class="p">))</span>
@@ -623,8 +593,7 @@
         <span class="n">ms</span><span class="o">.</span><span class="n">schedblock_id</span> <span class="o">=</span> <span class="n">schedblock_id</span>
         <span class="n">ms</span><span class="o">.</span><span class="n">execblock_id</span> <span class="o">=</span> <span class="n">execblock_id</span>
 
-        <span class="k">return</span> <span class="n">ms</span></div>
-
+        <span class="k">return</span> <span class="n">ms</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_range</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
@@ -664,7 +633,7 @@
         <span class="k">return</span> <span class="n">correlator_name</span>
 
 <div class="viewcode-block" id="MeasurementSetReader.get_acs_software_version">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.MeasurementSetReader.get_acs_software_version">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.MeasurementSetReader.html#pipeline.infrastructure.tablereader.MeasurementSetReader.get_acs_software_version">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_acs_software_version</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">msmd</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -698,10 +667,8 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable">[docs]</a>
 <span class="k">class</span> <span class="nc">SpectralWindowTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="SpectralWindowTable.get_spectral_windows">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_spectral_windows">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_spectral_windows</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="c1"># map spw ID to spw type</span>
@@ -812,11 +779,10 @@
                                         <span class="n">median_receptor_angle</span><span class="o">=</span><span class="n">median_receptor_angle</span><span class="p">)</span>
             <span class="n">spws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">spws</span></div>
-
+        <span class="k">return</span> <span class="n">spws</span>
 
 <div class="viewcode-block" id="SpectralWindowTable.get_receptor_angle">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_receptor_angle">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_receptor_angle">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_receptor_angle</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -861,7 +827,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.get_sdm_num_bin_info">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_sdm_num_bin_info">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_sdm_num_bin_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_sdm_num_bin_info</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">msmd</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -884,7 +850,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.get_receiver_info">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_receiver_info">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_receiver_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_receiver_info</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">get_band_info</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -948,7 +914,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.parse_spectral_window_ids_from_xml">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.parse_spectral_window_ids_from_xml">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.parse_spectral_window_ids_from_xml">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_spectral_window_ids_from_xml</span><span class="p">(</span><span class="n">xml_path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -972,7 +938,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.get_data_description_spw_ids">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_data_description_spw_ids">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_data_description_spw_ids">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_data_description_spw_ids</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -996,7 +962,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.get_spectral_window_spw_ids">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_spectral_window_spw_ids">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_spectral_window_spw_ids">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_spectral_window_spw_ids</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1020,7 +986,7 @@
 
 
 <div class="viewcode-block" id="SpectralWindowTable.get_asdm_to_ms_spw_mapping">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_asdm_to_ms_spw_mapping">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SpectralWindowTable.html#pipeline.infrastructure.tablereader.SpectralWindowTable.get_asdm_to_ms_spw_mapping">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_asdm_to_ms_spw_mapping</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1042,10 +1008,8 @@
 
 
 <div class="viewcode-block" id="ObservationTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ObservationTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.ObservationTable.html#pipeline.infrastructure.tablereader.ObservationTable">[docs]</a>
 <span class="k">class</span> <span class="nc">ObservationTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="ObservationTable.get_project_info">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ObservationTable.get_project_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_project_info</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
         <span class="n">project_id</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">projects</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -1068,15 +1032,12 @@
             <span class="n">execblock_id</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ExecBlock&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">observer</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">schedblock_id</span><span class="p">,</span> <span class="n">execblock_id</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="AntennaTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.AntennaTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.AntennaTable.html#pipeline.infrastructure.tablereader.AntennaTable">[docs]</a>
 <span class="k">class</span> <span class="nc">AntennaTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="AntennaTable.get_antenna_array">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.AntennaTable.get_antenna_array">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_antenna_array</span><span class="p">(</span><span class="n">msmd</span><span class="p">:</span> <span class="n">MSMDReader</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AntennaArray</span><span class="p">:</span>
         <span class="n">position</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">observatoryposition</span><span class="p">()</span>            
@@ -1084,11 +1045,8 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">names</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="n">antennas</span> <span class="o">=</span> <span class="n">AntennaTable</span><span class="o">.</span><span class="n">get_antennas</span><span class="p">(</span><span class="n">msmd</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">domain</span><span class="o">.</span><span class="n">AntennaArray</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">domain</span><span class="o">.</span><span class="n">AntennaArray</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="AntennaTable.get_antennas">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.AntennaTable.get_antennas">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_antennas</span><span class="p">(</span><span class="n">msmd</span><span class="p">:</span> <span class="n">MSMDReader</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Antenna</span><span class="p">]:</span>
         <span class="n">antenna_table</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="s1">&#39;ANTENNA&#39;</span><span class="p">)</span>
@@ -1111,15 +1069,12 @@
             <span class="n">antennas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">antennas</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="DataDescriptionTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.DataDescriptionTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.DataDescriptionTable.html#pipeline.infrastructure.tablereader.DataDescriptionTable">[docs]</a>
 <span class="k">class</span> <span class="nc">DataDescriptionTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="DataDescriptionTable.get_descriptions">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.DataDescriptionTable.get_descriptions">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_descriptions</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span>
@@ -1127,8 +1082,7 @@
         <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataDescriptionTable</span><span class="o">.</span><span class="n">_create_data_description</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="o">*</span><span class="n">row</span><span class="p">)</span> 
                         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">DataDescriptionTable</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">msmd</span><span class="p">)]</span>
 
-        <span class="k">return</span> <span class="n">descriptions</span>            </div>
-
+        <span class="k">return</span> <span class="n">descriptions</span>            
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_data_description</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">dd_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">pol_id</span><span class="p">):</span>
@@ -1159,10 +1113,8 @@
 
 
 <div class="viewcode-block" id="SBSummaryTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SBSummaryTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SBSummaryTable.html#pipeline.infrastructure.tablereader.SBSummaryTable">[docs]</a>
 <span class="k">class</span> <span class="nc">SBSummaryTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="SBSummaryTable.get_sbsummary_info">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SBSummaryTable.get_sbsummary_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_sbsummary_info</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">obsnames</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1173,11 +1125,8 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error reading science goals for </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">ex</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">SBSummaryInfo</span><span class="p">(</span><span class="n">repSource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repFrequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repBandwidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repWindow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                  <span class="n">minAngResolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxAngResolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxAllowedBeamAxialRatio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                 <span class="n">sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dynamicRange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spectralDynamicRangeBandWidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sbName</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+                                 <span class="n">sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dynamicRange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spectralDynamicRangeBandWidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sbName</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SBSummaryTable.get_observing_modes">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SBSummaryTable.get_observing_modes">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_observing_modes</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">msname</span> <span class="o">=</span> <span class="n">_get_ms_name</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
@@ -1194,8 +1143,7 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Error reading observing modes for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">observing_modes</span></div>
-
+        <span class="k">return</span> <span class="n">observing_modes</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_sbsummary_info</span><span class="p">(</span><span class="n">repSource</span><span class="p">,</span> <span class="n">repFrequency</span><span class="p">,</span> <span class="n">repBandwidth</span><span class="p">,</span> <span class="n">repWindow</span><span class="p">,</span> <span class="n">minAngResolution</span><span class="p">,</span> <span class="n">maxAngResolution</span><span class="p">,</span>
@@ -1339,10 +1287,8 @@
 
 
 <div class="viewcode-block" id="ExecblockTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ExecblockTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.ExecblockTable.html#pipeline.infrastructure.tablereader.ExecblockTable">[docs]</a>
 <span class="k">class</span> <span class="nc">ExecblockTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="ExecblockTable.get_execblock_info">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.ExecblockTable.get_execblock_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_execblock_info</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1355,8 +1301,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">execblock_info</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>             
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
-
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_execblock_info</span><span class="p">(</span><span class="n">telescopeName</span><span class="p">,</span> <span class="n">configName</span><span class="p">):</span>
@@ -1385,10 +1330,8 @@
 
 
 <div class="viewcode-block" id="PolarizationTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.PolarizationTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.PolarizationTable.html#pipeline.infrastructure.tablereader.PolarizationTable">[docs]</a>
 <span class="k">class</span> <span class="nc">PolarizationTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="PolarizationTable.get_polarizations">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.PolarizationTable.get_polarizations">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_polarizations</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
         <span class="n">pol_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">msmd</span><span class="o">.</span><span class="n">polidfordatadesc</span><span class="p">()})</span>
@@ -1398,8 +1341,7 @@
         <span class="n">corr_products</span> <span class="o">=</span> <span class="p">[</span><span class="n">msmd</span><span class="o">.</span><span class="n">corrprodsforpol</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pol_ids</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">PolarizationTable</span><span class="o">.</span><span class="n">_create_pol_description</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pol_ids</span><span class="p">,</span> <span class="n">num_corrs</span><span class="p">,</span> <span class="n">corr_types</span><span class="p">,</span> <span class="n">corr_products</span><span class="p">)]</span></div>
-
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pol_ids</span><span class="p">,</span> <span class="n">num_corrs</span><span class="p">,</span> <span class="n">corr_types</span><span class="p">,</span> <span class="n">corr_products</span><span class="p">)]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_pol_description</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">num_corr</span><span class="p">,</span> <span class="n">corr_type</span><span class="p">,</span> <span class="n">corr_product</span><span class="p">):</span>
@@ -1408,10 +1350,8 @@
 
 
 <div class="viewcode-block" id="SourceTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SourceTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.SourceTable.html#pipeline.infrastructure.tablereader.SourceTable">[docs]</a>
 <span class="k">class</span> <span class="nc">SourceTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="SourceTable.get_sources">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.SourceTable.get_sources">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_sources</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="n">SourceTable</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">msmd</span><span class="p">)</span>
@@ -1426,8 +1366,7 @@
 
         <span class="n">no_dups</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">grouped_by_source_id</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">SourceTable</span><span class="o">.</span><span class="n">_create_source</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">no_dups</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">SourceTable</span><span class="o">.</span><span class="n">_create_source</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">no_dups</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_source</span><span class="p">(</span><span class="n">source_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">proper_motion</span><span class="p">,</span> <span class="n">is_eph_obj</span><span class="p">,</span> <span class="n">table_names</span><span class="p">,</span> <span class="n">avg_spacings</span><span class="p">):</span>
@@ -1499,10 +1438,8 @@
 
 
 <div class="viewcode-block" id="StateTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.StateTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.StateTable.html#pipeline.infrastructure.tablereader.StateTable">[docs]</a>
 <span class="k">class</span> <span class="nc">StateTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="StateTable.get_states">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.StateTable.get_states">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_states</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
         <span class="n">state_factory</span> <span class="o">=</span> <span class="n">StateTable</span><span class="o">.</span><span class="n">get_state_factory</span><span class="p">(</span><span class="n">msmd</span><span class="p">)</span>
@@ -1517,11 +1454,8 @@
             <span class="n">obs_mode</span> <span class="o">=</span> <span class="n">obs_modes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">state</span> <span class="o">=</span> <span class="n">state_factory</span><span class="o">.</span><span class="n">create_state</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span>
             <span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">states</span></div>
+        <span class="k">return</span> <span class="n">states</span>
 
-
-<div class="viewcode-block" id="StateTable.get_state_factory">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.StateTable.get_state_factory">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_state_factory</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
         <span class="n">names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">observatorynames</span><span class="p">())</span>
@@ -1546,12 +1480,11 @@
         <span class="n">dt_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">str_start</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">domain</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">StateFactory</span><span class="p">(</span><span class="n">facility</span><span class="p">,</span> <span class="n">dt_start</span><span class="p">)</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="FieldTable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.FieldTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.FieldTable.html#pipeline.infrastructure.tablereader.FieldTable">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_table</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
@@ -1582,12 +1515,9 @@
 
         <span class="k">return</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">all_fields</span> <span class="k">if</span> <span class="n">field_id_to_scans</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">)]</span>
 
-<div class="viewcode-block" id="FieldTable.get_fields">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.FieldTable.get_fields">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="n">msmd</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">FieldTable</span><span class="o">.</span><span class="n">_create_field</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">FieldTable</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">msmd</span><span class="p">)]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">FieldTable</span><span class="o">.</span><span class="n">_create_field</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">FieldTable</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">msmd</span><span class="p">)]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_create_field</span><span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">source_type</span><span class="p">,</span> <span class="n">phase_centre</span><span class="p">):</span>
@@ -1606,7 +1536,7 @@
 
 
 <div class="viewcode-block" id="BandDescriber">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.BandDescriber">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.BandDescriber.html#pipeline.infrastructure.tablereader.BandDescriber">[docs]</a>
 <span class="k">class</span> <span class="nc">BandDescriber</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">alma_bands</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ALMA Band 1&#39;</span><span class="p">:</span> <span class="n">_make_range</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
                   <span class="s1">&#39;ALMA Band 2&#39;</span><span class="p">:</span> <span class="n">_make_range</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
@@ -1635,8 +1565,6 @@
 
     <span class="n">unknown</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Unknown&#39;</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">()}</span>
 
-<div class="viewcode-block" id="BandDescriber.get_description">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.BandDescriber.get_description">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">observatory</span><span class="o">=</span><span class="s1">&#39;ALMA&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">observatory</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ALMA&#39;</span><span class="p">,):</span>
@@ -1651,12 +1579,11 @@
                 <span class="k">return</span> <span class="n">description</span>
 
         <span class="k">return</span> <span class="s1">&#39;Unknown&#39;</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="RetrieveByIndexContainer">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.tablereader.RetrieveByIndexContainer">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.tablereader.RetrieveByIndexContainer.html#pipeline.infrastructure.tablereader.RetrieveByIndexContainer">[docs]</a>
 <span class="k">class</span> <span class="nc">RetrieveByIndexContainer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RetrieveByIndexContainer is a container for items whose numeric index or</span>

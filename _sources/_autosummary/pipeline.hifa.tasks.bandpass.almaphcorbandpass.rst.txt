@@ -4,17 +4,31 @@ pipeline.hifa.tasks.bandpass.almaphcorbandpass
 .. automodule:: pipeline.hifa.tasks.bandpass.almaphcorbandpass
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       centre_datetime_from_epochs
       get_time_delta_seconds
       round_up
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ALMAPhcorBandpass
       ALMAPhcorBandpassInputs
@@ -22,3 +36,11 @@ pipeline.hifa.tasks.bandpass.almaphcorbandpass
       SessionALMAPhcorBandpass
       SessionALMAPhcorBandpassInputs
    
+   
+
+   
+   
+   
+
+
+

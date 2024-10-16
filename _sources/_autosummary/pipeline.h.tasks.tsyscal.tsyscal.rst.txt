@@ -4,9 +4,16 @@ pipeline.h.tasks.tsyscal.tsyscal
 .. automodule:: pipeline.h.tasks.tsyscal.tsyscal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_calapplications
       get_gainfield_map
@@ -14,9 +21,16 @@ pipeline.h.tasks.tsyscal.tsyscal
       get_tsys_fields_for_intent
       tsysspwmap
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       GainfieldMapping
       MeasurementSet
@@ -25,3 +39,11 @@ pipeline.h.tasks.tsyscal.tsyscal
       attrgetter
       itemgetter
    
+   
+
+   
+   
+   
+
+
+

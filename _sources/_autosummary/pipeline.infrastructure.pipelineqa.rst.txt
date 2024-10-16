@@ -4,15 +4,29 @@ pipeline.infrastructure.pipelineqa
 .. automodule:: pipeline.infrastructure.pipelineqa
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       scores_with_location
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       QAOrigin
       QAPlugin
@@ -22,3 +36,11 @@ pipeline.infrastructure.pipelineqa
       TargetDataSelection
       WebLogLocation
    
+   
+
+   
+   
+   
+
+
+

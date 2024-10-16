@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -182,7 +178,7 @@
 
 
 <div class="viewcode-block" id="show_weblog">
-<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.show_weblog">[docs]</a>
+<a class="viewcode-back" href="../_autosummary/pipeline.show_weblog.html#pipeline.show_weblog">[docs]</a>
 <span class="k">def</span> <span class="nf">show_weblog</span><span class="p">(</span><span class="n">index_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                 <span class="n">handler_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">,</span>
                 <span class="n">server_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">,</span>
@@ -278,7 +274,7 @@
 
 
 <div class="viewcode-block" id="stop_weblog">
-<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.stop_weblog">[docs]</a>
+<a class="viewcode-back" href="../_autosummary/pipeline.stop_weblog.html#pipeline.stop_weblog">[docs]</a>
 <span class="k">def</span> <span class="nf">stop_weblog</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">HTTP_SERVER</span>
     <span class="k">with</span> <span class="n">WEBLOG_LOCK</span><span class="p">:</span>
@@ -295,7 +291,7 @@
 
 
 <div class="viewcode-block" id="initcli">
-<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.initcli">[docs]</a>
+<a class="viewcode-back" href="../_autosummary/pipeline.initcli.html#pipeline.initcli">[docs]</a>
 <span class="k">def</span> <span class="nf">initcli</span><span class="p">(</span><span class="n">user_globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Initializing cli...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user_globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -319,7 +315,7 @@
 
 
 <div class="viewcode-block" id="log_host_environment">
-<a class="viewcode-back" href="../_apidoc/pipeline.html#pipeline.log_host_environment">[docs]</a>
+<a class="viewcode-back" href="../_autosummary/pipeline.log_host_environment.html#pipeline.log_host_environment">[docs]</a>
 <span class="k">def</span> <span class="nf">log_host_environment</span><span class="p">():</span>
     <span class="n">env</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">ENVIRONMENT</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pipeline version </span><span class="si">{!s}</span><span class="s1"> running on </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">hostname</span><span class="p">))</span>

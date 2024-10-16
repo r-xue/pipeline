@@ -4,9 +4,16 @@ pipeline.hifa.tasks.spwphaseup.renderer
 .. automodule:: pipeline.hifa.tasks.spwphaseup.renderer
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_gaincal_applications
       get_pcal_table_rows
@@ -15,9 +22,16 @@ pipeline.hifa.tasks.spwphaseup.renderer
       get_spwmaps
       make_rms_plots
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       PhaseRmsTR
@@ -28,3 +42,11 @@ pipeline.hifa.tasks.spwphaseup.renderer
       SpwPhaseupApplication
       T2_4MDetailsSpwPhaseupRenderer
    
+   
+
+   
+   
+   
+
+
+

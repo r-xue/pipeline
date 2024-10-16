@@ -4,9 +4,16 @@ pipeline.infrastructure.callibrary
 .. automodule:: pipeline.infrastructure.callibrary
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       ant_add
       ant_sub
@@ -52,9 +59,16 @@ pipeline.infrastructure.callibrary
       trim_to_valid_data_selection
       unit
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CalAppOrigin
       CalApplication
@@ -71,3 +85,11 @@ pipeline.infrastructure.callibrary
       IntervalCalState
       TimestampedData
    
+   
+
+   
+   
+   
+
+
+

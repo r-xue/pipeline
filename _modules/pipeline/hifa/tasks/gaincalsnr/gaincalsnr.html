@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -143,7 +139,7 @@
 
 
 <div class="viewcode-block" id="GaincalSnrInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrInputs.html#pipeline.hifa.tasks.GaincalSnrInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalSnrInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
@@ -215,13 +211,13 @@
 
 
 <div class="viewcode-block" id="GaincalSnr">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gaincalsnr&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">GaincalSnr</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GaincalSnrInputs</span>
 
 <div class="viewcode-block" id="GaincalSnr.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 
         <span class="c1"># Simplify the inputs</span>
@@ -259,7 +255,7 @@
 
 
 <div class="viewcode-block" id="GaincalSnr.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnr.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -304,7 +300,7 @@
 
 <span class="c1"># The results class</span>
 <div class="viewcode-block" id="GaincalSnrResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincalsnr.html#pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrResults.html#pipeline.hifa.tasks.GaincalSnrResults">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalSnrResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span> <span class="n">scantimes</span><span class="o">=</span><span class="p">[],</span> <span class="n">inttimes</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">sensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">snrs</span><span class="o">=</span><span class="p">[]):</span>

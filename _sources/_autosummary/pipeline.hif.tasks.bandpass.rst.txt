@@ -4,18 +4,37 @@ pipeline.hif.tasks.bandpass
 .. automodule:: pipeline.hif.tasks.bandpass
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BandpassMode
       ChannelBandpass
       PhcorBandpass
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    adapters
@@ -26,3 +45,4 @@ pipeline.hif.tasks.bandpass
    phcorbandpass
    qa
    renderer
+

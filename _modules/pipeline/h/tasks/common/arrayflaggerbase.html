@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -142,7 +138,7 @@
 
 
 <div class="viewcode-block" id="channel_ranges">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.channel_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges.html#pipeline.infrastructure.refantflag.channel_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">channel_ranges</span><span class="p">(</span><span class="n">channels</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a list of channels will return a list of </span>
@@ -163,7 +159,7 @@
 
 
 <div class="viewcode-block" id="consolidate_flagcmd_channels">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.consolidate_flagcmd_channels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.arrayflaggerbase.consolidate_flagcmd_channels.html#pipeline.infrastructure.refantflag.consolidate_flagcmd_channels">[docs]</a>
 <span class="k">def</span> <span class="nf">consolidate_flagcmd_channels</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">,</span> <span class="n">antenna_id_to_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to consolidate multiple flagcmds that specify a single</span>
 <span class="sd">       channel into fewer flagcmds with channel ranges.&quot;&quot;&quot;</span>
@@ -233,7 +229,7 @@
 
 
 <div class="viewcode-block" id="median_and_mad">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.median_and_mad">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.arrayflaggerbase.median_and_mad.html#pipeline.infrastructure.refantflag.median_and_mad">[docs]</a>
 <span class="k">def</span> <span class="nf">median_and_mad</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the median and MAD of the numpy data array.</span>
@@ -248,7 +244,7 @@
 
 
 <div class="viewcode-block" id="FlagCmd">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.refantflag.FlagCmd.html#pipeline.infrastructure.refantflag.FlagCmd">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagCmd</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a flagcmd.</span>
@@ -465,7 +461,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="FlagCmd.match">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd.match">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.refantflag.FlagCmd.html#pipeline.infrastructure.refantflag.FlagCmd.match">[docs]</a>
     <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the FlagCmd operates on this SpectrumResult.</span>
@@ -510,7 +506,7 @@
 
 
 <div class="viewcode-block" id="FlagCmd.match_image">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.arrayflaggerbase.FlagCmd.match_image">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.refantflag.FlagCmd.html#pipeline.infrastructure.refantflag.FlagCmd.match_image">[docs]</a>
     <span class="k">def</span> <span class="nf">match_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the FlagCmd operates on this ImageResult.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

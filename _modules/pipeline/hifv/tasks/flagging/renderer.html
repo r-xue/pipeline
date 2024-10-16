@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -148,7 +144,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsFlagDeterVLARenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagDeterVLARenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagDeterVLARenderer.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagDeterVLARenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsFlagDeterVLARenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;flagdetervla.mako&#39;</span><span class="p">,</span>
@@ -157,8 +153,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsFlagDeterVLARenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsFlagDeterVLARenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagDeterVLARenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsFlagDeterVLARenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
@@ -207,30 +201,24 @@
             <span class="s1">&#39;flagcmds&#39;</span><span class="p">:</span> <span class="n">flagcmd_files</span><span class="p">,</span>
             <span class="s1">&#39;flagplots&#39;</span><span class="p">:</span> <span class="n">flagplots</span><span class="p">})</span>
 
-        <span class="k">return</span> <span class="n">ctx</span></div>
+        <span class="k">return</span> <span class="n">ctx</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsFlagDeterVLARenderer.flagplot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagDeterVLARenderer.flagplot">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">flagplot</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">plotter</span> <span class="o">=</span> <span class="n">flagging</span><span class="o">.</span><span class="n">PlotAntsChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span></div>
-</div>
 
 
 
 <span class="c1"># not used in 4.5.2+ and C3R4+</span>
 <div class="viewcode-block" id="T2_4MDetailstargetflagRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailstargetflagRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.renderer.T2_4MDetailstargetflagRenderer.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailstargetflagRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailstargetflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;vlatargetflag.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Targetflag (All targets through RFLAG)&#39;</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailstargetflagRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailstargetflagRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailstargetflagRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailstargetflagRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -253,20 +241,17 @@
                     <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">ctx</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailscheckflagRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailscheckflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;checkflag.mako&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Checkflag summary&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailscheckflagRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
                                                             <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailscheckflagRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailscheckflagRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -322,11 +307,8 @@
                     <span class="s1">&#39;percentagemap_plots&#39;</span><span class="p">:</span> <span class="n">percentagemap_plots</span><span class="p">,</span>
                     <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span>
 
-        <span class="k">return</span> <span class="n">ctx</span></div>
+        <span class="k">return</span> <span class="n">ctx</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailscheckflagRenderer.flags_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.flags_for_result">[docs]</a>
     <span class="k">def</span> <span class="nf">flags_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="n">summaries</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span>
@@ -335,11 +317,8 @@
         <span class="n">by_spw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags_by_spw</span><span class="p">(</span><span class="n">summaries</span><span class="p">)</span>
         <span class="n">by_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags_by_field</span><span class="p">(</span><span class="n">summaries</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;by_antenna&#39;</span><span class="p">:</span> <span class="n">by_antenna</span><span class="p">,</span> <span class="s1">&#39;by_spw&#39;</span><span class="p">:</span> <span class="n">by_spw</span><span class="p">,</span> <span class="s1">&#39;by_field&#39;</span><span class="p">:</span> <span class="n">by_field</span><span class="p">}}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;by_antenna&#39;</span><span class="p">:</span> <span class="n">by_antenna</span><span class="p">,</span> <span class="s1">&#39;by_spw&#39;</span><span class="p">:</span> <span class="n">by_spw</span><span class="p">,</span> <span class="s1">&#39;by_field&#39;</span><span class="p">:</span> <span class="n">by_field</span><span class="p">}}</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailscheckflagRenderer.flags_by_antenna">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.flags_by_antenna">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">flags_by_antenna</span><span class="p">(</span><span class="n">summaries</span><span class="p">):</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
@@ -347,11 +326,8 @@
             <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]:</span>
                 <span class="n">total</span><span class="p">[</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]][</span><span class="n">ant_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">flagutils</span><span class="o">.</span><span class="n">FlagTotal</span><span class="p">(</span>
                     <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">],</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">][</span><span class="n">ant_id</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">total</span></div>
+        <span class="k">return</span> <span class="n">total</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailscheckflagRenderer.flags_by_spw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.flags_by_spw">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">flags_by_spw</span><span class="p">(</span><span class="n">summaries</span><span class="p">):</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
@@ -359,11 +335,8 @@
             <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]:</span>
                 <span class="n">total</span><span class="p">[</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]][</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">flagutils</span><span class="o">.</span><span class="n">FlagTotal</span><span class="p">(</span>
                     <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">],</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">][</span><span class="n">spw_id</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">total</span></div>
+        <span class="k">return</span> <span class="n">total</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailscheckflagRenderer.flags_by_field">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailscheckflagRenderer.flags_by_field">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">flags_by_field</span><span class="p">(</span><span class="n">summaries</span><span class="p">):</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
@@ -372,12 +345,11 @@
                 <span class="n">total</span><span class="p">[</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]][</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">flagutils</span><span class="o">.</span><span class="n">FlagTotal</span><span class="p">(</span>
                     <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">field_id</span><span class="p">][</span><span class="s1">&#39;flagged&#39;</span><span class="p">],</span> <span class="n">summary</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">][</span><span class="n">field_id</span><span class="p">][</span><span class="s1">&#39;total&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">total</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailsFlagtargetsdataRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagtargetsdataRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagtargetsdataRenderer.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagtargetsdataRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsFlagtargetsdataRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;flagtargetsdata.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Flagtargetsdata flagging&#39;</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -385,8 +357,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsFlagtargetsdataRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsFlagtargetsdataRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.renderer.T2_4MDetailsFlagtargetsdataRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                                   <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -426,7 +396,6 @@
             <span class="s1">&#39;agents&#39;</span><span class="p">:</span> <span class="n">agents</span><span class="p">,</span>
             <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">,</span>
             <span class="s1">&#39;flagcmds&#39;</span><span class="p">:</span> <span class="n">flagcmd_files</span><span class="p">})</span></div>
-</div>
 
 </pre></div>
 

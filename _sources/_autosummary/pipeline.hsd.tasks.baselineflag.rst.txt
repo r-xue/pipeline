@@ -4,17 +4,36 @@ pipeline.hsd.tasks.baselineflag
 .. automodule:: pipeline.hsd.tasks.baselineflag
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDBLFlag
       SerialSDBLFlag
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    SDFlagPlotter
@@ -24,3 +43,4 @@ pipeline.hsd.tasks.baselineflag
    qa
    renderer
    worker
+

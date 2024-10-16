@@ -4,9 +4,16 @@ pipeline.infrastructure.displays.plotpwv
 .. automodule:: pipeline.infrastructure.displays.plotpwv
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       MAD
       RescaleXAxisTimeTicks
@@ -18,3 +25,15 @@ pipeline.infrastructure.displays.plotpwv
       splev
       splrep
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

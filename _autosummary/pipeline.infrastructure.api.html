@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.api.Heuristic" href="pipeline.infrastructure.api.Heuristic.html" />
+    <link rel="prev" title="pipeline.infrastructure.adapters.Adapter" href="pipeline.infrastructure.adapters.Adapter.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.api</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.api.rst.txt" rel="nofollow"> View page source</a>
@@ -136,31 +137,31 @@
 <span id="pipeline-infrastructure-api"></span><h1>pipeline.infrastructure.api<a class="headerlink" href="#module-pipeline.infrastructure.api" title="Link to this heading"></a></h1>
 <p>The API module defines the common classes around which the pipeline is
 structured.</p>
-<p>A <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> represents a coherent step in the data reduction process. A Task may
+<p>A <a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> represents a coherent step in the data reduction process. A Task may
 be composed of several other Tasks in order to create a ‘super task’; this
 ‘super task’ could chains together several related steps in order to select
 the best method to use for a particular step in the reduction process, for
 example.</p>
-<p>In addition, a <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> may be composed of one or more Heuristics. Within the
+<p>In addition, a <a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> may be composed of one or more Heuristics. Within the
 pipeline, a heuristic is considered as a piece of code used to analyse data
 and/or help influence a pipeline decision, such as whether to stop processing,
 whether to run again with different parameters, etc. Where appropriate, this
 code is extracted from the main body of the pipeline code and exposed as a
-<a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Heuristic</span></code></a>.</p>
+<a class="reference internal" href="pipeline.infrastructure.api.Heuristic.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Heuristic</span></code></a>.</p>
 <p><em>Something about Task parameters goes here</em></p>
 <p>If a user desires more than to simply override a Heuristic-derived value with
 a Task parameter, it is anticipated that they will edit the appropriate
 Heuristic in order to tweak the existing implementation or introduce a new
-algorithm into the pipeline. Concrete <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Heuristic</span></code></a> implementations can be found
+algorithm into the pipeline. Concrete <a class="reference internal" href="pipeline.infrastructure.api.Heuristic.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Heuristic</span></code></a> implementations can be found
 in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">pipeline.heuristics</span></code> package.</p>
-<p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a>, in a general sense, are considered as the mandatory arguments for a
-pipeline <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a>. Tasks and Inputs are closely aligned, and just as Tasks
-differ in functionality, so the number and type of <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a> arguments will
+<p><a class="reference internal" href="pipeline.infrastructure.api.Inputs.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a>, in a general sense, are considered as the mandatory arguments for a
+pipeline <a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a>. Tasks and Inputs are closely aligned, and just as Tasks
+differ in functionality, so the number and type of <a class="reference internal" href="pipeline.infrastructure.api.Inputs.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a> arguments will
 differ from implementation to implementation. Refer to the documentation of
-the implementing subclass for definitive information on the <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a> for a
+the implementing subclass for definitive information on the <a class="reference internal" href="pipeline.infrastructure.api.Inputs.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-class docutils literal notranslate"><span class="pre">Inputs</span></code></a> for a
 specific Task.</p>
 <p>It is anticipated that the Inputs for a Task will be created using the
-<a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task.Inputs" title="pipeline.infrastructure.api.Task.Inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Task.Inputs</span></code></a> reference rather than locating and instantiating the
+<a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task.Inputs" title="pipeline.infrastructure.api.Task.Inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Task.Inputs</span></code></a> reference rather than locating and instantiating the
 partner class directly, eg.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="n">ImplementingTask</span><span class="o">.</span><span class="n">Inputs</span><span class="o">.</span><span class="n">create_from_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 </pre></div>
@@ -168,19 +169,19 @@ partner class directly, eg.:</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Heuristic</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.api.Heuristic.html#pipeline.infrastructure.api.Heuristic" title="pipeline.infrastructure.api.Heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Heuristic</span></code></a></p></td>
 <td><p>Heuristic is the superclass of all user-accessible heuristics code in the pipeline.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Inputs</span></code></a>()</p></td>
-<td><p>Inputs defines the interface used to create a constructor argument for a <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a>.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.api.Inputs.html#pipeline.infrastructure.api.Inputs" title="pipeline.infrastructure.api.Inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Inputs</span></code></a></p></td>
+<td><p>Inputs defines the interface used to create a constructor argument for a <a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.ResultRenderer" title="pipeline.infrastructure.api.ResultRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultRenderer</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.api.ResultRenderer.html#pipeline.infrastructure.api.ResultRenderer" title="pipeline.infrastructure.api.ResultRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultRenderer</span></code></a></p></td>
 <td><p>ResultRenderer is the interface for task-specific weblog renderers (T2-4M details pages in weblog nomenclature).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Results" title="pipeline.infrastructure.api.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a>()</p></td>
-<td><p>Results defines the interface used to hold the output of a <a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> plus</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.api.Results.html#pipeline.infrastructure.api.Results" title="pipeline.infrastructure.api.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
+<td><p>Results defines the interface used to hold the output of a <a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a> plus</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" title="pipeline.infrastructure.api.Task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code></a></p></td>
 <td><p>The Runnable interface should be implemented by any class whose instances are intended to be executed by an Executor.</p></td>
 </tr>
 </tbody>
@@ -190,7 +191,10 @@ partner class directly, eg.:</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.adapters.Adapter.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.adapters.Adapter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.api.Heuristic.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.api.Heuristic" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

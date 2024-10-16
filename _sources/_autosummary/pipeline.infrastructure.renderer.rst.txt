@@ -4,10 +4,26 @@ pipeline.infrastructure.renderer
 .. automodule:: pipeline.infrastructure.renderer
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    basetemplates
@@ -20,3 +36,4 @@ pipeline.infrastructure.renderer
    stats_extractor
    templates
    weblog
+

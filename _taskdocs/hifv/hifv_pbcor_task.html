@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hifv_plotsummary" href="hifv_plotsummary_task.html" />
+    <link rel="prev" title="hifv_mstransform" href="hifv_mstransform_task.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,60 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#generic">Generic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#interferometry-generic">Interferometry Generic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#interferometry-alma">Interferometry ALMA</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../taskdocs.html#interferometry-vla">Interferometry VLA</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hifv_analyzestokescubes_task.html">hifv_analyzestokescubes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_applycals_task.html">hifv_applycals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_checkflag_task.html">hifv_checkflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_circfeedpolcal_task.html">hifv_circfeedpolcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_exportdata_task.html">hifv_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_exportvlassdata_task.html">hifv_exportvlassdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_finalcals_task.html">hifv_finalcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_fixpointing_task.html">hifv_fixpointing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_flagcal_task.html">hifv_flagcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_flagdata_task.html">hifv_flagdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_flagtargetsdata_task.html">hifv_flagtargetsdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_fluxboot_task.html">hifv_fluxboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_hanning_task.html">hifv_hanning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_importdata_task.html">hifv_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_mstransform_task.html">hifv_mstransform</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">hifv_pbcor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#task-description">Task description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parameter-list">Parameter List</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_plotsummary_task.html">hifv_plotsummary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_priorcals_task.html">hifv_priorcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_restoredata_task.html">hifv_restoredata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_restorepims_task.html">hifv_restorepims</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_selfcal_task.html">hifv_selfcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_semiFinalBPdcals_task.html">hifv_semiFinalBPdcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_solint_task.html">hifv_solint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_statwt_task.html">hifv_statwt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_syspower_task.html">hifv_syspower</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_testBPdcals_task.html">hifv_testBPdcals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_vlasetjy_task.html">hifv_vlasetjy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hifv_vlassmasking_task.html">hifv_vlassmasking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#single-dish">Single Dish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#nobeyama">Nobeyama</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +163,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
       <li class="breadcrumb-item active">hifv_pbcor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/_taskdocs/hifv/hifv_pbcor_task.rst.txt" rel="nofollow"> View page source</a>
@@ -176,7 +218,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hifv_mstransform_task.html" class="btn btn-neutral float-left" title="hifv_mstransform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hifv_plotsummary_task.html" class="btn btn-neutral float-right" title="hifv_plotsummary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

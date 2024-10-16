@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -159,7 +155,7 @@
 
 
 <div class="viewcode-block" id="SDSkyCalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SDSkyCalInputs.html#pipeline.hsd.tasks.SDSkyCalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDSkyCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDSkyCal task.&quot;&quot;&quot;</span>
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
@@ -253,7 +249,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 <div class="viewcode-block" id="SDSkyCalInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SDSkyCalInputs.html#pipeline.hsd.tasks.SDSkyCalInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance to the list of keyword arguments for sdcal.</span>
 
@@ -278,7 +274,7 @@
 
 
 <div class="viewcode-block" id="SDSkyCalResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SDSkyCalResults.html#pipeline.hsd.tasks.SDSkyCalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDSkyCalResults</span><span class="p">(</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to hold processing result of SDSkyCal task.&quot;&quot;&quot;</span>
 
@@ -300,7 +296,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span>
 
 <div class="viewcode-block" id="SDSkyCalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SDSkyCalResults.html#pipeline.hsd.tasks.SDSkyCalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -330,7 +326,7 @@
 
 
 <div class="viewcode-block" id="SerialSDSkyCal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SerialSDSkyCal.html#pipeline.hsd.tasks.SerialSDSkyCal">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialSDSkyCal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate sky calibration table.&quot;&quot;&quot;</span>
 
@@ -338,7 +334,7 @@
     <span class="n">ElevationDifferenceThreshold</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># deg</span>
 
 <div class="viewcode-block" id="SerialSDSkyCal.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SerialSDSkyCal.html#pipeline.hsd.tasks.SerialSDSkyCal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDSkyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare arguments for CASA job and execute it.</span>
 
@@ -456,7 +452,7 @@
 
 
 <div class="viewcode-block" id="SerialSDSkyCal.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SerialSDSkyCal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.SerialSDSkyCal.html#pipeline.hsd.tasks.SerialSDSkyCal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDSkyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse SDSkyCalResults instance produced by prepare.</span>
 
@@ -506,7 +502,7 @@
 
 
 <div class="viewcode-block" id="SDSkyCal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.SDSkyCal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDSkyCal.html#pipeline.hsd.tasks.SDSkyCal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_skycal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Generates sky calibration table according to calibration strategy.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SDSkyCal</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
@@ -518,7 +514,7 @@
 
 
 <div class="viewcode-block" id="compute_elevation_difference">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.qa.compute_elevation_difference">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.skycal.compute_elevation_difference.html#pipeline.hsd.tasks.compute_elevation_difference">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute elevation difference.</span>
 

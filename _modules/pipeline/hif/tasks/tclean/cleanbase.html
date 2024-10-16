@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="CleanBaseInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.CleanBaseInputs.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">CleanBaseInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="c1"># simple properties ------------------------------------------------------------------------------------------------</span>
@@ -358,14 +354,14 @@
 
 
 <div class="viewcode-block" id="CleanBase">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.CleanBase.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase">[docs]</a>
 <span class="k">class</span> <span class="nc">CleanBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">CleanBaseInputs</span>
 
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="CleanBase.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.CleanBase.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -415,7 +411,7 @@
 
 
 <div class="viewcode-block" id="CleanBase.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.CleanBase.html#pipeline.hif.tasks.tclean.cleanbase.CleanBase.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -927,7 +923,7 @@
 
 
 <div class="viewcode-block" id="rename_image">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.rename_image">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.rename_image.html#pipeline.hif.tasks.tclean.cleanbase.rename_image">[docs]</a>
 <span class="k">def</span> <span class="nf">rename_image</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rename an image</span>
@@ -940,7 +936,7 @@
 
 
 <div class="viewcode-block" id="CleanBaseError">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseError">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.cleanbase.CleanBaseError.html#pipeline.hif.tasks.tclean.cleanbase.CleanBaseError">[docs]</a>
 <span class="k">class</span> <span class="nc">CleanBaseError</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean Base Error Class to transfer detailed messages for weblog</span>
 <span class="sd">    reporting.</span>

@@ -4,10 +4,26 @@ pipeline.infrastructure.displays
 .. automodule:: pipeline.infrastructure.displays
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    plotmosaic
@@ -17,3 +33,4 @@ pipeline.infrastructure.displays
    plotweather
    pointing
    summary
+

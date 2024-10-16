@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hif_antpos" href="hif_antpos_task.html" />
+    <link rel="prev" title="h_weblog" href="../h/h_weblog_task.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,54 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#generic">Generic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../taskdocs.html#interferometry-generic">Interferometry Generic</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">hif_analyzealpha</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#task-description">Task description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parameter-list">Parameter List</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hif_antpos_task.html">hif_antpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_applycal_task.html">hif_applycal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_bandpass_task.html">hif_bandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_checkproductsize_task.html">hif_checkproductsize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_correctedampflag_task.html">hif_correctedampflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_editimlist_task.html">hif_editimlist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_findcont_task.html">hif_findcont</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_gaincal_task.html">hif_gaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_lowgainflag_task.html">hif_lowgainflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_makecutoutimages_task.html">hif_makecutoutimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_makeimages_task.html">hif_makeimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_makeimlist_task.html">hif_makeimlist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_makermsimages_task.html">hif_makermsimages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_mstransform_task.html">hif_mstransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_rawflagchans_task.html">hif_rawflagchans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_refant_task.html">hif_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_selfcal_task.html">hif_selfcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_setjy_task.html">hif_setjy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_setmodels_task.html">hif_setmodels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_transformimagedata_task.html">hif_transformimagedata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hif_uvcontsub_task.html">hif_uvcontsub</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#interferometry-alma">Interferometry ALMA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#interferometry-vla">Interferometry VLA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#single-dish">Single Dish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../taskdocs.html#nobeyama">Nobeyama</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +157,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
       <li class="breadcrumb-item active">hif_analyzealpha</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/_taskdocs/hif/hif_analyzealpha_task.rst.txt" rel="nofollow"> View page source</a>
@@ -195,7 +231,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../h/h_weblog_task.html" class="btn btn-neutral float-left" title="h_weblog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hif_antpos_task.html" class="btn btn-neutral float-right" title="hif_antpos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

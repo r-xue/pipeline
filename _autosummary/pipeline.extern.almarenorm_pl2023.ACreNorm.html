@@ -1,0 +1,1334 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.almarenorm_pl2023.ACreNorm &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.extern.almarenorm_pl2023.attool" href="pipeline.extern.almarenorm_pl2023.attool.html" />
+    <link rel="prev" title="pipeline.extern.almarenorm_pl2023.ulp" href="pipeline.extern.almarenorm_pl2023.ulp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.html">pipeline.extern</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.almarenorm_pl2023.html">pipeline.extern.almarenorm_pl2023</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.almarenorm_pl2023.ACreNorm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.extern.almarenorm_pl2023.ACreNorm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-extern-almarenorm-pl2023-acrenorm">
+<h1>pipeline.extern.almarenorm_pl2023.ACreNorm<a class="headerlink" href="#pipeline-extern-almarenorm-pl2023-acrenorm" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ACreNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMcorrection</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.ATMtrans" title="pipeline.extern.almarenorm_pl2023.ACreNorm.ATMtrans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMtrans</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">applyReNorm</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcChanRanges</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcFixReNorm" title="pipeline.extern.almarenorm_pl2023.ACreNorm.calcFixReNorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcFixReNorm</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcMaxConseq</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcReNorm1" title="pipeline.extern.almarenorm_pl2023.ACreNorm.calcReNorm1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcReNorm1</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcRenormLegendre" title="pipeline.extern.almarenorm_pl2023.ACreNorm.calcRenormLegendre"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcRenormLegendre</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcSetEdge</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">chanfreqs</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.channel_ranges" title="pipeline.extern.almarenorm_pl2023.ACreNorm.channel_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_ranges</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">checkApply</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.checkOutlierAnt" title="pipeline.extern.almarenorm_pl2023.ACreNorm.checkOutlierAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">checkOutlierAnt</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.convertPlotsToPDF" title="pipeline.extern.almarenorm_pl2023.ACreNorm.convertPlotsToPDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convertPlotsToPDF</span></code></a></p></td>
+<td><p>Super hacky way to create PDFs of created plots so that we can display them in the weblog.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.findNearest" title="pipeline.extern.almarenorm_pl2023.ACreNorm.findNearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">findNearest</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.fitAtmLines" title="pipeline.extern.almarenorm_pl2023.ACreNorm.fitAtmLines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitAtmLines</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getACdata</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBscan</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBtsysscan</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.getImageSBFreqs" title="pipeline.extern.almarenorm_pl2023.ACreNorm.getImageSBFreqs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getImageSBFreqs</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getPhscan</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getStateIdsForIntent</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getTsysSpectra</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getXCdata</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getXCflags</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.getband" title="pipeline.extern.almarenorm_pl2023.ACreNorm.getband"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getband</span></code></a></p></td>
+<td><p>Identify the Band for specific frequency (in GHz)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.interpretExcludechan" title="pipeline.extern.almarenorm_pl2023.ACreNorm.interpretExcludechan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpretExcludechan</span></code></a></p></td>
+<td><p>Pupose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.merge_dicts" title="pipeline.extern.almarenorm_pl2023.ACreNorm.merge_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_dicts</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normChanAxis</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.onlineBinningFactor" title="pipeline.extern.almarenorm_pl2023.ACreNorm.onlineBinningFactor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">onlineBinningFactor</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotRelTsysSpectra</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotScanStats</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.plotSpectra" title="pipeline.extern.almarenorm_pl2023.ACreNorm.plotSpectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotSpectra</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotSpwStats</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotSpws</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.plotdiagSpectra" title="pipeline.extern.almarenorm_pl2023.ACreNorm.plotdiagSpectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotdiagSpectra</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">putXCdata</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.recordApply" title="pipeline.extern.almarenorm_pl2023.ACreNorm.recordApply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recordApply</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormMedianPWV" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormMedianPWV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormMedianPWV</span></code></a></p></td>
+<td><p>Extracts the PWV measurements from the WVR on all antennas all times.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormPWVFromASDM_CALATMOSPHERE" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormPWVFromASDM_CALATMOSPHERE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormPWVFromASDM_CALATMOSPHERE</span></code></a></p></td>
+<td><p>Reads the PWV via the water column of the ASDM_CALATMOSPHERE table in MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeather" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormWeather</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeatherStationNames" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeatherStationNames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormWeatherStationNames</span></code></a></p></td>
+<td><p>Returns a dictionary keyed by ALMA weather station ID, with the value equal to the station name (e.g. 'WSTBn').</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormalize" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormalize</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormcomputeAzElFromRADecMJD" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormcomputeAzElFromRADecMJD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormcomputeAzElFromRADecMJD</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormdirection2radec" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormdirection2radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormdirection2radec</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormfindClosestTime</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormradec2rad" title="pipeline.extern.almarenorm_pl2023.ACreNorm.renormradec2rad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">renormradec2rad</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stats</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.suggestAtmExclude" title="pipeline.extern.almarenorm_pl2023.ACreNorm.suggestAtmExclude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">suggestAtmExclude</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysFlags" title="pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysFlags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">writeTsysFlags</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysTemps" title="pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysTemps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">writeTsysTemps</span></code></a></p></td>
+<td><p>Purpose:</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xyplots</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.ATMtrans">
+<span class="sig-name descname"><span class="pre">ATMtrans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iscan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ispw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ifld</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.ATMtrans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.ATMtrans" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>This function will return the atmospheric model for the input spectral window
+and scan. In the case of a Band 9 or 10 spectral window, the atmospheric model
+for the image sideband is also returned.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>iscan<span class="classifier">int</span></dt><dd><p>The user input scan from which to get the atmospheric model. This is used
+to find the observation time, elevation, and weather information.</p>
+</dd>
+<dt>ispw<span class="classifier">int</span></dt><dd><p>The user input spectral window.</p>
+</dd>
+<dt>ifld<span class="classifier">int</span><span class="classifier">OPTIONAL</span></dt><dd><p>The user input field ID. This is optional but in the case of mosaics, can
+make the atmospheric model slightly more accurate.
+Default: None</p>
+</dd>
+<dt>verbose<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>Setting to True will output additional information as the atmospheric profile
+is calculated.
+Default: False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>numpy.array
+(transmission, transmission_SB): numpy.arrays : ONLY FOR BANDS 9 AND 10</p>
+<blockquote>
+<div><p>This is a 1-D array with the same length as the number of channels of the input
+scan/spw. The values of the array consist of the atmospheric transmission by
+channel as a fraction between 0.0 and 1.0.</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>transmission</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.calcFixReNorm">
+<span class="sig-name descname"><span class="pre">calcFixReNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">AntUse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scanin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fldin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotDivisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardcopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.calcFixReNorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcFixReNorm" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>This function takes in a renormalization spectrum and performs a
+set of heuristics to check for outliers caused by issues with the
+autocorrelations (e.g. birdies). Outlier channels are replaced with
+the median spectrum. If many channels are found to be outliers
+(greater than 10 consecutive channels or &gt;10% of total spectrum),
+then the whole median spectrum of that correlation is used for the
+replacement instead.</p>
+<p>Note that this operates on the input renormalization spectrum
+directly! Therefore the input spectrum will be directly adjusted.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>R<span class="classifier">dictionary</span></dt><dd><p>The renormalization spectrum as created by the renormalize()
+method.</p>
+</dd>
+<dt>AntUse<span class="classifier">list of strings</span></dt><dd><p>This is a list of antennas to investigate for outliers. The
+checkOutlierAnt method will return an appropriate list to
+be used as input here.</p>
+</dd>
+<dt>scanin<span class="classifier">string</span></dt><dd><p>The scan number to check.</p>
+</dd>
+<dt>spwin<span class="classifier">string</span></dt><dd><p>The spw number to check.</p>
+</dd>
+<dt>fldin<span class="classifier">string</span></dt><dd><p>The field number to check.</p>
+</dd>
+<dt>doplot<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, produce plots that show original spectrum
+and replaced values.
+Default: True</p>
+</dd>
+<dt>plotDivisions<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then include vertical lines of the plots that
+show where the spectrum was divided up during the fitting
+process of the calcReNorm1 method.
+Default: True</p>
+</dd>
+<dt>hardcopy<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, save a hardcopy of the produced plot to disk.
+Default: True</p>
+</dd>
+<dt>verbose<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, produce additional output.
+Default: False</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>The input renormalization spectrum, R, is operated on directly.
+No additional output is generated.</p>
+</dd>
+<dt>Notes for Improvement:</dt><dd><p>If AntUse is not defined, could default to running checkOutlierAnt
+method by default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.calcReNorm1">
+<span class="sig-name descname"><span class="pre">calcReNorm1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doplot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.calcReNorm1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcReNorm1" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>Perform a simple polynomial fit to the renormalization scaling
+spectrum to remove any residual baseline ripples. Used within the
+renormalize method to fit a baseline to each segment of the full
+spectrum.</p>
+<p>Note that this operates directly on the input spectrum!</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>R<span class="classifier">numpy.array</span></dt><dd><p>Scaling spectrum for a specific scan, spw, field and pol.</p>
+</dd>
+<dt>doplot<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, produce a plot showing the polynomial fits
+that have been applied to the data.</p>
+</dd>
+<dt>iden<span class="classifier">str</span><span class="classifier">OPTIONAL</span></dt><dd><p>An optional identifier to append to image names to make them
+unique, otherwise they will get written over.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>None directly, but note that the input scaling spectrum will be
+adjusted directly.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.calcRenormLegendre">
+<span class="sig-name descname"><span class="pre">calcRenormLegendre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nseg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.calcRenormLegendre"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.calcRenormLegendre" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Perform a fit to the renormalization spectrum to flatten the
+profile and make it so that outside of spectral features the
+data is unchanged (i.e. multiplied by 1.0). Here, Legendre
+polynomials are used for the fitting process.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>R<span class="classifier">numpy.array</span></dt><dd><p>This is the segment of renormalization spectrum you wish to
+perform a fit on.</p>
+</dd>
+<dt>nseg<span class="classifier">integer</span></dt><dd><p>This is the number of segments that calcChannelRanges()
+suggested. This function will decide on the order of the fit
+based on the number of segments and the self.nfit parameter
+as self.nfit*nseg.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.channel_ranges">
+<span class="sig-name descname"><span class="pre">channel_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TDM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.channel_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.channel_ranges" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given a list of channels, this will return a list of ranges that
+describe them accounting for a buffer and gap in input that can be assumed
+as consecutive.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.checkOutlierAnt">
+<span class="sig-name descname"><span class="pre">checkOutlierAnt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.checkOutlierAnt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.checkOutlierAnt" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Perform a check of each antenna in a renormalization spectrum
+dictionary and return a list of possibly problematic antenna
+that may need flagging due to outlier data (e.g. from birdies).</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>R<span class="classifier">dictionary</span></dt><dd><dl class="simple">
+<dt>The renormalization spectrum as created by the renormalize()</dt><dd><p>method.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><dl class="simple">
+<dt>AntChk<span class="classifier">list of strings</span></dt><dd><p>A list of antennas that may contain problematic data which
+can be used as input for the calcFixReNorm method.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.convertPlotsToPDF">
+<span class="sig-name descname"><span class="pre">convertPlotsToPDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_heuristics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.convertPlotsToPDF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.convertPlotsToPDF" title="Link to this definition"></a></dt>
+<dd><p>Super hacky way to create PDFs of created plots so that we can display them in the weblog.
+Simply calls the bash commands “montage” (to create super plots of pngs), “convert” (to
+then convert those super plots into pdfs), and “pdfunite” (to combine all pdfs into one).</p>
+<dl class="simple">
+<dt>Imports:</dt><dd><dl class="simple">
+<dt>target<span class="classifier">string</span></dt><dd><p>Name of the target field that matches the filename target</p>
+</dd>
+<dt>spw<span class="classifier">str (or int, the type is forced)</span></dt><dd><p>The spectral window of the files that need to be converted to a PDF.</p>
+</dd>
+<dt>include_summary<span class="classifier">boolean (OPTIONAL)</span></dt><dd><p>If set to True, the summary plot averaging over all scans/fields will be included.
+Default: True</p>
+</dd>
+<dt>include_heuristics<span class="classifier">boolean (OPTIONAL)</span></dt><dd><p>If set to True, the per antenna heuristics plots will be included in the PDFs.
+Default: False</p>
+</dd>
+</dl>
+</dd>
+<dt>Output:</dt><dd><p>The target/spw matched plots are montaged and transformed into a PDF and placed into the
+./RN_plots directory. The name of the PDF is put into the self.rnpipestats dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.findNearest">
+<span class="sig-name descname"><span class="pre">findNearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.findNearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.findNearest" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given an array and a value that falls within that array, find
+the nearest value or index within the array to that value.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>array<span class="classifier">list of floats or ints</span></dt><dd><p>An array for which to evaluate.</p>
+</dd>
+<dt>value<span class="classifier">float or int</span></dt><dd><p>The value you wish to find the closest match to within
+the array.</p>
+</dd>
+<dt>index<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If True, return the index location within array that is
+closest to the value. Otherwise, return the value of that
+index.
+Default: False</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.fitAtmLines">
+<span class="sig-name descname"><span class="pre">fitAtmLines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ATMprof</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.fitAtmLines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.fitAtmLines" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given an atmospheric profile, find the features caused by water/ozone/etc
+and fit a Lorentizian profile to it, returning the center and gamma scale.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>ATMprof<span class="classifier">numpy.ndarray</span></dt><dd><p>An atmospheric profile as returned by ATMtrans()</p>
+</dd>
+<dt>verbose<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If True, then information about the fit will be printed to the terminal.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><dl class="simple">
+<dt>centers<span class="classifier">list of floats</span></dt><dd><p>The center channel of found features.</p>
+</dd>
+<dt>scales<span class="classifier">list of floats</span></dt><dd><p>The gamma scale factor of found features.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This utilizes the scipy package, specifically scipy.signal.find_peaks and
+scipy.optimize.curve_fit.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.getImageSBFreqs">
+<span class="sig-name descname"><span class="pre">getImageSBFreqs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.getImageSBFreqs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.getImageSBFreqs" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given the spectral window, find the LO frequency and return the frequencies of
+the image sideband. Specifically, return the inputs needed for ATMtrans() in
+order to properly show the atmospheric transmission for bands 9 and 10 where the
+image sideband atomospheric window also contributes to the spectral window.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>spwin<span class="classifier">int</span></dt><dd><p>The spectral window for which the image sideband frequencies are needed.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><dl class="simple">
+<dt>fSB<span class="classifier">numpy.array</span></dt><dd><p>The frequencies of the image sideband. These will be properly arranged
+(i.e. they will be opposite in direction to the input spectral window
+frequencies).</p>
+</dd>
+<dt>chansepSB<span class="classifier">float</span></dt><dd><p>The separation between channels (channel width).</p>
+</dd>
+<dt>fCenterSB<span class="classifier">float</span></dt><dd><p>The mean frequency (center) of the image sideband.</p>
+</dd>
+<dt>fWidthSB<span class="classifier">float</span></dt><dd><p>The total bandwidth of the image sideband (will be equal to the input
+spectral window).</p>
+</dd>
+</dl>
+</dd>
+<dt>Note: This has been taken from Todd Hunter’s AU tools, specifically au.interpretLOs,</dt><dd><p>au.getLOs, and plotbandpass3.py - CalcAtmTranmission.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.getband">
+<span class="sig-name descname"><span class="pre">getband</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.getband"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.getband" title="Link to this definition"></a></dt>
+<dd><p>Identify the Band for specific frequency (in GHz)</p>
+<p>Note that the Band 2/3 identification is currently not
+guaranteed to be correct.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.interpretExcludechan">
+<span class="sig-name descname"><span class="pre">interpretExcludechan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.interpretExcludechan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.interpretExcludechan" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Pupose:</dt><dd><p>As an option to the self.renormalize() method, a user may input
+channel ranges to be excluded from the analysis via the excludechan
+option. Additionally, if the atmAutoExclude option is enabled the
+renormalize method will attempt to fix any atmospheric features
+that it thinks to be problematic. Those channel ranges, either
+input or generated, are added to a dictionary and then need to be
+interpreted correctly for both the exclusion and later plotting.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl>
+<dt>ranges<span class="classifier">list</span></dt><dd><p>This is a list of the different ranges within a single spectral
+window that need to be excluded. The expected format is:</p>
+<p>[“low_channel~high_channel”; “low_channel~high_channel”; …]</p>
+</dd>
+<dt>spw<span class="classifier">integer</span></dt><dd><p>This is the spectral window number. This is only needed if the
+inputs of ranges are in frequency but must always be given.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><dl class="simple">
+<dt>starts<span class="classifier">list</span></dt><dd><p>A list containing the starting channels for each range to be
+excluded.</p>
+</dd>
+<dt>ends<span class="classifier">list</span></dt><dd><p>A list containing the ending channels for each range to be
+excluded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.merge_dicts">
+<span class="sig-name descname"><span class="pre">merge_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.merge_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.merge_dicts" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given two dictionaries, merge them together such that common
+keys do not get overwritten. The main purpose is for merging
+user input excludechan ranges with ATM excludechan ranges.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>dict1, dict2<span class="classifier">dictionaries</span></dt><dd><p>The two dictionaries to merge together.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>The merged dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.onlineBinningFactor">
+<span class="sig-name descname"><span class="pre">onlineBinningFactor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.onlineBinningFactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.onlineBinningFactor" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>Return the online channel binning factor for the relevant spectral
+windows. Note that for early data (&lt;Cycle 3) this will return the
+wrong values (i.e. it always returns 1).</p>
+<p>This is only used in the Hanning smoothing application of ATM
+corrections which is currently not implemented.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.plotSpectra">
+<span class="sig-name descname"><span class="pre">plotSpectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plotATM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titlein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotDivisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hardcopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeSummary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotOriginal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadeAtm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showExcluded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.plotSpectra"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.plotSpectra" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>This function makes a summary plot of the renormalization spectrum
+for every spectral window that has been evaluated for a
+renormalization correction. The plots are a cumulative average over
+all scans and fields for each antenna and correlation. For sources
+that have multiple fields per scan (mosaics), only those fields
+that exceed the threshold are shown in the plot. This also means
+that even single pointings that oscillate around the threshold will
+have only those scans that exceed the threshold included in the
+summary plot created. Additionally, any antenna that were fully
+flagged during calibration will have their renormalization values
+set to 1.0.</p>
+<p>Note that renormalization() must be run before this can be run.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>plotATM<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This is a boolean switch to include the ATM transmission curves
+in the plots. The bandpass is used as the representative ATM
+transmission curve. Note that in Bands 9 and 10, the image
+sideband transmission curve is also shown as a black line.
+Default: True</p>
+</dd>
+<dt>titlein: string: OPTIONAL</dt><dd><p>This allows one to introduce their own title text.
+Default: None</p>
+</dd>
+<dt>plotDivisions: boolean: OPTIONAL</dt><dd><p>This is a boolean switch to include vertical lines at all
+locations where the spectral window was broken up during the
+calcReNorm() stage when the spectral window renormalization
+spectrum was fit to flatten the spectrum.
+Default: True</p>
+</dd>
+<dt>hardcopy<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This is a boolean switch to create a hardcopy of the plot as a
+PNG file. If this is set to False, the plots will be shown
+interactively but not saved.
+Default: True</p>
+</dd>
+<dt>createpdf<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This is a boolean switch to create a PDF of the summary plot
+using the convertPlotsToPDF() method. This will only trigger
+if hardcopy is also set to True.
+Default: True</p>
+</dd>
+<dt>includeSummary<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This is a boolean switch to include the summary plot in the
+created PDF. As such, this is only evaluated if both hardcopy
+and createpdf are set to True.
+Default: True</p>
+</dd>
+<dt>plotOriginal<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This is a boolean switch to overplot the original data before
+any ATM correction was performed.
+Default: True</p>
+</dd>
+<dt>shadeAtm<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, this will shade the region of the spectrum
+influenced by atmospheric features. Features are found and
+fitted if plotATM=True, otherwise this option has no effect.
+Default: True</p>
+</dd>
+<dt>showExcluded<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then areas of the spectrum that have been
+excluded via the excludechan option in renormalize() will
+be shown.
+Default: True</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.plotdiagSpectra">
+<span class="sig-name descname"><span class="pre">plotdiagSpectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scanin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fldin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotATM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotDivisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_atm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadeAtm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showExcluded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.plotdiagSpectra"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.plotdiagSpectra" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>This creates diagnotic spectra at the per field per spectral window level for each scan.
+Each antenna and correlation are plotted for each field.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>R<span class="classifier">numpy.array</span></dt><dd><p>This is the renormalization spectrum that you wish to plot. Requires data in the form
+of a numpy array in the shape [correlation, channel, antenna] such that [0,:,0] would
+be the 0-th correlation (XX), all channels, for the 0-th antenna (e.g. DA45) and would
+be the found renormalization spectrum.</p>
+</dd>
+<dt>scanin<span class="classifier">int</span></dt><dd><p>This is the scan number which corresponds to the renormalization spectrum supplied.</p>
+</dd>
+<dt>spwin<span class="classifier">int</span></dt><dd><p>This is the spectral window number which corresponds to the renormalization spectrum
+supplied.</p>
+</dd>
+<dt>fldin<span class="classifier">int</span></dt><dd><p>This is the field number which corresponds to the normalization spectrum supplied.</p>
+</dd>
+<dt>plotATM<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This option will plot (or not) the atmospheric transmission profile for the input
+spectrum.
+Default: True</p>
+</dd>
+<dt>plotDivisions<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>This option will plot (or not) the division lines as vertical, grey, dotted lines
+at all the locations where the renormalization spectrum was broken up during the
+fitting stage.
+Default: True</p>
+</dd>
+<dt>threshLine<span class="classifier">float or None</span><span class="classifier">OPTIONAL</span></dt><dd><p>This option allows the user to draw a line of the plot to represent the threshold
+level.
+Default: None</p>
+</dd>
+<dt>N_atm<span class="classifier">numpy.array OR None</span><span class="classifier">OPTIONAL</span></dt><dd><p>Similar to R above, this is the renormalization spectrum that you want to plot except
+this should be the renormalization spectrum that has not had any atmospheric corrections
+applited to it. If provided, then this “original” data will be plotted showing the
+differences between this and the renormalization spectrum that will be applied.
+Default: None</p>
+</dd>
+<dt>shadeAtm<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, this will find atmospheric features, fit them with a Lorentzian
+profile and shade the regions of the spectrum influenced by the feature.
+Default: True</p>
+</dd>
+<dt>showExcluded<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then areas of the spectrum that have been excluded via the
+excludechan option in renormalize() will be shown.
+Default: True</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.recordApply">
+<span class="sig-name descname"><span class="pre">recordApply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scanout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fldout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.recordApply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.recordApply" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>This will write to the history of the dataset upon application of
+renorm (i.e. self.renormalize(docorr=True)). Within the
+renormalize() method, a check of the MS HISTORY table is performed
+to ensure that double application is avoided.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>scanout, spwout, fldout<span class="classifier">int</span><span class="classifier">OPTIONAL</span></dt><dd><p>The scan, spw, and field numbers where renormalization was
+applied. If set to None then a generic message is filled.</p>
+</dd>
+</dl>
+<p>Default: None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormMedianPWV">
+<span class="sig-name descname"><span class="pre">renormMedianPWV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">myTimes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">99999999999]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormMedianPWV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormMedianPWV" title="Link to this definition"></a></dt>
+<dd><p>Extracts the PWV measurements from the WVR on all antennas all times.
+First, it tries to find the ASDM_CALWVR
+table in the ms.  If that fails, it then tries to find the
+ASDM_CALATMOSPHERE table in the ms.
+Returns:
+The median PWV
+For further help and examples, see <a class="reference external" href="https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV">https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV</a>
+– Todd Hunter - aU version
+– Luke Maud - copied and stripped down for almarenorm to make independent of
+the analysis utilities</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormPWVFromASDM_CALATMOSPHERE">
+<span class="sig-name descname"><span class="pre">renormPWVFromASDM_CALATMOSPHERE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormPWVFromASDM_CALATMOSPHERE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormPWVFromASDM_CALATMOSPHERE" title="Link to this definition"></a></dt>
+<dd><p>Reads the PWV via the water column of the ASDM_CALATMOSPHERE table in MS.
+- Todd Hunter - aU version
+- Luke Maud copied and edited for almarenorm so independent of analysisUtils</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeather">
+<span class="sig-name descname"><span class="pre">renormWeather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormWeather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeather" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Returns the weather conditions and time stamps of a given scan.
+This is heavily adapted from Todd Hunter’s analysisUtils code,
+au.getWeather() function.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>scan<span class="classifier">integer</span></dt><dd><p>The scan number.</p>
+</dd>
+<dt>verbose<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to true, some additional output is printed to screen.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>[conditions, myTimes]</dt><dd><dl class="simple">
+<dt>conditions<span class="classifier">dictionary</span></dt><dd><p>Includes the average temperature (Celcius), humidity (%),
+and Pressure (mB) for the given scan.</p>
+</dd>
+<dt>myTimes<span class="classifier">numpy.array</span></dt><dd><p>List of times during the given scan.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeatherStationNames">
+<span class="sig-name descname"><span class="pre">renormWeatherStationNames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormWeatherStationNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormWeatherStationNames" title="Link to this definition"></a></dt>
+<dd><p>Returns a dictionary keyed by ALMA weather station ID, with the value
+equal to the station name (e.g. ‘WSTBn’).
+vis: single measurement set
+-Todd Hunter - aU version
+-Luke Maud copied and modified/stripped down
+from analysisUtils to make almarenorm.py independent</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormalize">
+<span class="sig-name descname"><span class="pre">renormalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludespws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targscans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludeants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excflagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixOutliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mededge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmAutoExclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkFalsePositives</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correctATM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limATM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotATM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwdiv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'odd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkLineForest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nfit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useDynamicSegments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CORRECTED_DATA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docorrThresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usePhaseAC</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antHeuristicsSpectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagSpectra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fthresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormalize" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>This is the main function of the ACreNorm class. It takes the
+autocorrelations and evaluates them to see if a rescaling of the
+crosscorrelation data is necessary. It does this by looping over
+the science targets on a per spw, per scan, per field, per antenna,
+per correlation basis. It takes the autocorrelations of the target
+and divides them by a calibrator’s autocorrelations (by default the
+bandpass) and any peaks above 2% in the resultant spectrum are
+caused by actual detections of the science target and therefore
+need to be corrected in the crosscorrelation data.</p>
+</dd>
+<dt>Inputs:</dt><dd><p>This function has many options for evaluating the autocorrelations
+and applying solutions if necessary but no inputs are necessary
+for operation. Some options are highly experimental and not
+recommended for blind usage, they have been noted below.</p>
+<dl>
+<dt>excludespws<span class="classifier">list of integers</span></dt><dd><blockquote>
+<div><p>If not empty, any spw specified will be removed from analysis
+if that spw is one of the science spws.
+Example: excludespws = [21]
+Default: excludespws = []</p>
+</div></blockquote>
+<dl class="simple">
+<dt>spws<span class="classifier">list of integers</span></dt><dd><p>If not empty, only perform renormalization on the spws that
+are specified. Note that these must be science spws or they
+will be ignored.
+Example: spws = [21,23]
+Default: spws = []</p>
+</dd>
+</dl>
+</dd>
+<dt>targscans<span class="classifier">list of integers</span></dt><dd><p>If not empty, only perform renormalization on the target scans
+that are specified. Note that these scans must contain science
+data or they will be ignored.
+Example: targscans = [18,21,24,27]
+Default: targscans = []</p>
+</dd>
+</dl>
+<dl>
+<dt>excludeants<span class="classifier">list of integers</span></dt><dd><p>Specified antennas will be ignored in all analysis and
+application. This is intended to be used if any antenna are
+problematic in the interferometric data or need manually
+flagging. This is normally done via the excflagged option but
+if the data were just imported then flags are not available
+and this can be used instead. Excluded antennas have their
+scaling spectra set to 1.0.
+Example: excludeants = [10,32]
+Default: excludeants = []</p>
+</dd>
+<dt>excludechan<span class="classifier">dictionary</span></dt><dd><p>If problematic data is found across a series of channels (often
+from atmospheric features) then the spw and channel ranges can
+be specified in either channel or frequency space (TOPO, GHz).
+Excluded channels have their scaling spectra set to 1.0.
+Example: excludechan={‘22’:’100~150;800~850’, ‘24’:’100~200’}</p>
+<blockquote>
+<div><p>excludechan={‘22’:’230.1GHz~230.2GHz’}</p>
+</div></blockquote>
+<p>Default: excludechan={}</p>
+</dd>
+<dt>excflagged<span class="classifier">boolean</span></dt><dd><p>Excluded flagged antenna by reading the crosscorrelation flag
+tables per spw, per scan, and per field. Antennas are excluded
+if fully flagged. Only useful after the data are fully
+calibrated. Fully flagged antenna will have thier scaling
+spectra set to 1.0.
+Default: excflagged = True</p>
+</dd>
+<dt>fixOutliers<span class="classifier">boolean</span></dt><dd><p>Check antennas individually per scan, field, and correlation
+for outlier data compared to the median spectrum across all
+antennas for that correlation on a channel-by-channel basis.
+Outlier data is set to the median spectrum value of the
+corresponding correlation.
+Default: fixOutliers = True</p>
+</dd>
+<dt>mededge<span class="classifier">float</span></dt><dd><p>Percentage of edge channels to set to the median spectrum
+value to prevent edge effects from influencing results.
+Default: mededge = 0.01     (i.e. 1%)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>atmAutoExclude<span class="classifier">boolean</span></dt><dd><p>This option works in conjunction with the checkFalsePositives
+option to identify problematic sections of the spectrum where
+the atmosphere may be causing issues. If set to True, this will
+automatically exclude those sections of the spectrum where
+there are atmospheric features using the same method as the
+excludechan option.
+Default: atmAutoExclude = True</p>
+</dd>
+<dt>checkFalsePositives<span class="classifier">boolean</span></dt><dd><p>This will automatically find atmospheric lines in the spectrum
+and check those regions to see if there is a renorm signal
+above the threshold. If there is, it is assumed to be a “false
+positive” signal caused by the ATM feature and will trigger a
+warning as well as a suggested region to exclude from analysis.
+Default: checkFalsePositives = True</p>
+</dd>
+<dt>correctATM<span class="classifier">boolean</span><span class="classifier">EXPERIMENTAL - NOT RECOMMENDED</span></dt><dd><p>This will get the transmission profiles for the bandpass (or
+phase) and target(s) and create a ratio of those profiles and
+apply it to the scaling spectrum. Becuase the bandpass (or
+phase) and target(s) autocorrelations are compared in
+establishing the scaling spectra, there can be issues where
+transmission is low and/or the source elevations are different
+by a significant amount resulting in very different atmospheric
+effects. This option acts to fix this discrpancy so that
+atmospheric features are handled correction.
+NOTE: Although a good idea, in practice it appears to have
+little effect and sometimes does more harm.
+Default: correctATM = False</p>
+</dd>
+<dt>limATM<span class="classifier">float</span></dt><dd><p>Set the transmission limit for atmospheric features so that
+only when features are below the set limit are they mitigated.
+This helps with computation time as there are diminishing
+returns on dealing with minor atmospheric features.
+Default: limATM = 0.85</p>
+</dd>
+<dt>plotATM<span class="classifier">boolean</span></dt><dd><p>If set to True, plot the atmospheric transmission curve on a
+secondary y-axis.
+Default: plotATM = True</p>
+</dd>
+</dl>
+<dl>
+<dt>bwdiv<span class="classifier">None, ‘odd’, int</span></dt><dd><p>If a spw needs to be broken up into chunks (see bwthresh), this
+option determines the behavior of the division process. The
+input here will be applied to all spws. There are three input
+options available:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="simple">
+<dt>None - This will use powers of 2 based on taking the</dt><dd><p>full spw bandwidth and dividing by bwthresh option.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>‘odd’ - This follows the process of (1) but attempts to</dt><dd><p>force an odd number of segments of equal size.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>int - This will divide the spw bandwidth by the input</dt><dd><p>integer to create segments of equal size.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>NOTE: For options (2) and (3) there is a possiblity that the
+total number of channels does not evenly divide into an
+integer number of channels. For example, 2048 channels divided
+by 3 segments is 682 channels per segment with a remainder of 2
+channels. In these cases, the mededge option is considered as
+this will flag a number of edge channels anyway. If the number
+of channels in the remainder is smaller than the flagged region
+then the solution is kept, otherwise the solution defaults to
+option (1).</p>
+<p>NOTE: The total number of segments is capped at 7 which will
+override any input here.</p>
+<dl class="simple">
+<dt>Examples: bwdiv = None</dt><dd><p>bwdiv = ‘odd’
+bwdiv = 4</p>
+</dd>
+</dl>
+<p>Default: bwdiv = ‘odd’</p>
+</dd>
+<dt>bwthresh<span class="classifier">float</span></dt><dd><p>The maximum bandwidth (in Hz) to fit a baseline to, beyond this
+limit the spw will be broken into chunks to fit separately.
+NOTE: The maximum number of segments is capped at 7. This will
+override this setting for wide spws.
+Default: bwthresh = 120e6</p>
+</dd>
+<dt>bwthreshspw<span class="classifier">dictionary</span></dt><dd><p>This allows the user to input specific settings of the bwthresh
+option on a per spw basis, spws not specifed here will default
+to the bwthresh option setting.
+Example: bwthreshspw = {‘22’:’250e6’, ‘24’:’500e6’}
+Default: {}</p>
+</dd>
+<dt>checkLineForest<span class="classifier">boolean</span></dt><dd><p>Each segment goes through a process of masking to find and
+ignore potential lines. Atmospheric features are also ignored.
+After this masking, this option will enable to a check to make
+sure that &gt;50% of the remaining segment bandwidth is available
+for fitting a baseline to. If not, then a warning is issued and
+if useDynamicSegments is also set to True, then the segment
+size will be increased to include more bandwidth.
+NOTE: This only works if useDynamicSegments is also True.
+Default: True</p>
+</dd>
+<dt>nfit<span class="classifier">int</span></dt><dd><p>This is the order of the polynomial that is used to fit the
+scaling spectrum in order to flatten or baseline it.
+Default: nfit = 5</p>
+</dd>
+<dt>useDynamicSegments<span class="classifier">boolean</span></dt><dd><p>If set to True, then after fitting the scaling spectrum, check
+for issues at the segment boundaries by looking for values
+&gt;1.05 in the resultant scaling spectrum that are within 10
+channels or 10 MHz (whichever is larger). If any values are
+found, then decrease the number of segments by 2 and try again.
+This process is repeated until a good solution is found or
+only 1 segment remains.
+Default: True</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>datacolumn<span class="classifier">string</span></dt><dd><p>Specify the data column of the MS to apply the corrections to.
+If this is run post-calibration, then the CORRECTED_DATA column
+will exist and will need to be corrected by the scaling
+spectrum calculated here. This is preferred as the code will be
+able to take advantage of any flagging performed during
+calibration (if the excflagged option is set to True).
+Alternatively, if this is run pre-calibration, then the DATA
+column of the MS can be selected, this however will modify the
+raw data directly so it is not recommended.
+Default: datacolumn = ‘CORRECTED_DATA’</p>
+</dd>
+<dt>docorr<span class="classifier">boolean</span></dt><dd><p>Specify whether or not to apply the calculated scaling spectrum
+to the MS. If a correction is applied, a history note is
+written into the MS indicating application, this is checked for
+before application to prevent double application.
+Default: docorr=False</p>
+</dd>
+<dt>docorrThresh<span class="classifier">None or float</span></dt><dd><p>The threshold above which to apply the scaling spectrum to the
+data. It has been determined by ALMA that datasets that do not
+have any residuals in their scaling spectra above 2% do not
+need to be corrected. As such, the default is set to 1.02
+across all Bands.
+Example: docorrThresh = 1.01
+Default: docorrThresh = None   (this results in 1.02 being set)</p>
+</dd>
+<dt>usePhaseAC<span class="classifier">boolean</span><span class="classifier">EXPERIMENTAL - USE WITH CAUTION</span></dt><dd><p>The bandpass calibrator is used by default to create the
+scaling spectrum as it, by definition, should have no spectral
+features. However, because it can be very far away in elevation
+it can cause significant residuals due to atmospheric effects.
+In those cases, it may be useful to use the Phase calibrator
+instead as it must be within 3 degrees of the target. Note
+however that the phase calibrator is not guaranteed to be free
+of line emission or be free of wide-spread emission from the
+target itself for cases like Orion where CO is pervasive.
+If this option is set to True, then the phase calibrator will
+be used to create the scaling spectra instead of the bandpass.
+Default: False</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>antHeuristicsSpectra<span class="classifier">boolean</span></dt><dd><p>Create additional heuristics plots per antenna for diagnosing
+and fixing bad autocorrelation data as described by the
+fixOutliers option.
+Default: True</p>
+</dd>
+<dt>diagSpectra<span class="classifier">boolean</span></dt><dd><p>Create additional diagnostic spectra for each spw, scan, and
+field with both X and Y correlations and all antennas on the
+same plot along with the median spectra per correlation. These
+plots show the actual correction that is applied per antenna.
+Defualt: True</p>
+</dd>
+<dt>fthresh<span class="classifier">float</span></dt><dd><p>This is the threshold above which to show an alarm trigger in
+print statements and logs as “<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">*</span></a>”. Stands for “fractional
+alarm” threshold.
+Default: 0.01   (i.e. 1%)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>verbose<span class="classifier">boolean</span></dt><dd><p>Print additional messages to the terminal that normally only go
+into the log file along with some “debug” type statements.
+Default: False</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>Varies by the options selected above but at minimum the scaling
+spectra are calculated and optionally applied directly to the data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormcomputeAzElFromRADecMJD">
+<span class="sig-name descname"><span class="pre">renormcomputeAzElFromRADecMJD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raDec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mjd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormcomputeAzElFromRADecMJD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormcomputeAzElFromRADecMJD" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>Computes the azimuth and elevation for a specified RA, Dec, and MJD
+for ALMA observations using the CASA measures tool.</p>
+<p>Adapted from Todd Hunter’s AU tool computeAzElFromRADecMJD.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>raDec<span class="classifier">list or tuple</span></dt><dd><p>Must be in radians: [ra,dec]</p>
+</dd>
+<dt>mjd<span class="classifier">float</span></dt><dd><p>Must be in days.</p>
+</dd>
+</dl>
+</dd>
+<dt>Output:</dt><dd><p>The azimuth and elevation are returned as a list in degrees.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormdirection2radec">
+<span class="sig-name descname"><span class="pre">renormdirection2radec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormdirection2radec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormdirection2radec" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><dl class="simple">
+<dt>Convert a direction dictionary to a sexadecimal string of format:</dt><dd><p>HH:MM:SS.SSSSS, +DDD:MM:SS.SSSSSS</p>
+</dd>
+</dl>
+<p>Adapted from Todd Hunter’s AU tool direction2radec.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>direction<span class="classifier">dictionary</span></dt><dd><p>This input is what is returned from the msmd tool of a pointing,
+i.e. the return of msmdtool().phasecenter.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>The RA, Dec pointing direction as a string in sexadecimal format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.renormradec2rad">
+<span class="sig-name descname"><span class="pre">renormradec2rad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radecstring</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.renormradec2rad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.renormradec2rad" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>Convert a sky position from a single RA/Dec sexagesimal string
+to RA and Dec in radians.</p>
+<p>Adapted from Todd Hunter’s AU tool radec2rad.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl>
+<dt>radecstring: string</dt><dd><p>Any leading ‘J2000’ string is removed before consideration.</p>
+<p>The RA and Dec portions can be separated by a comma or a space.</p>
+<p>The RA portion of the string must be colon-delimited, space-
+delimited, or ‘h/m/s’ delimited.</p>
+<p>The Dec portion of the string can be either “:”, “.” or space-
+delimited. If it is “.” delimited, then it must have degrees,
+minutes, <em>and</em> seconds.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The RA and Dec are retuned as a tuple in radians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.suggestAtmExclude">
+<span class="sig-name descname"><span class="pre">suggestAtmExclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.suggestAtmExclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.suggestAtmExclude" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given that renormalization() has been run with the checkFalsePositives=True
+flag, the self.atmMask attribute has been filled with information where
+there are atmospheric features in the spectrum. This function will merge
+the masks from all scans and suggest channel ranges that one may input back
+into renormalization() using the excludechan parameter.</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>target<span class="classifier">string</span></dt><dd><p>The target source evaluated in renormalization()</p>
+</dd>
+<dt>spw<span class="classifier">string</span></dt><dd><p>The spectral window you wish to evaluate a mask for assuming that it
+was also run in the renormalization() call.</p>
+</dd>
+<dt>return_command<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then a string is returned with the correct syntax to
+put into the excludechan option of a self.renormalization() call.
+Default: False</p>
+</dd>
+<dt>return_dict<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then a dictionary is returned with the correct syntax
+to fill the excludechan parameter of the self.renormalize() method.
+Default: False
+NOTE: This takes priority over return_command if both are set to True.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>A list of list pairs suggesting ranges for input into the excludechan
+option of renormalization().</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysFlags">
+<span class="sig-name descname"><span class="pre">writeTsysFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsys_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.writeTsysFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysFlags" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Purpose:</dt><dd><p>Given the list from the writeTsysTemps method that makes a list of
+flag template compatible strings, this code simply writes a PL
+style flag template file at the most detailed level, i.e. spw and
+channel per scan triggered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysTemps">
+<span class="sig-name descname"><span class="pre">writeTsysTemps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rettemplist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/almarenorm_pl2023.html#ACreNorm.writeTsysTemps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.almarenorm_pl2023.ACreNorm.writeTsysTemps" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Purpose:</dt><dd><p>Uses the dictionary from the Tsys Plotting code and will return a
+list with each element being a line to be entered into the
+tsystemplate in PL style</p>
+<p>Optionally, an input dictionary in correct syntax can be passed.</p>
+<p>Using retflchan=True in the plotRelTsysSpectra() method will save
+the dictionary to the argument of the call if you want a manual
+view of the dict or to see and edit and input manually into this
+flag_lines code.</p>
+<p>NOTE: This is to be used with caution as it has not been validated
+yet and is mainly for helping with manual DR only!!!</p>
+</dd>
+<dt>Inputs:</dt><dd><dl class="simple">
+<dt>dictIn<span class="classifier">dictionary</span><span class="classifier">OPTIONAL</span></dt><dd><p>If desired, a user may input a dictionary of flags. If one is
+not input, then the output of self.plotRelTsysSpectra() is used
+instead.
+Default: None</p>
+</dd>
+<dt>rettemplist<span class="classifier">boolean</span><span class="classifier">OPTIONAL</span></dt><dd><p>If set to True, then the flags constructed during this script,
+in addition to being written to a file via self.writeTsysFlags(),
+will be returned as a list of strings.</p>
+</dd>
+</dl>
+</dd>
+<dt>Outputs:</dt><dd><p>A file of Tsys flags is written via the self.writeTsysFlags() method.
+Additionally, if rettemplist=True, a list of strings is returned that
+contains all the flagging commands.</p>
+</dd>
+<dt>Suggestions for Improvement:</dt><dd><ul class="simple">
+<li><p>Syntax is not currently explicity checked for the dictIn option.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.extern.almarenorm_pl2023.ulp.html" class="btn btn-neutral float-left" title="pipeline.extern.almarenorm_pl2023.ulp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.extern.almarenorm_pl2023.attool.html" class="btn btn-neutral float-right" title="pipeline.extern.almarenorm_pl2023.attool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

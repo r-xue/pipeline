@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -177,7 +173,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsTcleanRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanRenderer.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsTcleanRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;tclean.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Produce a cleaned image&#39;</span><span class="p">,</span>
@@ -185,8 +181,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsTcleanRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsTcleanRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># There is only ever one CleanListResult in the ResultsList as it</span>
         <span class="c1"># operates over multiple measurement sets, so we can set the result to</span>
@@ -947,12 +941,11 @@
             <span class="s1">&#39;pol_fit_plots&#39;</span><span class="p">:</span> <span class="n">pol_fit_plots</span><span class="p">,</span>
             <span class="s1">&#39;extra_logrecords&#39;</span><span class="p">:</span> <span class="n">extra_logrecords</span>
         <span class="p">})</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="TCleanPlotsRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.TCleanPlotsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.TCleanPlotsRenderer.html#pipeline.hif.tasks.tclean.renderer.TCleanPlotsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">TCleanPlotsRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">CommonRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">makeimages_results</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">datatype</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">cube_all_cont</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TCleanPlotsRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;tcleanplots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">makeimages_results</span><span class="p">)</span>
@@ -1019,16 +1012,13 @@
             <span class="s1">&#39;colorders&#39;</span><span class="p">:</span> <span class="n">colorders</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="TCleanPlotsRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.TCleanPlotsRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
         <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="TCleanTablesRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.TCleanTablesRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.TCleanTablesRenderer.html#pipeline.hif.tasks.tclean.renderer.TCleanTablesRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">TCleanTablesRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">CommonRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">makeimages_results</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">table_dict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">urls</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TCleanTablesRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;tcleantables.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">makeimages_results</span><span class="p">)</span>
@@ -1051,16 +1041,13 @@
             <span class="s1">&#39;base_url&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">,</span> <span class="s1">&#39;t2-4m_details.html&#39;</span><span class="p">),</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="TCleanTablesRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.TCleanTablesRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
         <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.get_plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.get_plot.html#pipeline.hif.tasks.tclean.renderer.get_plot">[docs]</a>
 <span class="k">def</span> <span class="nf">get_plot</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">datatype</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">colname</span><span class="p">,</span> <span class="n">moment</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">plot</span> <span class="o">=</span> <span class="n">plots</span><span class="p">[</span><span class="n">prefix</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="n">field</span><span class="p">][</span><span class="n">spw</span><span class="p">][</span><span class="n">stokes</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">colname</span><span class="p">][</span><span class="n">moment</span><span class="p">]</span>
@@ -1075,7 +1062,7 @@
 
 
 <div class="viewcode-block" id="make_plot_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.make_plot_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.make_plot_dict.html#pipeline.hif.tasks.tclean.renderer.make_plot_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">make_plot_dict</span><span class="p">(</span><span class="n">plots</span><span class="p">):</span>
     <span class="c1"># Make the plots</span>
     <span class="c1"># Note that any change in the nested dictionary structure must be</span>
@@ -1123,7 +1110,7 @@
 
 
 <div class="viewcode-block" id="triadwise">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.triadwise">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.triadwise.html#pipeline.hif.tasks.tclean.renderer.triadwise">[docs]</a>
 <span class="k">def</span> <span class="nf">triadwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
     <span class="n">with_nones</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
     <span class="s2">&quot;s -&gt; (s0,s1,s2), (s1,s2,s3), (s2,s3,s4), ...&quot;</span>
@@ -1136,7 +1123,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsTcleanVlassCubeRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanVlassCubeRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanVlassCubeRenderer.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanVlassCubeRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsTcleanVlassCubeRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A vlass-cube-specific renderer class to handle full-stokes imaging produdcts.&quot;&quot;&quot;</span>
 
@@ -1146,8 +1133,6 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                          <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsTcleanVlassCubeRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.T2_4MDetailsTcleanVlassCubeRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 
         <span class="c1"># because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,</span>
@@ -1923,12 +1908,11 @@
             <span class="s1">&#39;plane_keep_dict&#39;</span><span class="p">:</span> <span class="n">plane_keep_dict</span><span class="p">,</span>
             <span class="s1">&#39;extra_logrecords&#39;</span><span class="p">:</span> <span class="n">extra_logrecords</span>
         <span class="p">})</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_cycle_stats">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.get_cycle_stats">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.get_cycle_stats.html#pipeline.hif.tasks.tclean.renderer.get_cycle_stats">[docs]</a>
 <span class="k">def</span> <span class="nf">get_cycle_stats</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">makeimages_result</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the major cycle statistics.&quot;&quot;&quot;</span>
 
@@ -1995,7 +1979,7 @@
 
 
 <div class="viewcode-block" id="missing_png_filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.renderer.missing_png_filter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.renderer.missing_png_filter.html#pipeline.hif.tasks.tclean.renderer.missing_png_filter">[docs]</a>
 <span class="k">def</span> <span class="nf">missing_png_filter</span><span class="p">(</span><span class="n">record</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter log records for messages indicating missing PNG files on disk.</span>
 

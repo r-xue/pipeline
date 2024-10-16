@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -150,7 +146,7 @@
 
 
 <div class="viewcode-block" id="TimegaincalQAPool">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool">[docs]</a>
 <span class="k">class</span> <span class="nc">TimegaincalQAPool</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScorePool</span><span class="p">):</span>
     <span class="n">xy_x2x1_score_types</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;PHASE_SCORE_XY&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;XY_TOTAL&#39;</span><span class="p">,</span> <span class="s1">&#39;X-Y phase deviation&#39;</span><span class="p">),</span>
@@ -167,14 +163,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">phase_qa_results_dict</span> <span class="o">=</span> <span class="n">phase_qa_results_dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phase_offsets_qa_results_list</span> <span class="o">=</span> <span class="n">phase_offsets_qa_results_list</span>
 
-<div class="viewcode-block" id="TimegaincalQAPool.update_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAPool.update_scores">[docs]</a>
     <span class="k">def</span> <span class="nf">update_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
         <span class="c1"># Phase offsets scores</span>
         <span class="n">hidden_phase_offsets_scores</span><span class="p">,</span> <span class="n">public_phase_offsets_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phase_offset_scores</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">public_phase_offsets_scores</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hidden_phase_offsets_scores</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hidden_phase_offsets_scores</span><span class="p">)</span>
 
         <span class="c1"># X-Y / X2-X1 scores</span>
         <span class="c1">#</span>
@@ -599,7 +592,7 @@
 
 
 <div class="viewcode-block" id="TimegaincalQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TimegaincalQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for an uncontained TimegaincalResult.</span>
@@ -607,8 +600,6 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TimegaincalQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -638,12 +629,11 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Problem occurred running QA analysis. QA results will not be available for this task&#39;</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="TimegaincalListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TimegaincalListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing TimegaincalResults.</span>
@@ -651,14 +641,11 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span>
 
-<div class="viewcode-block" id="TimegaincalListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.qa.TimegaincalListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 </pre></div>
 

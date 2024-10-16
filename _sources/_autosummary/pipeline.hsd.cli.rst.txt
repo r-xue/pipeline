@@ -4,9 +4,16 @@ pipeline.hsd.cli
 .. automodule:: pipeline.hsd.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       hsd_applycal
       hsd_atmcor
@@ -21,3 +28,15 @@ pipeline.hsd.cli
       hsd_skycal
       hsd_tsysflag
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

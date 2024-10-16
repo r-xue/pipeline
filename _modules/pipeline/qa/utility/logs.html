@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -216,7 +212,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="init">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.init">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.logs.init.html#pipeline.qa.utility.init">[docs]</a>
 <span class="k">def</span> <span class="nf">init</span><span class="p">(</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">logobj</span> <span class="p">):</span>
 
     <span class="c1"># Create the logger instance</span>
@@ -272,7 +268,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="logsCASA">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.logsCASA.html#pipeline.qa.utility.logsCASA">[docs]</a>
 <span class="k">class</span> <span class="nc">logsCASA</span><span class="p">:</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -368,8 +364,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsCASA.critical">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA.critical">[docs]</a>
     <span class="k">def</span> <span class="nf">critical</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Post the message to the CASA logger</span>
@@ -379,8 +373,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -408,8 +401,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsCASA.debug">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA.debug">[docs]</a>
     <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Post the message to the CASA logger</span>
@@ -419,8 +410,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -448,8 +438,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsCASA.error">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA.error">[docs]</a>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Post the message to the CASA logger</span>
@@ -459,8 +447,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -487,8 +474,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsCASA.info">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA.info">[docs]</a>
     <span class="k">def</span> <span class="nf">info</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Post the message to the CASA logger</span>
@@ -498,8 +483,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -527,8 +511,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsCASA.warning">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsCASA.warning">[docs]</a>
     <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Post the message to the CASA logger</span>
@@ -539,7 +521,6 @@
         <span class="c1"># Return None</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
-</div>
 
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -579,7 +560,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="logsPYTHON">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.logsPYTHON.html#pipeline.qa.utility.logsPYTHON">[docs]</a>
 <span class="k">class</span> <span class="nc">logsPYTHON</span><span class="p">:</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -709,8 +690,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.critical">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.critical">[docs]</a>
     <span class="k">def</span> <span class="nf">critical</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Print the message to the python logger</span>
@@ -720,8 +699,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -748,8 +726,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.debug">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.debug">[docs]</a>
     <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Print the message to the python logger</span>
@@ -759,8 +735,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -785,14 +760,11 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.dir_name">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.dir_name">[docs]</a>
     <span class="k">def</span> <span class="nf">dir_name</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
 
         <span class="c1"># Return the output directory</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dir_name</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dir_name</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -819,8 +791,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.error">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.error">[docs]</a>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Print the message to the python logger</span>
@@ -830,8 +800,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -856,14 +825,11 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.file_name">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.file_name">[docs]</a>
     <span class="k">def</span> <span class="nf">file_name</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
 
         <span class="c1"># Return the log file name</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_name</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_name</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -890,8 +856,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.info">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.info">[docs]</a>
     <span class="k">def</span> <span class="nf">info</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Print the message to the python logger</span>
@@ -901,8 +865,7 @@
 
         <span class="c1"># Return None</span>
 
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -927,14 +890,11 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.level">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.level">[docs]</a>
     <span class="k">def</span> <span class="nf">level</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
 
         <span class="c1"># Return the log level</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -959,14 +919,11 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.root">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.root">[docs]</a>
     <span class="k">def</span> <span class="nf">root</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
 
         <span class="c1"># Return the root of the output file name</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -993,8 +950,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="logsPYTHON.warning">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.logs.logsPYTHON.warning">[docs]</a>
     <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
 
         <span class="c1"># Print the message to the python logger</span>
@@ -1005,7 +960,6 @@
         <span class="c1"># Return None</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
-</div>
 
 </pre></div>
 

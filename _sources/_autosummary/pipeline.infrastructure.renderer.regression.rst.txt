@@ -4,9 +4,16 @@ pipeline.infrastructure.renderer.regression
 .. automodule:: pipeline.infrastructure.renderer.regression
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       extract_qa_score_regression
       extract_regression_results
@@ -15,9 +22,16 @@ pipeline.infrastructure.renderer.regression
       key_intersection
       union
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ApplycalRegressionExtractor
       ApplycalResults
@@ -88,3 +102,11 @@ pipeline.infrastructure.renderer.regression
       testBPdcalsRegressionExtractor
       testBPdcalsResults
    
+   
+
+   
+   
+   
+
+
+

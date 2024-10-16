@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies" href="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies.html" />
+    <link rel="prev" title="pipeline.infrastructure.utils.framework.Plot" href="pipeline.infrastructure.utils.framework.Plot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.utils.html">pipeline.infrastructure.utils</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.utils.imaging</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.utils.imaging.rst.txt" rel="nofollow"> View page source</a>
@@ -139,43 +141,43 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies" title="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chan_selection_to_frequencies</span></code></a>(img, selection)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies.html#pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies" title="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chan_selection_to_frequencies</span></code></a></p></td>
 <td><p>Convert channel selection to frequency tuples for a given CASA cube.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.equal_to_n_digits" title="pipeline.infrastructure.utils.imaging.equal_to_n_digits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_to_n_digits</span></code></a>(x, y[, numdigits])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.equal_to_n_digits.html#pipeline.infrastructure.utils.imaging.equal_to_n_digits" title="pipeline.infrastructure.utils.imaging.equal_to_n_digits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal_to_n_digits</span></code></a></p></td>
 <td><p>Approximate equality check up to a given number of digits.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.freq_selection_to_channels" title="pipeline.infrastructure.utils.imaging.freq_selection_to_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_selection_to_channels</span></code></a>(img, selection)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.freq_selection_to_channels.html#pipeline.infrastructure.utils.imaging.freq_selection_to_channels" title="pipeline.infrastructure.utils.imaging.freq_selection_to_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_selection_to_channels</span></code></a></p></td>
 <td><p>Convert frequency selection to channel tuples for a given CASA cube.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.frequency_to_velocity" title="pipeline.infrastructure.utils.imaging.frequency_to_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_to_velocity</span></code></a>(frequency, restfreq)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.frequency_to_velocity.html#pipeline.infrastructure.utils.imaging.frequency_to_velocity" title="pipeline.infrastructure.utils.imaging.frequency_to_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency_to_velocity</span></code></a></p></td>
 <td><p>Convert frequency to radial velocity using radio convention.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges" title="pipeline.infrastructure.utils.imaging.intersect_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges</span></code></a>(ranges)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.intersect_ranges.html#pipeline.infrastructure.utils.imaging.intersect_ranges" title="pipeline.infrastructure.utils.imaging.intersect_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges</span></code></a></p></td>
 <td><p>Compute intersection of ranges.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight" title="pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges_by_weight</span></code></a>(ranges, delta, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight.html#pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight" title="pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect_ranges_by_weight</span></code></a></p></td>
 <td><p>Compute intersection of ranges through weight arrays and a threshold.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.merge_ranges" title="pipeline.infrastructure.utils.imaging.merge_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_ranges</span></code></a>(ranges)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.merge_ranges.html#pipeline.infrastructure.utils.imaging.merge_ranges" title="pipeline.infrastructure.utils.imaging.merge_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_ranges</span></code></a></p></td>
 <td><p>Merge overlapping and adjacent ranges and yield the merged ranges in order.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.predict_kernel" title="pipeline.infrastructure.utils.imaging.predict_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_kernel</span></code></a>(beam, target_beam[, pstol, patol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.predict_kernel.html#pipeline.infrastructure.utils.imaging.predict_kernel" title="pipeline.infrastructure.utils.imaging.predict_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_kernel</span></code></a></p></td>
 <td><p>Predict the required convolution kernel to each a target restoring beam.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.set_nested_dict" title="pipeline.infrastructure.utils.imaging.set_nested_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nested_dict</span></code></a>(dct, keys, value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.set_nested_dict.html#pipeline.infrastructure.utils.imaging.set_nested_dict" title="pipeline.infrastructure.utils.imaging.set_nested_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nested_dict</span></code></a></p></td>
 <td><p>Set a hierarchy of dictionaries with given keys and value for the lowest level key.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.spw_intersect" title="pipeline.infrastructure.utils.imaging.spw_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_intersect</span></code></a>(spw_range, line_regions)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.spw_intersect.html#pipeline.infrastructure.utils.imaging.spw_intersect" title="pipeline.infrastructure.utils.imaging.spw_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_intersect</span></code></a></p></td>
 <td><p>This utility function takes a frequency range (as numbers with arbitrary but common units) and computes the intersection with a list of frequency ranges defining the regions of spectral lines.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_beams_dict" title="pipeline.infrastructure.utils.imaging.update_beams_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_beams_dict</span></code></a>(dct, udct)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.update_beams_dict.html#pipeline.infrastructure.utils.imaging.update_beams_dict" title="pipeline.infrastructure.utils.imaging.update_beams_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_beams_dict</span></code></a></p></td>
 <td><p>Update a beams dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_sens_dict" title="pipeline.infrastructure.utils.imaging.update_sens_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_sens_dict</span></code></a>(dct, udct)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.update_sens_dict.html#pipeline.infrastructure.utils.imaging.update_sens_dict" title="pipeline.infrastructure.utils.imaging.update_sens_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_sens_dict</span></code></a></p></td>
 <td><p>Update a sensitivity dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.velocity_to_frequency" title="pipeline.infrastructure.utils.imaging.velocity_to_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_to_frequency</span></code></a>(velocity, restfreq)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.imaging.velocity_to_frequency.html#pipeline.infrastructure.utils.imaging.velocity_to_frequency" title="pipeline.infrastructure.utils.imaging.velocity_to_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_to_frequency</span></code></a></p></td>
 <td><p>Convert radial velocity to frequency using radio convention.</p></td>
 </tr>
 </tbody>
@@ -185,7 +187,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.utils.framework.Plot.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.utils.framework.Plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -204,7 +200,7 @@
 
 
 <div class="viewcode-block" id="TsysflagInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.h.tasks.TsysflagInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagInputs.html#pipeline.h.tasks.TsysflagInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsysflagInputs defines the inputs for the Tsysflag pipeline task.</span>
@@ -759,6 +755,8 @@
 
 
 
+<div class="viewcode-block" id="TsysflagDataInputs">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagDataInputs.html#pipeline.h.tasks.TsysflagDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsysflagDataInputs defines the inputs for the TsysflagData pipeline task.</span>
@@ -772,24 +770,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
 
         <span class="c1"># data selection arguments</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span></div>
 
 
+
+<div class="viewcode-block" id="TsysflagData">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagData.html#pipeline.h.tasks.TsysflagData">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagDataInputs</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TsysflagData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
+<div class="viewcode-block" id="TsysflagData.prepare">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagData.html#pipeline.h.tasks.TsysflagData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">TsysflagDataResults</span><span class="p">()</span>
         <span class="n">result</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
+
+<div class="viewcode-block" id="TsysflagData.analyse">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagData.html#pipeline.h.tasks.TsysflagData.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="TsysflagView">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
@@ -834,6 +844,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">intentgroup</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">]</span>
 
+<div class="viewcode-block" id="TsysflagView.__call__">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When called, the TsysflagView object calculates flagging views</span>
@@ -852,8 +864,11 @@
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">table</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculate_views</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.intent_ids">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.intent_ids">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">intent_ids</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -893,8 +908,11 @@
                     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span>
                     <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">ids</span>
+        <span class="k">return</span> <span class="n">ids</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_views">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_views">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_views</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates a flagging view for the specified table, based on </span>
@@ -975,8 +993,11 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">calculate_antenna_diff_channel_view</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">tsys_spw_id</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">)</span>
 
                 <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;edgechans&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">calculate_median_channel_view</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">tsys_spw_id</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">calculate_median_channel_view</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">tsys_spw_id</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.get_tsystable_data">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.get_tsystable_data">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_tsystable_data</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">antenna_names</span><span class="p">,</span>
                            <span class="n">corr_type</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1032,8 +1053,11 @@
                     <span class="n">tsysspectra</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">tsysspectrum</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">tsysspectrum</span><span class="p">)</span>
                     <span class="n">times</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)])</span>
 
-        <span class="k">return</span> <span class="n">tsysspectra</span><span class="p">,</span> <span class="n">times</span>
+        <span class="k">return</span> <span class="n">tsysspectra</span><span class="p">,</span> <span class="n">times</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_median_spectra_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_median_spectra_view">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_median_spectra_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">split_by_field</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
@@ -1264,8 +1288,11 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: no data found for spw </span><span class="si">{}</span><span class="s2">, pol </span><span class="si">{}</span><span class="s2">, no &quot;</span>
                                 <span class="s2">&quot;flagging view created.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tsystable</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">spwid</span><span class="p">,</span>
-                                                                <span class="n">corr_type</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+                                                                <span class="n">corr_type</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_derivative_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_derivative_view">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_derivative_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
@@ -1391,8 +1418,11 @@
             <span class="n">viewresult</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="s1">&#39;tsysspectra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsysspectra</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>
 
             <span class="c1"># Add the view results to the class result structure</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_fieldshape_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_fieldshape_view">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_fieldshape_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span>
                                   <span class="n">refintent</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1587,8 +1617,11 @@
             <span class="n">viewresult</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="s1">&#39;tsysspectra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsysspectra</span><span class="p">[</span><span class="n">pol</span><span class="p">]</span>
 
             <span class="c1"># Add the view results to the class result structure</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_median_channel_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_median_channel_view">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_median_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
@@ -1660,8 +1693,11 @@
                 <span class="n">data</span><span class="o">=</span><span class="n">stackmedian</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">stackmedianflag</span><span class="p">,</span>
                 <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;Median Normalised Tsys&#39;</span><span class="p">,</span>
                 <span class="n">filename</span><span class="o">=</span><span class="n">tsystable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="TsysflagView.calculate_antenna_diff_channel_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagView.html#pipeline.h.tasks.TsysflagView.calculate_antenna_diff_channel_view">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_antenna_diff_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
@@ -1777,7 +1813,9 @@
                   <span class="n">ant</span><span class="o">=</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">antenna_names</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]))</span>
 
                 <span class="c1"># Add the view result to the class result structure</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

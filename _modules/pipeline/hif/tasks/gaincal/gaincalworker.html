@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="GaincalWorkerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.gaincal.html#pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorkerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorkerInputs.html#pipeline.hif.tasks.gaincal.GaincalWorkerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalWorkerInputs</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">VdpCommonGaincalInputs</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">selectdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -192,7 +188,7 @@
 
 
 <div class="viewcode-block" id="GaincalWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.gaincal.html#pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker.html#pipeline.hif.tasks.gaincal.GaincalWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GaincalWorker performs a simple gain calibration exactly as specified by</span>
@@ -205,7 +201,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GaincalWorkerInputs</span>
 
 <div class="viewcode-block" id="GaincalWorker.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.gaincal.html#pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker.html#pipeline.hif.tasks.gaincal.GaincalWorker.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># create a local variable for the inputs associated with this instance</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -299,7 +295,7 @@
 
 
 <div class="viewcode-block" id="GaincalWorker.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.gaincal.html#pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.gaincalworker.GaincalWorker.html#pipeline.hif.tasks.gaincal.GaincalWorker.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># With no best caltable to find, our task is simply to set the one</span>
         <span class="c1"># caltable as the best result</span>

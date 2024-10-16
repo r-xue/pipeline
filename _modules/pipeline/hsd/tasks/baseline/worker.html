@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -164,7 +160,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionWorkerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for baseline subtraction tasks.&quot;&quot;&quot;</span>
 
@@ -377,7 +373,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 <div class="viewcode-block" id="BaselineSubtractionWorkerInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorkerInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance to the list of keyword arguments for sdbaseline.</span>
 
@@ -420,7 +416,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction.&quot;&quot;&quot;</span>
 
@@ -438,7 +434,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">BaselineSubtractionResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaselineSubtractionResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -462,7 +458,7 @@
 
 
 <div class="viewcode-block" id="SerialBaselineSubtractionWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialBaselineSubtractionWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract worker class for baseline subtraction.&quot;&quot;&quot;</span>
 
@@ -483,7 +479,7 @@
                                                                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">))</span>
 
 <div class="viewcode-block" id="SerialBaselineSubtractionWorker.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaselineSubtractionResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform baseline subtraction.</span>
 
@@ -559,7 +555,7 @@
 
 
 <div class="viewcode-block" id="SerialBaselineSubtractionWorker.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.html#pipeline.hsd.tasks.baseline.worker.SerialBaselineSubtractionWorker.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">BaselineSubtractionResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaselineSubtractionResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate plots from baseline subtraction results.</span>
 
@@ -656,7 +652,7 @@
 
 
 <div class="viewcode-block" id="BaselineSubtractionWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorker.html#pipeline.hsd.tasks.baseline.worker.BaselineSubtractionWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineSubtractionWorker</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Template class for parallel baseline subtraction task.</span>
 

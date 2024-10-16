@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="TsysflagResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination.TsysflagResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagResults">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagResults</span><span class="p">(</span><span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -172,7 +168,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fully_flagged_antenna_notifications</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FullyFlaggedAntennasNotification</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="TsysflagResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination.TsysflagResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Update reference antennas for MS.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -180,11 +176,8 @@
                                      <span class="n">ants_to_remove</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TsysflagResults.add">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagResults.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TsysflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
@@ -201,7 +194,7 @@
 
 
 <div class="viewcode-block" id="TsysflagspectraResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagspectraResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagspectraResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagspectraResults">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagspectraResults</span><span class="p">(</span><span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">,</span>
                              <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="p">[],</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">preceding</span><span class="o">=</span><span class="p">[]):</span>
@@ -213,7 +206,7 @@
         <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsysflagspectraResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagspectraResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagspectraResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagspectraResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># do nothing, the tsys cal files should already be in the context</span>
         <span class="c1"># and we don&#39;t want to insert them twice.</span>
@@ -228,7 +221,7 @@
 
 
 <div class="viewcode-block" id="TsysflagDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagDataResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -237,7 +230,7 @@
         <span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsysflagDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagDataResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># do nothing, tsys cal data table should already be in context</span>
         <span class="k">pass</span></div>
@@ -250,7 +243,7 @@
 
 
 <div class="viewcode-block" id="TsysflagViewResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagViewResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagViewResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagViewResults">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagViewResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">,</span>
                           <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -261,7 +254,7 @@
         <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsysflagViewResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsysflag.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagViewResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.TsysflagViewResults.html#pipeline.hifa.tasks.tsysflag_contamination.qa.TsysflagViewResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 

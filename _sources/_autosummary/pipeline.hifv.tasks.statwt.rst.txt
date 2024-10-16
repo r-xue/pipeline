@@ -4,19 +4,39 @@ pipeline.hifv.tasks.statwt
 .. automodule:: pipeline.hifv.tasks.statwt
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Statwt
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    display
    qa
    renderer
    statwt
+

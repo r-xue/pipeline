@@ -48,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -183,7 +179,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.DataTable.html#pipeline.domain.DataTable" title="pipeline.domain.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
-<td><p>alias of <a class="reference internal" href="_apidoc/pipeline.domain.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a>(value)</p></td>
 <td><p>A class to define DataType enum.</p></td>
@@ -230,16 +226,16 @@ from a saved context state.</p>
 <h2>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
 <td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.ContextCreatedEvent.html#pipeline.infrastructure.launcher.ContextCreatedEvent" title="pipeline.infrastructure.launcher.ContextCreatedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code></a>([context_name, output_dir])</p></td>
 <td><p>Emitted when a pipeline Context is created.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.ContextResumedEvent.html#pipeline.infrastructure.launcher.ContextResumedEvent" title="pipeline.infrastructure.launcher.ContextResumedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code></a>([context_name, output_dir])</p></td>
 <td><p>Emitted when a pipeline Context is resumed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
 <td><p>Pipeline is the entry point for initialising the pipeline.</p></td>
 </tr>
 </tbody>

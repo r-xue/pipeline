@@ -4,11 +4,30 @@ pipeline.infrastructure.executeppr
 .. automodule:: pipeline.infrastructure.executeppr
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       executeppr
       export_on_exception
       save_existing_context
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

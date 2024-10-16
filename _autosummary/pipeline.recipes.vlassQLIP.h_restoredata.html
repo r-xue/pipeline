@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.vlassQLIP.h_restoredata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.vlassQLIP.h_resume" href="pipeline.recipes.vlassQLIP.h_resume.html" />
+    <link rel="prev" title="pipeline.recipes.vlassQLIP.h_mssplit" href="pipeline.recipes.vlassQLIP.h_mssplit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.vlassQLIP.html">pipeline.recipes.vlassQLIP</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.vlassQLIP.h_restoredata</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.vlassQLIP.h_restoredata.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-vlassqlip-h-restoredata">
+<h1>pipeline.recipes.vlassQLIP.h_restoredata<a class="headerlink" href="#pipeline-recipes-vlassqlip-h-restoredata" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.vlassQLIP.h_restoredata">
+<span class="sig-name descname"><span class="pre">h_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_restoredata.html#h_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.vlassQLIP.h_restoredata" title="Link to this definition"></a></dt>
+<dd><p>h_restoredata —- Restore flags and calibration state from a pipeline run</p>
+<p>The h_restoredata restores flagged and calibrated data from archived ASDMs and
+pipeline flagging and calibration data products. Pending archive retrieval
+support h_restoredata assumes that the required products are available in the
+rawdata_dir in the format produced by the h_exportdata task.</p>
+<p>h_restoredata assumes that the following entities are available in the
+rawdata_dir directory:</p>
+<ul>
+<li><p>the ASDMs to be restored</p></li>
+<li><p>for each ASDM in the input list:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a compressed tar file of the final flagversions file, e.g.,
+uid___A002_X30a93d_X43e.ms.flagversions.tar.gz</p></li>
+<li><p>a text file containing the applycal instructions, e.g.,
+uid___A002_X30a93d_X43e.ms.calapply.txt</p></li>
+<li><p>a compressed tar file containing the caltables for the parent
+session, e.g., uid___A001_X74_X29.session_3.caltables.tar.gz</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>h_restore data performs the following operations:</p>
+<ul class="simple">
+<li><p>imports the ASDM(s)</p></li>
+<li><p>removes the default MS.flagversions directory created by the filler</p></li>
+<li><p>restores the final MS.flagversions directory stored by the pipeline</p></li>
+<li><p>restores the final set of pipeline flags to the MS</p></li>
+<li><p>restores the final calibration state of the MS</p></li>
+<li><p>restores the final calibration tables for each MS</p></li>
+<li><p>applies the calibration tables to each MS</p></li>
+</ul>
+<p>When importing the ASDM and converting it to a Measurement Set (MS), if the
+output MS already exists in the output directory, then the importasdm
+conversion step is skipped, and the existing MS will be imported instead.</p>
+<p>Output:</p>
+<p>results – The results object for the pipeline task is returned.</p>
+<p>——— parameter descriptions ———————————————</p>
+<dl>
+<dt>vis           List of raw visibility data files to be restored. Assumed to</dt><dd><p>be in the directory specified by rawdata_dir.</p>
+<p>example: vis=[‘uid___A002_X30a93d_X43e’]</p>
+</dd>
+</dl>
+<p>session       List of sessions, one per visibility file.</p>
+<blockquote>
+<div><p>example: session=[‘session_3’]</p>
+</div></blockquote>
+<dl>
+<dt>products_dir  Path to the data products directory, used to copy calibration</dt><dd><p>products from. The parameter is effective only when
+copytoraw=True. When copytoraw=False, calibration products in
+rawdata_dir will be used.</p>
+<p>example: products_dir=’/path/to/my/products’</p>
+</dd>
+<dt>copytoraw     Copy calibration and flagging tables from products_dir to</dt><dd><p>rawdata_dir directory.</p>
+<p>example: copytoraw=False</p>
+</dd>
+</dl>
+<p>rawdata_dir   Path to the rawdata subdirectory.</p>
+<blockquote>
+<div><p>example: rawdata_dir=’/path/to/my/rawdata’</p>
+</div></blockquote>
+<p>lazy          Use the lazy filler option</p>
+<blockquote>
+<div><p>example: lazy=True</p>
+</div></blockquote>
+<p>bdfflags      Set the BDF flags</p>
+<blockquote>
+<div><p>example: bdfflags=False</p>
+</div></blockquote>
+<p>ocorr_mode    Set correlation import mode</p>
+<blockquote>
+<div><p>example: ocorr_mode=’ca’</p>
+</div></blockquote>
+<dl>
+<dt>asis          Creates verbatim copies of the ASDM tables in the output MS.</dt><dd><p>The value given to this option must be a list of table names separated by space characters.</p>
+<p>example: ocorr_mode=’Source Receiver’</p>
+</dd>
+</dl>
+<p>——— examples ———————————————————–</p>
+<ol class="arabic simple">
+<li><p>Restore the pipeline results for a single ASDM in a single session</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h_restoredata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;uid___A002_X30a93d_X43e&#39;</span><span class="p">],</span> <span class="n">session</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;session_1&#39;</span><span class="p">],</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.vlassQLIP.h_mssplit.html" class="btn btn-neutral float-left" title="pipeline.recipes.vlassQLIP.h_mssplit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.vlassQLIP.h_resume.html" class="btn btn-neutral float-right" title="pipeline.recipes.vlassQLIP.h_resume" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

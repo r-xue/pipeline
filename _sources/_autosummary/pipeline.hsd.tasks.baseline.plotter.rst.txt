@@ -4,9 +4,16 @@ pipeline.hsd.tasks.baseline.plotter
 .. automodule:: pipeline.hsd.tasks.baseline.plotter
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       binned_mean_ma
       casa5style_plot
@@ -18,9 +25,16 @@ pipeline.hsd.tasks.baseline.plotter
       get_lines2
       sort_with_key
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BaselineSubtractionDataManager
       BaselineSubtractionPlotManager
@@ -31,3 +45,11 @@ pipeline.hsd.tasks.baseline.plotter
       PlotterPool
       QualityStat
    
+   
+
+   
+   
+   
+
+
+

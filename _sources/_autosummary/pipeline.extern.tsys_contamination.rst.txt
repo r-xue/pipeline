@@ -4,9 +4,16 @@ pipeline.extern.tsys\_contamination
 .. automodule:: pipeline.extern.tsys_contamination
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       basic_atm_asymmetric_fit
       below_fit
@@ -55,12 +62,27 @@ pipeline.extern.tsys\_contamination
       union_intervals
       width_fit_filter
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Bounds
       ConvexHull
       Rectangle
       TsysData
    
+   
+
+   
+   
+   
+
+
+

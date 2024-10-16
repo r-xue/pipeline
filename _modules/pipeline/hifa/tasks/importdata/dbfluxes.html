@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -179,7 +175,7 @@
 
 
 <div class="viewcode-block" id="get_setjy_results">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.get_setjy_results">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.get_setjy_results.html#pipeline.hifa.tasks.importdata.dbfluxes.get_setjy_results">[docs]</a>
 <span class="k">def</span> <span class="nf">get_setjy_results</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get flux values from the database service reverting to the Source</span>
@@ -211,7 +207,7 @@
 
 
 <div class="viewcode-block" id="read_fluxes_db">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.read_fluxes_db">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.read_fluxes_db.html#pipeline.hifa.tasks.importdata.dbfluxes.read_fluxes_db">[docs]</a>
 <span class="k">def</span> <span class="nf">read_fluxes_db</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read fluxes from the database server, defaulting to the Source XML table</span>
@@ -230,7 +226,7 @@
 
 
 <div class="viewcode-block" id="flux_nosourcexml">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.flux_nosourcexml">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.flux_nosourcexml.html#pipeline.hifa.tasks.importdata.dbfluxes.flux_nosourcexml">[docs]</a>
 <span class="k">def</span> <span class="nf">flux_nosourcexml</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Call the flux service and get the frequencies from the ms if no Source.xml is available</span>
@@ -249,7 +245,7 @@
 
 
 <div class="viewcode-block" id="buildurl">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.buildurl">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.buildurl.html#pipeline.hifa.tasks.importdata.dbfluxes.buildurl">[docs]</a>
 <span class="k">def</span> <span class="nf">buildurl</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">):</span>
     <span class="c1"># Example:</span>
     <span class="c1"># https://almascience.eso.org/sc/flux?DATE=10-August-2017&amp;FREQUENCY=232101563000.0&amp;NAME=J1924-2914&amp;WEIGHTED=true&amp;RESULT=1&amp;CATALOGUE=5</span>
@@ -267,7 +263,7 @@
 
 
 <div class="viewcode-block" id="fluxservice">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.fluxservice">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.fluxservice.html#pipeline.hifa.tasks.importdata.dbfluxes.fluxservice">[docs]</a>
 <span class="k">def</span> <span class="nf">fluxservice</span><span class="p">(</span><span class="n">service_url</span><span class="p">,</span> <span class="n">obs_time</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Usage of this online service requires:</span>
@@ -324,7 +320,7 @@
 
 
 <div class="viewcode-block" id="buildparams">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.buildparams">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.buildparams.html#pipeline.hifa.tasks.importdata.dbfluxes.buildparams">[docs]</a>
 <span class="k">def</span> <span class="nf">buildparams</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inputs are all strings with the format:</span>
@@ -336,7 +332,7 @@
 
 
 <div class="viewcode-block" id="sanitize_string">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string.html#pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string">[docs]</a>
 <span class="k">def</span> <span class="nf">sanitize_string</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sanitize source name if needed, taking first alias.</span>
@@ -346,7 +342,7 @@
 
 
 <div class="viewcode-block" id="query_online_catalogue">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.query_online_catalogue">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.query_online_catalogue.html#pipeline.hifa.tasks.importdata.dbfluxes.query_online_catalogue">[docs]</a>
 <span class="k">def</span> <span class="nf">query_online_catalogue</span><span class="p">(</span><span class="n">flux_url</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
     <span class="c1"># At this point we take:</span>
     <span class="c1">#  - the source name string</span>
@@ -388,7 +384,7 @@
 
 
 <div class="viewcode-block" id="add_catalogue_fluxes">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.add_catalogue_fluxes">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.add_catalogue_fluxes.html#pipeline.hifa.tasks.importdata.dbfluxes.add_catalogue_fluxes">[docs]</a>
 <span class="k">def</span> <span class="nf">add_catalogue_fluxes</span><span class="p">(</span><span class="n">measurements</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">science_windows</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -474,7 +470,7 @@
 
 
 <div class="viewcode-block" id="log_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.importdata.html#pipeline.hifa.tasks.importdata.dbfluxes.log_result">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.dbfluxes.log_result.html#pipeline.hifa.tasks.importdata.dbfluxes.log_result">[docs]</a>
 <span class="k">def</span> <span class="nf">log_result</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">asdm_I</span><span class="p">,</span> <span class="n">catalogue_I</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">data_conditions</span><span class="p">,</span> <span class="n">clarification</span><span class="p">):</span>
 
     <span class="n">codedict</span> <span class="o">=</span> <span class="p">{}</span>

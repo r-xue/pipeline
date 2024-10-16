@@ -4,9 +4,16 @@ pipeline.hifv.heuristics.bandpass
 .. automodule:: pipeline.hifv.heuristics.bandpass
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       computeChanFlag
       do_bandpass
@@ -15,3 +22,15 @@ pipeline.hifv.heuristics.bandpass
       uvrange
       weakbp
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

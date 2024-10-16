@@ -4,9 +4,16 @@ pipeline.infrastructure.renderer.htmlrenderer
 .. automodule:: pipeline.infrastructure.renderer.htmlrenderer
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       cmp
       compute_az_el_for_ms
@@ -32,9 +39,16 @@ pipeline.infrastructure.renderer.htmlrenderer
       sort_by_time
       wrap_in_resultslist
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       LogCopier
@@ -73,3 +87,11 @@ pipeline.infrastructure.renderer.htmlrenderer
       WebLogStageRenderingCompleteEvent
       WebLogStageRenderingStartedEvent
    
+   
+
+   
+   
+   
+
+
+

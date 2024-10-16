@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC" href="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC.html" />
+    <link rel="prev" title="pipeline.infrastructure.displays.plotsuntrack.plot_suntrack" href="pipeline.infrastructure.displays.plotsuntrack.plot_suntrack.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.displays.html">pipeline.infrastructure.displays</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.displays.plotweather</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.displays.plotweather.rst.txt" rel="nofollow"> View page source</a>
@@ -137,22 +139,22 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC" title="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ComputeDewPointCFromRHAndTempC</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC.html#pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC" title="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ComputeDewPointCFromRHAndTempC</span></code></a></p></td>
 <td><p>inputs:  relativeHumidity in percentage, temperature in C output: in degrees C Uses formula from <a class="reference external" href="http://en.wikipedia.org/wiki/Dew_point#Calculating_the_dew_point">http://en.wikipedia.org/wiki/Dew_point#Calculating_the_dew_point</a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RescaleXAxisTimeTicks</span></code>(xlim, adesc)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.RescaleXAxisTimeTicks.html#pipeline.infrastructure.displays.plotweather.RescaleXAxisTimeTicks" title="pipeline.infrastructure.displays.plotweather.RescaleXAxisTimeTicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RescaleXAxisTimeTicks</span></code></a></p></td>
 <td><p>Plotting utility routine</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotweather.computeWVP" title="pipeline.infrastructure.displays.plotweather.computeWVP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeWVP</span></code></a>(d)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.computeWVP.html#pipeline.infrastructure.displays.plotweather.computeWVP" title="pipeline.infrastructure.displays.plotweather.computeWVP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeWVP</span></code></a></p></td>
 <td><p>This simply converts the specified temperature (in Celsius) to water vapor pressure, which can be used to estimate the relative humidity from the measured dew point.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_seconds_to_datetime</span></code>(mjd_secs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.mjd_seconds_to_datetime.html#pipeline.infrastructure.displays.plotweather.mjd_seconds_to_datetime" title="pipeline.infrastructure.displays.plotweather.mjd_seconds_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_seconds_to_datetime</span></code></a></p></td>
 <td><p>Convert list of MJD seconds to a list of equivalent datetime objects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotweather.plot_weather" title="pipeline.infrastructure.displays.plotweather.plot_weather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_weather</span></code></a>([vis, figfile, station, help])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.plot_weather.html#pipeline.infrastructure.displays.plotweather.plot_weather" title="pipeline.infrastructure.displays.plotweather.plot_weather"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_weather</span></code></a></p></td>
 <td><p>Compiles and plots the major weather parameters for the specified ms.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotweather.resizeFonts" title="pipeline.infrastructure.displays.plotweather.resizeFonts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resizeFonts</span></code></a>(adesc, fontsize)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotweather.resizeFonts.html#pipeline.infrastructure.displays.plotweather.resizeFonts" title="pipeline.infrastructure.displays.plotweather.resizeFonts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resizeFonts</span></code></a></p></td>
 <td><p>Plotting utility routine</p></td>
 </tr>
 </tbody>
@@ -162,7 +164,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.displays.plotsuntrack.plot_suntrack.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.displays.plotsuntrack.plot_suntrack" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.displays.plotweather.ComputeDewPointCFromRHAndTempC" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

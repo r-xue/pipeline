@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -162,7 +158,7 @@
 
 
 <div class="viewcode-block" id="ImportDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.ImportDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.ImportDataInputs.html#pipeline.h.tasks.ImportDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ImportDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">bdfflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -198,7 +194,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
 
 <div class="viewcode-block" id="ImportDataInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.ImportDataInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.ImportDataInputs.html#pipeline.h.tasks.ImportDataInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
@@ -206,7 +202,7 @@
 
 
 <div class="viewcode-block" id="ImportDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.ImportDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.ImportDataResults.html#pipeline.h.tasks.ImportDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ImportDataResults holds the results of the ImportData task. It contains</span>
@@ -224,7 +220,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fluxservice</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ImportDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.ImportDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.ImportDataResults.html#pipeline.h.tasks.ImportDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
         <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
@@ -632,6 +628,8 @@
 
 
 
+<div class="viewcode-block" id="get_datacolumn_name">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.get_datacolumn_name.html#pipeline.h.tasks.get_datacolumn_name">[docs]</a>
 <span class="k">def</span> <span class="nf">get_datacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a name of data column in MeasurementSet (MS).</span>
@@ -643,9 +641,12 @@
 <span class="sd">        Search for &#39;DATA&#39; and &#39;FLOAT_DATA&#39; columns in MS and returns the first</span>
 <span class="sd">        matching column in MS. Returns None if no match is found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">])</span></div>
 
 
+
+<div class="viewcode-block" id="get_correcteddatacolumn_name">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.get_correcteddatacolumn_name.html#pipeline.h.tasks.get_correcteddatacolumn_name">[docs]</a>
 <span class="k">def</span> <span class="nf">get_correcteddatacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return name of corrected data column in MeasurementSet (MS).</span>
@@ -657,9 +658,12 @@
 <span class="sd">        Search for &#39;CORRECTED_DATA&#39; column in MS and return the name.</span>
 <span class="sd">        Returns None if no match is found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">])</span></div>
 
 
+
+<div class="viewcode-block" id="search_columns">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.importdata.search_columns.html#pipeline.h.tasks.search_columns">[docs]</a>
 <span class="k">def</span> <span class="nf">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_cols</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
@@ -675,7 +679,8 @@
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">search_cols</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">tb_cols</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">col</span>
-    <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
 
 
 <span class="n">FLAGGING_TEMPLATE_HEADER</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;#</span>

@@ -4,16 +4,30 @@ pipeline.hsd.tasks.importdata.importdata
 .. automodule:: pipeline.hsd.tasks.importdata.importdata
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       merge_reduction_group
       relative_path
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       FluxCalibrationResults
@@ -25,3 +39,11 @@ pipeline.hsd.tasks.importdata.importdata
       SDImportDataResults
       SerialSDImportData
    
+   
+
+   
+   
+   
+
+
+

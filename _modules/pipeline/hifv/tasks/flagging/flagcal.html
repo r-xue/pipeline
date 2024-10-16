@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,7 +141,7 @@
 
 
 <div class="viewcode-block" id="FlagcalResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.FlagcalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagcal.FlagcalResults.html#pipeline.hifv.tasks.FlagcalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="p">[],</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">preceding</span><span class="o">=</span><span class="p">[]):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FlagcalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -155,7 +151,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FlagcalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.FlagcalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagcal.FlagcalResults.html#pipeline.hifv.tasks.FlagcalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -173,7 +169,7 @@
 
 
 <div class="viewcode-block" id="FlagcalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.FlagcalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagcal.FlagcalInputs.html#pipeline.hifv.tasks.FlagcalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">caltable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;finalampgaincal.tbl&#39;</span><span class="p">)</span>
     <span class="n">clipminmax</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">])</span>
@@ -188,13 +184,13 @@
 
 
 <div class="viewcode-block" id="Flagcal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.Flagcal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Flagcal.html#pipeline.hifv.tasks.Flagcal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_flagcal&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Flagcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagcalInputs</span>
 
 <div class="viewcode-block" id="Flagcal.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.Flagcal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Flagcal.html#pipeline.hifv.tasks.Flagcal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;This Flagcal class is running.&quot;</span><span class="p">)</span>
@@ -214,7 +210,7 @@
 
 
 <div class="viewcode-block" id="Flagcal.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagcal.Flagcal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Flagcal.html#pipeline.hifv.tasks.Flagcal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -151,15 +147,13 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsRawflagchansRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.rawflagchans.html#pipeline.hif.tasks.rawflagchans.renderer.T2_4MDetailsRawflagchansRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.renderer.T2_4MDetailsRawflagchansRenderer.html#pipeline.hif.tasks.rawflagchans.renderer.T2_4MDetailsRawflagchansRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsRawflagchansRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;rawflagchans.mako&#39;</span><span class="p">,</span> 
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Flag channels in raw data&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsRawflagchansRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.rawflagchans.html#pipeline.hif.tasks.rawflagchans.renderer.T2_4MDetailsRawflagchansRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">htmlreports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_htmlreports</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
 
@@ -198,8 +192,7 @@
             <span class="s1">&#39;agents&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;before&#39;</span><span class="p">,</span> <span class="s1">&#39;after&#39;</span><span class="p">),</span>
             <span class="s1">&#39;plots_path&#39;</span><span class="p">:</span> <span class="n">plots_path</span><span class="p">,</span>
             <span class="s1">&#39;flag_table_intents&#39;</span><span class="p">:</span> <span class="n">flag_table_intents</span><span class="p">,</span>
-        <span class="p">})</span></div>
-
+        <span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_get_htmlreports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">report_dir</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">report_dir</span>
@@ -229,7 +222,7 @@
 
 
 <div class="viewcode-block" id="BaselineVsChannelsPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.rawflagchans.html#pipeline.hif.tasks.rawflagchans.renderer.BaselineVsChannelsPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.renderer.BaselineVsChannelsPlotRenderer.html#pipeline.hif.tasks.rawflagchans.renderer.BaselineVsChannelsPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineVsChannelsPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>

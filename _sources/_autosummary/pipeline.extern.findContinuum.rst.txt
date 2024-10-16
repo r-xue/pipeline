@@ -4,9 +4,16 @@ pipeline.extern.findContinuum
 .. automodule:: pipeline.extern.findContinuum
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       CalcAtmTransmissionForImage
       ExpandYLimitsForLegend
@@ -187,9 +194,16 @@ pipeline.extern.findContinuum
       writeContDat
       writeMeanSpectrum
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       attool
       iatool
@@ -201,3 +215,11 @@ pipeline.extern.findContinuum
       synthesismaskhandler
       tbtool
    
+   
+
+   
+   
+   
+
+
+

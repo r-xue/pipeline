@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -144,28 +140,20 @@
 
 <span class="c1"># This class contains a list ImageItem objects encoded as dictionaries.</span>
 <div class="viewcode-block" id="ImageLibrary">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageLibrary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_images</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Return the image list.</span>
-<div class="viewcode-block" id="ImageLibrary.get_imlist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.get_imlist">[docs]</a>
     <span class="k">def</span> <span class="nf">get_imlist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span>
 
     <span class="c1"># Clear the image list</span>
-<div class="viewcode-block" id="ImageLibrary.clear_imlist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.clear_imlist">[docs]</a>
     <span class="k">def</span> <span class="nf">clear_imlist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[:]</span></div>
-
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[:]</span>
 
     <span class="c1"># Add image item to the list as a dictionary</span>
-<div class="viewcode-block" id="ImageLibrary.add_item">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.add_item">[docs]</a>
     <span class="k">def</span> <span class="nf">add_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imageitem</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_imageitem</span><span class="p">(</span><span class="n">imageitem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -186,32 +174,23 @@
                 <span class="n">fitsfile</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">aa</span><span class="p">,</span> <span class="s1">&#39;.v&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">imageitem</span><span class="o">.</span><span class="n">version</span><span class="p">),</span> <span class="n">bb</span><span class="p">))</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> would be exported as </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">imageitem</span><span class="o">.</span><span class="n">imagename</span><span class="p">,</span> <span class="n">fitsfile</span><span class="p">))</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">imageitem</span><span class="p">))</span></div>
-
+                <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">imageitem</span><span class="p">))</span>
 
     <span class="c1"># Remove image item from the list</span>
-<div class="viewcode-block" id="ImageLibrary.delete_item">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.delete_item">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imageitem</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_imageitem</span><span class="p">(</span><span class="n">imageitem</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
-
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
     <span class="c1"># Return the index of the item in the list or -1.</span>
-<div class="viewcode-block" id="ImageLibrary.find_imageitem">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.find_imageitem">[docs]</a>
     <span class="k">def</span> <span class="nf">find_imageitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imageitem</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">imageitem</span><span class="o">.</span><span class="n">imagename</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;imagename&#39;</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">i</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
-
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="c1"># check for existing entry using fits product name.</span>
     <span class="c1"># this is for the case of adding new products from the same spw. PIPE-345</span>
-<div class="viewcode-block" id="ImageLibrary.product_in_list">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary.product_in_list">[docs]</a>
     <span class="k">def</span> <span class="nf">product_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imageitem</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">fitsname</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">imageitem</span><span class="o">.</span><span class="n">imagename</span><span class="p">)</span> <span class="o">==</span> <span class="n">fn</span><span class="o">.</span><span class="n">fitsname</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;imagename&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="ow">and</span>
@@ -220,13 +199,12 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;version_count&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span></div>
-</div>
 
 
 
 <span class="c1"># This class contains information for image data product</span>
 <div class="viewcode-block" id="ImageItem">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageItem">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.imagelibrary.ImageItem.html#pipeline.infrastructure.imagelibrary.ImageItem">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageItem</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">sourcename</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">sourcetype</span><span class="p">,</span> <span class="n">multiterm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imageplot</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                  <span class="n">metadata</span><span class="o">=</span><span class="p">{},</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{},</span>
@@ -252,7 +230,7 @@
 <span class="c1"># This class defines the image meta data that will be stored for</span>
 <span class="c1"># each final cleaned image.</span>
 <div class="viewcode-block" id="ImageMetadata">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageMetadata">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.imagelibrary.ImageMetadata.html#pipeline.infrastructure.imagelibrary.ImageMetadata">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageMetadata</span> <span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="c1"># This is a test.</span>
     <span class="n">_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IMCENTER&#39;</span><span class="p">,</span> <span class="s1">&#39;IMRES&#39;</span><span class="p">]</span>

@@ -4,9 +4,21 @@ pipeline.hsd.tasks.importdata.qa
 .. automodule:: pipeline.hsd.tasks.importdata.qa
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       MeasurementSet
@@ -15,3 +27,11 @@ pipeline.hsd.tasks.importdata.qa
       SDImportDataListQAHandler
       SDImportDataQAHandler
    
+   
+
+   
+   
+   
+
+
+

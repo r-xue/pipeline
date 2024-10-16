@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -158,7 +154,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorkerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerInputs.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBLFlagWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inputs for imaging worker</span>
@@ -195,13 +191,13 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorkerResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBLFlagWorkerResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDBLFlagWorkerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorkerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
 
@@ -212,7 +208,7 @@
 
 
 <div class="viewcode-block" id="BLFlagTableContainer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.BLFlagTableContainer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.BLFlagTableContainer.html#pipeline.hsd.tasks.baselineflag.worker.BLFlagTableContainer">[docs]</a>
 <span class="k">class</span> <span class="nc">BLFlagTableContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Container class to store table tools of two MSes.</span>
@@ -248,7 +244,7 @@
 
 
 <div class="viewcode-block" id="open_cal_bl_tables">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.open_cal_bl_tables">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.open_cal_bl_tables.html#pipeline.hsd.tasks.baselineflag.worker.open_cal_bl_tables">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">open_cal_bl_tables</span><span class="p">(</span>
         <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span><span class="n">bl_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
@@ -284,7 +280,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBLFlagWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The worker class of single dish flagging task.</span>
@@ -310,7 +306,7 @@
         <span class="k">return</span> <span class="n">col_found</span>
 
 <div class="viewcode-block" id="SDBLFlagWorker.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Invoke single dish flagging based on statistics of spectra.</span>
@@ -481,13 +477,13 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorker.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
 <div class="viewcode-block" id="SDBLFlagWorker.get_row_map">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.get_row_map">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.get_row_map">[docs]</a>
     <span class="k">def</span> <span class="nf">get_row_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return row map between vis and origin_ms&quot;&quot;&quot;</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -496,7 +492,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorker.calcStatistics">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.calcStatistics">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.calcStatistics">[docs]</a>
     <span class="k">def</span> <span class="nf">calcStatistics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">:</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">BLFlagTableContainer</span><span class="p">,</span>
                        <span class="n">NCHAN</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Nmean</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">TimeTable</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
                        <span class="n">polids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">edge</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">is_baselined</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -927,8 +923,6 @@
             <span class="n">DataTable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">pflags</span><span class="p">)</span>
             <span class="n">N</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="SDBLFlagWorker.flagExpectedRMS">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.flagExpectedRMS">[docs]</a>
     <span class="k">def</span> <span class="nf">flagExpectedRMS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">polid</span><span class="p">,</span> <span class="n">FlagRule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawFileIdx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_baselined</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># FLagging based on expected RMS</span>
         <span class="c1"># TODO: Include in normal flags scheme</span>
@@ -1020,11 +1014,8 @@
                     <span class="n">flags</span><span class="p">[</span><span class="n">polid</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">flags</span><span class="p">[</span><span class="n">polid</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="n">DataTable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span></div>
+                <span class="n">DataTable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SDBLFlagWorker.flagSummary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.flagSummary">[docs]</a>
     <span class="k">def</span> <span class="nf">flagSummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">polid</span><span class="p">,</span> <span class="n">FlagRule</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
             <span class="c1"># Check every flags to create summary flag</span>
@@ -1034,11 +1025,10 @@
             <span class="n">pflag</span> <span class="o">=</span> <span class="n">_get_permanent_flag_summary</span><span class="p">(</span><span class="n">tPFLAG</span><span class="p">,</span> <span class="n">FlagRule</span><span class="p">)</span>
             <span class="n">sflag</span> <span class="o">=</span> <span class="n">_get_stat_flag_summary</span><span class="p">(</span><span class="n">tFLAG</span><span class="p">,</span> <span class="n">FlagRule</span><span class="p">)</span>
             <span class="n">tSFLAG</span><span class="p">[</span><span class="n">polid</span><span class="p">]</span> <span class="o">=</span> <span class="n">pflag</span><span class="o">*</span><span class="n">sflag</span>
-            <span class="n">DataTable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG_SUMMARY&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">tSFLAG</span><span class="p">)</span></div>
-
+            <span class="n">DataTable</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="s1">&#39;FLAG_SUMMARY&#39;</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">tSFLAG</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDBLFlagWorker.ResetDataTableMaskList">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.ResetDataTableMaskList">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.ResetDataTableMaskList">[docs]</a>
     <span class="k">def</span> <span class="nf">ResetDataTableMaskList</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">,</span> <span class="n">TimeTable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset MASKLIST column of DataTable for row indices in TimeTable&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">chunks</span> <span class="ow">in</span> <span class="n">TimeTable</span><span class="p">:</span>
@@ -1048,7 +1038,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagWorker.generateFlagCommandFile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baselineflag.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.generateFlagCommandFile">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.html#pipeline.hsd.tasks.baselineflag.worker.SDBLFlagWorker.generateFlagCommandFile">[docs]</a>
     <span class="k">def</span> <span class="nf">generateFlagCommandFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">,</span> <span class="n">msobj</span><span class="p">,</span> <span class="n">antid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">pollist</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Summarize FLAG status in DataTable and generate flag command file</span>

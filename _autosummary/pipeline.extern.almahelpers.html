@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.extern.almahelpers.areIdentical" href="pipeline.extern.almahelpers.areIdentical.html" />
+    <link rel="prev" title="pipeline.extern.adopted.readwvr" href="pipeline.extern.adopted.readwvr.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.html">pipeline.extern</a></li>
       <li class="breadcrumb-item active">pipeline.extern.almahelpers</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.extern.almahelpers.rst.txt" rel="nofollow"> View page source</a>
@@ -137,31 +138,31 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.areIdentical" title="pipeline.extern.almahelpers.areIdentical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">areIdentical</span></code></a>(spwInfo1, spwInfo2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.areIdentical.html#pipeline.extern.almahelpers.areIdentical" title="pipeline.extern.almahelpers.areIdentical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">areIdentical</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.calantsub" title="pipeline.extern.almahelpers.calantsub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calantsub</span></code></a>(incaltable[, outcaltable, spw, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.calantsub.html#pipeline.extern.almahelpers.calantsub" title="pipeline.extern.almahelpers.calantsub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calantsub</span></code></a></p></td>
 <td><p>Substitute cal solutions by antenna Input:  incaltable  Input caltable  outcaltable Output caltable (if '', overwrite result on incaltable)  spw         Spectral Window selection (no channel selection permitted)  scan        Scan selection  ant         Antenna (indices) which need replaced solutions  subant      Antenna (indices) with which to replace those in ant</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.editIntents" title="pipeline.extern.almahelpers.editIntents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">editIntents</span></code></a>([msName, field, scan, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.editIntents.html#pipeline.extern.almahelpers.editIntents" title="pipeline.extern.almahelpers.editIntents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">editIntents</span></code></a></p></td>
 <td><p>Change the observation intents for a specified field. Inputs: * field: required argument (integer or string ID, or name) * scan: optional, can be a single integer, integer list, or comma-delimited string list * append: set to True to add the specified intent to the existing intents * newintents: enter as a python list, or as single comma-delimited string * valid intents: the first 12 are simply a shorthand way to specify the latter 12    'AMPLITUDE', 'ATMOSPHERE', 'BANDPASS', 'CHECK_SOURCE', 'WVR',    'DELAY', 'FLUX', 'FOCUS', 'PHASE', 'POINTING', 'SIDEBAND_RATIO', 'TARGET',    'CALIBRATE_AMPLI', 'CALIBRATE_ATMOSPHERE', 'CALIBRATE_BANDPASS',    'CALIBRATE_DELAY', 'CALIBRATE_FLUX', 'CALIBRATE_FOCUS',    'CALIBRATE_PHASE', 'CALIBRATE_POINTING', 'CALIBRATE_SIDEBAND_RATIO',    'OBSERVE_TARGET', 'CALIBRATE_WVR', 'OBSERVE_CHECK_SOURCE'   The modifier #ON_SOURCE will be added to all specified intents. - T. Hunter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.editIntentscsv" title="pipeline.extern.almahelpers.editIntentscsv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">editIntentscsv</span></code></a>(intentcsv[, dryrun, verbose])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.editIntentscsv.html#pipeline.extern.almahelpers.editIntentscsv" title="pipeline.extern.almahelpers.editIntentscsv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">editIntentscsv</span></code></a></p></td>
 <td><p>Reads a list of parameters from a csv text file and runs editIntents on them.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.fixsyscaltimes" title="pipeline.extern.almahelpers.fixsyscaltimes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fixsyscaltimes</span></code></a>(vis[, newinterval])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.fixsyscaltimes.html#pipeline.extern.almahelpers.fixsyscaltimes" title="pipeline.extern.almahelpers.fixsyscaltimes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fixsyscaltimes</span></code></a></p></td>
 <td><p>Fix TIME,INTERVAL columns in MS SYSCAL subtable Input:  vis          the MS containing the offending SYSCAL subtable  newinterval  the interval to use in revised entries</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.genImageName" title="pipeline.extern.almahelpers.genImageName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">genImageName</span></code></a>([vis, spw, field, imtype, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.genImageName.html#pipeline.extern.almahelpers.genImageName" title="pipeline.extern.almahelpers.genImageName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">genImageName</span></code></a></p></td>
 <td><p>Generate image name to be used in clean command following the ALMA archive conventions (see SCIREQ-110, draft recommendations v4.8). vis         = MS to be imaged (to extract object name, SPW frequencies   spw         = ID of SPW to be imaged                 If several SPWs are imaged at once, enter list of SPWs. field       = ID of field to be imaged (to extract object name). in case of mosaic, give any ID of field belonging to the mosaic   imtype      = image type, 'mfs' (default) - aggregate bandwidth                 'cont' - mfs with lines excluded                 'cube' - spectrally resolved cube   targettype  = 'sci' (default) for science target                 'bp' for bandpass calibrator                 'ph' for phase calibrator                 'chk' for checksource                 'amp' for flux calibrator   stokes      = 'I' (default) for Stokes I image                 any combination of 'I', 'Q', 'U', 'V', 'P', 'A'   mous        = '' (default) normally this is filled by the archive. But if you know the MOUS UID, enter it in the format with &quot;_&quot;                 e.g. uid___A001_X888_X66   modtext     = 'manual' (default) - this string can be used to add text,                 i.e. a modification, to the standard file name. It is appended at the end of the name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code>(function, iterable[, initial])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.reduce.html#pipeline.extern.almahelpers.reduce" title="pipeline.extern.almahelpers.reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a></p></td>
 <td><p>Apply a function of two arguments cumulatively to the items of a sequence or iterable, from left to right, so as to reduce the iterable to a single value.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.trimSpwmap" title="pipeline.extern.almahelpers.trimSpwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trimSpwmap</span></code></a>(spwMap)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.trimSpwmap.html#pipeline.extern.almahelpers.trimSpwmap" title="pipeline.extern.almahelpers.trimSpwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trimSpwmap</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.tsysspwmap" title="pipeline.extern.almahelpers.tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysspwmap</span></code></a>(vis, tsystable[, trim, relax, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.tsysspwmap.html#pipeline.extern.almahelpers.tsysspwmap" title="pipeline.extern.almahelpers.tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysspwmap</span></code></a></p></td>
 <td><p>Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations Input:  vis        the target MeasurementSet  tsystable  the input Tsys caltable (w/ TDM Tsys measurements)  trim       if True (the default), return minimum-length spwmap;                 otherwise the spwmap will be exhaustive and include                 the high-numbered (and usually irrelevant) wvr                 spws  relax      (not yet implemented) Output:  spw list to use in applycal spwmap parameter for the Tsys caltable</p></td>
 </tr>
 </tbody>
@@ -169,19 +170,19 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwInfo" title="pipeline.extern.almahelpers.SpwInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwInfo</span></code></a>(msfile, spwId)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.SpwInfo.html#pipeline.extern.almahelpers.SpwInfo" title="pipeline.extern.almahelpers.SpwInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwInfo</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.extern.html#pipeline.extern.almahelpers.SpwMap" title="pipeline.extern.almahelpers.SpwMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwMap</span></code></a>(calSpwId)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.SpwMap.html#pipeline.extern.almahelpers.SpwMap" title="pipeline.extern.almahelpers.SpwMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwMap</span></code></a></p></td>
 <td><p>This object is basically set up to hold the information needed</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">msmdtool</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.msmdtool.html#pipeline.extern.almahelpers.msmdtool" title="pipeline.extern.almahelpers.msmdtool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">msmdtool</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">msmetadata</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qatool</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.qatool.html#pipeline.extern.almahelpers.qatool" title="pipeline.extern.almahelpers.qatool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qatool</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">quanta</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tbtool</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.extern.almahelpers.tbtool.html#pipeline.extern.almahelpers.tbtool" title="pipeline.extern.almahelpers.tbtool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tbtool</span></code></a></p></td>
 <td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">table</span></code></p></td>
 </tr>
 </tbody>
@@ -191,7 +192,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.extern.adopted.readwvr.html" class="btn btn-neutral float-left" title="pipeline.extern.adopted.readwvr" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.extern.almahelpers.areIdentical.html" class="btn btn-neutral float-right" title="pipeline.extern.almahelpers.areIdentical" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,7 +141,7 @@
 
 
 <div class="viewcode-block" id="BasebandComposite">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.setmodel.html#pipeline.hif.tasks.setmodel.display.BasebandComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.setmodel.display.BasebandComposite.html#pipeline.hif.tasks.setmodel.display.BasebandComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">BasebandComposite</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">BasebandComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each baseband in the applied calibration.</span>
@@ -157,23 +153,20 @@
 
 
 <div class="viewcode-block" id="PlotmsBasebandComposite">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.setmodel.html#pipeline.hif.tasks.setmodel.display.PlotmsBasebandComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.setmodel.display.PlotmsBasebandComposite.html#pipeline.hif.tasks.setmodel.display.PlotmsBasebandComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsBasebandComposite</span><span class="p">(</span><span class="n">BasebandComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">PlotmsLeaf</span>
 
-<div class="viewcode-block" id="PlotmsBasebandComposite.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.setmodel.html#pipeline.hif.tasks.setmodel.display.PlotmsBasebandComposite.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># merge separate spw jobs into one job using plotms iterator</span>
         <span class="n">jobs_and_wrappers</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PlotmsBasebandComposite</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
         <span class="n">successful_wrappers</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">plotms_iterate</span><span class="p">(</span><span class="n">jobs_and_wrappers</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">successful_wrappers</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="BasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.setmodel.html#pipeline.hif.tasks.setmodel.display.BasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.setmodel.display.BasebandSummaryChart.html#pipeline.hif.tasks.setmodel.display.BasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BasebandSummaryChart</span><span class="p">(</span><span class="n">PlotmsBasebandComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per baseband</span>
@@ -187,7 +180,7 @@
 
 
 <div class="viewcode-block" id="AmpVsUVSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.setmodel.html#pipeline.hif.tasks.setmodel.display.AmpVsUVSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.setmodel.display.AmpVsUVSummaryChart.html#pipeline.hif.tasks.setmodel.display.AmpVsUVSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsUVSummaryChart</span><span class="p">(</span><span class="n">BasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each baseband.</span>

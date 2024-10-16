@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -140,7 +136,7 @@
 
 
 <div class="viewcode-block" id="TsysSpwMapHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysSpwMapHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Heuristics for Tsys spw mapping</span>
@@ -155,7 +151,7 @@
 <span class="sd">    spw).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="TsysSpwMapHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">spwmap_pairs</span><span class="p">):</span>
         <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span>
@@ -178,7 +174,7 @@
 
 
 <div class="viewcode-block" id="best_spwmap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.tsysspwmap.best_spwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.best_spwmap.html#pipeline.hsd.heuristics.tsysspwmap.best_spwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">best_spwmap</span><span class="p">(</span><span class="n">scores</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">score_list</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">best_score</span> <span class="o">=</span> <span class="mf">0.0</span>

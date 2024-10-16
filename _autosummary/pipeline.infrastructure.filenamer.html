@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.filenamer.fitsname" href="pipeline.infrastructure.filenamer.fitsname.html" />
+    <link rel="prev" title="pipeline.infrastructure.executevlappr.save_existing_context" href="pipeline.infrastructure.executevlappr.save_existing_context.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.filenamer</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.filenamer.rst.txt" rel="nofollow"> View page source</a>
@@ -137,16 +138,16 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.fitsname" title="pipeline.infrastructure.filenamer.fitsname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitsname</span></code></a>(products_dir, imagename[, version])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.fitsname.html#pipeline.infrastructure.filenamer.fitsname" title="pipeline.infrastructure.filenamer.fitsname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitsname</span></code></a></p></td>
 <td><p>Strip off stage and iter information to generate FITS file name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.sanitize" title="pipeline.infrastructure.filenamer.sanitize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitize</span></code></a>(text[, valid_chars])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.sanitize.html#pipeline.infrastructure.filenamer.sanitize" title="pipeline.infrastructure.filenamer.sanitize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitize</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.sanitize_for_ms" title="pipeline.infrastructure.filenamer.sanitize_for_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitize_for_ms</span></code></a>(vis_name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.sanitize_for_ms.html#pipeline.infrastructure.filenamer.sanitize_for_ms" title="pipeline.infrastructure.filenamer.sanitize_for_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitize_for_ms</span></code></a></p></td>
 <td><p>Remove suffix from MS name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.sort_spws" title="pipeline.infrastructure.filenamer.sort_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_spws</span></code></a>(unsorted)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.sort_spws.html#pipeline.infrastructure.filenamer.sort_spws" title="pipeline.infrastructure.filenamer.sort_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_spws</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -154,88 +155,88 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.ASDM" title="pipeline.infrastructure.filenamer.ASDM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ASDM</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.ASDM.html#pipeline.infrastructure.filenamer.ASDM" title="pipeline.infrastructure.filenamer.ASDM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ASDM</span></code></a></p></td>
 <td><p>Defines the ASDM naming scheme.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.AmplitudeCalibrationTable" title="pipeline.infrastructure.filenamer.AmplitudeCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmplitudeCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.AmplitudeCalibrationTable.html#pipeline.infrastructure.filenamer.AmplitudeCalibrationTable" title="pipeline.infrastructure.filenamer.AmplitudeCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmplitudeCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.AntposCalibrationTable" title="pipeline.infrastructure.filenamer.AntposCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntposCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.AntposCalibrationTable.html#pipeline.infrastructure.filenamer.AntposCalibrationTable" title="pipeline.infrastructure.filenamer.AntposCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntposCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.BandpassCalibrationTable" title="pipeline.infrastructure.filenamer.BandpassCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.BandpassCalibrationTable.html#pipeline.infrastructure.filenamer.BandpassCalibrationTable" title="pipeline.infrastructure.filenamer.BandpassCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.CASALog" title="pipeline.infrastructure.filenamer.CASALog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CASALog</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.CASALog.html#pipeline.infrastructure.filenamer.CASALog" title="pipeline.infrastructure.filenamer.CASALog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CASALog</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.CalibrationTable" title="pipeline.infrastructure.filenamer.CalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.CalibrationTable.html#pipeline.infrastructure.filenamer.CalibrationTable" title="pipeline.infrastructure.filenamer.CalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalibrationTable</span></code></a></p></td>
 <td><p>Defines the calibration table naming scheme.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.DelayCalibrationTable" title="pipeline.infrastructure.filenamer.DelayCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DelayCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.DelayCalibrationTable.html#pipeline.infrastructure.filenamer.DelayCalibrationTable" title="pipeline.infrastructure.filenamer.DelayCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DelayCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.FileNameComponentBuilder" title="pipeline.infrastructure.filenamer.FileNameComponentBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileNameComponentBuilder</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.FileNameComponentBuilder.html#pipeline.infrastructure.filenamer.FileNameComponentBuilder" title="pipeline.infrastructure.filenamer.FileNameComponentBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileNameComponentBuilder</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.FlaggingTable" title="pipeline.infrastructure.filenamer.FlaggingTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlaggingTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.FlaggingTable.html#pipeline.infrastructure.filenamer.FlaggingTable" title="pipeline.infrastructure.filenamer.FlaggingTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlaggingTable</span></code></a></p></td>
 <td><p>Defines the flagging table naming scheme.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.FluxCalibrationTable" title="pipeline.infrastructure.filenamer.FluxCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.FluxCalibrationTable.html#pipeline.infrastructure.filenamer.FluxCalibrationTable" title="pipeline.infrastructure.filenamer.FluxCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.GainCalibrationTable" title="pipeline.infrastructure.filenamer.GainCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.GainCalibrationTable.html#pipeline.infrastructure.filenamer.GainCalibrationTable" title="pipeline.infrastructure.filenamer.GainCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.GainCurvesCalibrationTable" title="pipeline.infrastructure.filenamer.GainCurvesCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCurvesCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.GainCurvesCalibrationTable.html#pipeline.infrastructure.filenamer.GainCurvesCalibrationTable" title="pipeline.infrastructure.filenamer.GainCurvesCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCurvesCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.Image" title="pipeline.infrastructure.filenamer.Image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Image</span></code></a>([virtspw])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.Image.html#pipeline.infrastructure.filenamer.Image" title="pipeline.infrastructure.filenamer.Image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Image</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.MeasurementSet" title="pipeline.infrastructure.filenamer.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.MeasurementSet.html#pipeline.infrastructure.filenamer.MeasurementSet" title="pipeline.infrastructure.filenamer.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
 <td><p>Defines the measurement set naming scheme.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.MosaicImage" title="pipeline.infrastructure.filenamer.MosaicImage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MosaicImage</span></code></a>([virtspw])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.MosaicImage.html#pipeline.infrastructure.filenamer.MosaicImage" title="pipeline.infrastructure.filenamer.MosaicImage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MosaicImage</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.NamingTemplate" title="pipeline.infrastructure.filenamer.NamingTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamingTemplate</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.NamingTemplate.html#pipeline.infrastructure.filenamer.NamingTemplate" title="pipeline.infrastructure.filenamer.NamingTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamingTemplate</span></code></a></p></td>
 <td><p>Base class used for all naming templates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.OpCalibrationTable" title="pipeline.infrastructure.filenamer.OpCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OpCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.OpCalibrationTable.html#pipeline.infrastructure.filenamer.OpCalibrationTable" title="pipeline.infrastructure.filenamer.OpCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OpCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.PipelineProductNameBuilder" title="pipeline.infrastructure.filenamer.PipelineProductNameBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipelineProductNameBuilder</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.PipelineProductNameBuilder.html#pipeline.infrastructure.filenamer.PipelineProductNameBuilder" title="pipeline.infrastructure.filenamer.PipelineProductNameBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipelineProductNameBuilder</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.PolCalibrationTable" title="pipeline.infrastructure.filenamer.PolCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.PolCalibrationTable.html#pipeline.infrastructure.filenamer.PolCalibrationTable" title="pipeline.infrastructure.filenamer.PolCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.RqCalibrationTable" title="pipeline.infrastructure.filenamer.RqCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RqCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.RqCalibrationTable.html#pipeline.infrastructure.filenamer.RqCalibrationTable" title="pipeline.infrastructure.filenamer.RqCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RqCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.SDBaselineTable" title="pipeline.infrastructure.filenamer.SDBaselineTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.SDBaselineTable.html#pipeline.infrastructure.filenamer.SDBaselineTable" title="pipeline.infrastructure.filenamer.SDBaselineTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.SDSkyCalibrationTable" title="pipeline.infrastructure.filenamer.SDSkyCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSkyCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.SDSkyCalibrationTable.html#pipeline.infrastructure.filenamer.SDSkyCalibrationTable" title="pipeline.infrastructure.filenamer.SDSkyCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSkyCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.SwpowCalibrationTable" title="pipeline.infrastructure.filenamer.SwpowCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SwpowCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.SwpowCalibrationTable.html#pipeline.infrastructure.filenamer.SwpowCalibrationTable" title="pipeline.infrastructure.filenamer.SwpowCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SwpowCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.TecMapsCalibrationTable" title="pipeline.infrastructure.filenamer.TecMapsCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TecMapsCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.TecMapsCalibrationTable.html#pipeline.infrastructure.filenamer.TecMapsCalibrationTable" title="pipeline.infrastructure.filenamer.TecMapsCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TecMapsCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.TsysCalibrationTable" title="pipeline.infrastructure.filenamer.TsysCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsysCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.TsysCalibrationTable.html#pipeline.infrastructure.filenamer.TsysCalibrationTable" title="pipeline.infrastructure.filenamer.TsysCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsysCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.UVcontCalibrationTable" title="pipeline.infrastructure.filenamer.UVcontCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UVcontCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.UVcontCalibrationTable.html#pipeline.infrastructure.filenamer.UVcontCalibrationTable" title="pipeline.infrastructure.filenamer.UVcontCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UVcontCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.WvrgCalibrationTable" title="pipeline.infrastructure.filenamer.WvrgCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WvrgCalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.WvrgCalibrationTable.html#pipeline.infrastructure.filenamer.WvrgCalibrationTable" title="pipeline.infrastructure.filenamer.WvrgCalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WvrgCalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.filenamer.XYf0CalibrationTable" title="pipeline.infrastructure.filenamer.XYf0CalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XYf0CalibrationTable</span></code></a>([other])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.filenamer.XYf0CalibrationTable.html#pipeline.infrastructure.filenamer.XYf0CalibrationTable" title="pipeline.infrastructure.filenamer.XYf0CalibrationTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XYf0CalibrationTable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -245,7 +246,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.executevlappr.save_existing_context.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.executevlappr.save_existing_context" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.filenamer.fitsname.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.filenamer.fitsname" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

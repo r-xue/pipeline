@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,7 +141,7 @@
 
 
 <div class="viewcode-block" id="PlotSummaryInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryInputs.html#pipeline.hifv.tasks.PlotSummaryInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotSummaryInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -157,10 +153,10 @@
 
 
 <div class="viewcode-block" id="PlotSummaryResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryResults.html#pipeline.hifv.tasks.PlotSummaryResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotSummaryResults</span><span class="p">(</span><span class="n">h_applycal</span><span class="o">.</span><span class="n">ApplycalResults</span><span class="p">):</span>
 <div class="viewcode-block" id="PlotSummaryResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummaryResults.html#pipeline.hifv.tasks.PlotSummaryResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Merges these results with the given context by examining the context</span>
@@ -180,13 +176,13 @@
 
 
 <div class="viewcode-block" id="PlotSummary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.PlotSummary.html#pipeline.hifv.tasks.PlotSummary">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_plotsummary&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PlotSummary</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PlotSummaryInputs</span>
 
 <div class="viewcode-block" id="PlotSummary.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummary.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.PlotSummary.html#pipeline.hifv.tasks.PlotSummary.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># get the applied calibration state from callibrary.active. This holds</span>
         <span class="c1"># the CalApplications for everything applied by the pipeline in this run.</span>
@@ -200,7 +196,7 @@
 
 
 <div class="viewcode-block" id="PlotSummary.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.plotsummary.html#pipeline.hifv.tasks.plotsummary.plotsummary.PlotSummary.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.PlotSummary.html#pipeline.hifv.tasks.PlotSummary.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 </div>

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="buildscans">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.buildscans">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vlascanheuristics.buildscans.html#pipeline.hifv.tasks.importdata.importdata.buildscans">[docs]</a>
 <span class="k">def</span> <span class="nf">buildscans</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">scd</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    buildscans:  compile scan information for msfile</span>
@@ -549,13 +545,13 @@
 
 
 <div class="viewcode-block" id="VLAScanHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.html#pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAScanHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
 
 <div class="viewcode-block" id="VLAScanHeuristics.makescandict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.makescandict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.html#pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.makescandict">[docs]</a>
     <span class="k">def</span> <span class="nf">makescandict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run Steve&#39;s buildscans&quot;&quot;&quot;</span>
 
@@ -603,7 +599,7 @@
 
 
 <div class="viewcode-block" id="VLAScanHeuristics.calibratorIntentsOld">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.calibratorIntentsOld">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.html#pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.calibratorIntentsOld">[docs]</a>
     <span class="k">def</span> <span class="nf">calibratorIntentsOld</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            # Identify scans and fields associated with different calibrator intents</span>
@@ -1089,7 +1085,7 @@
 
 
 <div class="viewcode-block" id="VLAScanHeuristics.calibratorIntents">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.calibratorIntents">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.html#pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.calibratorIntents">[docs]</a>
     <span class="k">def</span> <span class="nf">calibratorIntents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            # Identify scans and fields associated with different calibrator intents</span>
@@ -1214,8 +1210,6 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="VLAScanHeuristics.find_3C84">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.find_3C84">[docs]</a>
     <span class="k">def</span> <span class="nf">find_3C84</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
         <span class="n">MAX_SEPARATION</span> <span class="o">=</span> <span class="mi">60</span><span class="o">*</span><span class="mf">2.0e-5</span>
         <span class="n">position_3C84</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="s1">&#39;j2000&#39;</span><span class="p">,</span> <span class="s1">&#39;3h19m48.160&#39;</span><span class="p">,</span> <span class="s1">&#39;41d30m42.106&#39;</span><span class="p">)</span>
@@ -1227,11 +1221,10 @@
             <span class="k">if</span> <span class="n">separation</span> <span class="o">&lt;</span> <span class="n">MAX_SEPARATION</span><span class="p">:</span>
                 <span class="n">fields_3C84</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">fields_3C84</span></div>
-
+        <span class="k">return</span> <span class="n">fields_3C84</span>
 
 <div class="viewcode-block" id="VLAScanHeuristics.determine3C84">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.determine3C84">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.html#pipeline.hifv.tasks.importdata.importdata.VLAScanHeuristics.determine3C84">[docs]</a>
     <span class="k">def</span> <span class="nf">determine3C84</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        #Determine if 3C84 was used as a bandpass or delay calibrator</span>
@@ -1274,7 +1267,7 @@
 
 
 <div class="viewcode-block" id="testCalibratorIntents">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifv.heuristics.html#pipeline.hifv.heuristics.vlascanheuristics.testCalibratorIntents">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vlascanheuristics.testCalibratorIntents.html#pipeline.hifv.tasks.importdata.importdata.testCalibratorIntents">[docs]</a>
 <span class="k">def</span> <span class="nf">testCalibratorIntents</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
     <span class="c1"># This is a temporary test program to see if the two methods of generating</span>
     <span class="c1"># intents yield the same answers.</span>

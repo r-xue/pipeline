@@ -4,9 +4,16 @@ pipeline.recipes.recipe\_converter
 .. automodule:: pipeline.recipes.recipe_converter
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       c2p
       export
@@ -27,3 +34,15 @@ pipeline.recipes.recipe\_converter
       parse_parameter
       to_procedure
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

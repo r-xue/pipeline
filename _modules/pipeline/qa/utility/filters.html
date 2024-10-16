@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -140,7 +136,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="getOutlierIndices">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.filters.getOutlierIndices">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.filters.getOutlierIndices.html#pipeline.qa.utility.filters.getOutlierIndices">[docs]</a>
 <span class="k">def</span> <span class="nf">getOutlierIndices</span><span class="p">(</span><span class="n">nData</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="n">nDataMedian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">nData</span><span class="p">)</span>
     <span class="n">nDataMAD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">nData</span><span class="o">-</span><span class="n">nDataMedian</span><span class="p">))</span> <span class="o">/</span> <span class="mf">0.6745</span>
@@ -148,28 +144,28 @@
 
 
 <div class="viewcode-block" id="outlierFilter">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.filters.outlierFilter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.filters.outlierFilter.html#pipeline.qa.utility.filters.outlierFilter">[docs]</a>
 <span class="k">def</span> <span class="nf">outlierFilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">nData</span><span class="p">[</span><span class="n">getOutlierIndices</span><span class="p">(</span><span class="n">nData</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="outlierDictFilter">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.filters.outlierDictFilter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.filters.outlierDictFilter.html#pipeline.qa.utility.filters.outlierDictFilter">[docs]</a>
 <span class="k">def</span> <span class="nf">outlierDictFilter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">getOutlierIndices</span><span class="p">(</span><span class="n">nData</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="minDict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.filters.minDict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.filters.minDict.html#pipeline.qa.utility.filters.minDict">[docs]</a>
 <span class="k">def</span> <span class="nf">minDict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
     <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">nData</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="maxDict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.qa.utility.html#pipeline.qa.utility.filters.maxDict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.qa.utility.filters.maxDict.html#pipeline.qa.utility.filters.maxDict">[docs]</a>
 <span class="k">def</span> <span class="nf">maxDict</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
     <span class="n">nData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">nData</span><span class="p">)]</span></div>

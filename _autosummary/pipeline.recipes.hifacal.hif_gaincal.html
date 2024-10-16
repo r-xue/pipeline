@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.hifacal.hif_gaincal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.hifacal.hif_lowgainflag" href="pipeline.recipes.hifacal.hif_lowgainflag.html" />
+    <link rel="prev" title="pipeline.recipes.hifacal.hif_findcont" href="pipeline.recipes.hifacal.hif_findcont.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.hifacal.html">pipeline.recipes.hifacal</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.hifacal.hif_gaincal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.hifacal.hif_gaincal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-hifacal-hif-gaincal">
+<h1>pipeline.recipes.hifacal.hif_gaincal<a class="headerlink" href="#pipeline-recipes-hifacal-hif-gaincal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.hifacal.hif_gaincal">
+<span class="sig-name descname"><span class="pre">hif_gaincal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_gaintype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splinetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npointaver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasewrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_gaincal.html#hif_gaincal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hif_gaincal" title="Link to this definition"></a></dt>
+<dd><p>hif_gaincal —- Determine temporal gains from calibrator observations</p>
+<p>The complex gains are derived from the data column (raw data) divided by the
+model column (usually set with hif_setjy). The gains are obtained for a
+specified solution interval, spw combination and field combination.</p>
+<p>Good candidate reference antennas can be determined using the hif_refant
+task.</p>
+<p>Previous calibrations that have been stored in the pipeline context are
+applied on the fly. Users can interact with these calibrations via the
+h_export_calstate and h_import_calstate tasks.</p>
+<p>Output</p>
+<p>results – The results object for the pipeline task is returned.</p>
+<p>——— parameter descriptions ———————————————</p>
+<dl>
+<dt>vis           The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context</p>
+<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+</dd>
+<dt>caltable      The list of output calibration tables. Defaults to the</dt><dd><p>standard pipeline naming convention.</p>
+<p>Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p>
+</dd>
+<dt>field         The list of field names or field ids for which gain solutions</dt><dd><p>are to be computed. Defaults to all fields with the standard
+intent.</p>
+<p>Example: field=’3C279’, field=’3C279, M82’</p>
+</dd>
+<dt>intent        A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched. Defaults to <cite>*PHASE*</cite>.</p>
+<p>Examples: intent=’’, intent=’<cite>*AMP*,*PHASE*</cite>’</p>
+</dd>
+<dt>spw           The list of spectral windows and channels for which gain</dt><dd><p>solutions are computed. Defaults to all science spectral
+windows.</p>
+<p>Examples: spw=’21’, spw=’21, 23’</p>
+</dd>
+</dl>
+<p>antenna       Set of data selection antenna ids
+hm_gaintype   The type of gain calibration. The options are ‘gtype’ and</p>
+<blockquote>
+<div><p>‘gspline’ for CASA gain types = ‘G’ and ‘GSPLINE’ respectively.</p>
+</div></blockquote>
+<dl>
+<dt>calmode       Type of solution. The options are ‘ap’ (amp and phase), ‘p’</dt><dd><p>(phase only) and ‘a’ (amp only).</p>
+<p>Examples: calmode=’p’, calmode=’a’, calmode=’ap’</p>
+</dd>
+<dt>solint        Time solution intervals in CASA syntax. Works for</dt><dd><p>hm_gaintype=’gtype’ only.</p>
+<p>Examples: solint=’inf’, solint=’int’, solint=’100sec’</p>
+</dd>
+<dt>combine       Data axes to combine for solving. Options are  ‘’, ‘scan’,</dt><dd><p>‘spw’, ‘field’ or any comma-separated combination. Works for
+hm_gaintype=’gtype’ only.</p>
+</dd>
+<dt>refant        Reference antenna name(s) in priority order. Defaults to most</dt><dd><p>recent values set in the pipeline context. If no reference
+antenna is defined in the pipeline context use the CASA
+defaults.</p>
+<p>Examples: refant=’DV01’, refant=’DV05,DV07’</p>
+</dd>
+<dt>refantmode    Controls how the refant is applied. Currently available</dt><dd><p>choices are ‘flex’, ‘strict’, and the default value of ‘’.
+Setting to ‘’ allows the pipeline to select the appropriate
+mode based on the state of the reference antenna list.</p>
+<p>Examples: refantmode=’strict’, refantmode=’’</p>
+</dd>
+</dl>
+<p>solnorm       Normalize average solution amplitudes to 1.0
+minblperant   Minimum number of baselines required per antenna for each</p>
+<blockquote>
+<div><p>solve. Antennas with fewer baselines are excluded from
+solutions. Works for hm_gaintype=’gtype’ only.</p>
+</div></blockquote>
+<dl>
+<dt>minsnr        Solutions below this SNR are rejected. Works for</dt><dd><p>hm_gaintype=’channel’ only.</p>
+</dd>
+<dt>smodel        Point source Stokes parameters for source model (experimental).</dt><dd><p>Defaults to using standard MODEL_DATA column data.</p>
+<p>Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</p>
+</dd>
+<dt>splinetime    Spline timescale (sec). Used for hm_gaintype=’gspline’.</dt><dd><p>Typical splinetime should cover about 3 to 5 calibrator scans.</p>
+</dd>
+<dt>npointaver    Tune phase-unwrapping algorithm. Used for</dt><dd><p>hm_gaintype=’gspline’. Keep at default value.</p>
+</dd>
+<dt>phasewrap     Wrap the phase for changes larger than this amount (degrees).</dt><dd><p>Used for hm_gaintype=’gspline’. Keep at default value.</p>
+</dd>
+</dl>
+<p>——— examples ———————————————————–</p>
+<p>Compute standard per scan gain solutions that will be used to calibrate
+the target:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_gaincal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.hifacal.hif_findcont.html" class="btn btn-neutral float-left" title="pipeline.recipes.hifacal.hif_findcont" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.hifacal.hif_lowgainflag.html" class="btn btn-neutral float-right" title="pipeline.recipes.hifacal.hif_lowgainflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

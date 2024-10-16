@@ -4,9 +4,16 @@ pipeline.qa.scorecalculator
 .. automodule:: pipeline.qa.scorecalculator
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       calc_flags_per_agent
       calc_frac_newly_flagged
@@ -103,9 +110,16 @@ pipeline.qa.scorecalculator
       score_wvrgcal
       select_deviation_masks
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AgentStats
       MeasurementSet
@@ -113,3 +127,11 @@ pipeline.qa.scorecalculator
       SDImagingResultItem
       SDImportDataResults
    
+   
+
+   
+   
+   
+
+
+

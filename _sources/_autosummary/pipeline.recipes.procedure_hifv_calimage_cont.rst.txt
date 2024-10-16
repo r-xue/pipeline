@@ -4,9 +4,16 @@ pipeline.recipes.procedure\_hifv\_calimage\_cont
 .. automodule:: pipeline.recipes.procedure_hifv_calimage_cont
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       h_applycal
       h_export_calstate
@@ -122,3 +129,15 @@ pipeline.recipes.procedure\_hifv\_calimage\_cont
       hsdn_importdata
       hsdn_restoredata
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

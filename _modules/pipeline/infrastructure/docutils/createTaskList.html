@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -164,7 +160,7 @@
 
 
 <div class="viewcode-block" id="get_task_description">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.get_task_description">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.get_task_description.html#pipeline.infrastructure.docutils.createTaskList.get_task_description">[docs]</a>
 <span class="k">def</span> <span class="nf">get_task_description</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
     <span class="n">modifier</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">modifier</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -175,7 +171,7 @@
 
 
 <div class="viewcode-block" id="taskutil">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.taskutil.html#pipeline.infrastructure.docutils.createTaskList.taskutil">[docs]</a>
 <span class="k">class</span> <span class="nc">taskutil</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">taskdir</span> <span class="o">=</span> <span class="n">dirname</span>
@@ -183,21 +179,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="taskutil.createtasklist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.createtasklist">[docs]</a>
     <span class="k">def</span> <span class="nf">createtasklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">getoutput</span><span class="p">(</span><span class="s1">&#39;ls &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">taskdir</span><span class="o">+</span><span class="s1">&#39;/*.xml&#39;</span><span class="p">)</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)):</span>
             <span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span>
 
-
-<div class="viewcode-block" id="taskutil.gettasklist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.gettasklist">[docs]</a>
     <span class="k">def</span> <span class="nf">gettasklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span>
 
     <span class="k">def</span> <span class="nf">_replacelfcode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desc</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">desc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;BR&gt;&#39;</span><span class="p">)</span>
@@ -236,8 +226,6 @@
                 <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">lastChild</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">),</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span>
 
-<div class="viewcode-block" id="taskutil.getshortdescription">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.getshortdescription">[docs]</a>
     <span class="k">def</span> <span class="nf">getshortdescription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="n">shortdesc</span> <span class="o">=</span> <span class="s1">&#39;No description&#39;</span>
         <span class="k">if</span> <span class="n">task</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
@@ -251,11 +239,8 @@
         <span class="n">dom3</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shortdesc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">shortdesc</span> <span class="o">=</span> <span class="s1">&#39;No description&#39;</span>
-        <span class="k">return</span> <span class="n">shortdesc</span></div>
+        <span class="k">return</span> <span class="n">shortdesc</span>
 
-
-<div class="viewcode-block" id="taskutil.gettaskdescription">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.gettaskdescription">[docs]</a>
     <span class="k">def</span> <span class="nf">gettaskdescription</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="n">docstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">task</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
@@ -272,11 +257,8 @@
             <span class="n">docstr</span> <span class="o">+=</span> <span class="n">shortdesc</span> <span class="o">+</span> <span class="s1">&#39;&lt;BR&gt;&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">example</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">docstr</span> <span class="o">+=</span> <span class="n">example</span> <span class="o">+</span> <span class="s1">&#39;&lt;BR&gt;&#39;</span>
-        <span class="k">return</span> <span class="n">docstr</span></div>
+        <span class="k">return</span> <span class="n">docstr</span>
 
-
-<div class="viewcode-block" id="taskutil.getparamlist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.getparamlist">[docs]</a>
     <span class="k">def</span> <span class="nf">getparamlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="n">paramlist</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">task</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
@@ -323,11 +305,8 @@
             <span class="n">myproperty</span><span class="p">[</span><span class="s1">&#39;3_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
             <span class="n">paramlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">myproperty</span><span class="p">)</span>
         <span class="n">dom3</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">paramlist</span></div>
+        <span class="k">return</span> <span class="n">paramlist</span>
 
-
-<div class="viewcode-block" id="taskutil.createHTML">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil.createHTML">[docs]</a>
     <span class="k">def</span> <span class="nf">createHTML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s1">&#39;./tasklist&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
@@ -383,18 +362,15 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;/SMALL&gt;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;/BODY&gt;&lt;/HTML&gt;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="taskutil2">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.taskutil2.html#pipeline.infrastructure.docutils.createTaskList.taskutil2">[docs]</a>
 <span class="k">class</span> <span class="nc">taskutil2</span><span class="p">(</span><span class="n">taskutil</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">taskutil2</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">dirname</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
 
-<div class="viewcode-block" id="taskutil2.createtasklist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.taskutil2.createtasklist">[docs]</a>
     <span class="k">def</span> <span class="nf">createtasklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">getoutput</span><span class="p">(</span><span class="s1">&#39;ls &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">taskdir</span><span class="o">+</span><span class="s1">&#39;/*.xml&#39;</span><span class="p">)</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -404,12 +380,11 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_.*&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1">#task[:len(self.prefix)] == self.prefix:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="hetaskutil">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.hetaskutil.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil">[docs]</a>
 <span class="k">class</span> <span class="nc">hetaskutil</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1">#def __init__( self, dir=&#39;/home/nakazato/ALMA/PIPELINE/Heuristics/src/heuristics&#39;, sddir=&#39;SDPipelineTaskInterface&#39;, ifdir=&#39;SFIPipelineTaskInterface&#39; ):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirname</span><span class="p">):</span>
@@ -422,33 +397,22 @@
     <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hetaskutil.addmodule">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil.addmodule">[docs]</a>
     <span class="k">def</span> <span class="nf">addmodule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskutil2</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phdir</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;cli&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskutil</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phdir</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;cli&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">taskutil</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phdir</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;cli&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="hetaskutil.createtasklist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil.createtasklist">[docs]</a>
     <span class="k">def</span> <span class="nf">createtasklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">createtasklist</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">createtasklist</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="hetaskutil.gettasklist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil.gettasklist">[docs]</a>
     <span class="k">def</span> <span class="nf">gettasklist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">tasklist</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
             <span class="n">tasklist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">gettasklist</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">tasklist</span></div>
+        <span class="k">return</span> <span class="n">tasklist</span>
 
-
-<div class="viewcode-block" id="hetaskutil.getparamlist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil.getparamlist">[docs]</a>
     <span class="k">def</span> <span class="nf">getparamlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
         <span class="n">paramlist</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">tasklist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gettasklist</span><span class="p">()</span>
@@ -460,11 +424,8 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">paramlist</span>
         <span class="n">paramlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">getparamlist</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">paramlist</span></div>
+        <span class="k">return</span> <span class="n">paramlist</span>
 
-
-<div class="viewcode-block" id="hetaskutil.createHTML">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil.createHTML">[docs]</a>
     <span class="k">def</span> <span class="nf">createHTML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s1">&#39;./tasklist&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
@@ -502,12 +463,11 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;/SMALL&gt;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;/BODY&gt;&lt;/HTML&gt;&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="hetaskutil2">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.hetaskutil2.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil2">[docs]</a>
 <span class="k">class</span> <span class="nc">hetaskutil2</span><span class="p">(</span><span class="n">hetaskutil</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">hetaskutil2</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">dirname</span><span class="p">)</span>
@@ -516,7 +476,7 @@
 
 
 <div class="viewcode-block" id="hetaskutil3">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil3">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.hetaskutil3.html#pipeline.infrastructure.docutils.createTaskList.hetaskutil3">[docs]</a>
 <span class="k">class</span> <span class="nc">hetaskutil3</span><span class="p">(</span><span class="n">hetaskutil</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">hetaskutil3</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">dirname</span><span class="p">)</span>
@@ -531,7 +491,7 @@
 
 
 <div class="viewcode-block" id="create">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.create">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.create.html#pipeline.infrastructure.docutils.createTaskList.create">[docs]</a>
 <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="s1">&#39;/home/nakazato/ALMA/PIPELINE/Heuristics/src/heuristics&#39;</span><span class="p">):</span>
     <span class="n">het</span> <span class="o">=</span> <span class="n">hetaskutil</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="n">dirname</span><span class="p">)</span>
     <span class="n">het</span><span class="o">.</span><span class="n">createtasklist</span><span class="p">()</span>
@@ -540,7 +500,7 @@
 
 
 <div class="viewcode-block" id="create2">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.create2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.create2.html#pipeline.infrastructure.docutils.createTaskList.create2">[docs]</a>
 <span class="k">def</span> <span class="nf">create2</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">dirname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># assume that this file is located at pipeline/infrastructure/docutils</span>
@@ -553,7 +513,7 @@
 
 
 <div class="viewcode-block" id="create3">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.docutils.html#pipeline.infrastructure.docutils.createTaskList.create3">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.docutils.createTaskList.create3.html#pipeline.infrastructure.docutils.createTaskList.create3">[docs]</a>
 <span class="k">def</span> <span class="nf">create3</span><span class="p">(</span><span class="n">dirname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">dirname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># assume that this file is located at pipeline/infrastructure/docutils</span>

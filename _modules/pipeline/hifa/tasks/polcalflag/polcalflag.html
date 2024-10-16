@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="PolcalflagResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults.html#pipeline.hifa.tasks.PolcalflagResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PolcalflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -177,7 +173,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="PolcalflagResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults.html#pipeline.hifa.tasks.PolcalflagResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -195,7 +191,7 @@
 
 
 <div class="viewcode-block" id="PolcalflagInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagInputs.html#pipeline.hifa.tasks.PolcalflagInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">minsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
@@ -216,14 +212,14 @@
 
 
 <div class="viewcode-block" id="Polcalflag">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.Polcalflag">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_polcalflag&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Flag polarization calibrator outliers.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Polcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalflagInputs</span>
 
 <div class="viewcode-block" id="Polcalflag.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.Polcalflag.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -344,7 +340,7 @@
 
 
 <div class="viewcode-block" id="Polcalflag.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.Polcalflag.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -535,7 +531,7 @@
 
 
 <div class="viewcode-block" id="create_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.create_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.create_plots.html#pipeline.hifa.tasks.create_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return amplitude vs time plots for the given data column.</span>
@@ -568,7 +564,7 @@
 
 
 <div class="viewcode-block" id="AmpVsXChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsXChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsXChart.html#pipeline.hifa.tasks.AmpVsXChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plotting class that creates an amplitude vs X plot for each spw, where X</span>

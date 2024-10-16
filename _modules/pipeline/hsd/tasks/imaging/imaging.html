@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -188,7 +184,7 @@
 
 
 <div class="viewcode-block" id="SDImagingInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImagingInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.SDImagingInputs.html#pipeline.hsd.tasks.SDImagingInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for imaging task class.&quot;&quot;&quot;</span>
 
@@ -294,7 +290,7 @@
 
 
 <div class="viewcode-block" id="SDImaging">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_imaging&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Perform single dish imaging.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SDImaging</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -309,7 +305,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="SDImaging.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">SDImagingResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute imaging process. This is the main method of imaging.</span>
 
@@ -1379,7 +1375,7 @@
         <span class="n">_cp</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rgp</span><span class="o">.</span><span class="n">imager_result</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDImaging.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDImagingResults&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SDImagingResults&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.</span>
 
@@ -1501,7 +1497,7 @@
         <span class="k">return</span> <span class="n">merge_ranges</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">image_rms_freq_range</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image_rms_freq_range</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;C&#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="SDImaging.get_imagename">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging.get_imagename">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.get_imagename">[docs]</a>
     <span class="k">def</span> <span class="nf">get_imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spwids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
                       <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asdm</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;cube&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a filename of the image.</span>
@@ -1654,7 +1650,7 @@
         <span class="k">return</span> <span class="n">region</span>
 
 <div class="viewcode-block" id="SDImaging.get_raster_info_list">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging.get_raster_info_list">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.get_raster_info_list">[docs]</a>
     <span class="k">def</span> <span class="nf">get_raster_info_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cp</span><span class="p">:</span> <span class="n">imaging_params</span><span class="o">.</span><span class="n">CommonParameters</span><span class="p">,</span>
                              <span class="n">_rgp</span><span class="p">:</span> <span class="n">imaging_params</span><span class="o">.</span><span class="n">ReductionGroupParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RasterInfo</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1697,7 +1693,7 @@
 
 
 <div class="viewcode-block" id="SDImaging.calculate_theoretical_image_rms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.SDImaging.calculate_theoretical_image_rms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate_theoretical_image_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_cp</span><span class="p">:</span> <span class="n">imaging_params</span><span class="o">.</span><span class="n">CommonParameters</span><span class="p">,</span>
                                         <span class="n">_rgp</span><span class="p">:</span> <span class="n">imaging_params</span><span class="o">.</span><span class="n">ReductionGroupParameters</span><span class="p">,</span>
                                         <span class="n">_pp</span><span class="p">:</span> <span class="n">imaging_params</span><span class="o">.</span><span class="n">PostProcessParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
@@ -2153,7 +2149,7 @@
 
 
 <div class="viewcode-block" id="calc_image_statistics">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.calc_image_statistics">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.calc_image_statistics.html#pipeline.hsd.tasks.calc_image_statistics">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_image_statistics</span><span class="p">(</span><span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chans</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return image statistics with channel and region selection.</span>
 
@@ -2185,7 +2181,7 @@
 
 <span class="c1"># Utility methods to calcluate channel ranges</span>
 <div class="viewcode-block" id="convert_frequency_ranges_to_channels">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.convert_frequency_ranges_to_channels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.convert_frequency_ranges_to_channels.html#pipeline.hsd.tasks.convert_frequency_ranges_to_channels">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_frequency_ranges_to_channels</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
                                          <span class="n">cs</span><span class="p">:</span> <span class="s1">&#39;coordsys&#39;</span><span class="p">,</span> <span class="n">num_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert frequency ranges to channel ones.</span>
@@ -2223,7 +2219,7 @@
 
 
 <div class="viewcode-block" id="convert_range_list_to_string">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.convert_range_list_to_string">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.convert_range_list_to_string.html#pipeline.hsd.tasks.convert_range_list_to_string">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_range_list_to_string</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a list of index ranges to string.</span>
 
@@ -2244,7 +2240,7 @@
 
 
 <div class="viewcode-block" id="merge_ranges">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.merge_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.merge_ranges.html#pipeline.hsd.tasks.merge_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_ranges</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge overlapping ranges in range_list.</span>
 
@@ -2291,7 +2287,7 @@
 
 
 <div class="viewcode-block" id="invert_ranges">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.imaging.invert_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.invert_ranges.html#pipeline.hsd.tasks.invert_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">invert_ranges</span><span class="p">(</span><span class="n">id_range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
                   <span class="n">num_ids</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverted ID ranges.</span>

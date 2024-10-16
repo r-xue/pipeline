@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -162,7 +158,7 @@
 
 
 <div class="viewcode-block" id="sanitize">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.sanitize">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.slice.sanitize.html#pipeline.h.tasks.common.displays.slice.sanitize">[docs]</a>
 <span class="k">def</span> <span class="nf">sanitize</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_char_replacer</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filename</span></div>
@@ -183,10 +179,8 @@
 
 
 <div class="viewcode-block" id="SliceDisplay">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.slice.SliceDisplay.html#pipeline.h.tasks.common.displays.slice.SliceDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">SliceDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="SliceDisplay.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">description_to_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">overplot_spectrum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotbad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_only_flagged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -351,8 +345,7 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">plots</span></div>
-
+        <span class="k">return</span> <span class="n">plots</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_plot_panel</span><span class="p">(</span><span class="n">nplots</span><span class="p">,</span> <span class="n">plotnumber</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">subtitle</span><span class="p">,</span>
@@ -614,7 +607,7 @@
         <span class="k">return</span> <span class="n">pointsflagged</span>
 
 <div class="viewcode-block" id="SliceDisplay.plottext">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.slice.SliceDisplay.plottext">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.slice.SliceDisplay.html#pipeline.h.tasks.common.displays.slice.SliceDisplay.plottext">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">maxchars</span><span class="p">,</span> <span class="n">ny_subplot</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility method to plot text and put line breaks in to keep the</span>

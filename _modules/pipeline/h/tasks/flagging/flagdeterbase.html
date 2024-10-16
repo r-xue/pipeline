@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -184,7 +180,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBaseInputs manages the inputs for the FlagDeterBase task.</span>
@@ -393,7 +389,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mintransrepspw</span> <span class="o">=</span> <span class="n">mintransrepspw</span>
 
 <div class="viewcode-block" id="FlagDeterBaseInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the input parameters of this class to task parameters</span>
@@ -414,21 +410,18 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterBaseResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span> <span class="o">=</span> <span class="n">flagcmds</span>
 
-<div class="viewcode-block" id="FlagDeterBaseResults.flagcmds">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.flagcmds">[docs]</a>
     <span class="k">def</span> <span class="nf">flagcmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span>
 
 <div class="viewcode-block" id="FlagDeterBaseResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># nothing to do</span>
         <span class="k">pass</span></div>
@@ -458,7 +451,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBase is the base class for deterministic flagging. It can perform</span>
@@ -479,7 +472,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterBaseInputs</span>
 
 <div class="viewcode-block" id="FlagDeterBase.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
@@ -527,7 +520,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyse the results of the flagging operation.</span>
@@ -674,7 +667,7 @@
         <span class="k">return</span> <span class="s2">&quot;mode=&#39;manual&#39; autocorr=True&quot;</span>
 
 <div class="viewcode-block" id="FlagDeterBase.verify_spw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.flagging.html#pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.verify_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.verify_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Verify that the given spw should be flagged, raising a ValueError if</span>

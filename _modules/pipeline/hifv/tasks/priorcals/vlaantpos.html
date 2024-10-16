@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,7 +143,7 @@
 
 
 <div class="viewcode-block" id="VLAAntposInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAAntposInputs</span><span class="p">(</span><span class="n">antpos</span><span class="o">.</span><span class="n">AntposInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    VLAAntposInputs defines the inputs for the priorcals pipeline task.</span>
@@ -165,7 +161,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ant_pos_time_limit</span> <span class="o">=</span> <span class="n">ant_pos_time_limit</span>
 
 <div class="viewcode-block" id="VLAAntposInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntposInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">gencal_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="n">gencal_args</span><span class="p">[</span><span class="s1">&#39;ant_pos_time_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ant_pos_time_limit</span>
@@ -175,7 +171,7 @@
 
 
 <div class="viewcode-block" id="VLAAntpos">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntpos">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntpos.html#pipeline.hifv.tasks.priorcals.vlaantpos.VLAAntpos">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAAntpos</span><span class="p">(</span><span class="n">antpos</span><span class="o">.</span><span class="n">Antpos</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VLAAntposInputs</span></div>
 

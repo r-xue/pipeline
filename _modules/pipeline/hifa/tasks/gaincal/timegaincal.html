@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -156,7 +152,7 @@
 
 
 <div class="viewcode-block" id="TimeGaincalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincalInputs.html#pipeline.hifa.tasks.TimeGaincalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TimeGaincalInputs</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">):</span>
 
     <span class="c1"># Amplitude caltable that is to be registered in callibrary as</span>
@@ -209,14 +205,14 @@
 
 
 <div class="viewcode-block" id="TimeGaincal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.TimeGaincal.html#pipeline.hifa.tasks.TimeGaincal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_timegaincal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Time dependent gain calibrations are computed.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">TimeGaincal</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TimeGaincalInputs</span>
 
 <div class="viewcode-block" id="TimeGaincal.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.TimeGaincal.html#pipeline.hifa.tasks.TimeGaincal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -325,7 +321,7 @@
 
 
 <div class="viewcode-block" id="TimeGaincal.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.timegaincal.TimeGaincal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.TimeGaincal.html#pipeline.hifa.tasks.TimeGaincal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
         <span class="c1"># Double-check that the caltables were actually generated.</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
@@ -1034,6 +1030,8 @@
 
 
 
+<div class="viewcode-block" id="do_gtype_gaincal">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.timegaincal.do_gtype_gaincal.html#pipeline.hifa.tasks.do_gtype_gaincal">[docs]</a>
 <span class="k">def</span> <span class="nf">do_gtype_gaincal</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">executor</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
     <span class="n">task_inputs</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">task_inputs</span><span class="p">)</span>
@@ -1042,7 +1040,8 @@
     <span class="c1"># sanity checks in case gaincal starts returning additional caltable applications</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&gt;1 caltable application registered by gaincal&#39;</span>
 
-    <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
 </pre></div>
 
            </div>

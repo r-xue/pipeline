@@ -4,9 +4,16 @@ pipeline.h.tasks.common.atmutil
 .. automodule:: pipeline.h.tasks.common.atmutil
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       calc_airmass
       calc_transmission
@@ -26,9 +33,24 @@ pipeline.h.tasks.common.atmutil
       plot
       test
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AtmType
    
+   
+
+   
+   
+   
+
+
+

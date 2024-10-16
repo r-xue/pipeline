@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -151,7 +147,7 @@
 
 
 <div class="viewcode-block" id="HanningInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.HanningInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.hanning.hanning.HanningInputs.html#pipeline.hifv.tasks.HanningInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">HanningInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.</span>
 
@@ -180,7 +176,7 @@
 
 
 <div class="viewcode-block" id="HanningResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.HanningResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.hanning.hanning.HanningResults.html#pipeline.hifv.tasks.HanningResults">[docs]</a>
 <span class="k">class</span> <span class="nc">HanningResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.</span>
 
@@ -214,7 +210,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">smoothed_spws</span> <span class="o">=</span> <span class="n">smoothed_spws</span>
 
 <div class="viewcode-block" id="HanningResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.HanningResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.hanning.hanning.HanningResults.html#pipeline.hifv.tasks.HanningResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -226,7 +222,7 @@
 
 
 <div class="viewcode-block" id="Hanning">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.Hanning">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Hanning.html#pipeline.hifv.tasks.Hanning">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_hanning&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Hanning</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.</span>
@@ -237,7 +233,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">HanningInputs</span>
 
 <div class="viewcode-block" id="Hanning.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.Hanning.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Hanning.html#pipeline.hifv.tasks.Hanning.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">HanningResults</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Method where the hanning smoothing operation is executed.</span>
 
@@ -323,7 +319,7 @@
 
 
 <div class="viewcode-block" id="Hanning.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.hanning.html#pipeline.hifv.tasks.hanning.hanning.Hanning.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Hanning.html#pipeline.hifv.tasks.Hanning.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the best parameters by analysing the given jobs before returning any final jobs to execute.</span>
 

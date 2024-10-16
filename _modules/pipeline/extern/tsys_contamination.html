@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -230,7 +226,7 @@
 
     <span class="c1"># preq232 @ jupyterif True:</span>
 <div class="viewcode-block" id="gline_and_baseline">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.gline_and_baseline">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.gline_and_baseline.html#pipeline.extern.tsys_contamination.gline_and_baseline">[docs]</a>
     <span class="k">def</span> <span class="nf">gline_and_baseline</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="c1"># peak, location, fwhm, a, b (a+bx baseline)</span>
         <span class="k">if</span> <span class="n">deg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -261,7 +257,7 @@
 
 
 <div class="viewcode-block" id="gaussian_line_fit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.gaussian_line_fit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.gaussian_line_fit.html#pipeline.extern.tsys_contamination.gaussian_line_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">gaussian_line_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="c1"># (peak,x0,fwhm)=pars</span>
         <span class="n">xi2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pars</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">no_nans</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">gline_and_baseline</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">)</span>
@@ -311,7 +307,7 @@
 
 
 <div class="viewcode-block" id="width_fit_filter">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.width_fit_filter">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.width_fit_filter.html#pipeline.extern.tsys_contamination.width_fit_filter">[docs]</a>
     <span class="k">def</span> <span class="nf">width_fit_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">peaks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fwhm_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">window</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">window</span> <span class="o">=</span> <span class="mi">3</span>
@@ -337,7 +333,7 @@
 
 
 <div class="viewcode-block" id="linear_trend">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.linear_trend">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.linear_trend.html#pipeline.extern.tsys_contamination.linear_trend">[docs]</a>
     <span class="k">def</span> <span class="nf">linear_trend</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;abs&quot;</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">weighting</span> <span class="o">==</span> <span class="s2">&quot;abs&quot;</span><span class="p">:</span>
@@ -350,7 +346,7 @@
 
 
 <div class="viewcode-block" id="find_repeated_peaks">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.find_repeated_peaks">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.find_repeated_peaks.html#pipeline.extern.tsys_contamination.find_repeated_peaks">[docs]</a>
     <span class="k">def</span> <span class="nf">find_repeated_peaks</span><span class="p">(</span>
         <span class="n">data1</span><span class="p">,</span>
         <span class="n">data2</span><span class="p">,</span>
@@ -466,7 +462,7 @@
 
 
 <div class="viewcode-block" id="exp_rescale">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.exp_rescale">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.exp_rescale.html#pipeline.extern.tsys_contamination.exp_rescale">[docs]</a>
     <span class="k">def</span> <span class="nf">exp_rescale</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">data</span>
@@ -479,7 +475,7 @@
 
 
 <div class="viewcode-block" id="model_break">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.model_break">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.model_break.html#pipeline.extern.tsys_contamination.model_break">[docs]</a>
     <span class="k">def</span> <span class="nf">model_break</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">peaks</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>  <span class="c1"># v3.5</span>
         <span class="n">peaks</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">peaks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">peaks</span>
         <span class="n">nchan</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -547,7 +543,7 @@
 
 
 <div class="viewcode-block" id="lower_hug">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.lower_hug">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.lower_hug.html#pipeline.extern.tsys_contamination.lower_hug">[docs]</a>
     <span class="k">def</span> <span class="nf">lower_hug</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
@@ -588,7 +584,7 @@
 
 
 <div class="viewcode-block" id="modified_atmospheric_profile">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.modified_atmospheric_profile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.modified_atmospheric_profile.html#pipeline.extern.tsys_contamination.modified_atmospheric_profile">[docs]</a>
     <span class="k">def</span> <span class="nf">modified_atmospheric_profile</span><span class="p">(</span>
         <span class="n">model</span><span class="p">,</span>
         <span class="n">baseline</span><span class="p">,</span>
@@ -656,7 +652,7 @@
 
 
 <div class="viewcode-block" id="cross_model">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.cross_model">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.cross_model.html#pipeline.extern.tsys_contamination.cross_model">[docs]</a>
     <span class="k">def</span> <span class="nf">cross_model</span><span class="p">(</span><span class="n">data_a</span><span class="p">,</span> <span class="n">data_b</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">asym_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pp</span><span class="p">:</span> <span class="n">pp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">data_b</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data_b</span><span class="p">))</span>
         <span class="n">dif2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
@@ -672,7 +668,7 @@
 
 
 <div class="viewcode-block" id="max_without_outliers">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.max_without_outliers">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.max_without_outliers.html#pipeline.extern.tsys_contamination.max_without_outliers">[docs]</a>
     <span class="k">def</span> <span class="nf">max_without_outliers</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">outliers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -691,7 +687,7 @@
 
 
 <div class="viewcode-block" id="positive_line_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.positive_line_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.positive_line_intervals.html#pipeline.extern.tsys_contamination.positive_line_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">positive_line_intervals</span><span class="p">(</span>
         <span class="n">normalized_data</span><span class="p">,</span> <span class="n">detection_limit</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">base_detection</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">edge</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
@@ -762,7 +758,7 @@
 
 
 <div class="viewcode-block" id="refitting_intervals_bp_to_source">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.refitting_intervals_bp_to_source">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.refitting_intervals_bp_to_source.html#pipeline.extern.tsys_contamination.refitting_intervals_bp_to_source">[docs]</a>
     <span class="k">def</span> <span class="nf">refitting_intervals_bp_to_source</span><span class="p">(</span>
         <span class="n">source</span><span class="p">,</span>
         <span class="n">bp</span><span class="p">,</span>
@@ -815,7 +811,7 @@
 
 
 <div class="viewcode-block" id="below_fit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.below_fit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.below_fit.html#pipeline.extern.tsys_contamination.below_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">below_fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">clip</span><span class="p">,</span> <span class="n">start_asym_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="n">meanmodel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="n">asym_factor</span> <span class="o">=</span> <span class="n">start_asym_factor</span>
@@ -855,7 +851,7 @@
 
 
 <div class="viewcode-block" id="shift_bp_to_source">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.shift_bp_to_source">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.shift_bp_to_source.html#pipeline.extern.tsys_contamination.shift_bp_to_source">[docs]</a>
     <span class="k">def</span> <span class="nf">shift_bp_to_source</span><span class="p">(</span>
         <span class="n">interval</span><span class="p">,</span>
         <span class="n">source</span><span class="p">,</span>
@@ -897,7 +893,7 @@
 
 
 <div class="viewcode-block" id="search_expanded_interval">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.search_expanded_interval">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.search_expanded_interval.html#pipeline.extern.tsys_contamination.search_expanded_interval">[docs]</a>
     <span class="k">def</span> <span class="nf">search_expanded_interval</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">limit_sigma</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;---initial interval=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
         <span class="n">ch0</span><span class="p">,</span> <span class="n">ch1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -931,7 +927,7 @@
 
 
 <div class="viewcode-block" id="basic_atm_asymmetric_fit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.basic_atm_asymmetric_fit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.basic_atm_asymmetric_fit.html#pipeline.extern.tsys_contamination.basic_atm_asymmetric_fit">[docs]</a>
     <span class="k">def</span> <span class="nf">basic_atm_asymmetric_fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">transmission</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">clip</span><span class="p">,</span> <span class="n">asym_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="n">xvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">transmission</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">model</span> <span class="o">=</span> <span class="p">(</span>
@@ -966,7 +962,7 @@
 
 
 <div class="viewcode-block" id="smoother_sigma">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.smoother_sigma">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.smoother_sigma.html#pipeline.extern.tsys_contamination.smoother_sigma">[docs]</a>
     <span class="k">def</span> <span class="nf">smoother_sigma</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">clip_level</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">stype</span><span class="o">=</span><span class="s2">&quot;sg&quot;</span><span class="p">):</span>
         <span class="n">vv</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
@@ -982,13 +978,13 @@
 
 
 <div class="viewcode-block" id="no_nans">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.no_nans">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.no_nans.html#pipeline.extern.tsys_contamination.no_nans">[docs]</a>
     <span class="k">def</span> <span class="nf">no_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="smoother">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.smoother">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.smoother.html#pipeline.extern.tsys_contamination.smoother">[docs]</a>
     <span class="k">def</span> <span class="nf">smoother</span><span class="p">(</span>
         <span class="n">vector_for_smoothing</span><span class="p">,</span>
         <span class="n">vector_to_subtract_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1051,7 +1047,7 @@
         <span class="k">return</span> <span class="n">contains_nan</span><span class="p">,</span> <span class="n">nan_policy</span>
 
 <div class="viewcode-block" id="median_abs_deviation">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.median_abs_deviation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.median_abs_deviation.html#pipeline.extern.tsys_contamination.median_abs_deviation">[docs]</a>
     <span class="k">def</span> <span class="nf">median_abs_deviation</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s2">&quot;propagate&quot;</span>
     <span class="p">):</span>
@@ -1180,7 +1176,7 @@
         <span class="k">return</span> <span class="n">mad</span>
 
 <div class="viewcode-block" id="plot_source_bp_normalized_residuals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.plot_source_bp_normalized_residuals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.plot_source_bp_normalized_residuals.html#pipeline.extern.tsys_contamination.plot_source_bp_normalized_residuals">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_source_bp_normalized_residuals</span><span class="p">(</span>
         <span class="n">source_tsys</span><span class="p">,</span>
         <span class="n">bandpass_tsys</span><span class="p">,</span>
@@ -1369,7 +1365,7 @@
 
     <span class="c1">## Integer Intervals manipulation</span>
 <div class="viewcode-block" id="puff">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.puff">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.puff.html#pipeline.extern.tsys_contamination.puff">[docs]</a>
     <span class="k">def</span> <span class="nf">puff</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">chan_avoidance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">puffed</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1389,7 +1385,7 @@
 
 
 <div class="viewcode-block" id="merge_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.merge_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.merge_intervals.html#pipeline.extern.tsys_contamination.merge_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_intervals</span><span class="p">(</span><span class="n">intervals</span><span class="p">):</span>
         <span class="c1"># Normalize to sorted non-overlaping intervals. Aimilar idea as in</span>
         <span class="c1"># https://www.geeksforgeeks.org/merging-intervals/</span>
@@ -1416,13 +1412,13 @@
 
 
 <div class="viewcode-block" id="union_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.union_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.union_intervals.html#pipeline.extern.tsys_contamination.union_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">union_intervals</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">merge_intervals</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="complement_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.complement_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.complement_intervals.html#pipeline.extern.tsys_contamination.complement_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">complement_intervals</span><span class="p">(</span>
         <span class="n">a</span><span class="p">,</span>
     <span class="p">):</span>  <span class="c1"># This is the key function. Needs to work with infinities and empty sets.</span>
@@ -1439,7 +1435,7 @@
 
 
 <div class="viewcode-block" id="intersection_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.intersection_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.intersection_intervals.html#pipeline.extern.tsys_contamination.intersection_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">intersection_intervals</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="n">union_of_complements</span> <span class="o">=</span> <span class="n">union_intervals</span><span class="p">(</span>
             <span class="n">complement_intervals</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">complement_intervals</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
@@ -1448,14 +1444,14 @@
 
 
 <div class="viewcode-block" id="difference_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.difference_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.difference_intervals.html#pipeline.extern.tsys_contamination.difference_intervals">[docs]</a>
     <span class="k">def</span> <span class="nf">difference_intervals</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">intersection_intervals</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">complement_intervals</span><span class="p">(</span><span class="n">b</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="save_tsysdata">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.save_tsysdata">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.save_tsysdata.html#pipeline.extern.tsys_contamination.save_tsysdata">[docs]</a>
 <span class="k">def</span> <span class="nf">save_tsysdata</span><span class="p">(</span><span class="n">tsysdata</span><span class="p">):</span>
     <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tsysdata</span><span class="o">.</span><span class="n">tsystable</span><span class="si">}</span><span class="s2">.tsysdata.pbz2&quot;</span>
     <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
@@ -1477,7 +1473,7 @@
 
 
 <div class="viewcode-block" id="find_prominent_peaks_in_atm">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm.html#pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm">[docs]</a>
 <span class="k">def</span> <span class="nf">find_prominent_peaks_in_atm</span><span class="p">(</span>
     <span class="n">n_sigma_atm</span><span class="p">,</span> <span class="n">atm_model</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">frequencies</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
@@ -1509,7 +1505,7 @@
 
 
 <div class="viewcode-block" id="detect_tsys_contamination">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.detect_tsys_contamination">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.detect_tsys_contamination.html#pipeline.extern.tsys_contamination.detect_tsys_contamination">[docs]</a>
 <span class="k">def</span> <span class="nf">detect_tsys_contamination</span><span class="p">(</span>
     <span class="n">bandpass</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">atm</span><span class="p">,</span> <span class="n">n_sigma_atm_prominent_peak</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">n_sigma_detection_limit</span><span class="o">=</span><span class="mi">7</span>
 <span class="p">):</span>
@@ -1678,7 +1674,7 @@
 
 
 <div class="viewcode-block" id="co_telluric_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.co_telluric_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.co_telluric_intervals.html#pipeline.extern.tsys_contamination.co_telluric_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">co_telluric_intervals</span><span class="p">(</span><span class="n">normalized_spectrum</span><span class="p">,</span> <span class="n">frequencies_mhz</span><span class="p">):</span>
     <span class="n">results</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">nchan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized_spectrum</span><span class="p">)</span>
@@ -1729,7 +1725,7 @@
 
 
 <div class="viewcode-block" id="get_tsys_contaminated_intervals">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.get_tsys_contaminated_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.get_tsys_contaminated_intervals.html#pipeline.extern.tsys_contamination.get_tsys_contaminated_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">get_tsys_contaminated_intervals</span><span class="p">(</span>
     <span class="n">tsysdata</span><span class="p">,</span>
     <span class="n">spwlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2211,7 +2207,7 @@
 
 
 <div class="viewcode-block" id="separate_non_intersecting_sci_spw">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.separate_non_intersecting_sci_spw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.separate_non_intersecting_sci_spw.html#pipeline.extern.tsys_contamination.separate_non_intersecting_sci_spw">[docs]</a>
 <span class="k">def</span> <span class="nf">separate_non_intersecting_sci_spw</span><span class="p">(</span><span class="n">tsysdata</span><span class="p">,</span> <span class="n">chan_tsys_intervals</span><span class="p">,</span> <span class="n">tsysspw</span><span class="p">):</span>  <span class="c1"># v2.4</span>
     <span class="n">intervals</span> <span class="o">=</span> <span class="n">chan_tsys_intervals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">scispws</span> <span class="o">=</span> <span class="n">tsysdata</span><span class="o">.</span><span class="n">inversetsysmap</span><span class="p">[</span><span class="n">tsysspw</span><span class="p">]</span>
@@ -2249,7 +2245,7 @@
 
 
 <div class="viewcode-block" id="intervals_to_casa_string">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.intervals_to_casa_string">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.intervals_to_casa_string.html#pipeline.extern.tsys_contamination.intervals_to_casa_string">[docs]</a>
 <span class="k">def</span> <span class="nf">intervals_to_casa_string</span><span class="p">(</span>
     <span class="n">intervals</span><span class="p">,</span> <span class="n">scaled_array</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;.0f&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -2276,7 +2272,7 @@
 
 
 <div class="viewcode-block" id="make_tsyscontamination_html_log">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.make_tsyscontamination_html_log">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.make_tsyscontamination_html_log.html#pipeline.extern.tsys_contamination.make_tsyscontamination_html_log">[docs]</a>
 <span class="k">def</span> <span class="nf">make_tsyscontamination_html_log</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;TsysCont&quot;</span><span class="p">):</span>
 
     <span class="n">txtfiles</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;uid___*.ms_tsys_contamination.txt&quot;</span><span class="p">)</span>
@@ -2340,7 +2336,7 @@
 
 
 <div class="viewcode-block" id="main">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.tsys_contamination.main">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.tsys_contamination.main.html#pipeline.extern.tsys_contamination.main">[docs]</a>
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">testtables</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1">#&#39;uid___A002_Xfaf3de_X1ede.ms.h_tsyscal.s6_1.tsyscal.tbl&#39;, #not ok needs pipeline run</span>
         <span class="s2">&quot;uid___A002_Xf6b678_X617.ms.h_tsyscal.s6_1.tsyscal.tbl&quot;</span><span class="p">,</span>  <span class="c1"># ok</span>

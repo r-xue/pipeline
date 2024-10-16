@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.logging.add_handler" href="pipeline.infrastructure.logging.add_handler.html" />
+    <link rel="prev" title="pipeline.infrastructure.launcher.Pipeline" href="pipeline.infrastructure.launcher.Pipeline.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.logging</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.logging.rst.txt" rel="nofollow"> View page source</a>
@@ -137,31 +138,31 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.add_handler" title="pipeline.infrastructure.logging.add_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_handler</span></code></a>(handler)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.add_handler.html#pipeline.infrastructure.logging.add_handler" title="pipeline.infrastructure.logging.add_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_handler</span></code></a></p></td>
 <td><p>Add given handler to all registered loggers.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contextmanager</span></code>(func)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.contextmanager.html#pipeline.infrastructure.logging.contextmanager" title="pipeline.infrastructure.logging.contextmanager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contextmanager</span></code></a></p></td>
 <td><p>&#64;contextmanager decorator.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.get_logger" title="pipeline.infrastructure.logging.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a>(name[, format, datefmt, stream, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.get_logger.html#pipeline.infrastructure.logging.get_logger" title="pipeline.infrastructure.logging.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a></p></td>
 <td><p>Do basic configuration for the logging system.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.log_filtermsg" title="pipeline.infrastructure.logging.log_filtermsg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_filtermsg</span></code></a>(msglist)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.log_filtermsg.html#pipeline.infrastructure.logging.log_filtermsg" title="pipeline.infrastructure.logging.log_filtermsg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_filtermsg</span></code></a></p></td>
 <td><p>Context manager to temporarily filter out specific messages from the CASA global logger.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.log_level" title="pipeline.infrastructure.logging.log_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_level</span></code></a>(name[, level, filter])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.log_level.html#pipeline.infrastructure.logging.log_level" title="pipeline.infrastructure.logging.log_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_level</span></code></a></p></td>
 <td><p>Context manager to temporarily adjust the logging level of a logger.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.pipeline_origin" title="pipeline.infrastructure.logging.pipeline_origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline_origin</span></code></a>(method)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.pipeline_origin.html#pipeline.infrastructure.logging.pipeline_origin" title="pipeline.infrastructure.logging.pipeline_origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pipeline_origin</span></code></a></p></td>
 <td><p>Use 'pipeline' as the CASAlog Origin by default.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.remove_handler" title="pipeline.infrastructure.logging.remove_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_handler</span></code></a>(handler)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.remove_handler.html#pipeline.infrastructure.logging.remove_handler" title="pipeline.infrastructure.logging.remove_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_handler</span></code></a></p></td>
 <td><p>Remove specified handler from all registered loggers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.set_logging_level" title="pipeline.infrastructure.logging.set_logging_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_logging_level</span></code></a>([logger, level])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.set_logging_level.html#pipeline.infrastructure.logging.set_logging_level" title="pipeline.infrastructure.logging.set_logging_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_logging_level</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.suspend_handler" title="pipeline.infrastructure.logging.suspend_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">suspend_handler</span></code></a>(handler_class)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.suspend_handler.html#pipeline.infrastructure.logging.suspend_handler" title="pipeline.infrastructure.logging.suspend_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">suspend_handler</span></code></a></p></td>
 <td><p>Remove and return any logger of the given class from the list of active loggers.</p></td>
 </tr>
 </tbody>
@@ -169,25 +170,25 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CASALogHandler" title="pipeline.infrastructure.logging.CASALogHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CASALogHandler</span></code></a>([log])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.CASALogHandler.html#pipeline.infrastructure.logging.CASALogHandler" title="pipeline.infrastructure.logging.CASALogHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CASALogHandler</span></code></a></p></td>
 <td><p>A handler class which writes logging records, appropriately formatted, to the CASA log.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CapturingHandler" title="pipeline.infrastructure.logging.CapturingHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CapturingHandler</span></code></a>([level])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.CapturingHandler.html#pipeline.infrastructure.logging.CapturingHandler" title="pipeline.infrastructure.logging.CapturingHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CapturingHandler</span></code></a></p></td>
 <td><p>A handler class which buffers logging records above a certain threshold in memory.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Code" title="pipeline.infrastructure.logging.Code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Code</span></code></a>(code)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.Code.html#pipeline.infrastructure.logging.Code" title="pipeline.infrastructure.logging.Code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Code</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Frame" title="pipeline.infrastructure.logging.Frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frame</span></code></a>(frame)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.Frame.html#pipeline.infrastructure.logging.Frame" title="pipeline.infrastructure.logging.Frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frame</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.SuspendCapturingLogger" title="pipeline.infrastructure.logging.SuspendCapturingLogger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuspendCapturingLogger</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.SuspendCapturingLogger.html#pipeline.infrastructure.logging.SuspendCapturingLogger" title="pipeline.infrastructure.logging.SuspendCapturingLogger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuspendCapturingLogger</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Traceback" title="pipeline.infrastructure.logging.Traceback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Traceback</span></code></a>(tb)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.Traceback.html#pipeline.infrastructure.logging.Traceback" title="pipeline.infrastructure.logging.Traceback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Traceback</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.UTCFormatter" title="pipeline.infrastructure.logging.UTCFormatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UTCFormatter</span></code></a>([fmt, datefmt, style, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.logging.UTCFormatter.html#pipeline.infrastructure.logging.UTCFormatter" title="pipeline.infrastructure.logging.UTCFormatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UTCFormatter</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -197,7 +198,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.launcher.Pipeline.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.launcher.Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.logging.add_handler.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.logging.add_handler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

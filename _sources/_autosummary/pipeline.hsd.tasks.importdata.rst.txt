@@ -4,18 +4,37 @@ pipeline.hsd.tasks.importdata
 .. automodule:: pipeline.hsd.tasks.importdata
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDImportData
       SDImportDataResults
       SerialSDImportData
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    importdata
@@ -24,3 +43,4 @@ pipeline.hsd.tasks.importdata
    reader
    reader_test
    renderer
+

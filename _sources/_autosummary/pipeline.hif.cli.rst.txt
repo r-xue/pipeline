@@ -4,9 +4,16 @@ pipeline.hif.cli
 .. automodule:: pipeline.hif.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       hif_analyzealpha
       hif_antpos
@@ -31,3 +38,15 @@ pipeline.hif.cli
       hif_transformimagedata
       hif_uvcontsub
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

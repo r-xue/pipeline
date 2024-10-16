@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.tasks.importdata.fluxes.SpectralWindowTable &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.h.tasks.importdata.fluxes.datetime" href="pipeline.h.tasks.importdata.fluxes.datetime.html" />
+    <link rel="prev" title="pipeline.h.tasks.importdata.fluxes.to_jansky" href="pipeline.h.tasks.importdata.fluxes.to_jansky.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.html">pipeline.h</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.tasks.importdata.html">pipeline.h.tasks.importdata</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.tasks.importdata.fluxes.html">pipeline.h.tasks.importdata.fluxes</a></li>
+      <li class="breadcrumb-item active">pipeline.h.tasks.importdata.fluxes.SpectralWindowTable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-h-tasks-importdata-fluxes-spectralwindowtable">
+<h1>pipeline.h.tasks.importdata.fluxes.SpectralWindowTable<a class="headerlink" href="#pipeline-h-tasks-importdata-fluxes-spectralwindowtable" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpectralWindowTable</span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_asdm_to_ms_spw_mapping" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_asdm_to_ms_spw_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asdm_to_ms_spw_mapping</span></code></a></p></td>
+<td><p>Get the mapping of ASDM spectral window ID to Measurement Set spectral window ID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_data_description_spw_ids" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_data_description_spw_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_description_spw_ids</span></code></a></p></td>
+<td><p>Extract a list of spectral window IDs from the DataDescription XML for an ASDM.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receiver_info" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receiver_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_receiver_info</span></code></a></p></td>
+<td><p>Extract information about the receiver from the ASDM_RECEIVER table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receptor_angle" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receptor_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_receptor_angle</span></code></a></p></td>
+<td><p>Extract information about the feed receptor angle from the FEED table's RECEPTOR_ANGLE column, and compute an average value over all antennas for each SpW.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_sdm_num_bin_info" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_sdm_num_bin_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sdm_num_bin_info</span></code></a></p></td>
+<td><p>Extract information about the online spectral averaging from the SPECTRAL_WINDOW table's SDM_NUM_BIN column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_spectral_window_spw_ids" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_spectral_window_spw_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_window_spw_ids</span></code></a></p></td>
+<td><p>Extract a list of spectral window IDs from the SpectralWindow XML for an ASDM.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_windows</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.parse_spectral_window_ids_from_xml" title="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.parse_spectral_window_ids_from_xml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_spectral_window_ids_from_xml</span></code></a></p></td>
+<td><p>Extract the spectral window ID element from each row of an XML file.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_asdm_to_ms_spw_mapping">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_asdm_to_ms_spw_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_asdm_to_ms_spw_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_asdm_to_ms_spw_mapping" title="Link to this definition"></a></dt>
+<dd><p>Get the mapping of ASDM spectral window ID to Measurement Set spectral
+window ID.</p>
+<p>This function requires the SpectralWindow and DataDescription ASDM XML
+files to have been copied across to the measurement set directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – measurement set to inspect</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict of ASDM spw: MS spw</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_data_description_spw_ids">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_data_description_spw_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_data_description_spw_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_data_description_spw_ids" title="Link to this definition"></a></dt>
+<dd><p>Extract a list of spectral window IDs from the DataDescription XML for an
+ASDM.</p>
+<p>This function assumes the XML has been copied across to the measurement
+set directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – measurement set to inspect</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of integers corresponding to ASDM spectral window IDs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receiver_info">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_receiver_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_band_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_receiver_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receiver_info" title="Link to this definition"></a></dt>
+<dd><p>Extract information about the receiver from the ASDM_RECEIVER table.
+The following properties are extracted by default:
+* receiver type (e.g.: TSB, DSB, NOSB)
+* local oscillator frequencies</p>
+<p>If get_band_info is set to True, instead, only the frequency
+band information is extracted.</p>
+<p>If multiple entries are present for the same ASDM spwid, then keep</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – measurement set to inspect</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict of MS spw: (receiver_type, freq_lo) or MS spw: frequency_band</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receptor_angle">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_receptor_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_receptor_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_receptor_angle" title="Link to this definition"></a></dt>
+<dd><p>Extract information about the feed receptor angle from the FEED table’s
+RECEPTOR_ANGLE column, and compute an average value over all antennas
+for each SpW.
+Return: a dict in which each MS SpW corresponds to an array of angles,
+or an empty dict in case of error.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_sdm_num_bin_info">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_sdm_num_bin_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msmd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_sdm_num_bin_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_sdm_num_bin_info" title="Link to this definition"></a></dt>
+<dd><p>Extract information about the online spectral averaging from the SPECTRAL_WINDOW
+table’s SDM_NUM_BIN column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ms</strong> – measurement set to inspect</p></li>
+<li><p><strong>msmd</strong> – msmetadata (casa_tools.MSMDReader) for the measurement set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of values for sdm_num_bin</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_spectral_window_spw_ids">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_spectral_window_spw_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.get_spectral_window_spw_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.get_spectral_window_spw_ids" title="Link to this definition"></a></dt>
+<dd><p>Extract a list of spectral window IDs from the SpectralWindow XML for an
+ASDM.</p>
+<p>This function assumes the XML has been copied across to the measurement
+set directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ms</strong> – measurement set to inspect</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of integers corresponding to ASDM spectral window IDs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.parse_spectral_window_ids_from_xml">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_spectral_window_ids_from_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xml_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/tablereader.html#SpectralWindowTable.parse_spectral_window_ids_from_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.importdata.fluxes.SpectralWindowTable.parse_spectral_window_ids_from_xml" title="Link to this definition"></a></dt>
+<dd><p>Extract the spectral window ID element from each row of an XML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xml_path</strong> – path for XML file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of integer spectral window IDs</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.h.tasks.importdata.fluxes.to_jansky.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.importdata.fluxes.to_jansky" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.tasks.importdata.fluxes.datetime.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.importdata.fluxes.datetime" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -4,9 +4,16 @@ pipeline.hifa.tasks.flagging.flagdeteralma
 .. automodule:: pipeline.hifa.tasks.flagging.flagdeteralma
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       channel_ranges
       convert_params_to_commands
@@ -18,9 +25,16 @@ pipeline.hifa.tasks.flagging.flagdeteralma
       load_partialpols_alma
       lowtrans_alma
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AltAz
       EarthLocation
@@ -31,3 +45,11 @@ pipeline.hifa.tasks.flagging.flagdeteralma
       SkyCoord
       Time
    
+   
+
+   
+   
+   
+
+
+

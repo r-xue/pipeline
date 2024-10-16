@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -167,14 +163,14 @@
 <span class="n">StdFileProducts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;StdFileProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;ppr_file weblog_file casa_commands_file casa_pipescript parameterlist&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="atoi">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.atoi">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.atoi.html#pipeline.hifv.tasks.atoi">[docs]</a>
 <span class="k">def</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">text</span></div>
 
 
 
 <div class="viewcode-block" id="natural_keys">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.natural_keys">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.natural_keys.html#pipeline.hifv.tasks.natural_keys">[docs]</a>
 <span class="k">def</span> <span class="nf">natural_keys</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    alist.sort(key=natural_keys) sorts in human order</span>
@@ -187,7 +183,7 @@
 
 
 <div class="viewcode-block" id="ExportvlassdataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ExportvlassdataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ExportvlassdataResults.html#pipeline.hifv.tasks.ExportvlassdataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportvlassdataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="p">[],</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">preceding</span><span class="o">=</span><span class="p">[]):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ExportvlassdataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -202,7 +198,7 @@
 
 
 <div class="viewcode-block" id="ExportvlassdataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ExportvlassdataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.ExportvlassdataInputs.html#pipeline.hifv.tasks.ExportvlassdataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportvlassdataInputs</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataInputs</span><span class="p">):</span>
     <span class="n">gainmap</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -218,12 +214,12 @@
 
 
 <div class="viewcode-block" id="VlassPipelineManifest">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest.html#pipeline.hifv.tasks.VlassPipelineManifest">[docs]</a>
 <span class="k">class</span> <span class="nc">VlassPipelineManifest</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">PipelineManifest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;VLASS-specific PipelineManifest class.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="VlassPipelineManifest.add_reimaging_resources">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest.add_reimaging_resources">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest.html#pipeline.hifv.tasks.VlassPipelineManifest.add_reimaging_resources">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_reimaging_resources</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">reimaging_resources</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the reimaging_resources tarball to the OUS element.&quot;&quot;&quot;</span>
@@ -231,7 +227,7 @@
 
 
 <div class="viewcode-block" id="VlassPipelineManifest.add_parameter_list">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest.add_parameter_list">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.exportvlassdata.exportvlassdata.VlassPipelineManifest.html#pipeline.hifv.tasks.VlassPipelineManifest.add_parameter_list">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_parameter_list</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">parameter_list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a list of hif_editimlist parameter files to the OUS element.&quot;&quot;&quot;</span>
@@ -242,7 +238,7 @@
 
 
 <div class="viewcode-block" id="Exportvlassdata">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Exportvlassdata">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Exportvlassdata.html#pipeline.hifv.tasks.Exportvlassdata">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_exportvlassdata&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Exportvlassdata</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ExportvlassdataInputs</span>
@@ -250,7 +246,7 @@
     <span class="n">NameBuilder</span> <span class="o">=</span> <span class="n">exportdata</span><span class="o">.</span><span class="n">PipelineProductNameBuilder</span>
 
 <div class="viewcode-block" id="Exportvlassdata.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Exportvlassdata.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Exportvlassdata.html#pipeline.hifv.tasks.Exportvlassdata.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;This Exportvlassdata class is running.&quot;</span><span class="p">)</span>
@@ -515,13 +511,13 @@
             <span class="n">image_rgd</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Exportvlassdata.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Exportvlassdata.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Exportvlassdata.html#pipeline.hifv.tasks.Exportvlassdata.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
 <div class="viewcode-block" id="Exportvlassdata.get_recipename">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.exportvlassdata.html#pipeline.hifv.tasks.exportvlassdata.exportvlassdata.Exportvlassdata.get_recipename">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Exportvlassdata.html#pipeline.hifv.tasks.Exportvlassdata.get_recipename">[docs]</a>
     <span class="k">def</span> <span class="nf">get_recipename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the recipe name</span>

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -150,7 +146,7 @@
 
 
 <div class="viewcode-block" id="PhaseOffsetPlotHelper">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseOffsetPlotHelper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">colour_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;BEFORE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
                              <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;sandybrown&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
@@ -176,34 +172,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable_map</span> <span class="o">=</span> <span class="n">caltable_map</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span> <span class="o">=</span> <span class="n">plot_per_antenna</span>
 
-<div class="viewcode-block" id="PhaseOffsetPlotHelper.get_symbol_and_colour">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.get_symbol_and_colour">[docs]</a>
     <span class="k">def</span> <span class="nf">get_symbol_and_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_map</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_map</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">pol</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="PhaseOffsetPlotHelper.get_figfile">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;.ant</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rootdir</span><span class="p">,</span> 
-                            <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.spw</span><span class="si">%0.2d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
+                            <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.spw</span><span class="si">%0.2d</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
 
-
-<div class="viewcode-block" id="PhaseOffsetPlotHelper.group_antennas">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.group_antennas">[docs]</a>
     <span class="k">def</span> <span class="nf">group_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[[</span><span class="n">ant</span><span class="p">]</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">antennas</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="p">[</span><span class="n">antennas</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="PhaseOffsetPlotHelper.label_antenna">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlotHelper.label_antenna">[docs]</a>
     <span class="k">def</span> <span class="nf">label_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_per_antenna</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">antennas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
@@ -212,12 +197,11 @@
 
         <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.89</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
                  <span class="n">transform</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">transFigure</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="PhaseOffsetPlot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseOffsetPlot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">plothelper</span><span class="p">,</span> <span class="n">scan_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">score_retriever</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
@@ -248,8 +232,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caltables_loaded</span> <span class="o">=</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="PhaseOffsetPlot.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># these function arguments are used for debugging the plot routines,</span>
         <span class="c1"># so we can call plot for a particular troublesome spw/antenna.</span>
@@ -287,11 +269,8 @@
             <span class="k">for</span> <span class="n">antenna_group</span> <span class="ow">in</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">group_antennas</span><span class="p">(</span><span class="n">antennas</span><span class="p">):</span>
                 <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scans</span><span class="p">,</span> <span class="n">antenna_group</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="PhaseOffsetPlot.create_plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="c1"># get the fields and scan intents from the list of scans. These are</span>
         <span class="c1"># used in the plot title, eg. NGC123 (PHASE)</span>
@@ -479,11 +458,8 @@
 
         <span class="n">figfile</span> <span class="o">=</span> <span class="n">plothelper</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">antennas</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="PhaseOffsetPlot.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.hifa.tasks.common.displays.html#pipeline.hifa.tasks.common.displays.phaseoffset.PhaseOffsetPlot.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="n">plothelper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plothelper</span>
 
@@ -514,8 +490,7 @@
         <span class="c1"># the plot may not be created if all data for that antenna are flagged</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">wrapper</span>            
-        <span class="k">return</span> <span class="kc">None</span></div>
-
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_plot_flagged_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">masked_slice</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">annotate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                            <span class="n">annotation</span><span class="o">=</span><span class="s1">&#39;FLAGGED&#39;</span><span class="p">):</span>

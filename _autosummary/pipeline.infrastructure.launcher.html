@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Classes in pipeline.h*.tasks modules" href="../classes.html" />
-    <link rel="prev" title="pipeline.domain.unitformat" href="pipeline.domain.unitformat.html" /> 
+    <link rel="next" title="pipeline.infrastructure.launcher.Context" href="pipeline.infrastructure.launcher.Context.html" />
+    <link rel="prev" title="pipeline.infrastructure.jobrequest.NamelessArg" href="pipeline.infrastructure.jobrequest.NamelessArg.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -94,7 +90,13 @@
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pipeline.infrastructure.launcher</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html">pipeline.infrastructure.launcher.Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.ContextCreatedEvent.html">pipeline.infrastructure.launcher.ContextCreatedEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.ContextResumedEvent.html">pipeline.infrastructure.launcher.ContextResumedEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.Pipeline.html">pipeline.infrastructure.launcher.Pipeline</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
 <ul>
@@ -124,6 +126,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.launcher</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.launcher.rst.txt" rel="nofollow"> View page source</a>
@@ -141,16 +146,16 @@ from a saved context state.</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
 <td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.launcher.ContextCreatedEvent.html#pipeline.infrastructure.launcher.ContextCreatedEvent" title="pipeline.infrastructure.launcher.ContextCreatedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Context is created.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.launcher.ContextResumedEvent.html#pipeline.infrastructure.launcher.ContextResumedEvent" title="pipeline.infrastructure.launcher.ContextResumedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Context is resumed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a></p></td>
 <td><p>Pipeline is the entry point for initialising the pipeline.</p></td>
 </tr>
 </tbody>
@@ -161,8 +166,8 @@ from a saved context state.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.domain.unitformat.html" class="btn btn-neutral float-left" title="pipeline.domain.unitformat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../classes.html" class="btn btn-neutral float-right" title="Classes in pipeline.h*.tasks modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.infrastructure.jobrequest.NamelessArg.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.jobrequest.NamelessArg" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.launcher.Context.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.launcher.Context" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

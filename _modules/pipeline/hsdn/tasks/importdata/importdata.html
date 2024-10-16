@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -158,7 +154,7 @@
 
 
 <div class="viewcode-block" id="NROImportDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataInputs.html#pipeline.hsdn.tasks.NROImportDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">NROImportDataInputs</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of NROImportData.</span>
 
@@ -198,7 +194,7 @@
 
 
 <div class="viewcode-block" id="NROImportDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.NROImportDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">NROImportDataResults</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NROImportDataResults is an equivalent class with ImportDataResults.</span>
 
@@ -225,7 +221,7 @@
                                                    <span class="n">datatable_prefix</span><span class="o">=</span><span class="n">datatable_prefix</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NROImportDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.NROImportDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
 
@@ -244,7 +240,7 @@
 
 
 <div class="viewcode-block" id="NROImportData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsdn_importdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Import Nobeyama MeasurementSets.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">NROImportData</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SerialSDImportData</span><span class="p">):</span>
@@ -256,7 +252,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">NROImportDataInputs</span>
 
 <div class="viewcode-block" id="NROImportData.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare job requests for execution.</span>
 
@@ -277,7 +273,7 @@
 
 
 <div class="viewcode-block" id="NROImportData.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NROImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get version information for merge2 and set it to MS of result.</span>
 

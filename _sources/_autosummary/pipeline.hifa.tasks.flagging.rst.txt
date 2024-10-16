@@ -4,17 +4,36 @@ pipeline.hifa.tasks.flagging
 .. automodule:: pipeline.hifa.tasks.flagging
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       FlagDeterALMA
       FlagTargetsALMA
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    flagdeteralma
@@ -22,3 +41,4 @@ pipeline.hifa.tasks.flagging
    flagtargetsalma
    qa
    renderer
+

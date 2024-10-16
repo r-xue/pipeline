@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -235,6 +231,8 @@
         <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 
+<div class="viewcode-block" id="Environment">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.Environment.html#pipeline.environment.Environment">[docs]</a>
 <span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Environment is a Protocol that collects the attributes that describe a</span>
@@ -294,9 +292,12 @@
     <span class="n">ulimit_cpu</span><span class="p">:</span> <span class="nb">str</span>             <span class="c1"># cpu time ulimit, in seconds</span>
     <span class="n">ulimit_mem</span><span class="p">:</span> <span class="nb">str</span>             <span class="c1"># memory ulimit</span>
 
-    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span>                   <span class="c1"># MPI role</span>
+    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span>                   <span class="c1"># MPI role</span></div>
 
 
+
+<div class="viewcode-block" id="EnvironmentFactory">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.EnvironmentFactory.html#pipeline.environment.EnvironmentFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">EnvironmentFactory</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    EnvironmentFactory returns the Environment appropriate to the host.</span>
@@ -309,9 +310,12 @@
         <span class="k">elif</span> <span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">MacOSEnvironment</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;Could not query environment for system </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;Could not query environment for system </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system</span><span class="p">))</span></div>
 
 
+
+<div class="viewcode-block" id="CommonEnvironment">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CommonEnvironment.html#pipeline.environment.CommonEnvironment">[docs]</a>
 <span class="k">class</span> <span class="nc">CommonEnvironment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CommonEnvironment is a base class for environment properties that can be</span>
@@ -364,9 +368,12 @@
             <span class="n">role</span> <span class="o">=</span> <span class="s1">&#39;MPI Client&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">role</span> <span class="o">=</span> <span class="s1">&#39;MPI Server&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">role</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">role</span> <span class="o">=</span> <span class="n">role</span></div>
 
 
+
+<div class="viewcode-block" id="LinuxEnvironment">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.LinuxEnvironment.html#pipeline.environment.LinuxEnvironment">[docs]</a>
 <span class="k">class</span> <span class="nc">LinuxEnvironment</span><span class="p">(</span><span class="n">CommonEnvironment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LinuxEnvironment adds the Environment properties missing from a</span>
@@ -399,6 +406,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">host_distribution</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os_release</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Linux&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span>
                                   <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os_release</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;VERSION&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;(unknown distribution)&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="LinuxEnvironment.read_os_release">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.LinuxEnvironment.html#pipeline.environment.LinuxEnvironment.read_os_release">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_os_release</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -426,7 +435,8 @@
                     <span class="n">val</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                 <span class="k">yield</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">line_number</span><span class="si">}</span><span class="s1">: bad line </span><span class="si">{</span><span class="n">line</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">line_number</span><span class="si">}</span><span class="s1">: bad line </span><span class="si">{</span><span class="n">line</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_from_lscpu</span><span class="p">(</span><span class="n">lscpu_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -441,9 +451,12 @@
         <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flattened</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
-        <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
+
+<div class="viewcode-block" id="CGroupController">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupController.html#pipeline.environment.CGroupController">[docs]</a>
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">CGroupController</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -467,6 +480,8 @@
     <span class="n">mount_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># optional as path not present when controller is disabled</span>
     <span class="n">root_mount_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># optional as path not present when controller is disabled</span>
 
+<div class="viewcode-block" id="CGroupController.get_limits">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupController.html#pipeline.environment.CGroupController.get_limits">[docs]</a>
     <span class="k">def</span> <span class="nf">get_limits</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">v1_attrs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -496,11 +511,17 @@
                     <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
                         <span class="n">limits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">limits</span>
+        <span class="k">return</span> <span class="n">limits</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="CGroupControllerParser">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupControllerParser.html#pipeline.environment.CGroupControllerParser">[docs]</a>
 <span class="k">class</span> <span class="nc">CGroupControllerParser</span><span class="p">:</span>
 
+<div class="viewcode-block" id="CGroupControllerParser.get_controllers">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupControllerParser.html#pipeline.environment.CGroupControllerParser.get_controllers">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_controllers</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CGroupController</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -602,11 +623,17 @@
                         <span class="n">results</span><span class="p">[</span><span class="n">token</span><span class="p">]</span><span class="o">.</span><span class="n">mount_path</span> <span class="o">=</span> <span class="n">mount_point</span>
                         <span class="n">results</span><span class="p">[</span><span class="n">token</span><span class="p">]</span><span class="o">.</span><span class="n">root_mount_path</span> <span class="o">=</span> <span class="n">root</span>
 
-        <span class="k">return</span> <span class="n">results</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="CGroupLimit">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupLimit.html#pipeline.environment.CGroupLimit">[docs]</a>
 <span class="k">class</span> <span class="nc">CGroupLimit</span><span class="p">:</span>
 
+<div class="viewcode-block" id="CGroupLimit.CPUWeight">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupLimit.html#pipeline.environment.CGroupLimit.CPUWeight">[docs]</a>
     <span class="k">class</span> <span class="nc">CPUWeight</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Distribution of CPU time to allocate for this process relative to</span>
@@ -631,8 +658,11 @@
             <span class="n">controller</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
             <span class="n">str_limits</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_limits</span><span class="p">([],</span> <span class="p">[</span><span class="s1">&#39;cpu.weight&#39;</span><span class="p">])</span>
             <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUWeight</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
-            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="CGroupLimit.CPUBandwidth">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupLimit.html#pipeline.environment.CGroupLimit.CPUBandwidth">[docs]</a>
     <span class="k">class</span> <span class="nc">CPUBandwidth</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        CPUBandwidth describes a cgroup CPU bandwidth quota, the fraction of</span>
@@ -680,8 +710,11 @@
                 <span class="n">str_limits</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">quotas</span><span class="p">,</span> <span class="n">periods</span><span class="p">)]</span>
 
             <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUBandwidth</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
-            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;ratio&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;ratio&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="CGroupLimit.CPUAllocation">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupLimit.html#pipeline.environment.CGroupLimit.CPUAllocation">[docs]</a>
     <span class="k">class</span> <span class="nc">CPUAllocation</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        CPUAllocation represents a cgroup CPU allocation.</span>
@@ -723,8 +756,11 @@
                 <span class="p">[</span><span class="s1">&#39;cpuset.cpus&#39;</span><span class="p">,</span> <span class="s1">&#39;cpuset.cpus.effective&#39;</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="n">CGroupLimit</span><span class="o">.</span><span class="n">CPUAllocation</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">str_limits</span><span class="p">]</span>
-            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;num_cpus&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;num_cpus&#39;</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="CGroupLimit.MemoryLimit">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.CGroupLimit.html#pipeline.environment.CGroupLimit.MemoryLimit">[docs]</a>
     <span class="k">class</span> <span class="nc">MemoryLimit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Represents the limiting cgroup limit on RAM+swap usage for a process.</span>
@@ -760,9 +796,13 @@
                 <span class="c1"># empty list = no active memory limits</span>
                 <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
 
-            <span class="k">return</span> <span class="n">limit</span><span class="o">.</span><span class="n">limit</span>
+            <span class="k">return</span> <span class="n">limit</span><span class="o">.</span><span class="n">limit</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="MacOSEnvironment">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.MacOSEnvironment.html#pipeline.environment.MacOSEnvironment">[docs]</a>
 <span class="k">class</span> <span class="nc">MacOSEnvironment</span><span class="p">(</span><span class="n">CommonEnvironment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MacOSEnvironment adds environment properties missing from a CommonEnvironment</span>
@@ -802,7 +842,8 @@
         <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\S+ total = (?P&lt;total&gt;\S+)&quot;</span><span class="p">,</span> <span class="n">swap</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
-        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;total&quot;</span><span class="p">)</span></div>
+
 
 
 <span class="c1"># Determine pipeline version from Git or package.</span>
@@ -941,7 +982,7 @@
 
 
 <div class="viewcode-block" id="cluster_details">
-<a class="viewcode-back" href="../../_apidoc/pipeline.html#pipeline.environment.cluster_details">[docs]</a>
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.cluster_details.html#pipeline.environment.cluster_details">[docs]</a>
 <span class="k">def</span> <span class="nf">cluster_details</span><span class="p">():</span>
     <span class="c1"># defer calculation as running this code at import time blocks MPI</span>
     <span class="c1"># see https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13655</span>

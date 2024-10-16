@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications.html" />
+    <link rel="prev" title="pipeline.hifa.tasks.bandpassflag.Bandpassflag" href="pipeline.hifa.tasks.bandpassflag.Bandpassflag.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.html">pipeline.hifa</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.html">pipeline.hifa.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.bandpassflag.html">pipeline.hifa.tasks.bandpassflag</a></li>
       <li class="breadcrumb-item active">pipeline.hifa.tasks.bandpassflag.bandpassflag</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hifa.tasks.bandpassflag.bandpassflag.rst.txt" rel="nofollow"> View page source</a>
@@ -137,16 +140,16 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_fully_flagged_antenna_notifications</span></code>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_fully_flagged_antenna_notifications</span></code></a></p></td>
 <td><p>Aggregate the list of notifications about fully flagged antennas for the subsequent QA scoring. :Parameters: * <strong>fully_flagged_antennas</strong> -- dict with tuples(field, intent, spwid) as keys and sets of antenna ids as values. * <strong>all_spwids</strong> -- set of all spw ids considered in this flagging task, used to replace                the tuple of flagged spws by a string &quot;all spws&quot; when this is the case.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_plots</span></code>(inputs, context[, suffix])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.create_plots.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.create_plots" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.create_plots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_plots</span></code></a></p></td>
 <td><p>Return amplitude vs time and amplitude vs UV distance plots for the given data column.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagcmds</span></code>(ms, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.identify_fully_flagged_antennas_from_flagcmds.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.identify_fully_flagged_antennas_from_flagcmds" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.identify_fully_flagged_antennas_from_flagcmds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagcmds</span></code></a></p></td>
 <td><p>Identify the set of antennas that were fully flagged in at least one spw considered in the given flagging task, for any of the fields or intents, by analyzing the flagging commands. :Parameters: * <strong>ms</strong> -- measurement set. * <strong>flags</strong> -- list of flagging commands.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_antennas_for_refant_update</span></code>(ms, result, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.mark_antennas_for_refant_update.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.mark_antennas_for_refant_update" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.mark_antennas_for_refant_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_antennas_for_refant_update</span></code></a></p></td>
 <td><p>Modify result to set antennas to be demoted/removed if/when result gets accepted into the pipeline context.</p></td>
 </tr>
 </tbody>
@@ -154,22 +157,22 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAPhcorBandpassInputs</span></code>(context[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.ALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.ALMAPhcorBandpassInputs" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.ALMAPhcorBandpassInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAPhcorBandpassInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsXChart</span></code>(xaxis, context, output_dir, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.AmpVsXChart.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.AmpVsXChart" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.AmpVsXChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AmpVsXChart</span></code></a></p></td>
 <td><p>Plotting class that creates an amplitude vs X plot for each spw, where X is given as a constructor argument.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.bandpassflag.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.Bandpassflag" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.Bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bandpassflag</span></code></a>(inputs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.Bandpassflag.html#pipeline.hifa.tasks.Bandpassflag" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.Bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bandpassflag</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.bandpassflag.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagInputs" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassflagInputs</span></code></a>(context[, output_dir, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagInputs.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagInputs" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassflagInputs</span></code></a></p></td>
 <td><p>BandpassflagInputs defines the inputs for the Bandpassflag pipeline task.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.tasks.bandpassflag.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagResults" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassflagResults</span></code></a>(vis)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagResults.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagResults" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.BandpassflagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassflagResults</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagdataSetter</span></code>(inputs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpassflag.bandpassflag.FlagdataSetter.html#pipeline.hifa.tasks.bandpassflag.bandpassflag.FlagdataSetter" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.FlagdataSetter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagdataSetter</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -179,7 +182,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hifa.tasks.bandpassflag.Bandpassflag.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.bandpassflag.Bandpassflag" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.bandpassflag.bandpassflag.aggregate_fully_flagged_antenna_notifications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

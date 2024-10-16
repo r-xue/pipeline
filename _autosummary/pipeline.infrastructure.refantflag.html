@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.refantflag.NamedTuple" href="pipeline.infrastructure.refantflag.NamedTuple.html" />
+    <link rel="prev" title="pipeline.infrastructure.project.ProjectSummary" href="pipeline.infrastructure.project.ProjectSummary.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.refantflag</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.refantflag.rst.txt" rel="nofollow"> View page source</a>
@@ -137,22 +138,22 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedTuple</span></code>(typename[, fields])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.NamedTuple.html#pipeline.infrastructure.refantflag.NamedTuple" title="pipeline.infrastructure.refantflag.NamedTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p></td>
 <td><p>Typed version of namedtuple.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications" title="pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_fully_flagged_antenna_notifications</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications.html#pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications" title="pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_fully_flagged_antenna_notifications</span></code></a></p></td>
 <td><p>Aggregate the list of notifications about fully flagged antennas for the subsequent QA scoring. :Parameters: * <strong>fully_flagged_antennas</strong> -- dict with tuples(field, intent, spwid) as keys and sets of antenna ids as values. * <strong>all_spwids</strong> -- set of all spw ids considered in this flagging task, used to replace                the tuple of flagged spws by a string &quot;all spws&quot; when this is the case.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification" title="pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_fully_flagged_antenna_notification</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification.html#pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification" title="pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_fully_flagged_antenna_notification</span></code></a></p></td>
 <td><p>Format the notification message for fully flagged antennas. :Parameters: * <strong>vis</strong> -- the name of the ms. * <strong>notification</strong> -- the tuple containing the information about fully flagged antennas.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds" title="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagcmds</span></code></a>(ms, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds" title="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagcmds</span></code></a></p></td>
 <td><p>Identify the set of antennas that were fully flagged in at least one spw considered in the given flagging task, for any of the fields or intents, by analyzing the flagging commands. :Parameters: * <strong>ms</strong> -- measurement set. * <strong>flags</strong> -- list of flagging commands.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview" title="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagview</span></code></a>(ms, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview" title="pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_fully_flagged_antennas_from_flagview</span></code></a></p></td>
 <td><p>Identify the set of antennas that were fully flagged in at least one spw considered in the given flagging task, for any of the fields or intents, by analyzing the flagging view. :Parameters: * <strong>ms</strong> -- measurement set. * <strong>results</strong> -- a FlaggableViewResults object containing one or more flagging views,                which are two-dimensional arrays with 0th axis enumerating the scans                and 1st axis enumerating the antennas. * <strong>scan_to_field_names</strong> -- a dictionary providing the translation between scans and fields. the scans (0th axis) may be enumerated not only by scan index, but by any other                parameter that uniquely determines the scan (such as the timestamp), which serves                as the dict key, while its value contains the field(s) corresponding to each scan. * <strong>intents_of_interest</strong> -- if provided, lists the intents to be considered in this analysis.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.mark_antennas_for_refant_update" title="pipeline.infrastructure.refantflag.mark_antennas_for_refant_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_antennas_for_refant_update</span></code></a>(ms, result, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.mark_antennas_for_refant_update.html#pipeline.infrastructure.refantflag.mark_antennas_for_refant_update" title="pipeline.infrastructure.refantflag.mark_antennas_for_refant_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_antennas_for_refant_update</span></code></a></p></td>
 <td><p>Modify result to set antennas to be demoted/removed if/when result gets accepted into the pipeline context.</p></td>
 </tr>
 </tbody>
@@ -160,28 +161,28 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.FieldIntent" title="pipeline.infrastructure.refantflag.FieldIntent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntent</span></code></a>(field, intent)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FieldIntent.html#pipeline.infrastructure.refantflag.FieldIntent" title="pipeline.infrastructure.refantflag.FieldIntent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntent</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.FieldIntentAntenna" title="pipeline.infrastructure.refantflag.FieldIntentAntenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntentAntenna</span></code></a>(field, intent, antenna)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FieldIntentAntenna.html#pipeline.infrastructure.refantflag.FieldIntentAntenna" title="pipeline.infrastructure.refantflag.FieldIntentAntenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntentAntenna</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.FieldIntentSpw" title="pipeline.infrastructure.refantflag.FieldIntentSpw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntentSpw</span></code></a>(field, intent, spw)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FieldIntentSpw.html#pipeline.infrastructure.refantflag.FieldIntentSpw" title="pipeline.infrastructure.refantflag.FieldIntentSpw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldIntentSpw</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagCmd</span></code>([filename, rulename, ruleaxis, spw, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FlagCmd.html#pipeline.infrastructure.refantflag.FlagCmd" title="pipeline.infrastructure.refantflag.FlagCmd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagCmd</span></code></a></p></td>
 <td><p>Create a flagcmd.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlaggableViewResults</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FlaggableViewResults.html#pipeline.infrastructure.refantflag.FlaggableViewResults" title="pipeline.infrastructure.refantflag.FlaggableViewResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlaggableViewResults</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.FullyFlaggedAntennasNotification" title="pipeline.infrastructure.refantflag.FullyFlaggedAntennasNotification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullyFlaggedAntennasNotification</span></code></a>(field, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.FullyFlaggedAntennasNotification.html#pipeline.infrastructure.refantflag.FullyFlaggedAntennasNotification" title="pipeline.infrastructure.refantflag.FullyFlaggedAntennasNotification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FullyFlaggedAntennasNotification</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code>(name[, session])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.MeasurementSet.html#pipeline.infrastructure.refantflag.MeasurementSet" title="pipeline.infrastructure.refantflag.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
 <td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.refantflag.Results.html#pipeline.infrastructure.refantflag.Results" title="pipeline.infrastructure.refantflag.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
 <td><p>Results is the base implementation of the Results API.</p></td>
 </tr>
 </tbody>
@@ -191,7 +192,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.project.ProjectSummary.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.project.ProjectSummary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.refantflag.NamedTuple.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.refantflag.NamedTuple" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -4,9 +4,16 @@ pipeline.infrastructure.basetask
 .. automodule:: pipeline.infrastructure.basetask
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       capture_log
       matplotlibrc_handler
@@ -15,9 +22,16 @@ pipeline.infrastructure.basetask
       timestamp
       write_pipeline_casa_tasks
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CasaTasks
       Executor
@@ -36,3 +50,11 @@ pipeline.infrastructure.basetask
       TaskStartedEvent
       Timestamps
    
+   
+
+   
+   
+   
+
+
+

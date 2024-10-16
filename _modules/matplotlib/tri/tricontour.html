@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>matplotlib.tri.tricontour &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">matplotlib.tri.tricontour</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for matplotlib.tri.tricontour</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">_docstring</span>
+<span class="kn">from</span> <span class="nn">matplotlib.contour</span> <span class="kn">import</span> <span class="n">ContourSet</span>
+<span class="kn">from</span> <span class="nn">matplotlib.tri.triangulation</span> <span class="kn">import</span> <span class="n">Triangulation</span>
+
+
+<span class="nd">@_docstring</span><span class="o">.</span><span class="n">dedent_interpd</span>
+<span class="k">class</span> <span class="nc">TriContourSet</span><span class="p">(</span><span class="n">ContourSet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and store a set of contour lines or filled regions for</span>
+<span class="sd">    a triangular grid.</span>
+
+<span class="sd">    This class is typically not instantiated directly by the user but by</span>
+<span class="sd">    `~.Axes.tricontour` and `~.Axes.tricontourf`.</span>
+
+<span class="sd">    %(contour_set_attributes)s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw triangular grid contour lines or filled regions,</span>
+<span class="sd">        depending on whether keyword arg *filled* is False</span>
+<span class="sd">        (default) or True.</span>
+
+<span class="sd">        The first argument of the initializer must be an `~.axes.Axes`</span>
+<span class="sd">        object.  The remaining arguments and keyword arguments</span>
+<span class="sd">        are described in the docstring of `~.Axes.tricontour`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process args and kwargs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">TriContourSet</span><span class="p">):</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_contour_generator</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">levels</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">zmin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">zmax</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mins</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_mins</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_maxs</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_maxs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">_tri</span>
+            <span class="n">tri</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contour_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="n">_tri</span><span class="o">.</span><span class="n">TriContourGenerator</span><span class="p">(</span><span class="n">tri</span><span class="o">.</span><span class="n">get_cpp_triangulation</span><span class="p">(),</span> <span class="n">z</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mins</span> <span class="o">=</span> <span class="p">[</span><span class="n">tri</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">tri</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_maxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">tri</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">tri</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_contour_generator</span> <span class="o">=</span> <span class="n">C</span>
+        <span class="k">return</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">_contour_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tri</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Triangulation</span><span class="o">.</span><span class="n">get_from_args_and_kwargs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                                                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">tri</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z array must have same length as triangulation x&#39;</span>
+                             <span class="s1">&#39; and y arrays&#39;</span><span class="p">)</span>
+
+        <span class="c1"># z values must be finite, only need to check points that are included</span>
+        <span class="c1"># in the triangulation.</span>
+        <span class="n">z_check</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tri</span><span class="o">.</span><span class="n">get_masked_triangles</span><span class="p">())]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">z_check</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z must not contain masked points within the &#39;</span>
+                             <span class="s1">&#39;triangulation&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">z_check</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z array must not contain non-finite values &#39;</span>
+                             <span class="s1">&#39;within the triangulation&#39;</span><span class="p">)</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z_check</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z_check</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logscale</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="s1">&#39;contourf&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filled</span> <span class="k">else</span> <span class="s1">&#39;contour&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s1"> log of negative values.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_contour_level_args</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+
+
+<span class="n">_docstring</span><span class="o">.</span><span class="n">interpd</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_tricontour_doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Draw contour </span><span class="si">%%</span><span class="s2">(type)s on an unstructured triangular grid.</span>
+
+<span class="s2">Call signatures::</span>
+
+<span class="s2">    </span><span class="si">%%</span><span class="s2">(func)s(triangulation, z, [levels], ...)</span>
+<span class="s2">    </span><span class="si">%%</span><span class="s2">(func)s(x, y, z, [levels], *, [triangles=triangles], [mask=mask], ...)</span>
+
+<span class="s2">The triangular grid can be specified either by passing a `.Triangulation`</span>
+<span class="s2">object as the first parameter, or by passing the points *x*, *y* and</span>
+<span class="s2">optionally the *triangles* and a *mask*. See `.Triangulation` for an</span>
+<span class="s2">explanation of these parameters. If neither of *triangulation* or</span>
+<span class="s2">*triangles* are given, the triangulation is calculated on the fly.</span>
+
+<span class="s2">It is possible to pass *triangles* positionally, i.e.</span>
+<span class="s2">``</span><span class="si">%%</span><span class="s2">(func)s(x, y, triangles, z, ...)``. However, this is discouraged. For more</span>
+<span class="s2">clarity, pass *triangles* via keyword argument.</span>
+
+<span class="s2">Parameters</span>
+<span class="s2">----------</span>
+<span class="s2">triangulation : `.Triangulation`, optional</span>
+<span class="s2">    An already created triangular grid.</span>
+
+<span class="s2">x, y, triangles, mask</span>
+<span class="s2">    Parameters defining the triangular grid. See `.Triangulation`.</span>
+<span class="s2">    This is mutually exclusive with specifying *triangulation*.</span>
+
+<span class="s2">z : array-like</span>
+<span class="s2">    The height values over which the contour is drawn.  Color-mapping is</span>
+<span class="s2">    controlled by *cmap*, *norm*, *vmin*, and *vmax*.</span>
+
+<span class="s2">levels : int or array-like, optional</span>
+<span class="s2">    Determines the number and positions of the contour lines / regions.</span>
+
+<span class="s2">    If an int *n*, use `~matplotlib.ticker.MaxNLocator`, which tries to</span>
+<span class="s2">    automatically choose no more than *n+1* &quot;nice&quot; contour levels between</span>
+<span class="s2">    between minimum and maximum numeric values of *Z*.</span>
+
+<span class="s2">    If array-like, draw contour lines at the specified levels.  The values must</span>
+<span class="s2">    be in increasing order.</span>
+
+<span class="s2">Returns</span>
+<span class="s2">-------</span>
+<span class="s2">`~matplotlib.tri.TriContourSet`</span>
+
+<span class="s2">Other Parameters</span>
+<span class="s2">----------------</span>
+<span class="s2">colors : color string or sequence of colors, optional</span>
+<span class="s2">    The colors of the levels, i.e., the contour </span><span class="si">%%</span><span class="s2">(type)s.</span>
+
+<span class="s2">    The sequence is cycled for the levels in ascending order. If the sequence</span>
+<span class="s2">    is shorter than the number of levels, it is repeated.</span>
+
+<span class="s2">    As a shortcut, single color strings may be used in place of one-element</span>
+<span class="s2">    lists, i.e. ``&#39;red&#39;`` instead of ``[&#39;red&#39;]`` to color all levels with the</span>
+<span class="s2">    same color. This shortcut does only work for color strings, not for other</span>
+<span class="s2">    ways of specifying colors.</span>
+
+<span class="s2">    By default (value *None*), the colormap specified by *cmap* will be used.</span>
+
+<span class="s2">alpha : float, default: 1</span>
+<span class="s2">    The alpha blending value, between 0 (transparent) and 1 (opaque).</span>
+
+<span class="si">%(cmap_doc)s</span>
+
+<span class="s2">    This parameter is ignored if *colors* is set.</span>
+
+<span class="si">%(norm_doc)s</span>
+
+<span class="s2">    This parameter is ignored if *colors* is set.</span>
+
+<span class="si">%(vmin_vmax_doc)s</span>
+
+<span class="s2">    If *vmin* or *vmax* are not given, the default color scaling is based on</span>
+<span class="s2">    *levels*.</span>
+
+<span class="s2">    This parameter is ignored if *colors* is set.</span>
+
+<span class="s2">origin : {*None*, &#39;upper&#39;, &#39;lower&#39;, &#39;image&#39;}, default: None</span>
+<span class="s2">    Determines the orientation and exact position of *z* by specifying the</span>
+<span class="s2">    position of ``z[0, 0]``.  This is only relevant, if *X*, *Y* are not given.</span>
+
+<span class="s2">    - *None*: ``z[0, 0]`` is at X=0, Y=0 in the lower left corner.</span>
+<span class="s2">    - &#39;lower&#39;: ``z[0, 0]`` is at X=0.5, Y=0.5 in the lower left corner.</span>
+<span class="s2">    - &#39;upper&#39;: ``z[0, 0]`` is at X=N+0.5, Y=0.5 in the upper left corner.</span>
+<span class="s2">    - &#39;image&#39;: Use the value from :rc:`image.origin`.</span>
+
+<span class="s2">extent : (x0, x1, y0, y1), optional</span>
+<span class="s2">    If *origin* is not *None*, then *extent* is interpreted as in `.imshow`: it</span>
+<span class="s2">    gives the outer pixel boundaries. In this case, the position of z[0, 0] is</span>
+<span class="s2">    the center of the pixel, not a corner. If *origin* is *None*, then</span>
+<span class="s2">    (*x0*, *y0*) is the position of z[0, 0], and (*x1*, *y1*) is the position</span>
+<span class="s2">    of z[-1, -1].</span>
+
+<span class="s2">    This argument is ignored if *X* and *Y* are specified in the call to</span>
+<span class="s2">    contour.</span>
+
+<span class="s2">locator : ticker.Locator subclass, optional</span>
+<span class="s2">    The locator is used to determine the contour levels if they are not given</span>
+<span class="s2">    explicitly via *levels*.</span>
+<span class="s2">    Defaults to `~.ticker.MaxNLocator`.</span>
+
+<span class="s2">extend : {&#39;neither&#39;, &#39;both&#39;, &#39;min&#39;, &#39;max&#39;}, default: &#39;neither&#39;</span>
+<span class="s2">    Determines the ``</span><span class="si">%%</span><span class="s2">(func)s``-coloring of values that are outside the</span>
+<span class="s2">    *levels* range.</span>
+
+<span class="s2">    If &#39;neither&#39;, values outside the *levels* range are not colored.  If &#39;min&#39;,</span>
+<span class="s2">    &#39;max&#39; or &#39;both&#39;, color the values below, above or below and above the</span>
+<span class="s2">    *levels* range.</span>
+
+<span class="s2">    Values below ``min(levels)`` and above ``max(levels)`` are mapped to the</span>
+<span class="s2">    under/over values of the `.Colormap`. Note that most colormaps do not have</span>
+<span class="s2">    dedicated colors for these by default, so that the over and under values</span>
+<span class="s2">    are the edge values of the colormap.  You may want to set these values</span>
+<span class="s2">    explicitly using `.Colormap.set_under` and `.Colormap.set_over`.</span>
+
+<span class="s2">    .. note::</span>
+
+<span class="s2">        An existing `.TriContourSet` does not get notified if properties of its</span>
+<span class="s2">        colormap are changed. Therefore, an explicit call to</span>
+<span class="s2">        `.ContourSet.changed()` is needed after modifying the colormap. The</span>
+<span class="s2">        explicit call can be left out, if a colorbar is assigned to the</span>
+<span class="s2">        `.TriContourSet` because it internally calls `.ContourSet.changed()`.</span>
+
+<span class="s2">xunits, yunits : registered units, optional</span>
+<span class="s2">    Override axis units by specifying an instance of a</span>
+<span class="s2">    :class:`matplotlib.units.ConversionInterface`.</span>
+
+<span class="s2">antialiased : bool, optional</span>
+<span class="s2">    Enable antialiasing, overriding the defaults.  For</span>
+<span class="s2">    filled contours, the default is *True*.  For line contours,</span>
+<span class="s2">    it is taken from :rc:`lines.antialiased`.&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">_docstring</span><span class="o">.</span><span class="n">interpd</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
+
+<span class="nd">@_docstring</span><span class="o">.</span><span class="n">Substitution</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="s1">&#39;tricontour&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span><span class="p">)</span>
+<span class="nd">@_docstring</span><span class="o">.</span><span class="n">dedent_interpd</span>
+<span class="k">def</span> <span class="nf">tricontour</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    %(_tricontour_doc)s</span>
+
+<span class="sd">    linewidths : float or array-like, default: :rc:`contour.linewidth`</span>
+<span class="sd">        The line width of the contour lines.</span>
+
+<span class="sd">        If a number, all levels will be plotted with this linewidth.</span>
+
+<span class="sd">        If a sequence, the levels in ascending order will be plotted with</span>
+<span class="sd">        the linewidths in the order specified.</span>
+
+<span class="sd">        If None, this falls back to :rc:`lines.linewidth`.</span>
+
+<span class="sd">    linestyles : {*None*, &#39;solid&#39;, &#39;dashed&#39;, &#39;dashdot&#39;, &#39;dotted&#39;}, optional</span>
+<span class="sd">        If *linestyles* is *None*, the default is &#39;solid&#39; unless the lines are</span>
+<span class="sd">        monochrome.  In that case, negative contours will take their linestyle</span>
+<span class="sd">        from :rc:`contour.negative_linestyle` setting.</span>
+
+<span class="sd">        *linestyles* can also be an iterable of the above strings specifying a</span>
+<span class="sd">        set of linestyles to be used. If this iterable is shorter than the</span>
+<span class="sd">        number of contour levels it will be repeated as necessary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;filled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">TriContourSet</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="nd">@_docstring</span><span class="o">.</span><span class="n">Substitution</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="s1">&#39;tricontourf&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;regions&#39;</span><span class="p">)</span>
+<span class="nd">@_docstring</span><span class="o">.</span><span class="n">dedent_interpd</span>
+<span class="k">def</span> <span class="nf">tricontourf</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    %(_tricontour_doc)s</span>
+
+<span class="sd">    hatches : list[str], optional</span>
+<span class="sd">        A list of cross hatch patterns to use on the filled areas.</span>
+<span class="sd">        If None, no hatching will be added to the contour.</span>
+<span class="sd">        Hatching is supported in the PostScript, PDF, SVG and Agg</span>
+<span class="sd">        backends only.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    `.tricontourf` fills intervals that are closed at the top; that is, for</span>
+<span class="sd">    boundaries *z1* and *z2*, the filled region is::</span>
+
+<span class="sd">        z1 &lt; Z &lt;= z2</span>
+
+<span class="sd">    except for the lowest interval, which is closed on both sides (i.e. it</span>
+<span class="sd">    includes the lowest value).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;filled&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">TriContourSet</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

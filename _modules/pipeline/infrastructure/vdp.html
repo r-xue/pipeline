@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -218,6 +214,8 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="SingletonType">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.SingletonType.html#pipeline.infrastructure.vdp.SingletonType">[docs]</a>
 <span class="k">class</span> <span class="nc">SingletonType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SingletonType is a metaclass that ensures that only a single instance of</span>
@@ -225,14 +223,20 @@
 <span class="sd">    instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="SingletonType.__call__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.SingletonType.html#pipeline.infrastructure.vdp.SingletonType.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SingletonType</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="NullMarker">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NullMarker.html#pipeline.infrastructure.vdp.NullMarker">[docs]</a>
 <span class="k">class</span> <span class="nc">NullMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NullMarker is a class that represents the null &quot;parameter not-set&quot; case.</span>
@@ -248,6 +252,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">null_input</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">null_input</span><span class="p">)</span>
 
+<div class="viewcode-block" id="NullMarker.convert">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NullMarker.html#pipeline.infrastructure.vdp.NullMarker.convert">[docs]</a>
     <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the argument, converting user input considered equivalent to</span>
@@ -255,7 +261,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="k">return</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">val</span></div>
+
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
@@ -264,13 +271,16 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;NullMarker(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;NullMarker(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">))</span></div>
+
 
 
 <span class="c1"># shared instance, as very few inputs require custom null equivalents</span>
 <span class="n">_NULL</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
 
 
+<div class="viewcode-block" id="NoDefaultMarker">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NoDefaultMarker.html#pipeline.infrastructure.vdp.NoDefaultMarker">[docs]</a>
 <span class="k">class</span> <span class="nc">NoDefaultMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">SingletonType</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NoDefaultMarker is a class that represents the null &quot;parameter not-set&quot; case</span>
@@ -282,9 +292,12 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="PipelineInputsMeta">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.PipelineInputsMeta.html#pipeline.infrastructure.vdp.PipelineInputsMeta">[docs]</a>
 <span class="k">class</span> <span class="nc">PipelineInputsMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the name of a VisDependentProperty at class definition time.</span>
@@ -294,11 +307,12 @@
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">VisDependentProperty</span><span class="p">):</span>
                 <span class="n">obj</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span>
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
 
 
 <div class="viewcode-block" id="VisDependentProperty">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty">[docs]</a>
 <span class="k">class</span> <span class="nc">VisDependentProperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    VisDependentProperty is a Python data descriptor that standardises the</span>
@@ -348,7 +362,7 @@
         <span class="k">return</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
 <div class="viewcode-block" id="VisDependentProperty.convert">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty.convert">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.convert">[docs]</a>
     <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fconvert</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to clean and/or convert user-supplied argument</span>
@@ -363,7 +377,7 @@
 
 
 <div class="viewcode-block" id="VisDependentProperty.default">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty.default">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.default">[docs]</a>
     <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to get the attribute value when the user has not</span>
@@ -373,7 +387,7 @@
 
 
 <div class="viewcode-block" id="VisDependentProperty.fget">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty.fget">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.fget">[docs]</a>
     <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the underlying property value from an instance of the class</span>
@@ -386,7 +400,7 @@
 
 
 <div class="viewcode-block" id="VisDependentProperty.fset">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty.fset">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.fset">[docs]</a>
     <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the property value on the instance owning this property.</span>
@@ -399,7 +413,7 @@
 
 
 <div class="viewcode-block" id="VisDependentProperty.postprocess">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.VisDependentProperty.postprocess">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.postprocess">[docs]</a>
     <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpostprocess</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to process the value that is about to be</span>
@@ -430,12 +444,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">null</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="n">null_input</span><span class="p">)</span>
 
+<div class="viewcode-block" id="VisDependentProperty.__call__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># __call__ is executed when a function definition is called with</span>
         <span class="c1"># arguments</span>
         <span class="c1"># LOG.info(&#39;In __call__ for %s&#39; % fget.func_name)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fdefault</span> <span class="o">=</span> <span class="n">fdefault</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="c1"># Return the VisDependentProperty itself when called directly</span>
@@ -476,7 +493,7 @@
 
 
 <div class="viewcode-block" id="InputsContainer">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.InputsContainer">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.InputsContainer.html#pipeline.infrastructure.vdp.InputsContainer">[docs]</a>
 <span class="k">class</span> <span class="nc">InputsContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    InputsContainer is the top-level container object for all task Inputs.</span>
@@ -847,8 +864,6 @@
         <span class="n">vals</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">props</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
 
-<div class="viewcode-block" id="InputsContainer.as_dict">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.InputsContainer.as_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -859,21 +874,23 @@
             <span class="n">properties</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">format_value_list</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">properties</span></div>
-</div>
 
 
 
+<div class="viewcode-block" id="get_properties">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.get_properties.html#pipeline.infrastructure.vdp.get_properties">[docs]</a>
 <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)}</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="n">fn_name</span> <span class="k">for</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)}</span>
     <span class="n">props</span> <span class="o">=</span> <span class="n">attrs</span> <span class="o">-</span> <span class="n">methods</span>
     <span class="n">props</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s1">&#39;context&#39;</span><span class="p">)</span>
     <span class="n">props</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">props</span>
+    <span class="k">return</span> <span class="n">props</span></div>
+
 
 
 <div class="viewcode-block" id="StandardInputs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.StandardInputs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">StandardInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
 
     <span class="c1"># - standard non-vis-dependent properties --------------------------------</span>
@@ -909,8 +926,6 @@
 
     <span class="n">vis</span> <span class="o">=</span> <span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]])</span>
 
-<div class="viewcode-block" id="StandardInputs.ms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.StandardInputs.ms">[docs]</a>
     <span class="nd">@VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -920,15 +935,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="StandardInputs.output_dir">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.StandardInputs.output_dir">[docs]</a>
     <span class="nd">@VisDependentProperty</span>
     <span class="k">def</span> <span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span>
 
     <span class="k">def</span> <span class="nf">_get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -965,7 +976,7 @@
         <span class="k">return</span> <span class="n">d</span>
 
 <div class="viewcode-block" id="StandardInputs.to_casa_args">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.StandardInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Express these inputs as a dictionary of CASA arguments. The values</span>
@@ -1002,16 +1013,13 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
 
-<div class="viewcode-block" id="StandardInputs.as_dict">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.StandardInputs.as_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="ModeInputs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.ModeInputs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ModeInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ModeInputs is a facade for Inputs of a common task type, allowing the user</span>
@@ -1123,7 +1131,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ModeInputs.get_task">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.ModeInputs.get_task">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.get_task">[docs]</a>
     <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the task appropriate to the current Inputs.</span>
@@ -1132,16 +1140,13 @@
         <span class="k">return</span> <span class="n">task_cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ModeInputs.as_dict">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.ModeInputs.as_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
         <span class="n">props</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">props</span></div>
-
+        <span class="k">return</span> <span class="n">props</span>
 
 <div class="viewcode-block" id="ModeInputs.to_casa_args">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.ModeInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span></div>
 
@@ -1150,7 +1155,7 @@
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
 
 <div class="viewcode-block" id="ModeInputs.get_constructor_args">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.hifa.tasks.antpos.almaantpos.ModeInputs.get_constructor_args">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.get_constructor_args">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_constructor_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;context&#39;</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1182,6 +1187,8 @@
 <span class="c1"># module utility functions ---------------------------------------------------</span>
 
 
+<div class="viewcode-block" id="all_unique">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.all_unique.html#pipeline.infrastructure.vdp.all_unique">[docs]</a>
 <span class="k">def</span> <span class="nf">all_unique</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if all elements in the iterable argument are unique.</span>
@@ -1191,9 +1198,12 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot determine uniqueness of non-iterables&#39;</span><span class="p">)</span>
 
     <span class="n">hashes</span> <span class="o">=</span> <span class="p">{</span><span class="n">gen_hash</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">o</span><span class="p">}</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
 
 
+
+<div class="viewcode-block" id="gen_hash">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.gen_hash.html#pipeline.infrastructure.vdp.gen_hash">[docs]</a>
 <span class="k">def</span> <span class="nf">gen_hash</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a hash from a dictionary, list, tuple or set to any level, that</span>
@@ -1212,9 +1222,12 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">new_o</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_hash</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span></div>
 
 
+
+<div class="viewcode-block" id="format_value_list">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.format_value_list.html#pipeline.infrastructure.vdp.format_value_list">[docs]</a>
 <span class="k">def</span> <span class="nf">format_value_list</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="c1"># return single values where possible, which is when only one value</span>
     <span class="c1"># is present because the inputs covers one ms or because the values</span>
@@ -1227,9 +1240,12 @@
         <span class="k">if</span> <span class="n">all_unique</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">val</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
+
+<div class="viewcode-block" id="name_all_arguments">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.name_all_arguments.html#pipeline.infrastructure.vdp.name_all_arguments">[docs]</a>
 <span class="k">def</span> <span class="nf">name_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># we need to know the names of any non-key/value arguments supplied</span>
     <span class="c1"># in the constructor. The names of the argument can be found in the</span>
@@ -1260,7 +1276,8 @@
     <span class="k">if</span> <span class="s1">&#39;self&#39;</span> <span class="ow">in</span> <span class="n">named_args</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">named_args</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">named_args</span>
+    <span class="k">return</span> <span class="n">named_args</span></div>
+
 </pre></div>
 
            </div>

@@ -48,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -157,16 +153,16 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.NROImportData">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NROImportData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsdn/tasks/importdata/importdata.html#NROImportData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.NROImportData" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.importdata.SerialSDImportData" title="pipeline.hsd.tasks.importdata.importdata.SerialSDImportData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialSDImportData</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.importdata.importdata.SerialSDImportData.html#pipeline.hsd.tasks.importdata.importdata.SerialSDImportData" title="pipeline.hsd.tasks.importdata.importdata.SerialSDImportData"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialSDImportData</span></code></a></p>
 <p>NRO Data import execution task.</p>
 <p>This class extends importdata.ImportData class, and methods execute main logics depends on it.</p>
 <p class="rubric">Methods Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.NROImportData.analyse" title="pipeline.hsdn.tasks.NROImportData.analyse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse</span></code></a>(result)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.analyse" title="pipeline.hsdn.tasks.NROImportData.analyse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse</span></code></a>(result)</p></td>
 <td><p>Get version information for merge2 and set it to MS of result.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.NROImportData.prepare" title="pipeline.hsdn.tasks.NROImportData.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>(**parameters)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.prepare" title="pipeline.hsdn.tasks.NROImportData.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>(**parameters)</p></td>
 <td><p>Prepare job requests for execution.</p></td>
 </tr>
 </tbody>
@@ -174,7 +170,7 @@
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.NROImportData.analyse">
-<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsdn/tasks/importdata/importdata.html#NROImportData.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.NROImportData.analyse" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsdn/tasks/importdata/importdata.html#NROImportData.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.NROImportData.analyse" title="Link to this definition"></a></dt>
 <dd><p>Get version information for merge2 and set it to MS of result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -184,14 +180,14 @@
 <dd class="field-even"><p>result object</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults">NROImportDataResults</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults.html#pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults" title="pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults">NROImportDataResults</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.NROImportData.prepare">
-<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsdn/tasks/importdata/importdata.html#NROImportData.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.NROImportData.prepare" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults"><span class="pre">NROImportDataResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsdn/tasks/importdata/importdata.html#NROImportData.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.NROImportData.prepare" title="Link to this definition"></a></dt>
 <dd><p>Prepare job requests for execution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -201,7 +197,7 @@
 <dd class="field-even"><p>result object</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../_apidoc/pipeline.hsdn.tasks.importdata.html#pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults" title="pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults">NROImportDataResults</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../_autosummary/pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults.html#pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults" title="pipeline.hsdn.tasks.exportdata.exportdata.NROImportDataResults">NROImportDataResults</a></p>
 </dd>
 </dl>
 </dd></dl>

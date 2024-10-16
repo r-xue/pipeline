@@ -4,9 +4,16 @@ pipeline.hif.heuristics.mosaicoverlap
 .. automodule:: pipeline.hif.heuristics.mosaicoverlap
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       angularSeparation
       angularSeparationOfDirections
@@ -19,3 +26,15 @@ pipeline.hif.heuristics.mosaicoverlap
       mosaicOverlapFactorVIS
       primaryBeamArcsec
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

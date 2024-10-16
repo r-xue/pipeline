@@ -4,9 +4,21 @@ pipeline.infrastructure.renderer.qaadapter
 .. automodule:: pipeline.infrastructure.renderer.qaadapter
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CalibrationTopic
       DataSetTopic
@@ -18,3 +30,11 @@ pipeline.infrastructure.renderer.qaadapter
       Topic
       TopicRegistry
    
+   
+
+   
+   
+   
+
+
+

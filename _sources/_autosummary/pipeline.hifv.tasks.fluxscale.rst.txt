@@ -4,18 +4,37 @@ pipeline.hifv.tasks.fluxscale
 .. automodule:: pipeline.hifv.tasks.fluxscale
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Fluxboot
       FluxbootResults
       Solint
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    fluxboot
@@ -24,3 +43,4 @@ pipeline.hifv.tasks.fluxscale
    renderer
    solint
    testgainsdisplay
+

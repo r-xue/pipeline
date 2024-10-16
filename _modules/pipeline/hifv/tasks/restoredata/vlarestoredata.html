@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -150,7 +146,7 @@
 
 
 <div class="viewcode-block" id="VLARestoreDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restoredata.html#pipeline.hifv.tasks.restoredata.vlarestoredata.VLARestoreDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.restoredata.vlarestoredata.VLARestoreDataInputs.html#pipeline.hifv.tasks.VLARestoreDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">VLARestoreDataInputs</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreDataInputs</span><span class="p">):</span>
     <span class="n">bdfflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;co&#39;</span><span class="p">)</span>
@@ -170,14 +166,14 @@
 
 
 <div class="viewcode-block" id="VLARestoreData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restoredata.html#pipeline.hifv.tasks.restoredata.vlarestoredata.VLARestoreData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.VLARestoreData.html#pipeline.hifv.tasks.VLARestoreData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_restoredata&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VLARestoreData</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreData</span><span class="p">):</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VLARestoreDataInputs</span>
 
 <div class="viewcode-block" id="VLARestoreData.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.restoredata.html#pipeline.hifv.tasks.restoredata.vlarestoredata.VLARestoreData.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.VLARestoreData.html#pipeline.hifv.tasks.VLARestoreData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute an export data job appropriate to the</span>

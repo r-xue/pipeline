@@ -4,9 +4,16 @@ pipeline.infrastructure.utils.conversion
 .. automodule:: pipeline.infrastructure.utils.conversion
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       ant_arg_to_id
       commafy
@@ -27,9 +34,16 @@ pipeline.infrastructure.utils.conversion
       to_pipeline_intent
       unix_seconds_to_datetime
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       LoggingLRUCache
       Number
@@ -37,3 +51,11 @@ pipeline.infrastructure.utils.conversion
       datetime
       timedelta
    
+   
+
+   
+   
+   
+
+
+

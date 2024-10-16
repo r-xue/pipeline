@@ -4,9 +4,16 @@ pipeline.hifa.tasks.applycal.ampphase\_vs\_freq\_qa
 .. automodule:: pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       PHASE_REF_FN
       consolidate_data_selections
@@ -26,12 +33,27 @@ pipeline.hifa.tasks.applycal.ampphase\_vs\_freq\_qa
       score_fits
       to_linear_fit_parameters
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AntennaFit
       LinearFitParameters
       Outlier
       ValueAndUncertainty
    
+   
+
+   
+   
+   
+
+
+

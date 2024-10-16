@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.recipe_converter &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.recipe_converter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.recipes.recipe_converter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">recipe_conversion.py - conversion script from procedure xml file to Python code.</span>
+
+<span class="sd">Please run the script with -h option to see complete usage.</span>
+
+<span class="sd">Usage:</span>
+
+<span class="sd">    python3 /path/to/recipe_converter.py [recipe] [script]</span>
+
+<span class="sd">    or</span>
+
+<span class="sd">    casa -c /path/to/recipe_converter.py [recipe] [script]</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">xml.dom.minidom</span> <span class="k">as</span> <span class="nn">minidom</span>
+
+<span class="c1"># logger</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+<span class="c1"># type alias</span>
+<span class="n">DOM</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">minidom</span><span class="o">.</span><span class="n">Document</span><span class="p">,</span> <span class="n">minidom</span><span class="o">.</span><span class="n">Element</span><span class="p">]</span>
+
+<span class="c1"># special strings for recipe conversion</span>
+<span class="n">INDENT</span> <span class="o">=</span> <span class="s1">&#39;        &#39;</span>
+<span class="n">TEMPLATE_TEXT</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;# General imports</span>
+<span class="s1">import traceback</span>
+
+<span class="s1"># Pipeline imports</span>
+<span class="s1">import pipeline</span>
+<span class="s1"># Make pipeline tasks available in local name space</span>
+<span class="s1">pipeline.initcli(locals())</span>
+<span class="s1">from pipeline.infrastructure import casa_tools</span>
+
+<span class="s1">IMPORT_ONLY = &#39;Import only&#39;</span>
+
+
+<span class="s1"># Run the procedure</span>
+<span class="s1">def $</span><span class="si">{func_name}</span><span class="s1">(vislist, importonly=False, interactive=True):</span>
+<span class="s1">    echo_to_screen = interactive</span>
+<span class="s1">    casa_tools.post_to_log(&quot;Beginning pipeline run ...&quot;)</span>
+
+<span class="s1">    try:</span>
+<span class="s1">        # Initialize the pipeline</span>
+<span class="s1">        h_init($</span><span class="si">{init_args}</span><span class="s1">)</span>
+
+<span class="s1">$</span><span class="si">{procedure}</span>
+
+<span class="s1">    except Exception as e:</span>
+<span class="s1">        if str(e) == IMPORT_ONLY:</span>
+<span class="s1">            casa_tools.post_to_log(&quot;Exiting after import step ...&quot;, echo_to_screen=echo_to_screen)</span>
+<span class="s1">        else:</span>
+<span class="s1">            casa_tools.post_to_log(&quot;Error in procedure execution ...&quot;, echo_to_screen=echo_to_screen)</span>
+<span class="s1">            errstr = traceback.format_exc()</span>
+<span class="s1">            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)</span>
+
+<span class="s1">    finally:</span>
+<span class="s1">        # Save the results to the context</span>
+<span class="s1">        h_save()</span>
+
+<span class="s1">        casa_tools.post_to_log(&quot;Terminating procedure execution ...&quot;, echo_to_screen=echo_to_screen)</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="get_recipe_dir">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_recipe_dir.html#pipeline.recipes.recipe_converter.get_recipe_dir">[docs]</a>
+<span class="k">def</span> <span class="nf">get_recipe_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return absolute path to recipe directory.</span>
+
+<span class="sd">    Basically, this returns the directory where this file is located.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Absolute path to recipe directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">recipe_dir</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">recipe_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">recipe_dir</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;recipe directory is </span><span class="si">{</span><span class="n">recipe_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">recipe_dir</span></div>
+
+
+
+<div class="viewcode-block" id="get_cli_dir">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_cli_dir.html#pipeline.recipes.recipe_converter.get_cli_dir">[docs]</a>
+<span class="k">def</span> <span class="nf">get_cli_dir</span><span class="p">(</span><span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return path to cli directory for given category.</span>
+
+<span class="sd">    Note that this function does not check the existence of</span>
+<span class="sd">    cli directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        category: Category name (h, hif, hifa, hifv, hsd, hsdn, etc.)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to cli directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">recipe_dir</span> <span class="o">=</span> <span class="n">get_recipe_dir</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">pipeline_root_dir</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">recipe_dir</span><span class="p">)</span>
+    <span class="n">cli_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_root_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s1">/cli&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;cli directory is </span><span class="si">{</span><span class="n">cli_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cli_dir</span></div>
+
+
+
+<div class="viewcode-block" id="get_element">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_element.html#pipeline.recipes.recipe_converter.get_element">[docs]</a>
+<span class="k">def</span> <span class="nf">get_element</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">DOM</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expect_unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DOM</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">DOM</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get (list of) DOM object whose name matches tag_name.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node: Parent DOM object.</span>
+<span class="sd">        tag_name: Tag name.</span>
+<span class="sd">        expect_unique: Return single DOM object if True.</span>
+<span class="sd">                       Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of DOM objects whose name is tag_name, or the first DOM object</span>
+<span class="sd">        in the list if expect_unique is True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="n">tag_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">expect_unique</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">return_value</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">return_value</span> <span class="o">=</span> <span class="n">elements</span>
+
+    <span class="k">return</span> <span class="n">return_value</span></div>
+
+
+
+<div class="viewcode-block" id="get_data">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_data.html#pipeline.recipes.recipe_converter.get_data">[docs]</a>
+<span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">minidom</span><span class="o">.</span><span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract data from DOM object.</span>
+
+<span class="sd">    Return string &#39;data&#39; if node represents &lt;tag&gt;data&lt;/tag&gt;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node: DOM object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Data string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="parse_parameter">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.parse_parameter.html#pipeline.recipes.recipe_converter.parse_parameter">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_parameter</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">DOM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse DOM object corresponding to Parameter tag in procedure xml file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node: DOM object corresponding to Parameter tag</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Parameter name and its value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;Keyword&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">value_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_data</span><span class="p">(</span><span class="n">key_element</span><span class="p">),</span> <span class="n">get_data</span><span class="p">(</span><span class="n">value_element</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_short_description">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_short_description.html#pipeline.recipes.recipe_converter.get_short_description">[docs]</a>
+<span class="k">def</span> <span class="nf">get_short_description</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">DOM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract task short description.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tree: DOM object corresponding to task xml file (taskname.xml).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Task short description.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">parentNode</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s1">&#39;task&#39;</span><span class="p">,</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;shortdescription&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">short_desc_node</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">short_desc</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">short_desc_node</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">short_desc</span></div>
+
+
+
+<div class="viewcode-block" id="get_parameter_type">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_parameter_type.html#pipeline.recipes.recipe_converter.get_parameter_type">[docs]</a>
+<span class="k">def</span> <span class="nf">get_parameter_type</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">minidom</span><span class="o">.</span><span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get parameter type from param tag.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        element: DOM object corresponding to parameter definition (param tag).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (primary_type, subtypes) tuple. If primary_type is either &#39;any&#39; or</span>
+<span class="sd">        &#39;variant&#39;, subtypes holds the list of allowed types. Otherwise,</span>
+<span class="sd">        subtypes is empty and only the type specified by primary_type is</span>
+<span class="sd">        allowed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">element</span><span class="o">.</span><span class="n">hasAttribute</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">hasAttribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+    <span class="n">primary_type</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+    <span class="n">subtypes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">primary_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="s1">&#39;variant&#39;</span><span class="p">):</span>
+        <span class="n">any_tags</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;any&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">element</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;variant&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">any_tags</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">subtype_tags</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+            <span class="n">subtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">firstChild</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">subtype_tags</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;limittype&#39;</span><span class="p">,</span> <span class="s1">&#39;limittypes&#39;</span><span class="p">]</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">any_tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">subtypes</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">tag</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attr_names</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+    <span class="n">type_desc</span> <span class="o">=</span> <span class="p">(</span><span class="n">primary_type</span><span class="p">,</span> <span class="n">subtypes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">type_desc</span></div>
+
+
+
+<div class="viewcode-block" id="get_param_types">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_param_types.html#pipeline.recipes.recipe_converter.get_param_types">[docs]</a>
+<span class="k">def</span> <span class="nf">get_param_types</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">DOM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract list of parameters and value types.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tree: DOM object corresponding to task xml file (taskname.xml).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary holding (param_name_str, param_type_tuple) pair.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">parentNode</span><span class="o">.</span><span class="n">nodeName</span> <span class="o">==</span> <span class="s1">&#39;input&#39;</span><span class="p">,</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;param&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">type_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span> <span class="n">get_parameter_type</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">type_dict</span></div>
+
+
+
+<div class="viewcode-block" id="get_task_property">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_task_property.html#pipeline.recipes.recipe_converter.get_task_property">[docs]</a>
+<span class="k">def</span> <span class="nf">get_task_property</span><span class="p">(</span><span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get task property from task xml file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name: Pipeline task name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pipeline task property, including the comment (taken from</span>
+<span class="sd">        the shortdescription tag) and the parameter_types dictionary</span>
+<span class="sd">        holding (param_name_str, param_type_tuple) pair where</span>
+<span class="sd">        param_type_tuple is a pair of (primary_type, subtypes).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">task_name</span> <span class="o">==</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">task_category</span> <span class="o">=</span> <span class="n">task_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cli_dir</span> <span class="o">=</span> <span class="n">get_cli_dir</span><span class="p">(</span><span class="n">task_category</span><span class="p">)</span>
+    <span class="n">task_xml</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cli_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">.xml&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;task_xml is </span><span class="si">{</span><span class="n">task_xml</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">task_xml</span><span class="p">)</span>
+    <span class="n">root_element</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">task_xml</span><span class="p">)</span>
+    <span class="n">short_desc</span> <span class="o">=</span> <span class="n">get_short_description</span><span class="p">(</span><span class="n">root_element</span><span class="p">)</span>
+    <span class="n">type_dict</span> <span class="o">=</span> <span class="n">get_param_types</span><span class="p">(</span><span class="n">root_element</span><span class="p">)</span>
+
+    <span class="n">task_property</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="n">short_desc</span><span class="p">,</span>
+        <span class="s1">&#39;parameter_types&#39;</span><span class="p">:</span> <span class="n">type_dict</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">task_property</span></div>
+
+
+
+<div class="viewcode-block" id="parse_command">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.parse_command.html#pipeline.recipes.recipe_converter.parse_command">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_command</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">DOM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse DOM object into dictionary.</span>
+
+<span class="sd">    The node parameter must be the object corresponding to</span>
+<span class="sd">    ProcessingCommand tag in the procedure xml file</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node: DOM object to be parsed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary representation of DOM object.</span>
+
+<span class="sd">        Return value has the follwoing structure:</span>
+
+<span class="sd">            {task_name: {</span>
+<span class="sd">                &#39;comment&#39;: str,</span>
+<span class="sd">                &#39;parameter&#39;: dict,</span>
+<span class="sd">                &#39;parameter_types&#39;: dict,</span>
+<span class="sd">            }}</span>
+
+<span class="sd">        where comment is a string taken from pipeline task xml file</span>
+<span class="sd">        (shortdescription tag), parameter is a dictionary of the pair</span>
+<span class="sd">        of parameter name and value specified in procedure xml file,</span>
+<span class="sd">        and parameter_types is a dictionary of the pair of parameter</span>
+<span class="sd">        name and its type also taken from pipeline task xml file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">command_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;Command&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">command_element</span><span class="p">)</span>
+
+    <span class="n">parameter_set_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;ParameterSet&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parameter_elements</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">parameter_set_element</span><span class="p">,</span> <span class="s1">&#39;Parameter&#39;</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parse_parameter</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameter_elements</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;command is </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">task_property</span> <span class="o">=</span> <span class="n">get_task_property</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;parameters are </span><span class="si">{</span><span class="n">parameters</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">task_property</span><span class="p">[</span><span class="s1">&#39;parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameters</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">command</span><span class="p">:</span> <span class="n">task_property</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="parse">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.parse.html#pipeline.recipes.recipe_converter.parse">[docs]</a>
+<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">procedure_abs_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse procedure xml file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        procedure_abs_path: Absolute path to the procedure xml file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pipeline recipe name with the list of commands.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root_element</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">procedure_abs_path</span><span class="p">)</span>
+
+    <span class="c1"># ProcessingProcedure</span>
+    <span class="n">procedure_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">root_element</span><span class="p">,</span> <span class="s1">&#39;ProcessingProcedure&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ProcedureTitle - will be function name</span>
+    <span class="n">title_element</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">procedure_element</span><span class="p">,</span> <span class="s1">&#39;ProcedureTitle&#39;</span><span class="p">,</span> <span class="n">expect_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">func_name</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">title_element</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;function name is </span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># ProcessingCommand</span>
+    <span class="n">command_elements</span> <span class="o">=</span> <span class="n">get_element</span><span class="p">(</span><span class="n">procedure_element</span><span class="p">,</span> <span class="s1">&#39;ProcessingCommand&#39;</span><span class="p">)</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_command</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">command_elements</span><span class="p">]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;command list is:&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">commands</span></div>
+
+
+
+<div class="viewcode-block" id="get_comment">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_comment.html#pipeline.recipes.recipe_converter.get_comment">[docs]</a>
+<span class="k">def</span> <span class="nf">get_comment</span><span class="p">(</span><span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate comment for given task from the configuration.</span>
+
+<span class="sd">    The function refers comment field of config. Multi-line comment</span>
+<span class="sd">    is properly handled.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name: Pipeline task name.</span>
+<span class="sd">        config: Pipeline task configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Comment for pipeline task. If task_name is &#39;breakpoint&#39;,</span>
+<span class="sd">        the comment indicating breakpoint will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">INDENT</span><span class="si">}</span><span class="s1"># &#39;</span>
+    <span class="k">if</span> <span class="n">task_name</span> <span class="o">==</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">:</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; ---- </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> ----&#39;</span>
+    <span class="k">elif</span> <span class="n">comment</span><span class="p">:</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># handle multi-line comment</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> *&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">comment</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">comment</span></div>
+
+
+
+<div class="viewcode-block" id="get_execution_command">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.get_execution_command.html#pipeline.recipes.recipe_converter.get_execution_command">[docs]</a>
+<span class="k">def</span> <span class="nf">get_execution_command</span><span class="p">(</span><span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate execution command from given task name and configuration.</span>
+
+<span class="sd">    The config parameter should have at least two fields: parameter and</span>
+<span class="sd">    parameter_types. The parameter field should be the dictionary with</span>
+<span class="sd">    (param_name_str, param_value_str) pair while the parameter_types field</span>
+<span class="sd">    should be the dictionary with (param_name_str, param_type_tuple) pair</span>
+<span class="sd">    where param_type_tuple is (primary_type, subtypes) pair .</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name: Pipeline task name.</span>
+<span class="sd">        config: Pipeline task configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Task execution command string. If task_name is &#39;breakpoint&#39;,</span>
+<span class="sd">        empty string will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parameter</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># breakpoint</span>
+    <span class="k">if</span> <span class="n">task_name</span> <span class="o">==</span> <span class="s1">&#39;breakpoint&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># param_types = get_parameter_types(task_name)</span>
+    <span class="n">param_types</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;parameter_types&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">parameter</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">construct_arg</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="c1"># default value type is string</span>
+            <span class="n">type_dict</span> <span class="o">=</span> <span class="n">param_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="n">value_type</span><span class="p">,</span> <span class="n">value_subtypes</span> <span class="o">=</span> <span class="n">type_dict</span>
+
+            <span class="c1"># TODO: handle variant and any types properly</span>
+            <span class="k">if</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;variant&#39;</span><span class="p">,</span> <span class="s1">&#39;any&#39;</span><span class="p">):</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="se">\&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="se">\&#39;</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">construct_arg</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameter</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+    <span class="c1"># special handling for importdata task</span>
+    <span class="n">is_importdata</span> <span class="o">=</span> <span class="s1">&#39;importdata&#39;</span> <span class="ow">in</span> <span class="n">task_name</span>
+    <span class="k">if</span> <span class="n">is_importdata</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;vis=vislist, </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># construct function call</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">INDENT</span><span class="si">}{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="k">if</span> <span class="n">is_importdata</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">+=</span> <span class="s1">&#39;&#39;&#39;</span>
+
+<span class="s1">        if importonly:</span>
+<span class="s1">            raise Exception(IMPORT_ONLY)&#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">command</span></div>
+
+
+
+<div class="viewcode-block" id="c2p">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.c2p.html#pipeline.recipes.recipe_converter.c2p">[docs]</a>
+<span class="k">def</span> <span class="nf">c2p</span><span class="p">(</span><span class="n">command</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert pipeline command dictionary into string.</span>
+
+<span class="sd">    The command parameter should be the dictionary returned by</span>
+<span class="sd">    parse_command.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        command: Pipeline task and its custom parameters.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Python code snippet invoking given pipeline task.</span>
+<span class="sd">        The string will look like the following:</span>
+
+<span class="sd">            # task shortdescription taken from the task xml file</span>
+<span class="sd">            taskname()</span>
+
+<span class="sd">        or, if parameters are customized in the procedure xml file,</span>
+
+<span class="sd">            # task shortdescription taken from the task xml file</span>
+<span class="sd">            taskname(custom_param=custom_value)</span>
+
+<span class="sd">        Note that there will be some additional code for importdata stage.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;c2p: command is </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">task_name</span><span class="p">,</span> <span class="n">config</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">procedure</span> <span class="o">=</span> <span class="n">get_comment</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="n">command</span> <span class="o">=</span> <span class="n">get_execution_command</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">procedure</span> <span class="o">+=</span> <span class="n">command</span>
+
+    <span class="k">return</span> <span class="n">procedure</span></div>
+
+
+
+<div class="viewcode-block" id="to_procedure">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.to_procedure.html#pipeline.recipes.recipe_converter.to_procedure">[docs]</a>
+<span class="k">def</span> <span class="nf">to_procedure</span><span class="p">(</span><span class="n">commands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert list of commands to string that represents Python code snippet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        commands: List of pipeline tasks and their custom parameters.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Python code snippet that executes pipeline tasks sequentially.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c2p</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="export">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.export.html#pipeline.recipes.recipe_converter.export">[docs]</a>
+<span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">commands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">script_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plotlevel_summary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export parsed information as a Python script.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func_name: Name of the function defined in the Python script.</span>
+<span class="sd">        commands: List of pipeline tasks and their custom parameters.</span>
+<span class="sd">        script_name: Output script name.</span>
+<span class="sd">        plotlevel_summary: Set True to initialize pipeline with &quot;summary&quot; plotlevel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">TEMPLATE_TEXT</span><span class="p">)</span>
+    <span class="n">procedure</span> <span class="o">=</span> <span class="n">to_procedure</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+    <span class="n">init_args</span> <span class="o">=</span> <span class="s2">&quot;plotlevel=&#39;summary&#39;&quot;</span> <span class="k">if</span> <span class="n">plotlevel_summary</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span>
+            <span class="n">func_name</span><span class="o">=</span><span class="n">func_name</span><span class="p">,</span>
+            <span class="n">procedure</span><span class="o">=</span><span class="n">procedure</span><span class="p">,</span>
+            <span class="n">init_args</span><span class="o">=</span><span class="n">init_args</span>
+        <span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.main.html#pipeline.recipes.recipe_converter.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plotlevel_summary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Python script from procedure xml file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        recipe_name: Recipe name. Will be translated into xml file name,</span>
+<span class="sd">                           procedure_&lt;recipe_name&gt;.xml.</span>
+<span class="sd">        script_name: Output script name.</span>
+<span class="sd">        plotlevel_summary: Set True to initialize pipeline with &quot;summary&quot; plotlevel.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: Procedure xml file does not exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">procedure</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;procedure_</span><span class="si">{</span><span class="n">recipe_name</span><span class="si">}</span><span class="s1">.xml&#39;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;__file__ is </span><span class="si">{</span><span class="vm">__file__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;recipe is </span><span class="si">{</span><span class="n">recipe_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;procedure is </span><span class="si">{</span><span class="n">procedure</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">recipe_dir</span> <span class="o">=</span> <span class="n">get_recipe_dir</span><span class="p">()</span>
+
+    <span class="n">procedure_abs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">recipe_dir</span><span class="p">,</span> <span class="n">procedure</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">procedure_abs_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Procedure &quot;</span><span class="si">{</span><span class="n">procedure</span><span class="si">}</span><span class="s1">&quot; not found.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># parse procedure xml file</span>
+    <span class="n">func_name</span><span class="p">,</span> <span class="n">commands</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">procedure_abs_path</span><span class="p">)</span>
+
+    <span class="c1"># export commands as Python script</span>
+    <span class="n">export</span><span class="p">(</span><span class="n">func_name</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span> <span class="n">plotlevel_summary</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="generate_all">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.recipes.recipe_converter.generate_all.html#pipeline.recipes.recipe_converter.generate_all">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_all</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate recipe scripts from all procedure files in the recipe directory.</span>
+
+<span class="sd">    Pipeline is initialized with plotlevel=&#39;summary&#39; for the recipes listed in</span>
+<span class="sd">    summary_plotlevel_recipes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">recipe_dir</span> <span class="o">=</span> <span class="n">get_recipe_dir</span><span class="p">()</span>
+
+    <span class="n">recipe_xml_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">recipe_dir</span><span class="si">}</span><span class="s1">/procedure_*.xml&#39;</span><span class="p">)</span>
+    <span class="n">summary_plotlevel_recipes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;hifvcalvlass_compression&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hifvcalvlass&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hifv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hifv_calimage_cont&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hifv_contimage&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;vlassQLIP&#39;</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recipe_xml_files</span><span class="p">:</span>
+        <span class="n">xml_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">xml_file</span><span class="p">)</span>
+        <span class="n">recipe_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;procedure_(.*).xml&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span> <span class="n">xml_file</span><span class="p">)</span>
+        <span class="n">script_name</span> <span class="o">=</span> <span class="n">recipe_name</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Processing </span><span class="si">{</span><span class="n">recipe_name</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="n">plotlevel_summary</span> <span class="o">=</span> <span class="n">recipe_name</span> <span class="ow">in</span> <span class="n">summary_plotlevel_recipes</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span> <span class="n">plotlevel_summary</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished processing </span><span class="si">{</span><span class="n">recipe_name</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Convert procedure xml file into Python script&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--all&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;generate_all&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;process all procedure files in the recipes directory. user-supplied recipe and script names will be omitted.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--debug&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;debug mode&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--plotlevel-summary&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;set plotlevel summary&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;recipe&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;hsd_calimage&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;recipe type. will be translated to xml file name, &quot;procedure_&lt;recipe&gt;.xml&quot;&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;output scirpt name. defaults to &lt;recipe&gt;.py&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">recipe_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">recipe</span>
+    <span class="n">script_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">script</span>
+    <span class="n">flag_generate_all</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">generate_all</span>
+    <span class="n">flag_debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
+    <span class="n">flag_summary</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">summary</span>
+
+    <span class="k">if</span> <span class="n">flag_debug</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;running in debug mode...&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;generate_all=</span><span class="si">{</span><span class="n">flag_generate_all</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">flag_generate_all</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Generating recipe scrpts for all procedure files.&#39;</span><span class="p">)</span>
+        <span class="n">generate_all</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">script_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">script_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">recipe_name</span><span class="si">}</span><span class="s1">.py&#39;</span>
+
+        <span class="n">main</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span> <span class="n">flag_summary</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

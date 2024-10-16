@@ -4,9 +4,16 @@ pipeline.hif.heuristics.auto\_selfcal.selfcal\_helpers
 .. automodule:: pipeline.hif.heuristics.auto_selfcal.selfcal_helpers
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       analyze_inf_EB_flagging
       checkmask
@@ -48,9 +55,24 @@ pipeline.hif.heuristics.auto\_selfcal.selfcal\_helpers
       rank_refants
       test_truncated_scans
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ContFileHandler
    
+   
+
+   
+   
+   
+
+
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="AnalyzestokescubesResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesResults.html#pipeline.hifv.tasks.AnalyzestokescubesResults">[docs]</a>
 <span class="k">class</span> <span class="nc">AnalyzestokescubesResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -154,7 +150,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span>
 
 <div class="viewcode-block" id="AnalyzestokescubesResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesResults.html#pipeline.hifv.tasks.AnalyzestokescubesResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -170,7 +166,7 @@
 
 
 <div class="viewcode-block" id="AnalyzestokescubesInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.AnalyzestokescubesInputs.html#pipeline.hifv.tasks.AnalyzestokescubesInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">AnalyzestokescubesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -179,7 +175,7 @@
 
 
 <div class="viewcode-block" id="Analyzestokescubes">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.Analyzestokescubes">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Analyzestokescubes.html#pipeline.hifv.tasks.Analyzestokescubes">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_analyzestokescubes&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Add your task description for inclusion in casa_commands.log&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Analyzestokescubes</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -187,7 +183,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Analyzestokescubes.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.Analyzestokescubes.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Analyzestokescubes.html#pipeline.hifv.tasks.Analyzestokescubes.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analyzestokescubes is running.&quot;</span><span class="p">)</span>
@@ -261,7 +257,7 @@
 
 
 <div class="viewcode-block" id="Analyzestokescubes.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.analyzestokescubes.html#pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes.Analyzestokescubes.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Analyzestokescubes.html#pipeline.hifv.tasks.Analyzestokescubes.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 

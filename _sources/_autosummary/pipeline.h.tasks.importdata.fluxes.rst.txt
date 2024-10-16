@@ -4,9 +4,16 @@ pipeline.h.tasks.importdata.fluxes
 .. automodule:: pipeline.h.tasks.importdata.fluxes
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       CYCLE7_export_flux_from_result
       dequote
@@ -22,10 +29,25 @@ pipeline.h.tasks.importdata.fluxes
       to_hertz
       to_jansky
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SpectralWindowTable
       datetime
    
+   
+
+   
+   
+   
+
+
+

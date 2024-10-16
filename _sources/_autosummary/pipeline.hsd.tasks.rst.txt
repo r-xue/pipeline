@@ -4,9 +4,21 @@ pipeline.hsd.tasks
 .. automodule:: pipeline.hsd.tasks
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       FlagDeterALMASingleDish
       SDApplycal
@@ -21,10 +33,17 @@ pipeline.hsd.tasks
       SDTsysflag
       SerialSDATMCorrection
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    applycal
@@ -40,3 +59,4 @@ pipeline.hsd.tasks
    restoredata
    skycal
    tsysflag
+

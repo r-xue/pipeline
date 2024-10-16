@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -150,7 +146,7 @@
 
 
 <div class="viewcode-block" id="Topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.Topic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.Topic.html#pipeline.infrastructure.renderer.qaadapter.Topic">[docs]</a>
 <span class="k">class</span> <span class="nc">Topic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>    
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Topic is the base class for a Topic web log section. It should not be</span>
@@ -177,14 +173,11 @@
         <span class="c1"># results_by_type[BandpassResults] = [bpresult1, bpresult2]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results_by_type</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="Topic.register_result_class">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.Topic.register_result_class">[docs]</a>
     <span class="k">def</span> <span class="nf">register_result_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_registered_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">result_class</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registered_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">result_class</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Topic.assign_to_topics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.Topic.assign_to_topics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.Topic.html#pipeline.infrastructure.renderer.qaadapter.Topic.assign_to_topics">[docs]</a>
     <span class="k">def</span> <span class="nf">assign_to_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Allocating Results to the appropriate task type based on the Results</span>
@@ -206,7 +199,7 @@
 
 
 <div class="viewcode-block" id="Topic.handles_result">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.Topic.handles_result">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.Topic.html#pipeline.infrastructure.renderer.qaadapter.Topic.handles_result">[docs]</a>
     <span class="k">def</span> <span class="nf">handles_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the given Result is part of this topic.</span>
@@ -227,7 +220,7 @@
 
 
 <div class="viewcode-block" id="DataSetTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.DataSetTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.DataSetTopic.html#pipeline.infrastructure.renderer.qaadapter.DataSetTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">DataSetTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DataSetTopic collects together those results generated by data set</span>
@@ -239,7 +232,7 @@
 
 
 <div class="viewcode-block" id="CalibrationTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.CalibrationTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.CalibrationTopic.html#pipeline.infrastructure.renderer.qaadapter.CalibrationTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">CalibrationTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalibrationTopic collects together those results generated by</span>
@@ -251,7 +244,7 @@
 
 
 <div class="viewcode-block" id="FlaggingTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.FlaggingTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.FlaggingTopic.html#pipeline.infrastructure.renderer.qaadapter.FlaggingTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">FlaggingTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlaggingTopic collects together those results generated by flagging</span>
@@ -263,7 +256,7 @@
 
 
 <div class="viewcode-block" id="LineFindingTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.LineFindingTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.LineFindingTopic.html#pipeline.infrastructure.renderer.qaadapter.LineFindingTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">LineFindingTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LineFindingTopic collects together those results generated by</span>
@@ -275,7 +268,7 @@
 
 
 <div class="viewcode-block" id="ImagingTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.ImagingTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.ImagingTopic.html#pipeline.infrastructure.renderer.qaadapter.ImagingTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">ImagingTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ImagingTopic collects together those results generated by imaging</span>
@@ -287,7 +280,7 @@
 
 
 <div class="viewcode-block" id="MiscellaneousTopic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.MiscellaneousTopic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.MiscellaneousTopic.html#pipeline.infrastructure.renderer.qaadapter.MiscellaneousTopic">[docs]</a>
 <span class="k">class</span> <span class="nc">MiscellaneousTopic</span><span class="p">(</span><span class="n">Topic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MiscellaneousTopic collects together those results generated by</span>
@@ -299,7 +292,7 @@
 
 
 <div class="viewcode-block" id="TopicRegistry">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.TopicRegistry.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">TopicRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># holds the Topics into which we should push the results </span>
     <span class="n">topic_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataSetTopic</span><span class="p">,</span>
@@ -325,93 +318,51 @@
                   <span class="n">result_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">topic_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">topic_class</span><span class="p">]</span><span class="o">.</span><span class="n">register_result_class</span><span class="p">(</span><span class="n">result_class</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TopicRegistry.assign_to_topics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.assign_to_topics">[docs]</a>
     <span class="k">def</span> <span class="nf">assign_to_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">topic</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">topic</span><span class="o">.</span><span class="n">assign_to_topics</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+            <span class="n">topic</span><span class="o">.</span><span class="n">assign_to_topics</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_dataset_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_dataset_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_dataset_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">DataSetTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">DataSetTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_calibration_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_calibration_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_calibration_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">CalibrationTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">CalibrationTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_flagging_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_flagging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_flagging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">FlaggingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">FlaggingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_imaging_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_imaging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_imaging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">ImagingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">ImagingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_linefinding_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_linefinding_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_linefinding_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">LineFindingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">LineFindingTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.register_to_miscellaneous_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.register_to_miscellaneous_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">register_to_miscellaneous_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_class</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">MiscellaneousTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_to_topic</span><span class="p">(</span><span class="n">MiscellaneousTopic</span><span class="p">,</span> <span class="n">result_class</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_dataset_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_dataset_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_dataset_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">DataSetTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">DataSetTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_calibration_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_calibration_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_calibration_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">CalibrationTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">CalibrationTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_flagging_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_flagging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_flagging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">FlaggingTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">FlaggingTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_imaging_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_imaging_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_imaging_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">ImagingTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">ImagingTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_linefinding_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_linefinding_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_linefinding_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">LineFindingTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">LineFindingTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_miscellaneous_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_miscellaneous_topic">[docs]</a>
     <span class="k">def</span> <span class="nf">get_miscellaneous_topic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">MiscellaneousTopic</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span><span class="p">[</span><span class="n">MiscellaneousTopic</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="TopicRegistry.get_topics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_topics">[docs]</a>
     <span class="k">def</span> <span class="nf">get_topics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topics</span>
 
 <div class="viewcode-block" id="TopicRegistry.get_url">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_url">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.TopicRegistry.html#pipeline.infrastructure.renderer.qaadapter.TopicRegistry.get_url">[docs]</a>
     <span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the URL of the QA section appropriate to the given result.</span>
@@ -427,7 +378,7 @@
 
 
 <div class="viewcode-block" id="QABaseAdapter">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.qaadapter.QABaseAdapter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.qaadapter.QABaseAdapter.html#pipeline.infrastructure.renderer.qaadapter.QABaseAdapter">[docs]</a>
 <span class="k">class</span> <span class="nc">QABaseAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;qa&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>

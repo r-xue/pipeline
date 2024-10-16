@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,7 +143,7 @@
 
 
 <div class="viewcode-block" id="TecMapsInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsInputs.html#pipeline.hifv.tasks.TecMapsInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TecMapsInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">show_tec_maps</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">apply_tec_correction</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -175,7 +171,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">caltype</span> <span class="o">=</span> <span class="n">caltype</span>
 
 <div class="viewcode-block" id="TecMapsInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsInputs.html#pipeline.hifv.tasks.TecMapsInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TecMapsInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="n">args</span><span class="p">[</span><span class="s1">&#39;caltype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tecim&#39;</span>
@@ -185,7 +181,7 @@
 
 
 <div class="viewcode-block" id="TecMapsResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsResults.html#pipeline.hifv.tasks.TecMapsResults">[docs]</a>
 <span class="k">class</span> <span class="nc">TecMapsResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tec_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tec_rms_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">tec_plotfile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -209,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tec_plotfile</span> <span class="o">=</span> <span class="n">tec_plotfile</span>
 
 <div class="viewcode-block" id="TecMapsResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.tecmaps.tecmaps.TecMapsResults.html#pipeline.hifv.tasks.TecMapsResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
@@ -232,13 +228,13 @@
 
 
 <div class="viewcode-block" id="TecMaps">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMaps">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.TecMaps.html#pipeline.hifv.tasks.TecMaps">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_tecmaps&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">TecMaps</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TecMapsInputs</span>
 
 <div class="viewcode-block" id="TecMaps.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMaps.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.TecMaps.html#pipeline.hifv.tasks.TecMaps.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -277,7 +273,7 @@
 
 
 <div class="viewcode-block" id="TecMaps.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.tecmaps.html#pipeline.hifv.tasks.tecmaps.tecmaps.TecMaps.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.TecMaps.html#pipeline.hifv.tasks.TecMaps.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># double-check that the caltable was actually generated</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>

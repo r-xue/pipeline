@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -158,7 +154,7 @@
 
 
 <div class="viewcode-block" id="PlotbandpassDetailBase">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassDetailBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># identify the bandpass solution for the target</span>
@@ -252,8 +248,6 @@
                                                    <span class="n">time</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_figfile</span><span class="p">[</span><span class="n">spw_id</span><span class="p">][</span><span class="n">ant_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_figfile</span>
 
-<div class="viewcode-block" id="PlotbandpassDetailBase.create_task">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase.create_task">[docs]</a>
     <span class="k">def</span> <span class="nf">create_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_arg</span><span class="p">,</span> <span class="n">antenna_arg</span><span class="p">,</span> <span class="n">showimage</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span><span class="p">,</span>
                      <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caltable</span><span class="p">,</span>
@@ -268,19 +262,15 @@
                      <span class="p">}</span>
         <span class="n">task_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">plotbandpass</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">plotbandpass</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PlotbandpassDetailBase.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="PlotmsCalLeaf">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalLeaf">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotmsCalLeaf.html#pipeline.h.tasks.common.displays.common.PlotmsCalLeaf">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsCalLeaf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to execute plotms and return a plot wrapper. It passes the spw and</span>
@@ -344,12 +334,9 @@
             <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_title</span><span class="p">,</span>
             <span class="s1">&#39;clearplots&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
-<div class="viewcode-block" id="PlotmsCalLeaf.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalLeaf.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">caltable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calapp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
@@ -434,7 +421,7 @@
 
 
 <div class="viewcode-block" id="PlotbandpassLeaf">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassLeaf">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassLeaf.html#pipeline.h.tasks.common.displays.common.PlotbandpassLeaf">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassLeaf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to execute plotbandpass and return a plot wrapper. It passes the spw</span>
@@ -490,15 +477,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span> <span class="o">=</span> <span class="n">overlay</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showatm</span> <span class="o">=</span> <span class="n">showatm</span>
 
-<div class="viewcode-block" id="PlotbandpassLeaf.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassLeaf.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_task</span><span class="p">()</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_wrapper</span><span class="p">(</span><span class="n">task</span><span class="p">)]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span>
                 <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">abspath</span><span class="p">)]</span></div>
-
+                <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">abspath</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">fileparts</span> <span class="o">=</span> <span class="p">{</span>
@@ -561,7 +545,7 @@
 
 
 <div class="viewcode-block" id="LeafComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.LeafComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.LeafComposite.html#pipeline.h.tasks.common.displays.common.LeafComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">LeafComposite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class to hold multiple PlotLeafs, thus generating multiple plots when</span>
@@ -571,14 +555,11 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span> <span class="o">=</span> <span class="n">children</span>
 
-<div class="viewcode-block" id="LeafComposite.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.LeafComposite.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span>
             <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_create_calapp_contents_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calapps</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">],</span> <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -600,7 +581,7 @@
 
 
 <div class="viewcode-block" id="PolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PolComposite.html#pipeline.h.tasks.common.displays.common.PolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PolComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each polarization in the caltable.</span>
@@ -632,7 +613,7 @@
 
 
 <div class="viewcode-block" id="SpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.SpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.SpwComposite.html#pipeline.h.tasks.common.displays.common.SpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw in the caltable or caltables.</span>
@@ -666,7 +647,7 @@
 
 
 <div class="viewcode-block" id="SpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.SpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.SpwAntComposite.html#pipeline.h.tasks.common.displays.common.SpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwAntComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw and antenna in the caltable or caltables.</span>
@@ -752,7 +733,7 @@
 
 
 <div class="viewcode-block" id="AntComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.AntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.AntComposite.html#pipeline.h.tasks.common.displays.common.AntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">AntComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each antenna in the caltable or caltables.</span>
@@ -784,7 +765,7 @@
 
 
 <div class="viewcode-block" id="AntSpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.AntSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.AntSpwComposite.html#pipeline.h.tasks.common.displays.common.AntSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">AntSpwComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw and antenna in the caltable.</span>
@@ -804,7 +785,7 @@
 
 
 <div class="viewcode-block" id="SpwPolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.SpwPolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.SpwPolComposite.html#pipeline.h.tasks.common.displays.common.SpwPolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwPolComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw and polarization in the caltable.</span>
@@ -824,7 +805,7 @@
 
 
 <div class="viewcode-block" id="AntSpwPolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.AntSpwPolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.AntSpwPolComposite.html#pipeline.h.tasks.common.displays.common.AntSpwPolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">AntSpwPolComposite</span><span class="p">(</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each antenna, spw, and polarization in the caltable.</span>
@@ -844,80 +825,78 @@
 
 
 <div class="viewcode-block" id="PlotmsCalAntComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsCalAntComposite</span><span class="p">(</span><span class="n">AntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsCalLeaf</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsCalSpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsCalSpwComposite</span><span class="p">(</span><span class="n">SpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsCalLeaf</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsCalAntSpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsCalAntSpwComposite</span><span class="p">(</span><span class="n">AntSpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsCalSpwComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsCalSpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsCalSpwAntComposite</span><span class="p">(</span><span class="n">SpwAntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsCalAntComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassAntComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassAntComposite</span><span class="p">(</span><span class="n">AntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassLeaf</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassSpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassSpwComposite</span><span class="p">(</span><span class="n">SpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassLeaf</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassPolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassPolComposite</span><span class="p">(</span><span class="n">PolComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassLeaf</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassAntSpwComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassAntSpwComposite</span><span class="p">(</span><span class="n">AntSpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassSpwComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassSpwPolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassSpwPolComposite</span><span class="p">(</span><span class="n">SpwPolComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassPolComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotbandpassAntSpwPolComposite">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotbandpassAntSpwPolComposite</span><span class="p">(</span><span class="n">AntSpwPolComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotbandpassSpwPolComposite</span></div>
 
 
 
 <div class="viewcode-block" id="CaltableWrapperFactory">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapperFactory">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.CaltableWrapperFactory.html#pipeline.h.tasks.common.displays.common.CaltableWrapperFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">CaltableWrapperFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="CaltableWrapperFactory.from_caltable">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapperFactory.from_caltable">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_caltable</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">gaincalamp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;CaltableWrapperFactory.from_caltable(</span><span class="si">%r</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
@@ -932,11 +911,8 @@
             <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">create_param_wrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;CPARAM&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">caltype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;otf&#39;</span><span class="p">,</span> <span class="s1">&#39;otfraster&#39;</span><span class="p">,):</span>
             <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">create_param_wrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;FPARAM&#39;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unhandled caltype: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">viscal</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unhandled caltype: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">viscal</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CaltableWrapperFactory.create_gaincal_wrapper">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapperFactory.create_gaincal_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_gaincal_wrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">gaincalamp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
@@ -958,11 +934,8 @@
                 <span class="n">phase</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">gain</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">gain</span><span class="p">))</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">flag</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">time_matplotlib</span><span class="p">,</span> <span class="n">antenna1</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">time_matplotlib</span><span class="p">,</span> <span class="n">antenna1</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CaltableWrapperFactory.create_param_wrapper">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapperFactory.create_param_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_param_wrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
@@ -996,19 +969,15 @@
 
             <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">time_matplotlib</span><span class="p">,</span> <span class="n">antenna1</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span>
                                    <span class="n">scan</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="CaltableWrapper">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapper">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.CaltableWrapper.html#pipeline.h.tasks.common.displays.common.CaltableWrapper">[docs]</a>
 <span class="k">class</span> <span class="nc">CaltableWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="CaltableWrapper.from_caltable">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapper.from_caltable">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_caltable</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">from_caltable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">from_caltable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">):</span>
         <span class="c1"># tag the extra metadata columns onto our data array</span>
@@ -1032,8 +1001,6 @@
             <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="n">a</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask</span>
 
-<div class="viewcode-block" id="CaltableWrapper.filter">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.CaltableWrapper.filter">[docs]</a>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># LOG.trace(&#39;filter(spw=%s, antenna=%s, scan=%s)&#39; % (spw, antenna, scan))</span>
         <span class="k">if</span> <span class="n">spw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1060,12 +1027,11 @@
 
         <span class="c1"># create new object for the filtered data</span>
         <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scan</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="PhaseVsBaselineData">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.PhaseVsBaselineData">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.PhaseVsBaselineData.html#pipeline.h.tasks.common.displays.common.PhaseVsBaselineData">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsBaselineData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">corr_id</span><span class="p">,</span> <span class="n">refant_id</span><span class="p">):</span>
         <span class="c1"># While it is possible to do so, we shouldn&#39;t calculate statistics for</span>
@@ -1196,7 +1162,7 @@
 
 
 <div class="viewcode-block" id="XYData">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.XYData">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.XYData.html#pipeline.h.tasks.common.displays.common.XYData">[docs]</a>
 <span class="k">class</span> <span class="nc">XYData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delegate</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__delegate</span> <span class="o">=</span> <span class="n">delegate</span>
@@ -1238,7 +1204,7 @@
 
 
 <div class="viewcode-block" id="DataRatio">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.DataRatio">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.DataRatio.html#pipeline.h.tasks.common.displays.common.DataRatio">[docs]</a>
 <span class="k">class</span> <span class="nc">DataRatio</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">):</span>
         <span class="c1"># test symmetric differences to find data selection errors</span>
@@ -1312,13 +1278,10 @@
 
 
 <div class="viewcode-block" id="NullScoreFinder">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.NullScoreFinder">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.common.NullScoreFinder.html#pipeline.h.tasks.common.displays.common.NullScoreFinder">[docs]</a>
 <span class="k">class</span> <span class="nc">NullScoreFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="NullScoreFinder.get_score">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.common.NullScoreFinder.get_score">[docs]</a>
     <span class="k">def</span> <span class="nf">get_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span></div>
-</div>
 
 
 </pre></div>

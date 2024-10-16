@@ -4,9 +4,21 @@ pipeline.hifa.tasks
 .. automodule:: pipeline.hifa.tasks
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ALMAAntpos
       ALMAExportData
@@ -39,10 +51,17 @@ pipeline.hifa.tasks
       Wvrgcal
       Wvrgcalflag
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    antpos
@@ -74,3 +93,4 @@ pipeline.hifa.tasks
    unlock_refant
    wvrgcal
    wvrgcalflag
+

@@ -4,9 +4,16 @@ pipeline.infrastructure.vdp
 .. automodule:: pipeline.infrastructure.vdp
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       all_unique
       format_value_list
@@ -15,9 +22,16 @@ pipeline.infrastructure.vdp
       name_all_arguments
       signature
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       DataType
       InputsContainer
@@ -29,3 +43,11 @@ pipeline.infrastructure.vdp
       StandardInputs
       VisDependentProperty
    
+   
+
+   
+   
+   
+
+
+

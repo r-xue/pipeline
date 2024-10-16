@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -188,7 +184,7 @@
 
 
 <div class="viewcode-block" id="pipeline_origin">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.pipeline_origin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.pipeline_origin.html#pipeline.infrastructure.pipeline_origin">[docs]</a>
 <span class="k">def</span> <span class="nf">pipeline_origin</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Use &#39;pipeline&#39; as the CASAlog Origin by default.&quot;&quot;&quot;</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
@@ -202,7 +198,7 @@
 
 
 <div class="viewcode-block" id="CASALogHandler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CASALogHandler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CASALogHandler.html#pipeline.infrastructure.CASALogHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">CASALogHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A handler class which writes logging records, appropriately formatted,</span>
@@ -222,7 +218,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="CASALogHandler.flush">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CASALogHandler.flush">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CASALogHandler.html#pipeline.infrastructure.CASALogHandler.flush">[docs]</a>
     <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Flushes the stream.</span>
@@ -231,7 +227,7 @@
 
 
 <div class="viewcode-block" id="CASALogHandler.emit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CASALogHandler.emit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CASALogHandler.html#pipeline.infrastructure.CASALogHandler.emit">[docs]</a>
     <span class="nd">@pipeline_origin</span>
     <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -255,8 +251,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">handleError</span><span class="p">(</span><span class="n">record</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CASALogHandler.get_casa_priority">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CASALogHandler.get_casa_priority">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_casa_priority</span><span class="p">(</span><span class="n">lvl</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">lvl</span> <span class="o">&gt;=</span> <span class="n">ERROR</span><span class="p">:</span>
@@ -272,7 +266,6 @@
         <span class="k">if</span> <span class="n">lvl</span> <span class="o">&gt;=</span> <span class="n">TRACE</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;DEBUG2&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;INFO&#39;</span></div>
-</div>
 
 
 
@@ -281,7 +274,7 @@
 <span class="c1">#               format=&#39;%(asctime)s %(name)s %(funcName)s\n%(levelname)s: %(message)s&#39;,</span>
 
 <div class="viewcode-block" id="get_logger">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.get_logger">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.get_logger.html#pipeline.infrastructure.get_logger">[docs]</a>
 <span class="k">def</span> <span class="nf">get_logger</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
                <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
                <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">,</span>
@@ -400,7 +393,7 @@
 
 
 <div class="viewcode-block" id="set_logging_level">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.set_logging_level">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.set_logging_level.html#pipeline.infrastructure.set_logging_level">[docs]</a>
 <span class="k">def</span> <span class="nf">set_logging_level</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">):</span>
     <span class="n">level_no</span> <span class="o">=</span> <span class="n">LOGGING_LEVELS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
 
@@ -427,7 +420,7 @@
 
 
 <div class="viewcode-block" id="add_handler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.add_handler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.add_handler.html#pipeline.infrastructure.add_handler">[docs]</a>
 <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add given handler to all registered loggers.</span>
@@ -438,7 +431,7 @@
 
 
 <div class="viewcode-block" id="remove_handler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.remove_handler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.remove_handler.html#pipeline.infrastructure.remove_handler">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove specified handler from all registered loggers.</span>
@@ -449,7 +442,7 @@
 
 
 <div class="viewcode-block" id="suspend_handler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.suspend_handler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.suspend_handler.html#pipeline.infrastructure.suspend_handler">[docs]</a>
 <span class="k">def</span> <span class="nf">suspend_handler</span><span class="p">(</span><span class="n">handler_class</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove and return any logger of the given class from the list of active</span>
@@ -466,7 +459,7 @@
 
 
 <div class="viewcode-block" id="SuspendCapturingLogger">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.SuspendCapturingLogger">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.SuspendCapturingLogger.html#pipeline.infrastructure.SuspendCapturingLogger">[docs]</a>
 <span class="k">class</span> <span class="nc">SuspendCapturingLogger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__removed</span> <span class="o">=</span> <span class="n">suspend_handler</span><span class="p">(</span><span class="n">CapturingHandler</span><span class="p">)</span>
@@ -482,7 +475,7 @@
 
 
 <div class="viewcode-block" id="CapturingHandler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CapturingHandler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CapturingHandler.html#pipeline.infrastructure.CapturingHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">CapturingHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A handler class which buffers logging records above a certain threshold</span>
@@ -497,7 +490,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="CapturingHandler.emit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CapturingHandler.emit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CapturingHandler.html#pipeline.infrastructure.CapturingHandler.emit">[docs]</a>
     <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Emit a record.</span>
@@ -522,7 +515,7 @@
 
 
 <div class="viewcode-block" id="CapturingHandler.flush">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CapturingHandler.flush">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CapturingHandler.html#pipeline.infrastructure.CapturingHandler.flush">[docs]</a>
     <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Override to implement custom flushing behaviour.</span>
@@ -533,7 +526,7 @@
 
 
 <div class="viewcode-block" id="CapturingHandler.close">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.CapturingHandler.close">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.CapturingHandler.html#pipeline.infrastructure.CapturingHandler.close">[docs]</a>
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the handler.</span>
@@ -547,7 +540,7 @@
 
 
 <div class="viewcode-block" id="UTCFormatter">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.UTCFormatter">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.UTCFormatter.html#pipeline.infrastructure.UTCFormatter">[docs]</a>
 <span class="k">class</span> <span class="nc">UTCFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="n">converter</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span></div>
 
@@ -556,7 +549,7 @@
 <span class="c1"># Code, Frame and Traceback are serializable substitutes for the Traceback</span>
 <span class="c1"># logged with exceptions</span>
 <div class="viewcode-block" id="Code">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Code">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.Code.html#pipeline.infrastructure.Code">[docs]</a>
 <span class="k">class</span> <span class="nc">Code</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">co_filename</span> <span class="o">=</span> <span class="n">code</span><span class="o">.</span><span class="n">co_filename</span>
@@ -565,7 +558,7 @@
 
 
 <div class="viewcode-block" id="Frame">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Frame">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.Frame.html#pipeline.infrastructure.Frame">[docs]</a>
 <span class="k">class</span> <span class="nc">Frame</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f_globals</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;__file__&quot;</span><span class="p">:</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s2">&quot;__file__&quot;</span><span class="p">]}</span>
@@ -574,7 +567,7 @@
 
 
 <div class="viewcode-block" id="Traceback">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.Traceback">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.Traceback.html#pipeline.infrastructure.Traceback">[docs]</a>
 <span class="k">class</span> <span class="nc">Traceback</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb_frame</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">tb_frame</span><span class="p">)</span>
@@ -587,7 +580,7 @@
 
 
 <div class="viewcode-block" id="log_level">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.log_level">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.log_level.html#pipeline.infrastructure.log_level">[docs]</a>
 <span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">log_level</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to temporarily adjust the logging level of a logger.</span>
@@ -629,7 +622,7 @@
 
 
 <div class="viewcode-block" id="log_filtermsg">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.logging.log_filtermsg">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.logging.log_filtermsg.html#pipeline.infrastructure.log_filtermsg">[docs]</a>
 <span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">log_filtermsg</span><span class="p">(</span><span class="n">msglist</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to temporarily filter out specific messages from the CASA global logger.</span>

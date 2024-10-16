@@ -4,9 +4,21 @@ pipeline.hif.tasks.makeimlist.makeimlist
 .. automodule:: pipeline.hif.tasks.makeimlist.makeimlist
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CleanTarget
       DataType
@@ -15,3 +27,11 @@ pipeline.hif.tasks.makeimlist.makeimlist
       MakeImListResult
       MakeImagesResult
    
+   
+
+   
+   
+   
+
+
+

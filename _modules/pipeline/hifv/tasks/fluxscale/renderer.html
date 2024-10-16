@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="VLASubPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.VLASubPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.renderer.VLASubPlotRenderer.html#pipeline.hifv.tasks.fluxscale.renderer.VLASubPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">VLASubPlotRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">json_path</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">filename_prefix</span><span class="p">,</span> <span class="n">bandlist</span><span class="p">):</span>
@@ -198,36 +194,28 @@
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-<div class="viewcode-block" id="VLASubPlotRenderer.get_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.VLASubPlotRenderer.get_file">[docs]</a>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">)</span>
 
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="VLASubPlotRenderer.render">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.VLASubPlotRenderer.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">display_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_display_context</span><span class="p">()</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailsSolintRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsSolintRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsSolintRenderer.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsSolintRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsSolintRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;solint.mako&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Determine solint and Test gain calibrations&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsSolintRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                                                          <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsSolintRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsSolintRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsSolintRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -308,20 +296,17 @@
                     <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">ctx</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailsfluxbootRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsfluxbootRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsfluxbootRenderer.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsfluxbootRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsfluxbootRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;fluxboot.mako&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Gain table for flux density bootstrapping&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsfluxbootRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                                                            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsfluxbootRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.renderer.T2_4MDetailsfluxbootRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsfluxbootRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -414,7 +399,6 @@
                     <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">ctx</span></div>
-</div>
 
 
 </pre></div>

@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.renderer.stats_extractor.generate_stats" href="pipeline.infrastructure.renderer.stats_extractor.generate_stats.html" />
+    <link rel="prev" title="pipeline.infrastructure.renderer.rendererutils.WebLogLocation" href="pipeline.infrastructure.renderer.rendererutils.WebLogLocation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.renderer.html">pipeline.infrastructure.renderer</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.renderer.stats_extractor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.renderer.stats_extractor.rst.txt" rel="nofollow"> View page source</a>
@@ -137,13 +139,13 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.generate_stats" title="pipeline.infrastructure.renderer.stats_extractor.generate_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_stats</span></code></a>(context)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.generate_stats.html#pipeline.infrastructure.renderer.stats_extractor.generate_stats" title="pipeline.infrastructure.renderer.stats_extractor.generate_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_stats</span></code></a></p></td>
 <td><p>Gathers statistics from the context and results and returns a representation of them as a dict.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.get_stats_from_results" title="pipeline.infrastructure.renderer.stats_extractor.get_stats_from_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_stats_from_results</span></code></a>(context)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.get_stats_from_results.html#pipeline.infrastructure.renderer.stats_extractor.get_stats_from_results" title="pipeline.infrastructure.renderer.stats_extractor.get_stats_from_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_stats_from_results</span></code></a></p></td>
 <td><p>Gathers all possible pipeline statistics from results.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.union" title="pipeline.infrastructure.renderer.stats_extractor.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a>(lst, new)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.union.html#pipeline.infrastructure.renderer.stats_extractor.union" title="pipeline.infrastructure.renderer.stats_extractor.union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union</span></code></a></p></td>
 <td><p>Combines lst which is always a list, with new, which could be a list of PipelineStatistics objects or an individual PipelineStatistics object.</p></td>
 </tr>
 </tbody>
@@ -151,28 +153,28 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code>([name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.Context.html#pipeline.infrastructure.renderer.stats_extractor.Context" title="pipeline.infrastructure.renderer.stats_extractor.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
 <td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAResults</span></code>(summaries, flagcmds)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResults.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResults" title="pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAResults</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResultsExtractor" title="pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResultsExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAResultsExtractor</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResultsExtractor.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResultsExtractor" title="pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResultsExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAResultsExtractor</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDict</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.OrderedDict.html#pipeline.infrastructure.renderer.stats_extractor.OrderedDict" title="pipeline.infrastructure.renderer.stats_extractor.OrderedDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDict</span></code></a></p></td>
 <td><p>Dictionary that remembers insertion order</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.Results.html#pipeline.infrastructure.renderer.stats_extractor.Results" title="pipeline.infrastructure.renderer.stats_extractor.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
 <td><p>Results is the base implementation of the Results API.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code>([results])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.ResultsList.html#pipeline.infrastructure.renderer.stats_extractor.ResultsList" title="pipeline.infrastructure.renderer.stats_extractor.ResultsList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.StatsExtractor" title="pipeline.infrastructure.renderer.stats_extractor.StatsExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatsExtractor</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.StatsExtractor.html#pipeline.infrastructure.renderer.stats_extractor.StatsExtractor" title="pipeline.infrastructure.renderer.stats_extractor.StatsExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatsExtractor</span></code></a></p></td>
 <td><p>Adapted from the RegressisonExtractor, this class is the base class for a pipeline statistics extractor which uses a result to extract statistics information.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.stats_extractor.StatsExtractorRegistry" title="pipeline.infrastructure.renderer.stats_extractor.StatsExtractorRegistry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatsExtractorRegistry</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.stats_extractor.StatsExtractorRegistry.html#pipeline.infrastructure.renderer.stats_extractor.StatsExtractorRegistry" title="pipeline.infrastructure.renderer.stats_extractor.StatsExtractorRegistry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatsExtractorRegistry</span></code></a></p></td>
 <td><p>The registry and manager of the stats result extractor framework.</p></td>
 </tr>
 </tbody>
@@ -182,7 +184,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.renderer.rendererutils.WebLogLocation.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.renderer.rendererutils.WebLogLocation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.renderer.stats_extractor.generate_stats.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.renderer.stats_extractor.generate_stats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

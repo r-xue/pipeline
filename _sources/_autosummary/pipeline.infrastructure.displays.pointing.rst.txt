@@ -4,9 +4,16 @@ pipeline.infrastructure.displays.pointing
 .. automodule:: pipeline.infrastructure.displays.pointing
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       DDMM
       DDMMSS
@@ -26,9 +33,16 @@ pipeline.infrastructure.displays.pointing
       draw_beam
       draw_pointing
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Antenna
       AutoLocator
@@ -45,3 +59,11 @@ pipeline.infrastructure.displays.pointing
       PointingAxesManager
       SingleDishPointingChart
    
+   
+
+   
+   
+   
+
+
+

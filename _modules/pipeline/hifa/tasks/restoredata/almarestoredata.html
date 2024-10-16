@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,7 +141,7 @@
 
 
 <div class="viewcode-block" id="ALMARestoreDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.restoredata.html#pipeline.hifa.tasks.restoredata.almarestoredata.ALMARestoreDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.restoredata.almarestoredata.ALMARestoreDataInputs.html#pipeline.hifa.tasks.ALMARestoreDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ALMARestoreDataInputs</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreDataInputs</span><span class="p">):</span>
     <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing&#39;</span><span class="p">)</span>
@@ -160,7 +156,7 @@
 
 
 <div class="viewcode-block" id="ALMARestoreData">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.restoredata.html#pipeline.hifa.tasks.restoredata.almarestoredata.ALMARestoreData">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMARestoreData.html#pipeline.hifa.tasks.ALMARestoreData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_restoredata&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ALMARestoreData</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreData</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMARestoreDataInputs</span>

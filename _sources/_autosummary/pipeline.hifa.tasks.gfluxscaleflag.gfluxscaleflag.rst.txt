@@ -4,15 +4,29 @@ pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
 .. automodule:: pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       create_plots
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AmpVsXChart
       CalTo
@@ -23,3 +37,11 @@ pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
       GfluxscaleflagResults
       MeasurementSet
    
+   
+
+   
+   
+   
+
+
+

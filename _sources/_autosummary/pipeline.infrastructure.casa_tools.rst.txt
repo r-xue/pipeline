@@ -4,9 +4,16 @@ pipeline.infrastructure.casa\_tools
 .. automodule:: pipeline.infrastructure.casa_tools
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       CalAnalysis
       ImageReader
@@ -25,9 +32,24 @@ pipeline.infrastructure.casa\_tools
       signature
       unpickler
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       tool_type
    
+   
+
+   
+   
+   
+
+
+

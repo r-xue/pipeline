@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -234,7 +230,7 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <div class="viewcode-block" id="rms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.rms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.rms.html#pipeline.qa.bpcal.rms">[docs]</a>
 <span class="k">def</span> <span class="nf">rms</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
 
@@ -291,7 +287,7 @@
 <span class="c1">#               Made plotting optional.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal.html#pipeline.qa.bpcal.bpcal">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal</span><span class="p">(</span><span class="n">in_table</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">logobj</span><span class="o">=</span><span class="s1">&#39;PYTHON&#39;</span><span class="p">,</span> <span class="n">create_plots</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
     <span class="c1"># Initialize the logger</span>
@@ -497,7 +493,7 @@
 <span class="c1">#               Added AMPLITUDE.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_calc">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_calc">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_calc.html#pipeline.qa.bpcal.bpcal_calc">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_calc</span><span class="p">(</span><span class="n">in_table</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 
     <span class="c1"># Get the list of spw ids actually in the caltable</span>
@@ -660,7 +656,7 @@
 <span class="c1">#               Reverted to writing one spectral window at a time.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_write">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_write">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_write.html#pipeline.qa.bpcal.bpcal_write">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_write</span><span class="p">(</span><span class="n">bpcal_stats</span><span class="p">,</span> <span class="n">out_table</span><span class="p">):</span>
 
     <span class="c1"># Create the local instance of the table tool, create the output main</span>
@@ -752,7 +748,7 @@
 <span class="c1">#               Input parameters spw and chanRange added.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_putFitRow">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_putFitRow">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_putFitRow.html#pipeline.qa.bpcal.bpcal_putFitRow">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_putFitRow</span><span class="p">(</span><span class="n">tbLoc</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chanRange</span><span class="p">,</span> <span class="n">dictRow</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
 
     <span class="c1"># Put the columns in the desired row using the putcell method of the</span>
@@ -815,7 +811,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_desc">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_desc">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_desc.html#pipeline.qa.bpcal.bpcal_desc">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_desc</span><span class="p">():</span>
 
     <span class="c1"># Create the data description dictionary</span>
@@ -861,7 +857,7 @@
 <span class="c1">#               stop channel columns.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_desc_st">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_desc_st">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_desc_st.html#pipeline.qa.bpcal.bpcal_desc_st">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_desc_st</span><span class="p">():</span>
     <span class="c1"># Create the bandpass calibration subtable data description dictionary</span>
 
@@ -1135,7 +1131,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_chanRangeList">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_chanRangeList">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_chanRangeList.html#pipeline.qa.bpcal.bpcal_chanRangeList">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_chanRangeList</span><span class="p">(</span><span class="n">numchan</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
 
     <span class="c1"># If the spectral window has no channels, return []</span>
@@ -1175,7 +1171,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_spwChanString">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_spwChanString">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_spwChanString.html#pipeline.qa.bpcal.bpcal_spwChanString">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_spwChanString</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">sschan</span><span class="p">):</span>
 
     <span class="c1"># Form the spectral window string and return it</span>
@@ -1260,7 +1256,7 @@
 <span class="c1">#               Added derivative deviation scoring</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score.html#pipeline.qa.bpcal.bpcal_score">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score</span><span class="p">(</span><span class="n">bpcal_stats</span><span class="p">):</span>
 
     <span class="c1"># Initialize the score dictionary</span>
@@ -1430,7 +1426,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score_flag">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_flag">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_flag.html#pipeline.qa.bpcal.bpcal_score_flag">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_flag</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">chanRange</span><span class="p">):</span>
 
     <span class="c1"># Calculate and return the flag score for this iteration</span>
@@ -1474,7 +1470,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score_RMS">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_RMS">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_RMS.html#pipeline.qa.bpcal.bpcal_score_RMS">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_RMS</span><span class="p">(</span><span class="n">RMS</span><span class="p">,</span> <span class="n">RMSMax</span><span class="p">):</span>
 
     <span class="c1"># Calculate and return the RMS score for this iteration</span>
@@ -1533,7 +1529,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score_SNR">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_SNR">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_SNR.html#pipeline.qa.bpcal.bpcal_score_SNR">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_SNR</span><span class="p">(</span><span class="n">SNR</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">score</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="n">SNR</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">))</span>
@@ -1601,7 +1597,7 @@
 <span class="c1">#               Avoid NaNs when part of the spectrum is negative.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score_flatness">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_flatness">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_flatness.html#pipeline.qa.bpcal.bpcal_score_flatness">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_flatness</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
@@ -1664,7 +1660,7 @@
 <span class="c1"># TODO: Use usual MAD function from pipeline.</span>
 
 <div class="viewcode-block" id="MAD">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.MAD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.MAD.html#pipeline.qa.bpcal.MAD">[docs]</a>
 <span class="nd">@numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">under</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1694,7 +1690,7 @@
 
 
 <div class="viewcode-block" id="nanmedian">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.nanmedian">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.nanmedian.html#pipeline.qa.bpcal.nanmedian">[docs]</a>
 <span class="k">def</span> <span class="nf">nanmedian</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns median ignoring NAN</span>
@@ -1735,7 +1731,7 @@
 <span class="c1"># 2022 Jul 22 - Dirk Muders, MPIfR</span>
 <span class="c1">#               Re-map scores to piecewise linear sections (PIPE-1515).</span>
 <div class="viewcode-block" id="bpcal_score_derivative_deviation">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_derivative_deviation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_derivative_deviation.html#pipeline.qa.bpcal.bpcal_score_derivative_deviation">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_derivative_deviation</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;UNKNOWN&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;UNKNONWN&#39;</span><span class="p">):</span>
 
     <span class="c1"># Avoid scoring numerical inaccuracies for the reference antenna phase</span>
@@ -1830,7 +1826,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_score_delay">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_score_delay">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_score_delay.html#pipeline.qa.bpcal.bpcal_score_delay">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_score_delay</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">delayErr</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">chanRange</span><span class="p">):</span>
 
     <span class="c1"># Calculate and return the delay score for this iteration</span>
@@ -1913,7 +1909,7 @@
 <span class="c1">#               flagged data, RMSes, and absolute value of delays.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_plot">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_plot">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_plot.html#pipeline.qa.bpcal.bpcal_plot">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_plot</span><span class="p">(</span><span class="n">in_table</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">bpcal_stats</span><span class="p">):</span>
 
     <span class="c1"># Initialize the plot names dictionary</span>
@@ -2023,7 +2019,7 @@
 <span class="c1">#               Initial version.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_plot1">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_plot1">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_plot1.html#pipeline.qa.bpcal.bpcal_plot1">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_plot1</span><span class="p">(</span><span class="n">in_table</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">stats_dict</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chanRange</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ap</span><span class="p">):</span>
 
     <span class="c1"># Determine and check amplitude &#39;A&#39; or phase &#39;P&#39;</span>
@@ -2142,7 +2138,7 @@
 <span class="c1">#               Initial stub version created.</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <div class="viewcode-block" id="bpcal_plot_hist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.bpcal.bpcal_plot_hist">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.bpcal.bpcal_plot_hist.html#pipeline.qa.bpcal.bpcal_plot_hist">[docs]</a>
 <span class="k">def</span> <span class="nf">bpcal_plot_hist</span><span class="p">(</span><span class="n">in_table</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">ap</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="n">hist</span><span class="o">=</span><span class="s1">&#39;FLAG&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="do_wide_field_pos_cor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.positioncorrection.do_wide_field_pos_cor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.positioncorrection.do_wide_field_pos_cor.html#pipeline.infrastructure.utils.do_wide_field_pos_cor">[docs]</a>
 <span class="k">def</span> <span class="nf">do_wide_field_pos_cor</span><span class="p">(</span><span class="n">fitsname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date_time</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">obs_long</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">obs_lat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -260,6 +256,8 @@
 
 
 
+<div class="viewcode-block" id="calc_wide_field_pos_cor">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.positioncorrection.calc_wide_field_pos_cor.html#pipeline.infrastructure.utils.calc_wide_field_pos_cor">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_wide_field_pos_cor</span><span class="p">(</span><span class="n">ra</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">obs_long</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">obs_lat</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
                             <span class="n">date_time</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">offset_pa</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the wide field position correction.</span>
@@ -339,7 +337,8 @@
     <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltatot</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
     <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltatot</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">},</span>
-            <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">})</span>
+            <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;rad&#39;</span><span class="p">})</span></div>
+
 </pre></div>
 
            </div>

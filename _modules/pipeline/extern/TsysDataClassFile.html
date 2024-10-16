@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -166,7 +162,7 @@
 
 
 <div class="viewcode-block" id="getband">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.getband">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.getband.html#pipeline.extern.TsysDataClassFile.getband">[docs]</a>
 <span class="k">def</span> <span class="nf">getband</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify the Band for specific frequency (in GHz)&quot;&quot;&quot;</span>
     <span class="n">lo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">35</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">157</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">275</span><span class="p">,</span> <span class="mi">385</span><span class="p">,</span> <span class="mi">602</span><span class="p">,</span> <span class="mi">787</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e9</span>
@@ -177,7 +173,7 @@
 
 
 <div class="viewcode-block" id="ATMtrans">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.ATMtrans">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.ATMtrans.html#pipeline.extern.TsysDataClassFile.ATMtrans">[docs]</a>
 <span class="k">def</span> <span class="nf">ATMtrans</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">ifld</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">results</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">ms</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Could not open ms file </span><span class="si">{</span><span class="n">msfile</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -353,7 +349,7 @@
 
 
 <div class="viewcode-block" id="weather_function">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.weather_function">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.weather_function.html#pipeline.extern.TsysDataClassFile.weather_function">[docs]</a>
 <span class="k">def</span> <span class="nf">weather_function</span><span class="p">(</span><span class="n">msfile</span><span class="p">):</span>
     <span class="c1"># Use a standard preferred weather station (as noted in AU task).</span>
     <span class="n">preferredStation</span> <span class="o">=</span> <span class="s2">&quot;TB2&quot;</span>
@@ -525,7 +521,7 @@
 
 
 <div class="viewcode-block" id="getImageSBFreqs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.getImageSBFreqs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.getImageSBFreqs.html#pipeline.extern.TsysDataClassFile.getImageSBFreqs">[docs]</a>
 <span class="k">def</span> <span class="nf">getImageSBFreqs</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">spwin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Purpose:</span>
@@ -606,7 +602,7 @@
 
 
 <div class="viewcode-block" id="chanfreq_records_to_functions">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.chanfreq_records_to_functions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.chanfreq_records_to_functions.html#pipeline.extern.TsysDataClassFile.chanfreq_records_to_functions">[docs]</a>
 <span class="k">def</span> <span class="nf">chanfreq_records_to_functions</span><span class="p">(</span><span class="n">chan_records</span><span class="p">):</span>
     <span class="n">ch_frq</span> <span class="o">=</span> <span class="n">chan_records</span>
     <span class="n">freqMHz</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -631,7 +627,7 @@
 
 
 <div class="viewcode-block" id="TsysData">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.TsysData.html#pipeline.extern.TsysDataClassFile.TsysData">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -825,8 +821,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">absorptionfields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">,</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span> <span class="s2">&quot;absorption&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">absorptiondata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spws</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">absorptions</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TsysData.tsysmap">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.tsysmap">[docs]</a>
     <span class="k">def</span> <span class="nf">tsysmap</span><span class="p">(</span>
         <span class="n">vis</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">msmdtool_instance</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s2">&quot;OBSERVE_TARGET#ON_SOURCE&quot;</span>
     <span class="p">):</span>  <span class="c1"># v2.4, this function</span>
@@ -865,17 +859,14 @@
             <span class="k">raise</span> <span class="n">IntentException</span><span class="p">(</span>
                 <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> not found in this dataset. Available intents: &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">intent</span><span class="p">),</span>
                 <span class="n">allIntents</span><span class="p">,</span>
-            <span class="p">)</span></div>
-
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="TsysData.IntentException">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.IntentException">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.TsysDataClassFile.TsysData.html#pipeline.extern.TsysDataClassFile.TsysData.IntentException">[docs]</a>
     <span class="k">class</span> <span class="nc">IntentException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>  <span class="c1"># v2.4</span>
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="TsysData.get_valid_antennae">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.get_valid_antennae">[docs]</a>
     <span class="k">def</span> <span class="nf">get_valid_antennae</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">valid_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -910,8 +901,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">valid_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsyss</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
         <span class="c1"># valid = valid - exclude</span>
-        <span class="k">return</span> <span class="n">valid_dict</span><span class="p">,</span> <span class="n">exclude</span></div>
-
+        <span class="k">return</span> <span class="n">valid_dict</span><span class="p">,</span> <span class="n">exclude</span>
 
     <span class="k">def</span> <span class="nf">_partition_by_equivalence_class</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">equiv</span><span class="p">):</span>
         <span class="n">partitions</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Found partitions</span>
@@ -966,8 +956,6 @@
 
         <span class="k">return</span> <span class="n">differences</span>  <span class="c1"># , antennae</span>
 
-<div class="viewcode-block" id="TsysData.filter_statistics_and_dif">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.TsysDataClassFile.TsysData.filter_statistics_and_dif">[docs]</a>
     <span class="k">def</span> <span class="nf">filter_statistics_and_dif</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">statistics</span><span class="p">,</span> <span class="n">remove_n_extreme</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">polarizations</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
@@ -1098,7 +1086,6 @@
             <span class="n">stats_antenna</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">antenna_selection</span>
         <span class="c1"># print(f&#39;*** {np.sort(stats_antenna[&quot;24_3&quot;])} {np.nanmax(stats_sou[&quot;24_3&quot;])}&#39;);assert False,&quot;&quot;</span>
         <span class="k">return</span> <span class="n">stats_dif</span><span class="p">,</span> <span class="n">stats_sou</span><span class="p">,</span> <span class="n">stats_bp</span><span class="p">,</span> <span class="n">stats_antenna</span></div>
-</div>
 
 </pre></div>
 

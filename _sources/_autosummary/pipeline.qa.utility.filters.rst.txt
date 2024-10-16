@@ -4,9 +4,16 @@ pipeline.qa.utility.filters
 .. automodule:: pipeline.qa.utility.filters
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       getOutlierIndices
       maxDict
@@ -14,3 +21,15 @@ pipeline.qa.utility.filters
       outlierDictFilter
       outlierFilter
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

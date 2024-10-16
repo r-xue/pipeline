@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -148,7 +144,7 @@
 
 
 <div class="viewcode-block" id="BandpassQAPool">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassQAPool">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.qa.BandpassQAPool.html#pipeline.hif.tasks.bandpass.qa.BandpassQAPool">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassQAPool</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScorePool</span><span class="p">):</span>
     <span class="n">score_types</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;AMPLITUDE_SCORE_SNR&#39;</span><span class="p">:</span> <span class="s1">&#39;amplitude SNR&#39;</span><span class="p">,</span>
@@ -167,7 +163,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_pols</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_num_caltable_polarizations</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BandpassQAPool.update_scores">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassQAPool.update_scores">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.qa.BandpassQAPool.html#pipeline.hif.tasks.bandpass.qa.BandpassQAPool.update_scores">[docs]</a>
     <span class="k">def</span> <span class="nf">update_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        MeasurementSet is needed to convert from integer identifier stored in</span>
@@ -225,7 +221,7 @@
 
 
 <div class="viewcode-block" id="BandpassQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.html#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for an uncontained BandpassResult.</span>
@@ -233,8 +229,6 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">BandpassResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="BandpassQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># do not calculate any QA if this result uses an adopted</span>
         <span class="c1"># bandpass calibration from another MS.</span>
@@ -272,12 +266,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">qa</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScorePool</span><span class="p">()</span>
             <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;No bandpass solution&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;No solution&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">)]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="BandpassListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.html#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing BandpassResults.</span>
@@ -285,14 +278,11 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">BandpassResults</span>
 
-<div class="viewcode-block" id="BandpassListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.bandpass.html#pipeline.hif.tasks.bandpass.qa.BandpassListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 </pre></div>
 

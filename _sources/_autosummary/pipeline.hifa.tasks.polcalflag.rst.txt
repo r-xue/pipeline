@@ -4,18 +4,38 @@ pipeline.hifa.tasks.polcalflag
 .. automodule:: pipeline.hifa.tasks.polcalflag
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Polcalflag
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    polcalflag
    qa
    renderer
+

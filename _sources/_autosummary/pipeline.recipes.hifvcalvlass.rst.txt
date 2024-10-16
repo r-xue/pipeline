@@ -4,9 +4,16 @@ pipeline.recipes.hifvcalvlass
 .. automodule:: pipeline.recipes.hifvcalvlass
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       h_applycal
       h_export_calstate
@@ -122,3 +129,15 @@ pipeline.recipes.hifvcalvlass
       hsdn_importdata
       hsdn_restoredata
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -178,7 +174,7 @@
 
 
 <div class="viewcode-block" id="plotfilename">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.plotfilename">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.sky.plotfilename.html#pipeline.h.tasks.common.displays.sky.plotfilename">[docs]</a>
 <span class="k">def</span> <span class="nf">plotfilename</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a filename for a plot based on image and other parameters.</span>
 
@@ -204,7 +200,7 @@
 
 
 <div class="viewcode-block" id="SkyDisplay">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.sky.SkyDisplay.html#pipeline.h.tasks.common.displays.sky.SkyDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">SkyDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to plot sky images.&quot;&quot;&quot;</span>
 
@@ -215,7 +211,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dpi</span> <span class="o">=</span> <span class="n">dpi</span>                     <span class="c1"># class instance default dpi</span>
 
 <div class="viewcode-block" id="SkyDisplay.plot_per_stokes">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot_per_stokes">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.sky.SkyDisplay.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot_per_stokes">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_per_stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stokes_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot sky images from a CASA image file with multiple Stokes planes.</span>
 
@@ -299,7 +295,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SkyDisplay.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.sky.SkyDisplay.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collapseFunction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
              <span class="n">stokes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">maskname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">imshow_args</span><span class="p">):</span>
@@ -641,7 +637,7 @@
                 <span class="n">axinset</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">beam_patch</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SkyDisplay.plottext">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plottext">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.sky.SkyDisplay.html#pipeline.h.tasks.common.displays.sky.SkyDisplay.plottext">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">plottext</span><span class="p">(</span><span class="n">xoff</span><span class="p">,</span> <span class="n">yoff</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">maxchars</span><span class="p">,</span> <span class="n">ny_subplot</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mult</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility method to plot text and put line breaks in to keep the</span>

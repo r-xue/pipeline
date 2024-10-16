@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.timetracker.ContextCreatedEvent" href="pipeline.infrastructure.timetracker.ContextCreatedEvent.html" />
+    <link rel="prev" title="pipeline.infrastructure.taskregistry.TaskRegistry" href="pipeline.infrastructure.taskregistry.TaskRegistry.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.timetracker</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.timetracker.rst.txt" rel="nofollow"> View page source</a>
@@ -139,64 +140,64 @@ the reception of lifecycle events.</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ContextCreatedEvent.html#pipeline.infrastructure.timetracker.ContextCreatedEvent" title="pipeline.infrastructure.timetracker.ContextCreatedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Context is created.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextLifecycleEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ContextLifecycleEvent.html#pipeline.infrastructure.timetracker.ContextLifecycleEvent" title="pipeline.infrastructure.timetracker.ContextLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to the lifecycle of the pipeline context.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ContextResumedEvent.html#pipeline.infrastructure.timetracker.ContextResumedEvent" title="pipeline.infrastructure.timetracker.ContextResumedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Context is resumed.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextTimeTracker</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ContextTimeTracker.html#pipeline.infrastructure.timetracker.ContextTimeTracker" title="pipeline.infrastructure.timetracker.ContextTimeTracker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextTimeTracker</span></code></a></p></td>
 <td><p>ContextTimeTracker listens for events related to the creation/resumption of a pipeline Context.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionState</span></code>(stage, start, end, state)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ExecutionState.html#pipeline.infrastructure.timetracker.ExecutionState" title="pipeline.infrastructure.timetracker.ExecutionState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExecutionState</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MPIEnvironment</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.MPIEnvironment.html#pipeline.infrastructure.timetracker.MPIEnvironment" title="pipeline.infrastructure.timetracker.MPIEnvironment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MPIEnvironment</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptErrorEvent</span></code>(context_name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ResultAcceptErrorEvent.html#pipeline.infrastructure.timetracker.ResultAcceptErrorEvent" title="pipeline.infrastructure.timetracker.ResultAcceptErrorEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptErrorEvent</span></code></a></p></td>
 <td><p>Emitted when Results acceptance fails due to error.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptedEvent</span></code>(context_name, stage_number)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ResultAcceptedEvent.html#pipeline.infrastructure.timetracker.ResultAcceptedEvent" title="pipeline.infrastructure.timetracker.ResultAcceptedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptedEvent</span></code></a></p></td>
 <td><p>Emitted when a Result has been successfully incorporated into the Context.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptingEvent</span></code>(context_name, stage_number)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ResultAcceptingEvent.html#pipeline.infrastructure.timetracker.ResultAcceptingEvent" title="pipeline.infrastructure.timetracker.ResultAcceptingEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptingEvent</span></code></a></p></td>
 <td><p>Emitted when a Result is accepted into the Context.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultLifecycleEvent</span></code>(context_name, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.ResultLifecycleEvent.html#pipeline.infrastructure.timetracker.ResultLifecycleEvent" title="pipeline.infrastructure.timetracker.ResultLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to the acceptance of a pipeline Result.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskAbnormalExitEvent</span></code>(context_name, stage_number)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.TaskAbnormalExitEvent.html#pipeline.infrastructure.timetracker.TaskAbnormalExitEvent" title="pipeline.infrastructure.timetracker.TaskAbnormalExitEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskAbnormalExitEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task terminates due to an unexpected error.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskCompleteEvent</span></code>(context_name, stage_number)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.TaskCompleteEvent.html#pipeline.infrastructure.timetracker.TaskCompleteEvent" title="pipeline.infrastructure.timetracker.TaskCompleteEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskCompleteEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task completes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code>(context_name, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.TaskLifecycleEvent.html#pipeline.infrastructure.timetracker.TaskLifecycleEvent" title="pipeline.infrastructure.timetracker.TaskLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to the pipeline task lifecycle.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskStartedEvent</span></code>(context_name, stage_number)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.TaskStartedEvent.html#pipeline.infrastructure.timetracker.TaskStartedEvent" title="pipeline.infrastructure.timetracker.TaskStartedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskStartedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task is started.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskTimeTracker</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.TaskTimeTracker.html#pipeline.infrastructure.timetracker.TaskTimeTracker" title="pipeline.infrastructure.timetracker.TaskTimeTracker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskTimeTracker</span></code></a></p></td>
 <td><p>TaskTimeTracker listens for pipeline lifecycle events, recording the start and end times on event reception so that the duration of the corresponding pipeline execution phase can be calculated.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageLifecycleEvent</span></code>(context_name, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.WebLogStageLifecycleEvent.html#pipeline.infrastructure.timetracker.WebLogStageLifecycleEvent" title="pipeline.infrastructure.timetracker.WebLogStageLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to weblog rendering of a specific stage.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingAbnormalExitEvent</span></code>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.WebLogStageRenderingAbnormalExitEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingAbnormalExitEvent" title="pipeline.infrastructure.timetracker.WebLogStageRenderingAbnormalExitEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingAbnormalExitEvent</span></code></a></p></td>
 <td><p>Emitted when stage rendering exits due to error.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingCompleteEvent</span></code>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.WebLogStageRenderingCompleteEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingCompleteEvent" title="pipeline.infrastructure.timetracker.WebLogStageRenderingCompleteEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingCompleteEvent</span></code></a></p></td>
 <td><p>Emitted when stage rendering ends.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingStartedEvent</span></code>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.WebLogStageRenderingStartedEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingStartedEvent" title="pipeline.infrastructure.timetracker.WebLogStageRenderingStartedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogStageRenderingStartedEvent</span></code></a></p></td>
 <td><p>Emitted when stage rendering begins.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">closing</span></code>(thing)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.timetracker.closing.html#pipeline.infrastructure.timetracker.closing" title="pipeline.infrastructure.timetracker.closing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closing</span></code></a></p></td>
 <td><p>Context to automatically close something at the end of a block.</p></td>
 </tr>
 </tbody>
@@ -206,7 +207,10 @@ the reception of lifecycle events.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.taskregistry.TaskRegistry.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.taskregistry.TaskRegistry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.timetracker.ContextCreatedEvent.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.timetracker.ContextCreatedEvent" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

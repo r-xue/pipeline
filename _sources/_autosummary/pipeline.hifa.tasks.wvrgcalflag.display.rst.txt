@@ -4,9 +4,21 @@ pipeline.hifa.tasks.wvrgcalflag.display
 .. automodule:: pipeline.hifa.tasks.wvrgcalflag.display
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       WVRPhaseOffsetPlot
       WVRPhaseOffsetPlotHelper
@@ -15,3 +27,11 @@ pipeline.hifa.tasks.wvrgcalflag.display
       WVRPhaseVsBaselineChart
       WVRScoreFinder
    
+   
+
+   
+   
+   
+
+
+

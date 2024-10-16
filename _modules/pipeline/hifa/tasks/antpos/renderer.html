@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsALMAAntposRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.antpos.html#pipeline.hifa.tasks.antpos.renderer.T2_4MDetailsALMAAntposRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.antpos.renderer.T2_4MDetailsALMAAntposRenderer.html#pipeline.hifa.tasks.antpos.renderer.T2_4MDetailsALMAAntposRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsALMAAntposRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;almaantpos.mako&#39;</span><span class="p">,</span> 
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Correct for antenna position offsets&#39;</span><span class="p">,</span>
@@ -154,8 +150,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsALMAAntposRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span>
                 <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsALMAAntposRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.antpos.html#pipeline.hifa.tasks.antpos.renderer.T2_4MDetailsALMAAntposRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">table_rows</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_antpos_table</span><span class="p">(</span><span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
         <span class="c1"># Sort by total offset, from highest-to-lowest, see: PIPE-77</span>
@@ -166,14 +160,13 @@
                              <span class="s1">&#39;table_rows_by_offset&#39;</span><span class="p">:</span> <span class="n">table_rows_by_offset</span><span class="p">,</span>
                              <span class="s1">&#39;threshold_in_mm&#39;</span><span class="p">:</span> <span class="n">threshold_in_mm</span><span class="p">,</span>
                              <span class="s1">&#39;threshold_in_wavelengths&#39;</span><span class="p">:</span> <span class="n">threshold_in_wavelengths</span><span class="p">})</span></div>
-</div>
 
 
 <span class="n">AntposTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AntposTR&#39;</span><span class="p">,</span> <span class="s1">&#39;vis antenna x y z total total_wavelengths&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="make_antpos_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.antpos.html#pipeline.hifa.tasks.antpos.renderer.make_antpos_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.antpos.renderer.make_antpos_table.html#pipeline.hifa.tasks.antpos.renderer.make_antpos_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_antpos_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">sort_by</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;antenna&#39;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates an antenna positions table, returning the table rows and also the representative wavelength for the data (to later be used to determine whether offsets</span>
@@ -226,7 +219,7 @@
 
 
 <div class="viewcode-block" id="make_xyzoffsets_list">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.antpos.html#pipeline.hifa.tasks.antpos.renderer.make_xyzoffsets_list">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.antpos.renderer.make_xyzoffsets_list.html#pipeline.hifa.tasks.antpos.renderer.make_xyzoffsets_list">[docs]</a>
 <span class="k">def</span> <span class="nf">make_xyzoffsets_list</span> <span class="p">(</span><span class="n">offsets_list</span><span class="p">,</span> <span class="n">rep_wavelength</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">offsets_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>

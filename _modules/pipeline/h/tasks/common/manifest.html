@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -165,7 +161,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest">[docs]</a>
 <span class="k">class</span> <span class="nc">PipelineManifest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class for creating the pipeline data product manifest</span>
@@ -175,7 +171,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">piperesults</span> <span class="o">=</span> <span class="n">eltree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s2">&quot;piperesults&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">ouss_id</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PipelineManifest.import_xml">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.import_xml">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.import_xml">[docs]</a>
     <span class="k">def</span> <span class="nf">import_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xmlfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Import the manifest from an existing manifest file</span>
@@ -186,7 +182,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.set_ous">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.set_ous">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.set_ous">[docs]</a>
     <span class="k">def</span> <span class="nf">set_ous</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ous_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set an OUS element and return it</span>
@@ -195,7 +191,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_ous">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_ous">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_ous">[docs]</a>
     <span class="k">def</span> <span class="nf">get_ous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Currently this assumes there is only one ous as is the case</span>
@@ -205,7 +201,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_manifest">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_manifest">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_manifest">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_manifest</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">manifestname</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -215,7 +211,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_casa_version">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_casa_version">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_casa_version">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_casa_version</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">casa_version</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -225,7 +221,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_casa_version">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_casa_version">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_casa_version">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_casa_version</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -237,8 +233,6 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="PipelineManifest.add_environment_info">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_environment_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_environment_info</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
         <span class="c1"># group node information by host</span>
@@ -249,27 +243,20 @@
             <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">host_details</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
-            <span class="n">PipelineManifest</span><span class="o">.</span><span class="n">add_execution_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">host_details</span><span class="p">)</span></div>
+            <span class="n">PipelineManifest</span><span class="o">.</span><span class="n">add_execution_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">host_details</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PipelineManifest.add_execution_node">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_execution_node">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_execution_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">host_details</span><span class="p">):</span>
         <span class="n">mpi_server_details</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">host_details</span> <span class="k">if</span> <span class="s1">&#39;MPI Server&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">role</span><span class="p">]</span>
         <span class="n">num_mpi_servers</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mpi_server_details</span><span class="p">))</span>
-        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="n">num_mpi_servers</span><span class="o">=</span><span class="n">num_mpi_servers</span><span class="p">)</span></div>
+        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="n">num_mpi_servers</span><span class="o">=</span><span class="n">num_mpi_servers</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PipelineManifest.get_execution_nodes">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_execution_nodes">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_execution_nodes</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ous</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;./execution_environment/node&#39;</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">ous</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;./execution_environment/node&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PipelineManifest.add_pipeline_version">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pipeline_version">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_pipeline_version">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_pipeline_version</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">pipeline_version</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -279,7 +266,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_pipeline_version">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_pipeline_version">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_pipeline_version">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_pipeline_version</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -292,7 +279,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_procedure_name">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_procedure_name">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_procedure_name">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_procedure_name</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">procedure_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -302,7 +289,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.set_session">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.set_session">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.set_session">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">set_session</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">session_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -312,7 +299,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_session">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_session">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_session">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">session_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -325,7 +312,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_asdm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_asdm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_asdm">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_asdm</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -337,33 +324,24 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="PipelineManifest.add_caltables">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_caltables">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_caltables</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">caltables_file</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
-        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">caltables_file</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="n">ous_name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;tgz&quot;</span><span class="p">)</span></div>
+        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">caltables_file</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="n">ous_name</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;tgz&quot;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PipelineManifest.add_auxcaltables">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_auxcaltables">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_auxcaltables</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">caltables_file</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
-        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;aux_caltables&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">caltables_file</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;tgz&quot;</span><span class="p">)</span></div>
+        <span class="n">eltree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="s2">&quot;aux_caltables&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">caltables_file</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session_name</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s2">&quot;caltables&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;tgz&quot;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PipelineManifest.get_caltables">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_caltables">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_caltables</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
         <span class="n">caltables_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">ous</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;session&#39;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;caltables&#39;</span><span class="p">):</span>
                 <span class="n">caltables_dict</span><span class="p">[</span><span class="n">session</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">caltable</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">caltables_dict</span></div>
-
+        <span class="k">return</span> <span class="n">caltables_dict</span>
 
 <div class="viewcode-block" id="PipelineManifest.add_asdm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_asdm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_asdm">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_asdm</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">,</span> <span class="n">flags_file</span><span class="p">,</span> <span class="n">calapply_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -375,7 +353,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_asdm_imlist">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_asdm_imlist">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_asdm_imlist">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_asdm_imlist</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">,</span> <span class="n">ms_file</span><span class="p">,</span> <span class="n">flags_file</span><span class="p">,</span> <span class="n">calapply_file</span><span class="p">,</span> <span class="n">imagelist</span><span class="p">,</span> <span class="n">imtype</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -393,7 +371,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_auxasdm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_auxasdm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_auxasdm">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_auxasdm</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">,</span> <span class="n">calapply_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -404,7 +382,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_final_flagversions">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_final_flagversions">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_final_flagversions">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_final_flagversions</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -419,7 +397,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_applycals">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_applycals">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_applycals">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_applycals</span><span class="p">(</span><span class="n">ous</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -434,7 +412,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_pprfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pprfile">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_pprfile">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_pprfile</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">ppr_file</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -444,7 +422,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_images">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_images">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_images">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_images</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">imagelist</span><span class="p">,</span> <span class="n">imtype</span><span class="p">,</span> <span class="n">extra_attributes_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -462,7 +440,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_pipescript">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_pipescript">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_pipescript">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_pipescript</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">pipescript</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -472,7 +450,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_restorescript">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_restorescript">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_restorescript">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_restorescript</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">restorescript</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -482,7 +460,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_weblog">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_weblog">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_weblog">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_weblog</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">weblog</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -492,7 +470,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_casa_cmdlog">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_casa_cmdlog">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_casa_cmdlog">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_casa_cmdlog</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">casa_cmdlog</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -502,7 +480,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_flux_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_flux_file">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_flux_file">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_flux_file</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">flux_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -513,7 +491,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_antennapos_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_antennapos_file">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_antennapos_file">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_antennapos_file</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">antennapos_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -524,7 +502,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_cont_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_cont_file">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_cont_file">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_cont_file</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">cont_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -535,7 +513,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_aux_products_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_aux_products_file">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_aux_products_file">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_aux_products_file</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">auxproducts_file</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -545,7 +523,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_aqua_report">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_aqua_report">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_aqua_report">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_aqua_report</span><span class="p">(</span><span class="n">ous</span><span class="p">,</span> <span class="n">aqua_report</span><span class="p">,</span> <span class="n">ous_name</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s2">&quot;N/A&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -555,7 +533,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.add_renorm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.add_renorm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.add_renorm">[docs]</a>
     <span class="k">def</span> <span class="nf">add_renorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add the renormalization parameters to a asdm element</span>
@@ -566,7 +544,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.get_renorm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.get_renorm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.get_renorm">[docs]</a>
     <span class="k">def</span> <span class="nf">get_renorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the hifa_renorm element</span>
@@ -578,7 +556,7 @@
 
 
 <div class="viewcode-block" id="PipelineManifest.write">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.manifest.PipelineManifest.write">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.manifest.PipelineManifest.html#pipeline.hsdn.tasks.exportdata.manifest.PipelineManifest.write">[docs]</a>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the document to a nicely formatted XML string</span>

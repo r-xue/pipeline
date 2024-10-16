@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -140,7 +136,7 @@
 
 
 <div class="viewcode-block" id="ImagePreCheckHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics.html#pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">ImagePreCheckHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
@@ -149,8 +145,6 @@
     <span class="c1"># Below maxBR is the maxAllowedBeamAxialRatio that will be in the SBSummary table as of cycle 7</span>
     <span class="c1"># Note that axial ratio comparisons have been disabled for Cycle 7 (see PIPE-208).</span>
     <span class="c1"># We still calculate and post ratios in the weblog.</span>
-<div class="viewcode-block" id="ImagePreCheckHeuristics.compare_beams">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.imageprecheck.ImagePreCheckHeuristics.compare_beams">[docs]</a>
     <span class="k">def</span> <span class="nf">compare_beams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_0p0</span><span class="p">,</span> <span class="n">beam_0p5</span><span class="p">,</span> <span class="n">beam_1p0</span><span class="p">,</span> <span class="n">beam_2p0</span><span class="p">,</span> <span class="n">minAR</span><span class="p">,</span> <span class="n">maxAR</span><span class="p">,</span> <span class="n">maxBR</span><span class="p">):</span>
 
         <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
@@ -259,7 +253,6 @@
             <span class="n">hm_robust_score_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Requested beam falls in robust gap&#39;</span>
 
         <span class="k">return</span> <span class="n">hm_robust</span><span class="p">,</span> <span class="p">(</span><span class="n">hm_robust_score_value</span><span class="p">,</span> <span class="n">hm_robust_score_longmsg</span><span class="p">,</span> <span class="n">hm_robust_score_shortmsg</span><span class="p">),</span> <span class="n">beamRatio_0p0</span><span class="p">,</span> <span class="n">beamRatio_0p5</span><span class="p">,</span> <span class="n">beamRatio_1p0</span><span class="p">,</span> <span class="n">beamRatio_2p0</span></div>
-</div>
 
 </pre></div>
 

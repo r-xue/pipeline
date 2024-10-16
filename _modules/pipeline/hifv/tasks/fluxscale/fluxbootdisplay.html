@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="fluxbootSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">fluxbootSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -154,15 +150,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="c1"># self.caltable = result.final[0].gaintable</span>
 
-<div class="viewcode-block" id="fluxbootSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="fluxbootSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -178,19 +169,13 @@
                          <span class="n">coloraxis</span><span class="o">=</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="n">plotrange</span><span class="o">=</span><span class="p">[],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="n">showmajorgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                          <span class="n">showminorgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clearplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showgui</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
+        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="fluxbootSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;bootstrappedFluxDensities-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;bootstrappedFluxDensities-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="fluxbootSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxbootSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -210,12 +195,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="fluxgaincalSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">fluxgaincalSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">caltable</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -224,15 +208,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="c1"># self.caltable = result.final[0].gaintable</span>
 
-<div class="viewcode-block" id="fluxgaincalSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="fluxgaincalSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -242,19 +221,13 @@
                          <span class="n">coloraxis</span><span class="o">=</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="n">plotrange</span><span class="o">=</span><span class="p">[],</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">showmajorgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                          <span class="n">showminorgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plotfile</span><span class="o">=</span><span class="n">figfile</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">clearplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">showgui</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
+        <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="fluxgaincalSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;fluxgaincalFluxDensities-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;fluxgaincalFluxDensities-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="fluxgaincalSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.fluxgaincalSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -275,12 +248,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="modelfitSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">modelfitSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">webdicts</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -288,15 +260,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">webdicts</span> <span class="o">=</span> <span class="n">webdicts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="modelfitSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="modelfitSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -409,19 +376,13 @@
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency [GHz]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">mysize</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="modelfitSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;modelfit-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;modelfit-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="modelfitSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.modelfitSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -440,12 +401,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="residualsSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">residualsSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">webdicts</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -453,15 +413,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">webdicts</span> <span class="o">=</span> <span class="n">webdicts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="residualsSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="residualsSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -537,19 +492,13 @@
         <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency [GHz]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">mysize</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="residualsSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;residuals-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;residuals-</span><span class="si">%s</span><span class="s1">-summary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="residualsSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.fluxscale.html#pipeline.hifv.tasks.fluxscale.fluxbootdisplay.residualsSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">()</span>
 
@@ -568,7 +517,6 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 </pre></div>
 

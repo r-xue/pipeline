@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -174,7 +170,7 @@
 
 
 <div class="viewcode-block" id="identify_fully_flagged_antennas_from_flagcmds">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagcmds">[docs]</a>
 <span class="k">def</span> <span class="nf">identify_fully_flagged_antennas_from_flagcmds</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlagCmd</span><span class="p">])</span> \
         <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -218,7 +214,7 @@
 
 
 <div class="viewcode-block" id="identify_fully_flagged_antennas_from_flagview">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview.html#pipeline.infrastructure.refantflag.identify_fully_flagged_antennas_from_flagview">[docs]</a>
 <span class="k">def</span> <span class="nf">identify_fully_flagged_antennas_from_flagview</span><span class="p">(</span>
         <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
         <span class="n">results</span><span class="p">:</span> <span class="n">FlaggableViewResults</span><span class="p">,</span>
@@ -307,7 +303,7 @@
 
 
 <div class="viewcode-block" id="mark_antennas_for_refant_update">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.mark_antennas_for_refant_update">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.refantflag.mark_antennas_for_refant_update.html#pipeline.infrastructure.refantflag.mark_antennas_for_refant_update">[docs]</a>
 <span class="k">def</span> <span class="nf">mark_antennas_for_refant_update</span><span class="p">(</span>
         <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
         <span class="n">result</span><span class="p">:</span> <span class="n">Results</span><span class="p">,</span>
@@ -427,7 +423,7 @@
 
 
 <div class="viewcode-block" id="aggregate_fully_flagged_antenna_notifications">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications.html#pipeline.infrastructure.refantflag.aggregate_fully_flagged_antenna_notifications">[docs]</a>
 <span class="k">def</span> <span class="nf">aggregate_fully_flagged_antenna_notifications</span><span class="p">(</span>
         <span class="n">fully_flagged_antennas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="n">FieldIntentSpw</span><span class="p">]],</span>
         <span class="n">all_spwids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> \
@@ -501,7 +497,7 @@
 
 
 <div class="viewcode-block" id="format_fully_flagged_antenna_notification">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification.html#pipeline.infrastructure.refantflag.format_fully_flagged_antenna_notification">[docs]</a>
 <span class="k">def</span> <span class="nf">format_fully_flagged_antenna_notification</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">notification</span><span class="p">:</span> <span class="n">FullyFlaggedAntennasNotification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format the notification message for fully flagged antennas.</span>

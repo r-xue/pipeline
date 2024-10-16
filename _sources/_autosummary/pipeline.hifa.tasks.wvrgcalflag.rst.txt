@@ -4,16 +4,35 @@ pipeline.hifa.tasks.wvrgcalflag
 .. automodule:: pipeline.hifa.tasks.wvrgcalflag
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Wvrgcalflag
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    display
@@ -22,3 +41,4 @@ pipeline.hifa.tasks.wvrgcalflag
    resultobjects
    wvrgcalflag
    wvrgcalflagsetter
+

@@ -4,18 +4,40 @@ pipeline.hifv.tasks.fixpointing.fixpointing
 .. automodule:: pipeline.hifv.tasks.fixpointing.fixpointing
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       fixpointing_offset_vlass
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Fixpointing
       FixpointingInputs
       FixpointingResults
       datetime
    
+   
+
+   
+   
+   
+
+
+

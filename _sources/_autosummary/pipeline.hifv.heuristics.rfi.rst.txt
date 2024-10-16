@@ -4,9 +4,16 @@ pipeline.hifv.heuristics.rfi
 .. automodule:: pipeline.hifv.heuristics.rfi
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_amp_range
       mssel_valid
@@ -14,10 +21,25 @@ pipeline.hifv.heuristics.rfi
       plotms_get_xyrange
       test_checkflag_dataselect
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       RflagDevHeuristic
       VLAScanHeuristics
    
+   
+
+   
+   
+   
+
+
+

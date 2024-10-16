@@ -4,9 +4,21 @@ pipeline.hifv.tasks
 .. automodule:: pipeline.hifv.tasks
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Analyzestokescubes
       Applycals
@@ -42,10 +54,17 @@ pipeline.hifv.tasks
       semiFinalBPdcals
       testBPdcals
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    analyzestokescubes
@@ -74,3 +93,4 @@ pipeline.hifv.tasks
    syspower
    tecmaps
    vlassmasking
+

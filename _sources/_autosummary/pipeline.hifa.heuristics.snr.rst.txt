@@ -4,15 +4,23 @@ pipeline.hifa.heuristics.snr
 .. automodule:: pipeline.hifa.heuristics.snr
 
    
-   .. rubric:: Module Attributes
+   
+   .. rubric:: Module attributes
 
    .. autosummary::
+      :toctree:
    
       LOG
+   
+   
+
+   
    
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       compute_bpsolint
       compute_gaincalsnr
@@ -28,3 +36,15 @@ pipeline.hifa.heuristics.snr
       nextHighestDivisibleInt
       round_up
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

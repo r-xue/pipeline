@@ -4,9 +4,16 @@ pipeline.cli
 .. automodule:: pipeline.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_pipeline_task_with_name
       h_applycal
@@ -122,3 +129,15 @@ pipeline.cli
       hsdn_importdata
       hsdn_restoredata
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

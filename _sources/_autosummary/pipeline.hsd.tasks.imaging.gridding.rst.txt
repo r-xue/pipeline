@@ -4,15 +4,29 @@ pipeline.hsd.tasks.imaging.gridding
 .. automodule:: pipeline.hsd.tasks.imaging.gridding
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       gridding_factory
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Accumulator
       DataTableIndexer
@@ -24,3 +38,11 @@ pipeline.hsd.tasks.imaging.gridding
       RasterGridding
       SinglePointGridding
    
+   
+
+   
+   
+   
+
+
+

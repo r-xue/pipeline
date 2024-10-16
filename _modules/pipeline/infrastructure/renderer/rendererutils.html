@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -157,7 +153,7 @@
 
 
 <div class="viewcode-block" id="printTsysFlags">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.printTsysFlags">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.printTsysFlags.html#pipeline.infrastructure.renderer.rendererutils.printTsysFlags">[docs]</a>
 <span class="k">def</span> <span class="nf">printTsysFlags</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">htmlreport</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method that implements a version of printTsysFlags by Todd Hunter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -212,7 +208,7 @@
 
 
 <div class="viewcode-block" id="renderflagcmds">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.renderflagcmds">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.renderflagcmds.html#pipeline.infrastructure.renderer.rendererutils.renderflagcmds">[docs]</a>
 <span class="k">def</span> <span class="nf">renderflagcmds</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">,</span> <span class="n">htmlflagcmds</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Method to render a list of flagcmds into html format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -235,7 +231,7 @@
 
 
 <div class="viewcode-block" id="get_bar_class">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_bar_class">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_bar_class.html#pipeline.infrastructure.renderer.rendererutils.get_bar_class">[docs]</a>
 <span class="k">def</span> <span class="nf">get_bar_class</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
     <span class="n">score</span> <span class="o">=</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span>
     <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
@@ -252,7 +248,7 @@
 
 
 <div class="viewcode-block" id="get_badge_class">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_badge_class">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_badge_class.html#pipeline.infrastructure.renderer.rendererutils.get_badge_class">[docs]</a>
 <span class="k">def</span> <span class="nf">get_badge_class</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
     <span class="n">score</span> <span class="o">=</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span>
     <span class="k">if</span> <span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
@@ -269,7 +265,7 @@
 
 
 <div class="viewcode-block" id="get_bar_width">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_bar_width">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_bar_width.html#pipeline.infrastructure.renderer.rendererutils.get_bar_width">[docs]</a>
 <span class="k">def</span> <span class="nf">get_bar_width</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">0</span>
@@ -279,7 +275,7 @@
 
 
 <div class="viewcode-block" id="format_score">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_score">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.format_score.html#pipeline.infrastructure.renderer.rendererutils.format_score">[docs]</a>
 <span class="k">def</span> <span class="nf">format_score</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">pqascore</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
@@ -288,7 +284,7 @@
 
 
 <div class="viewcode-block" id="get_sidebar_style_for_task">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_sidebar_style_for_task">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_sidebar_style_for_task.html#pipeline.infrastructure.renderer.rendererutils.get_sidebar_style_for_task">[docs]</a>
 <span class="k">def</span> <span class="nf">get_sidebar_style_for_task</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">qa_score</span><span class="o">.</span><span class="n">score</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">qa_score</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;text-muted&#39;</span>
@@ -297,7 +293,7 @@
 
 
 <div class="viewcode-block" id="get_symbol_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_symbol_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_symbol_badge.html#pipeline.infrastructure.renderer.rendererutils.get_symbol_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_symbol_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">get_failures_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
         <span class="n">symbol</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;glyphicon glyphicon-minus-sign alert-danger transparent-bg&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&#39;</span>
@@ -316,7 +312,7 @@
 
 
 <div class="viewcode-block" id="get_failures_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_failures_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_failures_badge.html#pipeline.infrastructure.renderer.rendererutils.get_failures_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_failures_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="n">failure_tracebacks</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_tracebacks</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">failure_tracebacks</span><span class="p">)</span>
@@ -328,7 +324,7 @@
 
 
 <div class="viewcode-block" id="get_attentions_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_attentions_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_attentions_badge.html#pipeline.infrastructure.renderer.rendererutils.get_attentions_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_attentions_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="n">attention_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ATTENTION</span><span class="p">)</span>
     <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attention_logrecords</span><span class="p">)</span>
@@ -340,7 +336,7 @@
 
 
 <div class="viewcode-block" id="get_warnings_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_warnings_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_warnings_badge.html#pipeline.infrastructure.renderer.rendererutils.get_warnings_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_warnings_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="n">warning_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
     <span class="n">warning_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">)</span>
@@ -353,7 +349,7 @@
 
 
 <div class="viewcode-block" id="get_errors_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_errors_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_errors_badge.html#pipeline.infrastructure.renderer.rendererutils.get_errors_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_errors_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="n">error_logrecords</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
     <span class="n">error_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_ERROR</span><span class="p">)</span>
@@ -366,7 +362,7 @@
 
 
 <div class="viewcode-block" id="get_suboptimal_badge">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_suboptimal_badge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_suboptimal_badge.html#pipeline.infrastructure.renderer.rendererutils.get_suboptimal_badge">[docs]</a>
 <span class="k">def</span> <span class="nf">get_suboptimal_badge</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="n">suboptimal_qascores</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_WARNING</span><span class="p">,</span> <span class="n">SCORE_THRESHOLD_SUBOPTIMAL</span><span class="p">)</span>
     <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">suboptimal_qascores</span><span class="p">)</span>
@@ -378,7 +374,7 @@
 
 
 <div class="viewcode-block" id="get_command_markup">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_command_markup">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_command_markup.html#pipeline.infrastructure.renderer.rendererutils.get_command_markup">[docs]</a>
 <span class="k">def</span> <span class="nf">get_command_markup</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
@@ -392,7 +388,7 @@
 
 
 <div class="viewcode-block" id="format_shortmsg">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_shortmsg">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.format_shortmsg.html#pipeline.infrastructure.renderer.rendererutils.format_shortmsg">[docs]</a>
 <span class="k">def</span> <span class="nf">format_shortmsg</span><span class="p">(</span><span class="n">pqascore</span><span class="p">):</span>
     <span class="c1"># First check against None. Comparisons of None and float are no longer</span>
     <span class="c1"># allowed in Python 3.</span>
@@ -406,7 +402,7 @@
 
 
 <div class="viewcode-block" id="sort_row_by">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.sort_row_by">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.sort_row_by.html#pipeline.infrastructure.renderer.rendererutils.sort_row_by">[docs]</a>
 <span class="k">def</span> <span class="nf">sort_row_by</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
     <span class="c1"># build primary, secondary, tertiary, etc. axis sorting functions</span>
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
@@ -424,7 +420,7 @@
 
 
 <div class="viewcode-block" id="group_plots">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.group_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.group_plots.html#pipeline.infrastructure.renderer.rendererutils.group_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">group_plots</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
@@ -461,7 +457,7 @@
 
 
 <div class="viewcode-block" id="sanitize_data_selection_string">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.sanitize_data_selection_string">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.sanitize_data_selection_string.html#pipeline.infrastructure.renderer.rendererutils.sanitize_data_selection_string">[docs]</a>
 <span class="k">def</span> <span class="nf">sanitize_data_selection_string</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="n">split_text</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
     <span class="n">sanitized_text</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;&amp;quot;</span><span class="si">{}</span><span class="s2">&amp;quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">split_text</span><span class="p">]))</span>
@@ -470,7 +466,7 @@
 
 
 <div class="viewcode-block" id="num_lines">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.num_lines">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.num_lines.html#pipeline.infrastructure.renderer.rendererutils.num_lines">[docs]</a>
 <span class="k">def</span> <span class="nf">num_lines</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Report number of non-empty non-comment lines in a file specified by the</span>
@@ -484,7 +480,7 @@
 
 
 <div class="viewcode-block" id="scores_in_range">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.scores_in_range">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.scores_in_range.html#pipeline.infrastructure.renderer.rendererutils.scores_in_range">[docs]</a>
 <span class="k">def</span> <span class="nf">scores_in_range</span><span class="p">(</span><span class="n">pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">],</span> <span class="n">lo</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Filter QA scores by range.</span>
@@ -496,7 +492,7 @@
 
 
 <div class="viewcode-block" id="get_notification_trs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_notification_trs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_notification_trs.html#pipeline.infrastructure.renderer.rendererutils.get_notification_trs">[docs]</a>
 <span class="k">def</span> <span class="nf">get_notification_trs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">alerts_info</span><span class="p">,</span> <span class="n">alerts_success</span><span class="p">):</span>
     <span class="c1"># suppress scores not intended for the banner, taking care not to suppress</span>
     <span class="c1"># legacy scores with a default message destination (=UNSET) so that old</span>
@@ -556,7 +552,7 @@
 
 
 <div class="viewcode-block" id="format_notification">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.format_notification">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.format_notification.html#pipeline.infrastructure.renderer.rendererutils.format_notification">[docs]</a>
 <span class="k">def</span> <span class="nf">format_notification</span><span class="p">(</span><span class="n">tr_class</span><span class="p">,</span> <span class="n">alert</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">icon_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">icon_class</span><span class="p">:</span>
         <span class="n">icon</span> <span class="o">=</span> <span class="s1">&#39;&lt;span class=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt;&lt;/span&gt; &#39;</span> <span class="o">%</span> <span class="n">icon_class</span>
@@ -567,7 +563,7 @@
 
 
 <div class="viewcode-block" id="get_relative_url">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.get_relative_url">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.get_relative_url.html#pipeline.infrastructure.renderer.rendererutils.get_relative_url">[docs]</a>
 <span class="k">def</span> <span class="nf">get_relative_url</span><span class="p">(</span><span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stage_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subpage_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                      <span class="n">allow_nonexistent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -609,7 +605,7 @@
 
 
 <div class="viewcode-block" id="percent_flagged">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.percent_flagged">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.percent_flagged.html#pipeline.infrastructure.renderer.rendererutils.percent_flagged">[docs]</a>
 <span class="k">def</span> <span class="nf">percent_flagged</span><span class="p">(</span><span class="n">flagsummary</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Method to output flagging percentages neatly.</span>
@@ -631,7 +627,7 @@
 <span class="p">}</span>
 
 <div class="viewcode-block" id="plot_type">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.plot_type">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.plot_type.html#pipeline.infrastructure.renderer.rendererutils.plot_type">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_type</span><span class="p">(</span><span class="n">plot</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Output plot type.</span>
@@ -642,7 +638,7 @@
 
 
 <div class="viewcode-block" id="summarise_fields">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.rendererutils.summarise_fields">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.summarise_fields.html#pipeline.infrastructure.renderer.rendererutils.summarise_fields">[docs]</a>
 <span class="k">def</span> <span class="nf">summarise_fields</span><span class="p">(</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Output field summary string. List all fields if up to 10,</span>

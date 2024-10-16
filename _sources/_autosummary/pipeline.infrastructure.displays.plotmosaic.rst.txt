@@ -4,9 +4,16 @@ pipeline.infrastructure.displays.plotmosaic
 .. automodule:: pipeline.infrastructure.displays.plotmosaic
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       antenna_taper_factor
       baars_taper_factor
@@ -18,9 +25,16 @@ pipeline.infrastructure.displays.plotmosaic
       plot_mosaic
       primary_beam_fwhm
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ArcUnits
       Circle
@@ -31,3 +45,11 @@ pipeline.infrastructure.displays.plotmosaic
       FuncFormatter
       Line2D
    
+   
+
+   
+   
+   
+
+
+

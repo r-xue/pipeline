@@ -4,3 +4,20 @@ pipeline.hsdn.heuristics
 .. automodule:: pipeline.hsdn.heuristics
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

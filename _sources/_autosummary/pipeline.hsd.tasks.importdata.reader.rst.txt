@@ -4,9 +4,16 @@ pipeline.hsd.tasks.importdata.reader
 .. automodule:: pipeline.hsd.tasks.importdata.reader
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       TableSelector
       get_state_id
@@ -20,9 +27,16 @@ pipeline.hsd.tasks.importdata.reader
       set_nominal_direction
       write_flagcmd
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ColMaskList
       Context
@@ -31,3 +45,11 @@ pipeline.hsd.tasks.importdata.reader
       MetaDataReader
       RasterScanHeuristicsResult
    
+   
+
+   
+   
+   
+
+
+

@@ -4,11 +4,31 @@ pipeline.hsd.tasks.atmcor.qa
 .. automodule:: pipeline.hsd.tasks.atmcor.qa
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       SDATMCorrectionListQAHandler
       SDATMCorrectionQAHandler
    
+   
+
+   
+   
+   
+
+
+

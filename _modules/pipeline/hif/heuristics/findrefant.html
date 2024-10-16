@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -231,7 +227,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="RefAntHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.RefAntHeuristics.html#pipeline.hif.heuristics.RefAntHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAntHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">vdp</span><span class="o">.</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
     <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
@@ -317,8 +313,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="RefAntHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
         <span class="c1"># If no heuristics are specified, return no reference antennas</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagging</span><span class="p">):</span>
@@ -363,8 +357,7 @@
         <span class="c1"># Calculate the final score and return the list of ranked</span>
         <span class="c1"># reference antennas.  NB: The best antennas have the highest</span>
         <span class="c1"># score, so a reverse sort is required.</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -456,7 +449,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="RefAntGeometry">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.findrefant.RefAntGeometry.html#pipeline.hif.heuristics.RefAntGeometry">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAntGeometry</span><span class="p">:</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -518,8 +511,6 @@
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="RefAntGeometry.calc_score">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntGeometry.calc_score">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_score</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
 
         <span class="c1"># Get the antenna information, measures, and locations</span>
@@ -537,8 +528,7 @@
 
         <span class="c1"># Return the scores</span>
 
-        <span class="k">return</span> <span class="n">score</span></div>
-
+        <span class="k">return</span> <span class="n">score</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
@@ -892,7 +882,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="RefAntFlagging">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.findrefant.RefAntFlagging.html#pipeline.hif.heuristics.RefAntFlagging">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAntFlagging</span><span class="p">:</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -956,7 +946,7 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="RefAntFlagging.calc_score">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hif.heuristics.html#pipeline.hif.heuristics.findrefant.RefAntFlagging.calc_score">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.findrefant.RefAntFlagging.html#pipeline.hif.heuristics.RefAntFlagging.calc_score">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the number of unflagged (good) measurements for each</span>

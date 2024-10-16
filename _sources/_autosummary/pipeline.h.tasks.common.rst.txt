@@ -4,10 +4,26 @@ pipeline.h.tasks.common
 .. automodule:: pipeline.h.tasks.common
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    arrayflaggerbase
@@ -25,3 +41,4 @@ pipeline.h.tasks.common
    ozone
    sensitivity
    viewflaggers
+

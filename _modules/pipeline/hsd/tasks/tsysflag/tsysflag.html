@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="TsysflagInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.tsysflag.html#pipeline.hsd.tasks.tsysflag.tsysflag.TsysflagInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.tsysflag.tsysflag.TsysflagInputs.html#pipeline.hsd.tasks.TsysflagInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysflagInputs</span><span class="p">(</span><span class="n">tsysflag</span><span class="o">.</span><span class="n">TsysflagInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsysflagInputs defines the inputs for the Tsysflag pipeline task.</span>
@@ -264,14 +260,17 @@
 
 
 
+<div class="viewcode-block" id="SerialTsysflag">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.tsysflag.tsysflag.SerialTsysflag.html#pipeline.hsd.tasks.SerialTsysflag">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_tsysflag&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The Tsys calibration and spectral window map is computed.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SerialTsysflag</span><span class="p">(</span><span class="n">tsysflag</span><span class="o">.</span><span class="n">Tsysflag</span><span class="p">):</span>
-    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagInputs</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagInputs</span></div>
+
 
 
 <div class="viewcode-block" id="Tsysflag">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.tsysflag.html#pipeline.hsd.tasks.tsysflag.tsysflag.Tsysflag">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.tsysflag.tsysflag.Tsysflag.html#pipeline.hsd.tasks.Tsysflag">[docs]</a>
 <span class="k">class</span> <span class="nc">Tsysflag</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagInputs</span>
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialTsysflag</span></div>

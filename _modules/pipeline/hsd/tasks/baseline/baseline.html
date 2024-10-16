@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -168,7 +164,7 @@
 
 
 <div class="viewcode-block" id="SDBaselineInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.SDBaselineInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBaselineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for baseline subtraction task.&quot;&quot;&quot;</span>
 
@@ -300,7 +296,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 <div class="viewcode-block" id="SDBaselineInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.SDBaselineInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance into task execution parameter.</span>
 
@@ -321,7 +317,7 @@
 
 
 <div class="viewcode-block" id="SDBaselineResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.SDBaselineResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBaselineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction task.&quot;&quot;&quot;</span>
 
@@ -341,7 +337,7 @@
 
     <span class="c1"># @utils.profiler</span>
 <div class="viewcode-block" id="SDBaselineResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.SDBaselineResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -428,7 +424,7 @@
 
 
 <div class="viewcode-block" id="SDBaseline">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaseline">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_baseline&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;Subtracts spectral baseline by least-square fitting with N-sigma clipping. Spectral lines are automatically &#39;</span>
@@ -443,7 +439,7 @@
 
 <span class="c1">#    @memory_profiler.profile</span>
 <div class="viewcode-block" id="SDBaseline.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaseline.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform baseline subtraction.</span>
 
@@ -694,7 +690,7 @@
 
 
 <div class="viewcode-block" id="SDBaseline.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaseline.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDBaselineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate measurementset domain object for output MS.</span>
 
@@ -720,7 +716,7 @@
 
 
 <div class="viewcode-block" id="HeuristicsTask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.HeuristicsTask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask">[docs]</a>
 <span class="k">class</span> <span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor for heuristics class. It is an adaptor to mpihelper framework.&quot;&quot;&quot;</span>
 
@@ -737,7 +733,7 @@
         <span class="c1"># print(self.args, self.kwargs)</span>
 
 <div class="viewcode-block" id="HeuristicsTask.execute">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.execute">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Heuristics and return its result.</span>
 
@@ -749,7 +745,7 @@
 
 
 <div class="viewcode-block" id="HeuristicsTask.get_executable">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.get_executable">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask.get_executable">[docs]</a>
     <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return function that runs execute method.</span>
 
@@ -762,7 +758,7 @@
 
 
 <div class="viewcode-block" id="DeviationMaskHeuristicsTask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.DeviationMaskHeuristicsTask">[docs]</a>
 <span class="k">class</span> <span class="nc">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">HeuristicsTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor class specialized to MaskDeviationHeuristic.&quot;&quot;&quot;</span>
 
@@ -795,7 +791,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span> <span class="o">=</span> <span class="n">spw_list</span>
 
 <div class="viewcode-block" id="DeviationMaskHeuristicsTask.execute">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.execute">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.DeviationMaskHeuristicsTask.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute heuristics.</span>
 
@@ -814,7 +810,7 @@
 
 
 <div class="viewcode-block" id="deviation_mask_heuristic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic.html#pipeline.hsd.tasks.deviation_mask_heuristic">[docs]</a>
 <span class="k">def</span> <span class="nf">deviation_mask_heuristic</span><span class="p">(</span>
         <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -850,7 +846,7 @@
 
 
 <div class="viewcode-block" id="test_deviation_mask_heuristic">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic.html#pipeline.hsd.tasks.test_deviation_mask_heuristic">[docs]</a>
 <span class="k">def</span> <span class="nf">test_deviation_mask_heuristic</span><span class="p">(</span><span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test deviation mask heuristic.</span>
 

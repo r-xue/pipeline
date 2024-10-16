@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -165,7 +161,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineInputs.html#pipeline.hsd.tasks.baseline.validation.ValidateLineInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ValidateLineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for line validation tasks.&quot;&quot;&quot;</span>
 
@@ -272,7 +268,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineResults.html#pipeline.hsd.tasks.baseline.validation.ValidateLineResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ValidateLineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of line validation.&quot;&quot;&quot;</span>
 
@@ -290,7 +286,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">ValidateLineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ValidateLineResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineResults.html#pipeline.hsd.tasks.baseline.validation.ValidateLineResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -313,7 +309,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineSinglePointing">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing">[docs]</a>
 <span class="k">class</span> <span class="nc">ValidateLineSinglePointing</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Line validation task for single/multi pointing observation.</span>
 
@@ -324,7 +320,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ValidateLineInputs</span>
 
 <div class="viewcode-block" id="ValidateLineSinglePointing.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">datatable_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                 <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -449,7 +445,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineSinglePointing.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.html#pipeline.hsd.tasks.baseline.validation.ValidateLineSinglePointing.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">ValidateLineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidateLineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse results instance generated by prepare.</span>
 
@@ -464,7 +460,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster">[docs]</a>
 <span class="k">class</span> <span class="nc">ValidateLineRaster</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Line validation task for OTF raster observation.&quot;&quot;&quot;</span>
 
@@ -499,7 +495,7 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nchan</span> <span class="o">-</span> <span class="n">num_edge</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ValidateLineRaster.validate_cluster">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.validate_cluster">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.validate_cluster">[docs]</a>
     <span class="k">def</span> <span class="nf">validate_cluster</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clustering_result</span><span class="p">:</span> <span class="n">ClusteringResult</span><span class="p">,</span>
@@ -663,7 +659,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">datatable_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                 <span class="n">index_list</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -962,7 +958,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">ValidateLineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidateLineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse results instance generated by prepare.</span>
 
@@ -1045,7 +1041,7 @@
         <span class="k">return</span> <span class="n">merged_RealSignal</span><span class="p">,</span> <span class="n">merged_lines</span><span class="p">,</span> <span class="n">merged_channelmap_ranges</span><span class="p">,</span> <span class="n">merged_flag</span>
 
 <div class="viewcode-block" id="ValidateLineRaster.clean_detect_signal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_detect_signal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_detect_signal">[docs]</a>
     <span class="k">def</span> <span class="nf">clean_detect_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detect_signal</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Exclude false detections based on the detection rate.</span>
 
@@ -1103,7 +1099,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.clean_detect_line">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_detect_line">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_detect_line">[docs]</a>
     <span class="k">def</span> <span class="nf">clean_detect_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Exclude false detection by comparing three signals.</span>
 
@@ -1169,7 +1165,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.CheckLineIdentity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.CheckLineIdentity">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.CheckLineIdentity">[docs]</a>
     <span class="k">def</span> <span class="nf">CheckLineIdentity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">overlap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the given set of line ranges overlap.</span>
 
@@ -1204,7 +1200,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.clustering_kmean">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_kmean">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_kmean">[docs]</a>
     <span class="k">def</span> <span class="nf">clustering_kmean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Region</span><span class="p">:</span> <span class="n">DetectedLineList</span><span class="p">,</span> <span class="n">Region2</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClusteringResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform k-mean clustering analysis on detected lines.</span>
 
@@ -1353,7 +1349,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.clustering_hierarchy">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_hierarchy">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_hierarchy">[docs]</a>
     <span class="k">def</span> <span class="nf">clustering_hierarchy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">Region</span><span class="p">:</span> <span class="n">DetectedLineList</span><span class="p">,</span>
@@ -1514,7 +1510,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.set_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.set_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.set_data">[docs]</a>
     <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Observation</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ordering</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transpose axes of two-dimensional array data.</span>
 
@@ -1565,7 +1561,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.clean_cluster">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_cluster">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clean_cluster">[docs]</a>
     <span class="k">def</span> <span class="nf">clean_cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                       <span class="n">Data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                       <span class="n">Category</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -1646,7 +1642,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.clustering_kmean_score">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_kmean_score">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.clustering_kmean_score">[docs]</a>
     <span class="k">def</span> <span class="nf">clustering_kmean_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MeanDistance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">MedianWidth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Ncluster</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">MemberRate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute score of the clusters.</span>
 
@@ -1668,7 +1664,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.detection_stage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.detection_stage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.detection_stage">[docs]</a>
     <span class="k">def</span> <span class="nf">detection_stage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">Ncluster</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1778,7 +1774,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.validation_stage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.validation_stage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.validation_stage">[docs]</a>
     <span class="k">def</span> <span class="nf">validation_stage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">GridCluster</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1861,7 +1857,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.smoothing_stage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.smoothing_stage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.smoothing_stage">[docs]</a>
     <span class="k">def</span> <span class="nf">smoothing_stage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">GridCluster</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1971,7 +1967,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.final_stage">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.final_stage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.final_stage">[docs]</a>
     <span class="k">def</span> <span class="nf">final_stage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">GridCluster</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -2402,7 +2398,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.CleanIsolation">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.CleanIsolation">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.CleanIsolation">[docs]</a>
     <span class="k">def</span> <span class="nf">CleanIsolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ndec</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Original</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Plane</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">GridMember</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean spatially isolated cluster.</span>
 
@@ -2484,7 +2480,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.DoBlur">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.DoBlur">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.DoBlur">[docs]</a>
     <span class="k">def</span> <span class="nf">DoBlur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">Realmember</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                <span class="n">nra</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -2532,7 +2528,7 @@
 
 
 <div class="viewcode-block" id="ValidateLineRaster.calc_ProtectMask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.calc_ProtectMask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.html#pipeline.hsd.tasks.baseline.validation.ValidateLineRaster.calc_ProtectMask">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_ProtectMask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Center</span><span class="p">:</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Width</span><span class="p">:</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">MinFWHM</span><span class="p">:</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">MaxFWHM</span><span class="p">:</span> <span class="n">Integral</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ProtectMask according to Center and Width.</span>
 
@@ -2661,7 +2657,7 @@
 
 
 <div class="viewcode-block" id="convolve2d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.convolve2d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.convolve2d.html#pipeline.hsd.tasks.baseline.validation.convolve2d">[docs]</a>
 <span class="k">def</span> <span class="nf">convolve2d</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">kernel</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform two-dimensional convolution.</span>
 
@@ -2775,7 +2771,7 @@
 
 
 <div class="viewcode-block" id="SVDSolver2D">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D">[docs]</a>
 <span class="k">class</span> <span class="nc">SVDSolver2D</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Least-square solver based on singular value decomposition (SVD).</span>
 
@@ -2814,7 +2810,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SVDSolver2D.set_data_points">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.set_data_points">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.set_data_points">[docs]</a>
     <span class="k">def</span> <span class="nf">set_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set data array.</span>
 
@@ -2972,7 +2968,7 @@
         <span class="k">return</span> <span class="n">poly</span>
 
 <div class="viewcode-block" id="SVDSolver2D.solve_with_mask">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_with_mask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_with_mask">[docs]</a>
     <span class="k">def</span> <span class="nf">solve_with_mask</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -3019,7 +3015,7 @@
 
 
 <div class="viewcode-block" id="SVDSolver2D.solve_with_eps">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_with_eps">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_with_eps">[docs]</a>
     <span class="k">def</span> <span class="nf">solve_with_eps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -3067,7 +3063,7 @@
 
 
 <div class="viewcode-block" id="SVDSolver2D.solve_for">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_for">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.solve_for">[docs]</a>
     <span class="k">def</span> <span class="nf">solve_for</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -3115,7 +3111,7 @@
 
 
 <div class="viewcode-block" id="SVDSolver2D.find_good_solution">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.find_good_solution">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.SVDSolver2D.html#pipeline.hsd.tasks.baseline.validation.SVDSolver2D.find_good_solution">[docs]</a>
     <span class="k">def</span> <span class="nf">find_good_solution</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Integral</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -3186,7 +3182,7 @@
 
 
 <div class="viewcode-block" id="ValidationFactory">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.validation.ValidationFactory">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.validation.ValidationFactory.html#pipeline.hsd.tasks.baseline.validation.ValidationFactory">[docs]</a>
 <span class="k">def</span> <span class="nf">ValidationFactory</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">ValidateLineRaster</span><span class="p">],</span><span class="n">Type</span><span class="p">[</span><span class="n">ValidateLineSinglePointing</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return appropriate task class according to observing pattern.</span>
 

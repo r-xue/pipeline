@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,7 +142,7 @@
 
 
 <div class="viewcode-block" id="ArcUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.ArcUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.ArcUnits.html#pipeline.domain.antennaarray.ArcUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">ArcUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">DEGREE</span>           <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;DEGREE&#39;</span>           <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;d&#39;</span>   <span class="p">,</span> <span class="s1">&#39;html&#39;</span> <span class="p">:</span> <span class="s1">&#39;&amp;#x00B0;&#39;</span> <span class="p">,</span> <span class="s1">&#39;units per circle&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>        <span class="p">}</span>
     <span class="n">RADIAN</span>           <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;RADIAN&#39;</span>           <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;rad&#39;</span> <span class="p">,</span> <span class="s1">&#39;html&#39;</span> <span class="p">:</span> <span class="s1">&#39;rad&#39;</span>      <span class="p">,</span> <span class="s1">&#39;units per circle&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>  <span class="p">}</span>
@@ -161,7 +157,7 @@
 
 
 <div class="viewcode-block" id="DistanceUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.DistanceUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.DistanceUnits.html#pipeline.domain.antennaarray.DistanceUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">DistanceUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">ANGSTROM</span>          <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ANGSTROM&#39;</span>          <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">u212B&#39;</span><span class="p">,</span> <span class="s1">&#39;metres&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-10&#39;</span><span class="p">)</span>              <span class="p">}</span>
     <span class="n">NANOMETRE</span>         <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;NANOMETRE&#39;</span>         <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;nm&#39;</span>     <span class="p">,</span> <span class="s1">&#39;metres&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-9&#39;</span><span class="p">)</span>               <span class="p">}</span>
@@ -182,7 +178,7 @@
 
 
 <div class="viewcode-block" id="FluxDensityUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FluxDensityUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensityUnits.html#pipeline.domain.antennaarray.FluxDensityUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxDensityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">YOCTOJANSKY</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;YOCTOJANSKY&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;yJy&#39;</span>      <span class="p">,</span> <span class="s1">&#39;Jy&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-24&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ZEPTOJANSKY</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ZEPTOJANSKY&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;zJy&#39;</span>      <span class="p">,</span> <span class="s1">&#39;Jy&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-21&#39;</span><span class="p">)</span> <span class="p">}</span>
@@ -209,7 +205,7 @@
 
 
 <div class="viewcode-block" id="FrequencyUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyUnits.html#pipeline.domain.antennaarray.FrequencyUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">FrequencyUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">YOCTOHERTZ</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;YOCTOHERTZ&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;yHz&#39;</span>      <span class="p">,</span> <span class="s1">&#39;hz&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-24&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ZEPTOHERTZ</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ZEPTOHERTZ&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;zHz&#39;</span>      <span class="p">,</span> <span class="s1">&#39;hz&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-21&#39;</span><span class="p">)</span> <span class="p">}</span>
@@ -236,7 +232,7 @@
 
 
 <div class="viewcode-block" id="LinearVelocityUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.LinearVelocityUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocityUnits.html#pipeline.domain.antennaarray.LinearVelocityUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearVelocityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">METRES_PER_SECOND</span>     <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;METRES_PER_SECOND&#39;</span>     <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;m/s&#39;</span>  <span class="p">,</span> <span class="s1">&#39;mps&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>         <span class="p">}</span>
     <span class="n">KILOMETRES_PER_SECOND</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;KILOMETERS_PER_SECOND&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;km/s&#39;</span> <span class="p">,</span> <span class="s1">&#39;mps&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>      <span class="p">}</span>
@@ -245,7 +241,7 @@
 
 
 <div class="viewcode-block" id="FileSizeUnits">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FileSizeUnits">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSizeUnits.html#pipeline.domain.antennaarray.FileSizeUnits">[docs]</a>
 <span class="k">class</span> <span class="nc">FileSizeUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">BYTES</span>     <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;BYTES&#39;</span>    <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;b&#39;</span> <span class="p">,</span> <span class="s1">&#39;bytes&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>               <span class="p">}</span>
     <span class="n">KILOBYTES</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;KILOBYTES&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;kb&#39;</span><span class="p">,</span> <span class="s1">&#39;bytes&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1024&#39;</span><span class="p">)</span>          <span class="p">}</span>
@@ -256,7 +252,7 @@
 
 
 <div class="viewcode-block" id="ComparableUnit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.ComparableUnit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.ComparableUnit.html#pipeline.domain.antennaarray.ComparableUnit">[docs]</a>
 <span class="k">class</span> <span class="nc">ComparableUnit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span>
 
@@ -364,22 +360,16 @@
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ComparableUnit.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.ComparableUnit.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override convert_to of ComparableUnit&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override convert_to of ComparableUnit&#39;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ComparableUnit.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.ComparableUnit.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override to_units of ComparableUnit&#39;</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="Distance">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Distance">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance">[docs]</a>
 <span class="k">class</span> <span class="nc">Distance</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">KILOMETRE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new distance with the given magnitude and units.</span>
@@ -393,7 +383,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="Distance.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Distance.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of distance to the new units.</span>
 
@@ -415,7 +405,7 @@
 
 
 <div class="viewcode-block" id="Distance.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Distance.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this distance in otherUnits.</span>
 
@@ -442,7 +432,7 @@
 
 
 <div class="viewcode-block" id="EquatorialArc">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.EquatorialArc">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc">[docs]</a>
 <span class="k">class</span> <span class="nc">EquatorialArc</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new distance with the given magnitude and units.</span>
@@ -456,7 +446,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="EquatorialArc.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.EquatorialArc.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this arc to the new units.</span>
 
@@ -478,7 +468,7 @@
 
 
 <div class="viewcode-block" id="EquatorialArc.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.EquatorialArc.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this arc in otherUnits.</span>
 
@@ -496,7 +486,7 @@
 
 
 <div class="viewcode-block" id="EquatorialArc.toDms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.EquatorialArc.toDms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.toDms">[docs]</a>
     <span class="k">def</span> <span class="nf">toDms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of this arc in degrees, minutes, and</span>
 <span class="sd">        seconds.</span>
@@ -531,7 +521,7 @@
 
 
 <div class="viewcode-block" id="EquatorialArc.toHms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.EquatorialArc.toHms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.toHms">[docs]</a>
     <span class="k">def</span> <span class="nf">toHms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of this arc in hours, minutes, and seconds.</span>
 
@@ -551,7 +541,7 @@
 
 
 <div class="viewcode-block" id="FluxDensity">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FluxDensity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxDensity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new flux density with the given magnitude and units.</span>
@@ -571,7 +561,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="FluxDensity.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FluxDensity.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of flux density to the new units.</span>
 <span class="sd">        After this method is complete this flux density will have units of</span>
@@ -592,7 +582,7 @@
 
 
 <div class="viewcode-block" id="FluxDensity.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FluxDensity.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this flux density in otherUnits.</span>
 
@@ -619,7 +609,7 @@
 
 
 <div class="viewcode-block" id="LinearVelocity">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.LinearVelocity">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearVelocity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new linear velocity with the given magnitude and units.</span>
@@ -639,7 +629,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="LinearVelocity.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.LinearVelocity.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of linear velocity to the new units.</span>
 <span class="sd">        After this method is complete this linear veloity will have units of</span>
@@ -661,7 +651,7 @@
 
 
 <div class="viewcode-block" id="LinearVelocity.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.LinearVelocity.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this linear velocity in otherUnits.</span>
 
@@ -690,7 +680,7 @@
 
 
 <div class="viewcode-block" id="FileSize">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FileSize">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize">[docs]</a>
 <span class="k">class</span> <span class="nc">FileSize</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new file size with the given magnitude and units.</span>
@@ -710,7 +700,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="FileSize.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FileSize.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of file size to the new units.</span>
 
@@ -732,7 +722,7 @@
 
 
 <div class="viewcode-block" id="FileSize.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FileSize.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">GIGABYTES</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this file size in otherUnits.</span>
 
@@ -760,7 +750,7 @@
 
 
 <div class="viewcode-block" id="Frequency">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Frequency">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency">[docs]</a>
 <span class="k">class</span> <span class="nc">Frequency</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new frequency with the given magnitude and units.</span>
@@ -780,7 +770,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
 
 <div class="viewcode-block" id="Frequency.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Frequency.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of frequency to the new units.</span>
 
@@ -802,7 +792,7 @@
 
 
 <div class="viewcode-block" id="Frequency.to_units">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Frequency.to_units">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.to_units">[docs]</a>
     <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="o">=</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this frequency in otherUnits.</span>
 
@@ -821,7 +811,7 @@
 
 
 <div class="viewcode-block" id="Frequency.str_to_precision">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Frequency.str_to_precision">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.str_to_precision">[docs]</a>
     <span class="k">def</span> <span class="nf">str_to_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of this Frequency to a fixed number</span>
@@ -844,7 +834,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange">[docs]</a>
 <span class="k">class</span> <span class="nc">FrequencyRange</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">)</span>
 
@@ -892,7 +882,7 @@
         <span class="k">return</span> <span class="s1">&#39;&lt;FrequencyRange(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FrequencyRange.contains">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.contains">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.contains">[docs]</a>
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if this range contains frequency.</span>
 
@@ -918,7 +908,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.convert_to">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.convert_to">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.convert_to">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="o">=</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts both endpoints of this range to the given units.</span>
 
@@ -938,7 +928,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.getCentreFrequency">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.getCentreFrequency">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getCentreFrequency">[docs]</a>
     <span class="k">def</span> <span class="nf">getCentreFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the frequency that is midway between the endpoints of this</span>
 <span class="sd">        range.</span>
@@ -954,7 +944,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.getOverlapWith">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.getOverlapWith">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getOverlapWith">[docs]</a>
     <span class="k">def</span> <span class="nf">getOverlapWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new range that represents the region of overlap between</span>
 <span class="sd">        this range and other. If there is no overlap, None is returned.</span>
@@ -974,7 +964,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.getGapBetween">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.getGapBetween">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getGapBetween">[docs]</a>
     <span class="k">def</span> <span class="nf">getGapBetween</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new range that represents the region of frequency space</span>
 <span class="sd">        between this range and other. If the other range is coincident with, or</span>
@@ -997,7 +987,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.getWidth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.getWidth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getWidth">[docs]</a>
     <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the width of this range.</span>
 
@@ -1011,7 +1001,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.overlaps">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.overlaps">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.overlaps">[docs]</a>
     <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if this frequency range overlaps with other.</span>
 
@@ -1035,7 +1025,7 @@
 
 
 <div class="viewcode-block" id="FrequencyRange.set">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.FrequencyRange.set">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.set">[docs]</a>
     <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frequency2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the frequencies of this range.</span>
 
@@ -1069,7 +1059,7 @@
 
 
 <div class="viewcode-block" id="Latitude">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude">[docs]</a>
 <span class="k">class</span> <span class="nc">Latitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
     <span class="n">patt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;degs&gt;[-+]?\d+)&#39;</span> <span class="o">+</span>
@@ -1115,7 +1105,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="o">-</span><span class="n">perHalf</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
 <div class="viewcode-block" id="Latitude.parse">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude.parse">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.parse">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new Latitude based on the given text.</span>
@@ -1163,7 +1153,7 @@
 
 
 <div class="viewcode-block" id="Latitude.isNorthOfEquator">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude.isNorthOfEquator">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isNorthOfEquator">[docs]</a>
     <span class="k">def</span> <span class="nf">isNorthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is north of the equator.</span>
 
@@ -1174,7 +1164,7 @@
 
 
 <div class="viewcode-block" id="Latitude.isSouthOfEquator">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude.isSouthOfEquator">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isSouthOfEquator">[docs]</a>
     <span class="k">def</span> <span class="nf">isSouthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is south of the equator.</span>
 
@@ -1185,7 +1175,7 @@
 
 
 <div class="viewcode-block" id="Latitude.isNorthOf">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude.isNorthOf">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isNorthOf">[docs]</a>
     <span class="k">def</span> <span class="nf">isNorthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is north of other.</span>
 
@@ -1199,7 +1189,7 @@
 
 
 <div class="viewcode-block" id="Latitude.isSouthOf">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Latitude.isSouthOf">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isSouthOf">[docs]</a>
     <span class="k">def</span> <span class="nf">isSouthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is south of other.</span>
 
@@ -1225,7 +1215,7 @@
 
 
 <div class="viewcode-block" id="Longitude">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Longitude">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude">[docs]</a>
 <span class="k">class</span> <span class="nc">Longitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
     <span class="n">patt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;hours&gt;\d+)&#39;</span> <span class="o">+</span>
@@ -1260,7 +1250,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="n">perCircle</span>
 
 <div class="viewcode-block" id="Longitude.parse">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Longitude.parse">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.parse">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new longitude based on the given text.</span>
@@ -1305,7 +1295,7 @@
 
 
 <div class="viewcode-block" id="Longitude.isOpposite">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Longitude.isOpposite">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isOpposite">[docs]</a>
     <span class="k">def</span> <span class="nf">isOpposite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this longitude and other are separated by one half</span>
 <span class="sd">        circle.</span>
@@ -1322,7 +1312,7 @@
 
 
 <div class="viewcode-block" id="Longitude.isEastOf">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Longitude.isEastOf">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isEastOf">[docs]</a>
     <span class="k">def</span> <span class="nf">isEastOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if this longitude is east of other.</span>
 
@@ -1347,7 +1337,7 @@
 
 
 <div class="viewcode-block" id="Longitude.isWestOf">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.Longitude.isWestOf">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isWestOf">[docs]</a>
     <span class="k">def</span> <span class="nf">isWestOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this longitude is west of other.</span>
 
@@ -1384,7 +1374,7 @@
 
 
 <div class="viewcode-block" id="TemporalCollection">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TemporalCollection">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TemporalCollection.html#pipeline.domain.antennaarray.TemporalCollection">[docs]</a>
 <span class="k">class</span> <span class="nc">TemporalCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__contents</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1394,7 +1384,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__milestones</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
 
 <div class="viewcode-block" id="TemporalCollection.get">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TemporalCollection.get">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TemporalCollection.html#pipeline.domain.antennaarray.TemporalCollection.get">[docs]</a>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the value that was effective on the given date</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1407,13 +1397,10 @@
         <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="s2">&quot;No records that early&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TemporalCollection.put">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TemporalCollection.put">[docs]</a>
     <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">at</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="c1"># The item is valid from the supplied date onwards</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__contents</span><span class="p">[</span><span class="n">at</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="kc">None</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of all the dates where the value changed, returned in order</span>
@@ -1433,7 +1420,7 @@
 
 
 <div class="viewcode-block" id="TimeInterval">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval">[docs]</a>
 <span class="k">class</span> <span class="nc">TimeInterval</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">)</span>
 
@@ -1466,7 +1453,7 @@
         <span class="k">return</span> <span class="s1">&#39;TimeInterval(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimeInterval.contains">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval.contains">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.contains">[docs]</a>
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if time is contained in this interval.</span>
 
@@ -1492,7 +1479,7 @@
 
 
 <div class="viewcode-block" id="TimeInterval.isEmpty">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval.isEmpty">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.isEmpty">[docs]</a>
     <span class="k">def</span> <span class="nf">isEmpty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this TimeInterval is empty</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1500,7 +1487,7 @@
 
 
 <div class="viewcode-block" id="TimeInterval.overlaps">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval.overlaps">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.overlaps">[docs]</a>
     <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this interval overlaps with the given interval.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1510,7 +1497,7 @@
 
 
 <div class="viewcode-block" id="TimeInterval.startingFrom">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval.startingFrom">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.startingFrom">[docs]</a>
     <span class="k">def</span> <span class="nf">startingFrom</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an open-ended TimeInterval starting from the given time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1518,7 +1505,7 @@
 
 
 <div class="viewcode-block" id="TimeInterval.startingFromNow">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.domain.html#pipeline.domain.measures.TimeInterval.startingFromNow">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.startingFromNow">[docs]</a>
     <span class="k">def</span> <span class="nf">startingFromNow</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an open-ended TimeInterval starting from now.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

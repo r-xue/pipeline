@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -153,7 +149,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsVLASetjyRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsVLASetjyRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;vlasetjy.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Set calibrator model visibilities&#39;</span><span class="p">,</span>
@@ -161,8 +157,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsVLASetjyRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsVLASetjyRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">amp_vs_uv_summary_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">intents</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">]:</span>
@@ -179,11 +173,10 @@
         <span class="n">ctx</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;amp_vs_uv_plots&#39;</span><span class="p">:</span> <span class="n">amp_vs_uv_summary_plots</span><span class="p">,</span>
             <span class="s1">&#39;table_rows&#39;</span><span class="p">:</span> <span class="n">table_rows</span>
-        <span class="p">})</span></div>
-
+        <span class="p">})</span>
 
 <div class="viewcode-block" id="T2_4MDetailsVLASetjyRenderer.create_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.create_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.create_plots">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create plots and return a dictionary of vis:[Plots].</span>
@@ -195,8 +188,6 @@
         <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="T2_4MDetailsVLASetjyRenderer.plots_for_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.renderer.T2_4MDetailsVLASetjyRenderer.plots_for_result">[docs]</a>
     <span class="k">def</span> <span class="nf">plots_for_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plotter_cls</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">renderer_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
 
@@ -227,7 +218,6 @@
                 <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>        
 
         <span class="k">return</span> <span class="n">d</span></div>
-</div>
 
 
 
@@ -235,7 +225,7 @@
 
 
 <div class="viewcode-block" id="make_flux_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.setmodel.html#pipeline.hifv.tasks.setmodel.renderer.make_flux_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.setmodel.renderer.make_flux_table.html#pipeline.hifv.tasks.setmodel.renderer.make_flux_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_flux_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the flux stat table rows for the results</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>

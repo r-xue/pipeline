@@ -4,9 +4,16 @@ pipeline.hsd.tasks.common.display
 .. automodule:: pipeline.hsd.tasks.common.display
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       absolute_path
       ch_to_freq
@@ -20,9 +27,16 @@ pipeline.hsd.tasks.common.display
       utc_formatter
       utc_locator
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Axes
       ChannelSelection
@@ -42,3 +56,11 @@ pipeline.hsd.tasks.common.display
       SpectralImage
       casa_coordsys
    
+   
+
+   
+   
+   
+
+
+

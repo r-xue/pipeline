@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="AtmType">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.AtmType">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.AtmType.html#pipeline.h.tasks.common.atmutil.AtmType">[docs]</a>
 <span class="k">class</span> <span class="nc">AtmType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Atmosphere type enum class.&quot;&quot;&quot;</span>
 
@@ -168,7 +164,7 @@
 
 
 <div class="viewcode-block" id="init_at">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_at">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.init_at.html#pipeline.h.tasks.common.atmutil.init_at">[docs]</a>
 <span class="k">def</span> <span class="nf">init_at</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">casatools</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">,</span> <span class="n">humidity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
             <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">270.0</span><span class="p">,</span> <span class="n">pressure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">560.0</span><span class="p">,</span>
             <span class="n">atmtype</span><span class="p">:</span> <span class="n">AtmType</span> <span class="o">=</span> <span class="n">AtmType</span><span class="o">.</span><span class="n">midLatitudeWinter</span><span class="p">,</span> <span class="n">altitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5000.0</span><span class="p">,</span>
@@ -207,7 +203,7 @@
 
 
 <div class="viewcode-block" id="init_atm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_atm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.init_atm.html#pipeline.h.tasks.common.atmutil.init_atm">[docs]</a>
 <span class="k">def</span> <span class="nf">init_atm</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">casatools</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">,</span> <span class="n">altitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5000.0</span><span class="p">,</span> <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">270.0</span><span class="p">,</span> <span class="n">pressure</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">560.0</span><span class="p">,</span>
              <span class="n">max_altitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">48.0</span><span class="p">,</span> <span class="n">humidity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span> <span class="n">delta_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_pm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">,</span>
              <span class="n">h0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">atmtype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">AtmType</span><span class="o">.</span><span class="n">midLatitudeWinter</span><span class="p">):</span>
@@ -241,7 +237,7 @@
 
 
 <div class="viewcode-block" id="init_spw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.init_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.init_spw.html#pipeline.h.tasks.common.atmutil.init_spw">[docs]</a>
 <span class="k">def</span> <span class="nf">init_spw</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">casatools</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">,</span> <span class="n">fcenter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialize spectral window setting in CASA atmosphere tool using spectral window frequencies.</span>
@@ -262,7 +258,7 @@
 
 
 <div class="viewcode-block" id="calc_airmass">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.calc_airmass">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.calc_airmass.html#pipeline.h.tasks.common.atmutil.calc_airmass">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_airmass</span><span class="p">(</span><span class="n">elevation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">45.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the relative airmass of a given elevation angle.</span>
@@ -278,7 +274,7 @@
 
 
 <div class="viewcode-block" id="calc_transmission">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.calc_transmission">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.calc_transmission.html#pipeline.h.tasks.common.atmutil.calc_transmission">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_transmission</span><span class="p">(</span><span class="n">airmass</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dry_opacity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
                       <span class="n">wet_opacity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -300,7 +296,7 @@
 
 
 <div class="viewcode-block" id="get_dry_opacity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_dry_opacity">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_dry_opacity.html#pipeline.h.tasks.common.atmutil.get_dry_opacity">[docs]</a>
 <span class="k">def</span> <span class="nf">get_dry_opacity</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">casatools</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Obtain the integrated zenith opacity of dry species.</span>
@@ -320,7 +316,7 @@
 
 
 <div class="viewcode-block" id="get_wet_opacity">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_wet_opacity">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_wet_opacity.html#pipeline.h.tasks.common.atmutil.get_wet_opacity">[docs]</a>
 <span class="k">def</span> <span class="nf">get_wet_opacity</span><span class="p">(</span><span class="n">at</span><span class="p">:</span> <span class="n">casatools</span><span class="o">.</span><span class="n">atmosphere</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Obtain the integrated zenith opacity of wet species.</span>
@@ -340,7 +336,7 @@
 
 
 <div class="viewcode-block" id="test">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.test">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.test.html#pipeline.h.tasks.common.atmutil.test">[docs]</a>
 <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">pwv</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">elevation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">45.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate atmospheric transmission and generate a plot.</span>
@@ -378,7 +374,7 @@
 
 
 <div class="viewcode-block" id="plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.plot.html#pipeline.h.tasks.common.atmutil.plot">[docs]</a>
 <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dry_opacity</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
          <span class="n">wet_opacity</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -412,7 +408,7 @@
 
 
 <div class="viewcode-block" id="get_spw_spec">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_spw_spec">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_spw_spec.html#pipeline.h.tasks.common.atmutil.get_spw_spec">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spw_spec</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate spectral setting of a spectral window.</span>
@@ -449,7 +445,7 @@
 
 
 <div class="viewcode-block" id="get_median_elevation">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_median_elevation">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_median_elevation.html#pipeline.h.tasks.common.atmutil.get_median_elevation">[docs]</a>
 <span class="k">def</span> <span class="nf">get_median_elevation</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the median elevation of pointing directions of an antenna.</span>
@@ -501,7 +497,7 @@
 
 
 <div class="viewcode-block" id="get_representative_elevation">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_representative_elevation">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_representative_elevation.html#pipeline.h.tasks.common.atmutil.get_representative_elevation">[docs]</a>
 <span class="k">def</span> <span class="nf">get_representative_elevation</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return representative elevation value computed from phasecenter.</span>
 
@@ -557,7 +553,7 @@
 
 
 <div class="viewcode-block" id="get_altitude">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_altitude">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_altitude.html#pipeline.h.tasks.common.atmutil.get_altitude">[docs]</a>
 <span class="k">def</span> <span class="nf">get_altitude</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return observatory-dependent altitude in meter.</span>
 
@@ -590,7 +586,7 @@
 
 
 <div class="viewcode-block" id="get_transmission">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_transmission">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_transmission.html#pipeline.h.tasks.common.atmutil.get_transmission">[docs]</a>
 <span class="k">def</span> <span class="nf">get_transmission</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                      <span class="n">doplot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -618,7 +614,7 @@
 
 
 <div class="viewcode-block" id="get_transmission_for_range">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_transmission_for_range">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_transmission_for_range.html#pipeline.h.tasks.common.atmutil.get_transmission_for_range">[docs]</a>
 <span class="k">def</span> <span class="nf">get_transmission_for_range</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">center_freq</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">resolution</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">doplot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate atmospheric transmission covering a range of frequency.</span>
@@ -683,7 +679,7 @@
 
 
 <div class="viewcode-block" id="get_table_nrow">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.atmutil.get_table_nrow">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.atmutil.get_table_nrow.html#pipeline.h.tasks.common.atmutil.get_table_nrow">[docs]</a>
 <span class="k">def</span> <span class="nf">get_table_nrow</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the number of rows in a specified table.</span>
 

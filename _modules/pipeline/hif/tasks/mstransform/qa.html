@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,22 +142,19 @@
 
 
 <div class="viewcode-block" id="MstransformQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.mstransform.html#pipeline.hif.tasks.mstransform.qa.MstransformQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.mstransform.qa.MstransformQAHandler.html#pipeline.hif.tasks.mstransform.qa.MstransformQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">MstransformQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">mstransform</span><span class="o">.</span><span class="n">MstransformResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">mstransform</span><span class="o">.</span><span class="n">Mstransform</span>
 
-<div class="viewcode-block" id="MstransformQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.mstransform.html#pipeline.hif.tasks.mstransform.qa.MstransformQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="c1"># Check for existence of the science targets cont+line MS.</span>
         <span class="n">score1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_targets_ms_exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">))</span>
         <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">score1</span><span class="p">]</span>
 
-        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_targets_ms_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -172,7 +165,7 @@
 
 
 <div class="viewcode-block" id="MstransformListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.mstransform.html#pipeline.hif.tasks.mstransform.qa.MstransformListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.mstransform.qa.MstransformListQAHandler.html#pipeline.hif.tasks.mstransform.qa.MstransformListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">MstransformListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing MstransformResults.</span>
@@ -181,8 +174,6 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">mstransform</span><span class="o">.</span><span class="n">MstransformResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">mstransform</span><span class="o">.</span><span class="n">Mstransform</span>
 
-<div class="viewcode-block" id="MstransformListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.mstransform.html#pipeline.hif.tasks.mstransform.qa.MstransformListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
@@ -191,7 +182,6 @@
         <span class="n">mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
         <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;No missing science targets cont+line MS(s) for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="n">longmsg</span></div>
-</div>
 
 </pre></div>
 

@@ -4,16 +4,35 @@ pipeline.hsdn.tasks.restoredata
 .. automodule:: pipeline.hsdn.tasks.restoredata
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       NRORestoreData
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    ampcal
@@ -21,3 +40,4 @@ pipeline.hsdn.tasks.restoredata
    renderer
    restoredata
    worker
+

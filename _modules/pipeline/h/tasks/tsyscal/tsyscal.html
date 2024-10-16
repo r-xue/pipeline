@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -159,7 +155,7 @@
 
 
 <div class="viewcode-block" id="TsyscalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.TsyscalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.html#pipeline.h.tasks.TsyscalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">TsyscalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsyscalInputs defines the inputs for the Tsyscal pipeline task.</span>
@@ -195,7 +191,7 @@
 
     <span class="c1"># Convert to CASA gencal task arguments.</span>
 <div class="viewcode-block" id="TsyscalInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.TsyscalInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.html#pipeline.h.tasks.TsyscalInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
@@ -260,6 +256,8 @@
 <span class="n">GainfieldMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GainfieldMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;intent preferred fallback&#39;</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="get_solution_map">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.get_solution_map.html#pipeline.h.tasks.get_solution_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get gainfield solution map. Different solution maps are returned for</span>
@@ -306,9 +304,12 @@
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)),</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
-        <span class="p">]</span>
+        <span class="p">]</span></div>
 
 
+
+<div class="viewcode-block" id="get_gainfield_map">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.get_gainfield_map.html#pipeline.h.tasks.get_gainfield_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the mapping of observing intent to gainfield parameter for a</span>
@@ -338,9 +339,12 @@
     <span class="c1"># convert magic string back to empty string</span>
     <span class="n">converted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;___EMPTY_STRING___&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">final_map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="k">return</span> <span class="n">converted</span>
+    <span class="k">return</span> <span class="n">converted</span></div>
 
 
+
+<div class="viewcode-block" id="get_tsys_fields_for_intent">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.get_tsys_fields_for_intent.html#pipeline.h.tasks.get_tsys_fields_for_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the identity of the Tsys field(s) for an intent.</span>
@@ -391,9 +395,12 @@
     <span class="c1"># when field names are not unique, as is usually the case for science</span>
     <span class="c1"># mosaics, then we must reference the numeric field ID instead</span>
     <span class="n">field_identifiers</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_field_identifiers</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">field_identifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">field_identifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">}</span></div>
 
 
+
+<div class="viewcode-block" id="get_calapplications">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.tsyscal.get_calapplications.html#pipeline.h.tasks.get_calapplications">[docs]</a>
 <span class="k">def</span> <span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
                         <span class="n">spw_map</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -520,7 +527,8 @@
             <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
             <span class="n">calapps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">calapps</span>
+    <span class="k">return</span> <span class="n">calapps</span></div>
+
 </pre></div>
 
            </div>

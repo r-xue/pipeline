@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hifv.heuristics.cat_to_ds9_rgn" href="pipeline.hifv.heuristics.cat_to_ds9_rgn.html" />
+    <link rel="prev" title="pipeline.hifv" href="pipeline.hifv.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifv.html">pipeline.hifv</a></li>
       <li class="breadcrumb-item active">pipeline.hifv.heuristics</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hifv.heuristics.rst.txt" rel="nofollow"> View page source</a>
@@ -137,43 +138,43 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat_to_ds9_rgn</span></code>(catalog_fits_file[, outfile, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.cat_to_ds9_rgn.html#pipeline.hifv.heuristics.cat_to_ds9_rgn" title="pipeline.hifv.heuristics.cat_to_ds9_rgn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat_to_ds9_rgn</span></code></a></p></td>
 <td><p>Write each component to a ds9 region</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeChanFlag</span></code>(vis, caltable, context)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.computeChanFlag.html#pipeline.hifv.heuristics.computeChanFlag" title="pipeline.hifv.heuristics.computeChanFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">computeChanFlag</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_bandpass</span></code>(vis, caltable[, context, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.do_bandpass.html#pipeline.hifv.heuristics.do_bandpass" title="pipeline.hifv.heuristics.do_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_bandpass</span></code></a></p></td>
 <td><p>Run CASA task bandpass</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_pybdsf_islands</span></code>([catalog_fits_file, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.edit_pybdsf_islands.html#pipeline.hifv.heuristics.edit_pybdsf_islands" title="pipeline.hifv.heuristics.edit_pybdsf_islands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_pybdsf_islands</span></code></a></p></td>
 <td><p>Reject islands from a sky catalog based on simple heuristics.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBCalStatistics</span></code>(calTable[, innerbuff])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.getBCalStatistics.html#pipeline.hifv.heuristics.getBCalStatistics" title="pipeline.hifv.heuristics.getBCalStatistics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getBCalStatistics</span></code></a></p></td>
 <td><p>Version 2012-11-20 v1.0 STM casa 4.0 version Version 2012-12-17 v1.0 STM casa 4.1 version, phase, real, imag stats</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getCalFlaggedSoln</span></code>(calTable)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.getCalFlaggedSoln.html#pipeline.hifv.heuristics.getCalFlaggedSoln" title="pipeline.hifv.heuristics.getCalFlaggedSoln"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getCalFlaggedSoln</span></code></a></p></td>
 <td><p>Version 2012-05-03 v1.0 STM to 3.4 from original 3.3 version, new dictionary Version 2012-05-03 v1.1 STM indexed by ant, spw also Version 2012-09-11 v1.1 STM correct doc of &lt;polid&gt; indexing, bug fix, median over ant Version 2012-09-12 v1.2 STM median over ant revised Version 2012-11-13 v2.0 STM casa 4.0 version with new call mechanism Version 2013-01-11 v2.1 STM use getvarcol</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_from_catalog</span></code>([inext, outext, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.mask_from_catalog.html#pipeline.hifv.heuristics.mask_from_catalog" title="pipeline.hifv.heuristics.mask_from_catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_from_catalog</span></code></a></p></td>
 <td><p>Construct a clean mask from a sky catalog and reference image.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mssel_valid</span></code>(vis[, field, spw, scan, intent, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.mssel_valid.html#pipeline.hifv.heuristics.mssel_valid" title="pipeline.hifv.heuristics.mssel_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mssel_valid</span></code></a></p></td>
 <td><p>Check if the data selection is valid (i.e. not a null selection).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeRows</span></code>(caltable, spwids)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.removeRows.html#pipeline.hifv.heuristics.removeRows" title="pipeline.hifv.heuristics.removeRows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeRows</span></code></a></p></td>
 <td><p>Remove rows from specified spwid from a CASA caltable.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_bdsf</span></code>([infile])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.run_bdsf.html#pipeline.hifv.heuristics.run_bdsf" title="pipeline.hifv.heuristics.run_bdsf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_bdsf</span></code></a></p></td>
 <td><p>Detect bright point sources and blobs on map.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_add_model_column_parameters</span></code>(context)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.set_add_model_column_parameters.html#pipeline.hifv.heuristics.set_add_model_column_parameters" title="pipeline.hifv.heuristics.set_add_model_column_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_add_model_column_parameters</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifv.heuristics.html#module-pipeline.hifv.heuristics.uvrange" title="pipeline.hifv.heuristics.uvrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uvrange</span></code></a>(setjy_results, field_id[, spw_id])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.uvrange.html#pipeline.hifv.heuristics.uvrange" title="pipeline.hifv.heuristics.uvrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uvrange</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">weakbp</span></code>(vis, caltable[, context, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.weakbp.html#pipeline.hifv.heuristics.weakbp" title="pipeline.hifv.heuristics.weakbp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weakbp</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -181,18 +182,17 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RflagDevHeuristic</span></code>(ms[, ignore_sefd])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.RflagDevHeuristic.html#pipeline.hifv.heuristics.RflagDevHeuristic" title="pipeline.hifv.heuristics.RflagDevHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RflagDevHeuristic</span></code></a></p></td>
 <td><p>Heuristics for Rflag thresholds.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Standard</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.Standard.html#pipeline.hifv.heuristics.Standard" title="pipeline.hifv.heuristics.Standard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Standard</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAScanHeuristics</span></code>(vis)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.VLAScanHeuristics.html#pipeline.hifv.heuristics.VLAScanHeuristics" title="pipeline.hifv.heuristics.VLAScanHeuristics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAScanHeuristics</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.bandpass.html#module-pipeline.hifv.heuristics.bandpass" title="pipeline.hifv.heuristics.bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandpass</span></code></a></p></td>
@@ -223,7 +223,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hifv.html" class="btn btn-neutral float-left" title="pipeline.hifv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifv.heuristics.cat_to_ds9_rgn.html" class="btn btn-neutral float-right" title="pipeline.hifv.heuristics.cat_to_ds9_rgn" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.h.heuristics.tsysspwmap" href="pipeline.h.heuristics.tsysspwmap.html" />
+    <link rel="prev" title="pipeline.h.FailedTaskResults" href="pipeline.h.FailedTaskResults.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.html">pipeline.h</a></li>
       <li class="breadcrumb-item active">pipeline.h.heuristics</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.h.heuristics.rst.txt" rel="nofollow"> View page source</a>
@@ -137,7 +138,7 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.heuristics.html#module-pipeline.h.heuristics.tsysspwmap" title="pipeline.h.heuristics.tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysspwmap</span></code></a>(ms, tsystable[, trim, relax, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.tsysspwmap.html#pipeline.h.heuristics.tsysspwmap" title="pipeline.h.heuristics.tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysspwmap</span></code></a></p></td>
 <td><p>Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations Input:  ms        the target MeasurementSet object  tsystable  the input Tsys caltable (w/ TDM Tsys measurements)  trim       if True (the default), return minimum-length spwmap;                 otherwise the spwmap will be exhaustive and include                 the high-numbered (and usually irrelevant) wvr                 spws  relax      (not yet implemented) Output:  spw list to use in applycal spwmap parameter for the Tsys caltable</p></td>
 </tr>
 </tbody>
@@ -145,48 +146,47 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntposCaltable</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.AntposCaltable.html#pipeline.h.heuristics.AntposCaltable" title="pipeline.h.heuristics.AntposCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntposCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassCaltable</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.BandpassCaltable.html#pipeline.h.heuristics.BandpassCaltable" title="pipeline.h.heuristics.BandpassCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">EchoHeuristic</span></code>(val)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.EchoHeuristic.html#pipeline.h.heuristics.EchoHeuristic" title="pipeline.h.heuristics.EchoHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EchoHeuristic</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxCaltable</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.FluxCaltable.html#pipeline.h.heuristics.FluxCaltable" title="pipeline.h.heuristics.FluxCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCurvestable</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.GainCurvestable.html#pipeline.h.heuristics.GainCurvestable" title="pipeline.h.heuristics.GainCurvestable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCurvestable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalCaltable</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.GaincalCaltable.html#pipeline.h.heuristics.GaincalCaltable" title="pipeline.h.heuristics.GaincalCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">HeuristicsLineFinder</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.HeuristicsLineFinder.html#pipeline.h.heuristics.HeuristicsLineFinder" title="pipeline.h.heuristics.HeuristicsLineFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HeuristicsLineFinder</span></code></a></p></td>
 <td><p>A heuristics class to invoke line finding on a spectrum.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntentFieldnames</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.IntentFieldnames.html#pipeline.h.heuristics.IntentFieldnames" title="pipeline.h.heuristics.IntentFieldnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntentFieldnames</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OpCaltable</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.OpCaltable.html#pipeline.h.heuristics.OpCaltable" title="pipeline.h.heuristics.OpCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OpCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RqCaltable</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.RqCaltable.html#pipeline.h.heuristics.RqCaltable" title="pipeline.h.heuristics.RqCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RqCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SwpowCaltable</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.SwpowCaltable.html#pipeline.h.heuristics.SwpowCaltable" title="pipeline.h.heuristics.SwpowCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SwpowCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsysCaltable</span></code>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.heuristics.TsysCaltable.html#pipeline.h.heuristics.TsysCaltable" title="pipeline.h.heuristics.TsysCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsysCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WvrgCaltable</span></code>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.WvrgCaltable.html#pipeline.h.heuristics.WvrgCaltable" title="pipeline.h.heuristics.WvrgCaltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WvrgCaltable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Modules</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.heuristics.caltable.html#module-pipeline.h.heuristics.caltable" title="pipeline.h.heuristics.caltable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">caltable</span></code></a></p></td>
@@ -211,7 +211,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.h.FailedTaskResults.html" class="btn btn-neutral float-left" title="pipeline.h.FailedTaskResults" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.heuristics.tsysspwmap.html" class="btn btn-neutral float-right" title="pipeline.h.heuristics.tsysspwmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

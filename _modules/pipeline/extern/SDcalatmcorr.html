@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -252,7 +248,7 @@
 <span class="n">almaoracleauth</span> <span class="o">=</span> <span class="s1">&#39;almasu/alma4dba@ora.sco.alma.cl:1521/ALMA.SCO.CL&#39;</span>
 
 <div class="viewcode-block" id="createCasaTool">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.createCasaTool">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.createCasaTool.html#pipeline.extern.SDcalatmcorr.createCasaTool">[docs]</a>
 <span class="k">def</span> <span class="nf">createCasaTool</span><span class="p">(</span><span class="n">mytool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A wrapper to handle the changing ways in which casa tools are invoked.</span>
@@ -272,7 +268,7 @@
 
 
 <div class="viewcode-block" id="robuststats">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.robuststats">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.robuststats.html#pipeline.extern.SDcalatmcorr.robuststats">[docs]</a>
 <span class="k">def</span> <span class="nf">robuststats</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return median and estimate standard deviation</span>
 <span class="sd">    of numpy array A using median statistics.</span>
@@ -294,7 +290,7 @@
 
 
 <div class="viewcode-block" id="binnedstats">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.binnedstats">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.binnedstats.html#pipeline.extern.SDcalatmcorr.binnedstats">[docs]</a>
 <span class="k">def</span> <span class="nf">binnedstats</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">Aerr</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return a tuple of arrays (of size nbins) of median and sigmas </span>
 <span class="sd">    calculated from robuststats() from chopping the array A in nbins pieces.</span>
@@ -334,7 +330,7 @@
 
 
 <div class="viewcode-block" id="fitbaseline">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.fitbaseline">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.fitbaseline.html#pipeline.extern.SDcalatmcorr.fitbaseline">[docs]</a>
 <span class="k">def</span> <span class="nf">fitbaseline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">initialbins</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">detectionsigma</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">99.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span>
                 <span class="n">minbinfracsize</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">,</span> <span class="n">targetchi2</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">maxoutlierfrac</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
                 <span class="n">outlierprobmu</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">outlierprobsigma</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">bordertokeep</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">):</span>
@@ -448,7 +444,7 @@
 
 
 <div class="viewcode-block" id="segmentEdges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.segmentEdges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.segmentEdges.html#pipeline.extern.SDcalatmcorr.segmentEdges">[docs]</a>
 <span class="k">def</span> <span class="nf">segmentEdges</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sortdata</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return edges of sequence of values with gaps</span>
 <span class="sd">    Assumes 1D array &quot;seq&quot; is ordered. Otherwise one should sort it first.</span>
@@ -477,7 +473,7 @@
 
 
 <div class="viewcode-block" id="selectRanges">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.selectRanges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.selectRanges.html#pipeline.extern.SDcalatmcorr.selectRanges">[docs]</a>
 <span class="k">def</span> <span class="nf">selectRanges</span><span class="p">(</span><span class="n">timeseq</span><span class="p">,</span> <span class="n">rangetable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return selection boolean array for a time sequence, given a table of time ranges.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -492,7 +488,7 @@
 
 
 <div class="viewcode-block" id="sigclipfit">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.sigclipfit">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.sigclipfit.html#pipeline.extern.SDcalatmcorr.sigclipfit">[docs]</a>
 <span class="k">def</span> <span class="nf">sigclipfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">Asig</span><span class="p">,</span> <span class="n">fitdeg</span><span class="p">,</span> <span class="n">nclips</span><span class="p">,</span> <span class="n">nsigma</span><span class="p">,</span> <span class="n">bordertokeep</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">progdegree</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">smoothselbox</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Return polynomial model parameters done to vector A and residuals from the fit.</span>
 <span class="sd">    x: x coordinate</span>
@@ -559,7 +555,7 @@
 
 
 <div class="viewcode-block" id="enlargesel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.enlargesel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.enlargesel.html#pipeline.extern.SDcalatmcorr.enlargesel">[docs]</a>
 <span class="k">def</span> <span class="nf">enlargesel</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Enlarge selection by &quot;box&quot; pixels around each selected pixel</span>
 <span class="sd">    in &quot;sel&quot; vector. </span>
@@ -574,7 +570,7 @@
 
 
 <div class="viewcode-block" id="smooth">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.smooth">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.smooth.html#pipeline.extern.SDcalatmcorr.smooth">[docs]</a>
 <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">box_pts</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Smooth using boxcar convolution.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -584,7 +580,7 @@
 
 
 <div class="viewcode-block" id="noisenormdata">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.noisenormdata">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.noisenormdata.html#pipeline.extern.SDcalatmcorr.noisenormdata">[docs]</a>
 <span class="k">def</span> <span class="nf">noisenormdata</span><span class="p">(</span><span class="n">tmdataon</span><span class="p">,</span> <span class="n">antson</span><span class="p">,</span> <span class="n">dataon</span><span class="p">,</span> <span class="n">tmatm</span><span class="p">,</span> <span class="n">antatm</span><span class="p">,</span> <span class="n">tsys</span><span class="p">,</span> <span class="n">trec</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Compute a noise-normalized data for source selection. To be used by selsource() function.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -643,7 +639,7 @@
 
 
 <div class="viewcode-block" id="selsource2">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.selsource2">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.selsource2.html#pipeline.extern.SDcalatmcorr.selsource2">[docs]</a>
 <span class="k">def</span> <span class="nf">selsource2</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">spwsetup</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">tmdataon</span><span class="p">,</span> <span class="n">antson</span><span class="p">,</span> <span class="n">dataon</span><span class="p">,</span> <span class="n">tmatm</span><span class="p">,</span> <span class="n">antatm</span><span class="p">,</span> <span class="n">tsys</span><span class="p">,</span> <span class="n">trec</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">smoothselbox</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">maxmasked</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                <span class="n">ndegree</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">nclips</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">nsigma</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Select science target channels and return boolean vector with selection. Task attempts polynomial</span>
@@ -697,7 +693,7 @@
 
 
 <div class="viewcode-block" id="selsource">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.selsource">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.selsource.html#pipeline.extern.SDcalatmcorr.selsource">[docs]</a>
 <span class="k">def</span> <span class="nf">selsource</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">spwsetup</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">tmdataon</span><span class="p">,</span> <span class="n">antson</span><span class="p">,</span> <span class="n">dataon</span><span class="p">,</span> <span class="n">tmatm</span><span class="p">,</span> <span class="n">antatm</span><span class="p">,</span> <span class="n">tsys</span><span class="p">,</span> <span class="n">trec</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span>
               <span class="n">ndegree</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">nclips</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">nsigma</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">smoothbox</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">extpenalty</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
               <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">maxmasked</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
@@ -803,7 +799,7 @@
 
 
 <div class="viewcode-block" id="getskylines">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getskylines">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getskylines.html#pipeline.extern.SDcalatmcorr.getskylines">[docs]</a>
 <span class="k">def</span> <span class="nf">getskylines</span><span class="p">(</span><span class="n">tauspec</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">spwsetup</span><span class="p">,</span> <span class="n">fraclevel</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">minpeaklevel</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">spwbordertoavoid</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">,</span> <span class="n">taudeg</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Get position of sky lines and line widths from the optical depth.</span>
 <span class="sd">    fraclevel: fraction of the maximum of the optical depth to look for.</span>
@@ -901,7 +897,7 @@
 
 
 <div class="viewcode-block" id="gradeskylines">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.gradeskylines">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.gradeskylines.html#pipeline.extern.SDcalatmcorr.gradeskylines">[docs]</a>
 <span class="k">def</span> <span class="nf">gradeskylines</span><span class="p">(</span><span class="n">skylines</span><span class="p">,</span> <span class="n">cntrweight</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
     <span class="n">spwlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">skylines</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
     <span class="n">idxspw</span> <span class="o">=</span> <span class="p">[]</span>
@@ -932,7 +928,7 @@
 
 
 <div class="viewcode-block" id="skysel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.skysel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.skysel.html#pipeline.extern.SDcalatmcorr.skysel">[docs]</a>
 <span class="k">def</span> <span class="nf">skysel</span><span class="p">(</span><span class="n">skylines</span><span class="p">,</span> <span class="n">linestouse</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">avoidpeak</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Create selection array from dictionary of skylines list.</span>
 <span class="sd">    avoidpeak: Parameter to avoid a range around the line peak as fraction of FWHM</span>
@@ -951,7 +947,7 @@
 
 
 <div class="viewcode-block" id="calcmetric">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.calcmetric">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.calcmetric.html#pipeline.extern.SDcalatmcorr.calcmetric">[docs]</a>
 <span class="k">def</span> <span class="nf">calcmetric</span><span class="p">(</span><span class="n">rawsample</span><span class="p">,</span> <span class="n">rawsigmasample</span><span class="p">,</span> <span class="n">metrictype</span> <span class="o">=</span> <span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span> <span class="n">smoothbox</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
     <span class="p">(</span><span class="n">npols</span><span class="p">,</span> <span class="n">nch</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">rawsample</span><span class="p">)</span>
     <span class="c1">#Smooth if requested</span>
@@ -1063,7 +1059,7 @@
 
 
 <div class="viewcode-block" id="bootstrap">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.bootstrap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.bootstrap.html#pipeline.extern.SDcalatmcorr.bootstrap">[docs]</a>
 <span class="k">def</span> <span class="nf">bootstrap</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">metrictype</span> <span class="o">=</span> <span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span> <span class="n">nsample</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
     <span class="n">metric</span> <span class="o">=</span> <span class="p">[</span><span class="n">calcmetric</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">metrictype</span> <span class="o">=</span> <span class="n">metrictype</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -1077,7 +1073,7 @@
 
 <span class="c1">#Copied over from analysisUtils</span>
 <div class="viewcode-block" id="getSpwList">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getSpwList">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getSpwList.html#pipeline.extern.SDcalatmcorr.getSpwList">[docs]</a>
 <span class="k">def</span> <span class="nf">getSpwList</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">,</span><span class="n">tdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fdm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sqld</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">spws</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
     <span class="n">almaspws</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">almaspws</span><span class="p">(</span><span class="n">tdm</span><span class="o">=</span><span class="n">tdm</span><span class="p">,</span><span class="n">fdm</span><span class="o">=</span><span class="n">fdm</span><span class="p">,</span><span class="n">sqld</span><span class="o">=</span><span class="n">sqld</span><span class="p">)</span>
@@ -1087,7 +1083,7 @@
 
 <span class="c1">#Copied over from analysisUtils</span>
 <div class="viewcode-block" id="onlineChannelAveraging">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.onlineChannelAveraging">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.onlineChannelAveraging.html#pipeline.extern.SDcalatmcorr.onlineChannelAveraging">[docs]</a>
 <span class="k">def</span> <span class="nf">onlineChannelAveraging</span><span class="p">(</span><span class="n">msmd</span><span class="p">,</span> <span class="n">spws</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For Cycle 3-onward data, determines the channel averaging factor from</span>
@@ -1121,7 +1117,7 @@
 
 <span class="c1">#Obtain spectral setup</span>
 <div class="viewcode-block" id="getSpecSetup">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getSpecSetup">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getSpecSetup.html#pipeline.extern.SDcalatmcorr.getSpecSetup">[docs]</a>
 <span class="k">def</span> <span class="nf">getSpecSetup</span><span class="p">(</span><span class="n">myms</span><span class="p">,</span> <span class="n">spwlist</span> <span class="o">=</span> <span class="p">[]):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Task to gather spectral setup information.</span>
 <span class="sd">    myms: MS to be processed.</span>
@@ -1210,7 +1206,7 @@
 
 
 <div class="viewcode-block" id="getAntennaFlagFrac">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getAntennaFlagFrac">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getAntennaFlagFrac.html#pipeline.extern.SDcalatmcorr.getAntennaFlagFrac">[docs]</a>
 <span class="k">def</span> <span class="nf">getAntennaFlagFrac</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">spwsetup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Get flagging fraction for each antenna, in a vector listed ordered by order given in spwsetup dictionary.</span>
 <span class="sd">    ms: Input MS</span>
@@ -1231,7 +1227,7 @@
 
 
 <div class="viewcode-block" id="getCalAtmData">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getCalAtmData">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getCalAtmData.html#pipeline.extern.SDcalatmcorr.getCalAtmData">[docs]</a>
 <span class="k">def</span> <span class="nf">getCalAtmData</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spws</span><span class="p">,</span> <span class="n">spwsetup</span><span class="p">):</span>
     <span class="n">tb</span> <span class="o">=</span> <span class="n">createCasaTool</span><span class="p">(</span><span class="n">tbtool</span><span class="p">)</span>
     <span class="c1">#Open CALATMOSPHERE table</span>
@@ -1297,7 +1293,7 @@
 
 
 <div class="viewcode-block" id="makeNANmetrics">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.makeNANmetrics">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.makeNANmetrics.html#pipeline.extern.SDcalatmcorr.makeNANmetrics">[docs]</a>
 <span class="k">def</span> <span class="nf">makeNANmetrics</span><span class="p">(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">nmodels</span><span class="p">):</span>
     <span class="n">metricdtypes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s1">&#39;maxabs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;maxabserr&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intabs&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intabserr&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;maxabsdiff&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;maxabsdifferr&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intabsdifferr&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intsqdiff&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;intsqdifferr&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)])</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span><span class="n">fieldid</span><span class="p">:</span> <span class="p">{</span><span class="n">spwid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nmodels</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">metricdtypes</span><span class="p">)}}</span>
@@ -1316,7 +1312,7 @@
 
 
 <div class="viewcode-block" id="makePlot">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.makePlot">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.makePlot.html#pipeline.extern.SDcalatmcorr.makePlot">[docs]</a>
 <span class="k">def</span> <span class="nf">makePlot</span><span class="p">(</span><span class="n">nu</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tmavedata</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skychansel</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scisrcsel</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bline</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">tau</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">isize</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="n">psize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
              <span class="n">highbuf</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">lowbuf</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">atmhighbuf</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
@@ -1417,7 +1413,7 @@
 
 
 <div class="viewcode-block" id="atmcorr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.atmcorr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.atmcorr.html#pipeline.extern.SDcalatmcorr.atmcorr">[docs]</a>
 <span class="k">def</span> <span class="nf">atmcorr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">,</span> <span class="n">iant</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">atmtype</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">maxalt</span> <span class="o">=</span> <span class="mf">120.0</span><span class="p">,</span> <span class="n">lapserate</span> <span class="o">=</span> <span class="o">-</span><span class="mf">5.6</span><span class="p">,</span> <span class="n">scaleht</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
             <span class="n">jyperkfactor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dobackup</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">forcespws</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forcefield</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">forcemetricline</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1919,7 +1915,7 @@
 
 
 <div class="viewcode-block" id="getJyperKfromCSV">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getJyperKfromCSV">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getJyperKfromCSV.html#pipeline.extern.SDcalatmcorr.getJyperKfromCSV">[docs]</a>
 <span class="k">def</span> <span class="nf">getJyperKfromCSV</span><span class="p">(</span><span class="n">jyperkfile</span> <span class="o">=</span> <span class="s1">&#39;jyperk.csv&#39;</span><span class="p">,</span> <span class="n">mssuffix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39; Get Jy/K factor from the indicated CSV file.</span>
 <span class="sd">    Assumes columns in the file are MS,Antenna,Spwid,Polarization,Factor</span>
@@ -1949,7 +1945,7 @@
 
 
 <div class="viewcode-block" id="getJyperKfromCaltable">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getJyperKfromCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getJyperKfromCaltable.html#pipeline.extern.SDcalatmcorr.getJyperKfromCaltable">[docs]</a>
 <span class="k">def</span> <span class="nf">getJyperKfromCaltable</span><span class="p">(</span><span class="n">mslist</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Get Jy/K factors from pipeline caltables. Will determine the MS list and tables from pipeline context.</span>
 
@@ -1997,7 +1993,7 @@
 
 
 <div class="viewcode-block" id="selectModelParams">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.selectModelParams">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.selectModelParams.html#pipeline.extern.SDcalatmcorr.selectModelParams">[docs]</a>
 <span class="k">def</span> <span class="nf">selectModelParams</span><span class="p">(</span><span class="n">mslist</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">jyperkfactor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">decisionmetric</span> <span class="o">=</span> <span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span>
                       <span class="n">iant</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">atmtype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">maxalt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">120</span><span class="p">],</span> 
                       <span class="n">lapserate</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.6</span><span class="p">],</span> <span class="n">scaleht</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">],</span> <span class="n">resultsfile</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">plotsfolder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2125,7 +2121,7 @@
 
 
 <div class="viewcode-block" id="getSBData">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getSBData">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getSBData.html#pipeline.extern.SDcalatmcorr.getSBData">[docs]</a>
 <span class="k">def</span> <span class="nf">getSBData</span><span class="p">(</span><span class="n">asdm</span><span class="p">):</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">asdm</span><span class="o">+</span><span class="s1">&#39;/SBSummary.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">sbuid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -2144,7 +2140,7 @@
 
 
 <div class="viewcode-block" id="getTimeStamp">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.getTimeStamp">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.getTimeStamp.html#pipeline.extern.SDcalatmcorr.getTimeStamp">[docs]</a>
 <span class="k">def</span> <span class="nf">getTimeStamp</span><span class="p">(</span><span class="n">timefmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}</span><span class="s1">&#39;</span><span class="p">):</span>
     <span class="c1">#Get timestamp for output folders and files</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">systime</span><span class="o">.</span><span class="n">localtime</span><span class="p">()</span>
@@ -2153,7 +2149,7 @@
 
 
 <div class="viewcode-block" id="redPipeSDatmcorr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.extern.html#pipeline.extern.SDcalatmcorr.redPipeSDatmcorr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.SDcalatmcorr.redPipeSDatmcorr.html#pipeline.extern.SDcalatmcorr.redPipeSDatmcorr">[docs]</a>
 <span class="k">def</span> <span class="nf">redPipeSDatmcorr</span><span class="p">(</span><span class="n">iant</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">atmtype</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
                      <span class="n">maxalt</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="n">lapserate</span> <span class="o">=</span> <span class="o">-</span><span class="mf">5.6</span><span class="p">,</span> <span class="n">scaleht</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">decisionmetric</span> <span class="o">=</span> <span class="s1">&#39;intabsdiff&#39;</span><span class="p">,</span>
                      <span class="n">dobackup</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">pcode</span> <span class="o">=</span> <span class="s1">&#39;0000.1.00000.S&#39;</span><span class="p">,</span> <span class="n">mousstatusuid</span> <span class="o">=</span> <span class="s1">&#39;uid://A000/X000/X000&#39;</span><span class="p">,</span>

@@ -4,9 +4,16 @@ pipeline.hif.heuristics.auto\_selfcal.auto\_selfcal
 .. automodule:: pipeline.hif.heuristics.auto_selfcal.auto_selfcal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       analyze_inf_EB_flagging
       checkmask
@@ -28,12 +35,27 @@ pipeline.hif.heuristics.auto\_selfcal.auto\_selfcal
       importdata
       rank_refants
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CasaTasks
       MeasurementSetReader
       ObservingRun
       SelfcalHeuristics
    
+   
+
+   
+   
+   
+
+
+

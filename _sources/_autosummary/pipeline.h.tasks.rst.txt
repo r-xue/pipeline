@@ -4,9 +4,21 @@ pipeline.h.tasks
 .. automodule:: pipeline.h.tasks
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Applycal
       ExportData
@@ -16,10 +28,17 @@ pipeline.h.tasks
       Tsyscal
       Tsysflag
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    applycal
@@ -31,3 +50,4 @@ pipeline.h.tasks
    restoredata
    tsyscal
    tsysflag
+

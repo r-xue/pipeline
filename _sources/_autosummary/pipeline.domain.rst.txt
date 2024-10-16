@@ -4,9 +4,21 @@ pipeline.domain
 .. automodule:: pipeline.domain
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Antenna
       AntennaArray
@@ -24,10 +36,17 @@ pipeline.domain
       SpectralWindowWithChannelSelection
       State
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    antenna
@@ -47,3 +66,4 @@ pipeline.domain
    spectralwindow
    state
    unitformat
+

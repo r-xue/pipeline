@@ -4,9 +4,21 @@ pipeline.h.heuristics.caltable
 .. automodule:: pipeline.h.heuristics.caltable
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AmpCaltable
       AntposCaltable
@@ -28,3 +40,11 @@ pipeline.h.heuristics.caltable
       WvrgCaltable
       XYf0Caltable
    
+   
+
+   
+   
+   
+
+
+

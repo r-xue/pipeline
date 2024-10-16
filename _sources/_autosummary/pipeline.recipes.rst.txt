@@ -4,10 +4,26 @@ pipeline.recipes
 .. automodule:: pipeline.recipes
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    hifacal
@@ -21,3 +37,4 @@ pipeline.recipes
    recipe_converter
    recipe_converter_test
    vlassQLIP
+

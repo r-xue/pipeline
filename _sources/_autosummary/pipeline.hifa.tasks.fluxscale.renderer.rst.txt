@@ -4,9 +4,16 @@ pipeline.hifa.tasks.fluxscale.renderer
 .. automodule:: pipeline.hifa.tasks.fluxscale.renderer
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       create_flux_comparison_plots
       make_adopted_table
@@ -15,9 +22,16 @@ pipeline.hifa.tasks.fluxscale.renderer
       scale_flux
       write_flagcmds_to_disk
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AdoptedTR
       FluxDensityUnits
@@ -25,3 +39,11 @@ pipeline.hifa.tasks.fluxscale.renderer
       FrequencyUnits
       T2_4MDetailsGFluxscaleRenderer
    
+   
+
+   
+   
+   
+
+
+

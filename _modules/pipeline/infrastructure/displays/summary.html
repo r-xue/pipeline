@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -171,7 +167,7 @@
 
 
 <div class="viewcode-block" id="AzElChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.AzElChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.AzElChart.html#pipeline.infrastructure.displays.summary.AzElChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AzElChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -186,8 +182,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">spwlist</span> <span class="o">+=</span> <span class="s1">&#39;,</span><span class="si">%d</span><span class="s1">:0~0&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
 
-<div class="viewcode-block" id="AzElChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.AzElChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">DISABLE_PLOTMS</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Disabling AzEl plot due to problems with plotms&#39;</span><span class="p">)</span>
@@ -215,8 +209,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -236,15 +229,13 @@
 
 
 <div class="viewcode-block" id="SunTrackChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.SunTrackChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.SunTrackChart.html#pipeline.infrastructure.displays.summary.SunTrackChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SunTrackChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SunTrackChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.SunTrackChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Returning existing SunTrack plot&#39;</span><span class="p">)</span>
@@ -264,8 +255,7 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -283,15 +273,13 @@
 
 
 <div class="viewcode-block" id="WeatherChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.WeatherChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.WeatherChart.html#pipeline.infrastructure.displays.summary.WeatherChart">[docs]</a>
 <span class="k">class</span> <span class="nc">WeatherChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
 
-<div class="viewcode-block" id="WeatherChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.WeatherChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Returning existing Weather plot&#39;</span><span class="p">)</span>
@@ -311,8 +299,7 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -330,7 +317,7 @@
 
 
 <div class="viewcode-block" id="ElVsTimeChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.ElVsTimeChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.ElVsTimeChart.html#pipeline.infrastructure.displays.summary.ElVsTimeChart">[docs]</a>
 <span class="k">class</span> <span class="nc">ElVsTimeChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -345,8 +332,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">spwlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwlist</span> <span class="o">+</span> <span class="s1">&#39;,</span><span class="si">%d</span><span class="s1">:0~0&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
 
-<div class="viewcode-block" id="ElVsTimeChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.ElVsTimeChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">DISABLE_PLOTMS</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Disabling ElVsTime plot due to problems with plotms&#39;</span><span class="p">)</span>
@@ -372,8 +357,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -392,7 +376,7 @@
 
 
 <div class="viewcode-block" id="ParameterVsTimeChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.ParameterVsTimeChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.ParameterVsTimeChart.html#pipeline.infrastructure.displays.summary.ParameterVsTimeChart">[docs]</a>
 <span class="k">class</span> <span class="nc">ParameterVsTimeChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for FieldVsTimeChart and IntentVsTimeChart, sharing common logic such as the colour scheme for intents</span>
@@ -469,7 +453,7 @@
 
 
 <div class="viewcode-block" id="FieldVsTimeChartInputs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.FieldVsTimeChartInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.FieldVsTimeChartInputs.html#pipeline.infrastructure.displays.summary.FieldVsTimeChartInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldVsTimeChartInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
@@ -492,7 +476,7 @@
 
 
 <div class="viewcode-block" id="FieldVsTimeChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.FieldVsTimeChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.FieldVsTimeChart.html#pipeline.infrastructure.displays.summary.FieldVsTimeChart">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldVsTimeChart</span><span class="p">(</span><span class="n">ParameterVsTimeChart</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FieldVsTimeChartInputs</span>
 
@@ -615,7 +599,7 @@
 
 
 <div class="viewcode-block" id="IntentVsTimeChartInputs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.IntentVsTimeChartInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.IntentVsTimeChartInputs.html#pipeline.infrastructure.displays.summary.IntentVsTimeChartInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">IntentVsTimeChartInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
@@ -638,7 +622,7 @@
 
 
 <div class="viewcode-block" id="IntentVsTimeChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.IntentVsTimeChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.IntentVsTimeChart.html#pipeline.infrastructure.displays.summary.IntentVsTimeChart">[docs]</a>
 <span class="k">class</span> <span class="nc">IntentVsTimeChart</span><span class="p">(</span><span class="n">ParameterVsTimeChart</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">IntentVsTimeChartInputs</span>
 
@@ -651,8 +635,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
 
-<div class="viewcode-block" id="IntentVsTimeChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.IntentVsTimeChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
@@ -705,8 +687,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_in_minutes</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
@@ -722,15 +703,13 @@
 
 
 <div class="viewcode-block" id="PWVChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PWVChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.PWVChart.html#pipeline.infrastructure.displays.summary.PWVChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PWVChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">ms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
 
-<div class="viewcode-block" id="PWVChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PWVChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
@@ -741,8 +720,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Could not create PWV plot&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -760,7 +738,7 @@
 
 
 <div class="viewcode-block" id="MosaicChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.MosaicChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.MosaicChart.html#pipeline.infrastructure.displays.summary.MosaicChart">[docs]</a>
 <span class="k">class</span> <span class="nc">MosaicChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -768,8 +746,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
 
-<div class="viewcode-block" id="MosaicChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.MosaicChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
@@ -780,8 +756,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Could not create mosaic plot: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -799,7 +774,7 @@
 
 
 <div class="viewcode-block" id="PlotAntsChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PlotAntsChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.PlotAntsChart.html#pipeline.infrastructure.displays.summary.PlotAntsChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotAntsChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">polarlog</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -808,8 +783,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">site</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PlotAntsChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PlotAntsChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
@@ -826,8 +799,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">session_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">session</span>
@@ -847,7 +819,7 @@
                            <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">})</span>
 
 <div class="viewcode-block" id="PlotAntsChart.draw_pad_map_in_subplot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PlotAntsChart.draw_pad_map_in_subplot">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.PlotAntsChart.html#pipeline.infrastructure.displays.summary.PlotAntsChart.draw_pad_map_in_subplot">[docs]</a>
     <span class="k">def</span> <span class="nf">draw_pad_map_in_subplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plf</span><span class="p">,</span> <span class="n">antennas</span><span class="p">,</span> <span class="n">xlimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">ylimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">showemptypads</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -905,8 +877,6 @@
             <span class="n">subpl</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylimit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylimit</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="PlotAntsChart.get_position">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PlotAntsChart.get_position">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="n">antenna</span><span class="p">):</span>
         <span class="c1"># if self.ms.antenna_array.name == &#39;ALMA&#39;:</span>
@@ -918,13 +888,12 @@
                <span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="s1">&#39;latitude offset&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]],</span>
                <span class="p">[</span><span class="n">antenna</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="s1">&#39;elevation offset&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]]]</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 
     <span class="c1"># This plot is adapted from the &quot;plotPositionsLogarithmic&quot; function</span>
     <span class="c1"># in the Analysis Utils written by Todd Hunter.</span>
 <div class="viewcode-block" id="PlotAntsChart.draw_polarlog_ant_map_in_subplot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.PlotAntsChart.draw_polarlog_ant_map_in_subplot">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.PlotAntsChart.html#pipeline.infrastructure.displays.summary.PlotAntsChart.draw_polarlog_ant_map_in_subplot">[docs]</a>
     <span class="k">def</span> <span class="nf">draw_polarlog_ant_map_in_subplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Draw a polar-log map of antennas.</span>
@@ -1061,7 +1030,7 @@
 
 
 <div class="viewcode-block" id="UVChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.UVChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.UVChart.html#pipeline.infrastructure.displays.summary.UVChart">[docs]</a>
 <span class="k">class</span> <span class="nc">UVChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># CAS-11793: calsurveys do not have TARGET sources, so we must also</span>
     <span class="c1"># search for sources with other intents</span>
@@ -1091,8 +1060,6 @@
             <span class="n">bl_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">baseline_max</span><span class="o">.</span><span class="n">length</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">uv_max</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">1.05</span> <span class="o">*</span> <span class="n">bl_max</span> <span class="o">/</span> <span class="n">wavelength_m</span><span class="p">)</span>
 
-<div class="viewcode-block" id="UVChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.UVChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">DISABLE_PLOTMS</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Disabling UV coverage plot due to problems with plotms&#39;</span><span class="p">)</span>
@@ -1129,8 +1096,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># If output dir is specified, then store as &lt;msname&gt;-uv_coverage.png in output dir.</span>
@@ -1286,7 +1252,7 @@
 
 
 <div class="viewcode-block" id="SpwIdVsFreqChartInputs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChartInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.SpwIdVsFreqChartInputs.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChartInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwIdVsFreqChartInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SpwIdVsFreqChart.&quot;&quot;&quot;</span>
 
@@ -1319,7 +1285,7 @@
 
 
 <div class="viewcode-block" id="SpwIdVsFreqChart">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChart">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.SpwIdVsFreqChart.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwIdVsFreqChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a plot of SPW ID Versus Frequency coverage.&quot;&quot;&quot;</span>
 
@@ -1362,7 +1328,7 @@
             <span class="k">yield</span> <span class="n">spwid_list</span>
 
 <div class="viewcode-block" id="SpwIdVsFreqChart.plot">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChart.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.SpwIdVsFreqChart.html#pipeline.infrastructure.displays.summary.SpwIdVsFreqChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the plot.</span>
 
@@ -1468,7 +1434,7 @@
 
 
 <div class="viewcode-block" id="get_intent_subscan_time_ranges">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.summary.get_intent_subscan_time_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.summary.get_intent_subscan_time_ranges.html#pipeline.infrastructure.displays.summary.get_intent_subscan_time_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">get_intent_subscan_time_ranges</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="n">casa_intent</span><span class="p">,</span> <span class="n">scanid</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function returns a list of start/end epoch pair of</span>

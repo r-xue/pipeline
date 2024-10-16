@@ -4,16 +4,35 @@ pipeline.hsd.tasks.imaging
 .. automodule:: pipeline.hsd.tasks.imaging
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDImaging
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    accumulator
@@ -28,3 +47,4 @@ pipeline.hsd.tasks.imaging
    sdcombine
    weighting
    worker
+

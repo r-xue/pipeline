@@ -4,13 +4,30 @@ pipeline.hifa
 .. automodule:: pipeline.hifa
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    cli
    heuristics
    tasks
    templates
+

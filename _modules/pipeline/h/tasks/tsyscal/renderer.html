@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -157,7 +153,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsTsyscalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer.html#pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsTsyscalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;tsyscal.mako&#39;</span><span class="p">,</span> 
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Calculate Tsys calibration&#39;</span><span class="p">,</span>
@@ -165,8 +161,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsTsyscalRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsTsyscalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.T2_4MDetailsTsyscalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                                   <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -211,8 +205,7 @@
         <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;summary_plots&#39;</span><span class="p">:</span> <span class="n">summary_plots</span><span class="p">,</span>
                              <span class="s1">&#39;summary_subpage&#39;</span><span class="p">:</span> <span class="n">subpages</span><span class="p">,</span>
                              <span class="s1">&#39;tsysmap&#39;</span><span class="p">:</span> <span class="n">tsysmap</span><span class="p">,</span>
-                             <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span></div>
-
+                             <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_get_tsysmap_table_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -248,7 +241,7 @@
 
 
 <div class="viewcode-block" id="TsyscalPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">TsyscalPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -269,7 +262,7 @@
                 <span class="s1">&#39;tsyscal_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsyscalPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="n">antenna_name</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span>
         <span class="n">tsys_spw_id</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;tsys_spw&#39;</span><span class="p">]</span>
@@ -282,8 +275,6 @@
                   <span class="s1">&#39;rms&#39;</span><span class="p">:</span> <span class="n">stat</span><span class="o">.</span><span class="n">rms</span><span class="p">})</span></div>
 
 
-<div class="viewcode-block" id="TsyscalPlotRenderer.get_stat">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.get_stat">[docs]</a>
     <span class="k">def</span> <span class="nf">get_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
         <span class="n">tsys_spw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spwmap</span><span class="p">[</span><span class="n">vis</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span>
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">CalAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_caltable</span><span class="p">[</span><span class="n">vis</span><span class="p">])</span> <span class="k">as</span> <span class="n">ca</span><span class="p">:</span>
@@ -295,11 +286,10 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Retrieving caltable data for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span>
                       <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
             <span class="n">ca_result</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stat_from_calanalysis</span><span class="p">(</span><span class="n">ca_result</span><span class="p">)</span></div>
-
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stat_from_calanalysis</span><span class="p">(</span><span class="n">ca_result</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsyscalPlotRenderer.get_stat_from_calanalysis">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.get_stat_from_calanalysis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.html#pipeline.h.tasks.tsyscal.renderer.TsyscalPlotRenderer.get_stat_from_calanalysis">[docs]</a>
     <span class="k">def</span> <span class="nf">get_stat_from_calanalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ca_result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the median and RMS for a calanalysis result. The argument</span>
@@ -328,7 +318,7 @@
 
 
 <div class="viewcode-block" id="create_url_fn">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.tsyscal.html#pipeline.h.tasks.tsyscal.renderer.create_url_fn">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsyscal.renderer.create_url_fn.html#pipeline.h.tasks.tsyscal.renderer.create_url_fn">[docs]</a>
 <span class="k">def</span> <span class="nf">create_url_fn</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
     <span class="n">vis_set</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span><span class="p">}</span>
 

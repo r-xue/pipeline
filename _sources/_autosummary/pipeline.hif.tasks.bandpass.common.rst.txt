@@ -4,9 +4,21 @@ pipeline.hif.tasks.bandpass.common
 .. automodule:: pipeline.hif.tasks.bandpass.common
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BandpassResults
       CalApplication
@@ -15,3 +27,11 @@ pipeline.hif.tasks.bandpass.common
       Context
       VdpCommonBandpassInputs
    
+   
+
+   
+   
+   
+
+
+

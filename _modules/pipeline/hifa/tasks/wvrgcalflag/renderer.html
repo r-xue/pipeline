@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsWvrgcalflagRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsWvrgcalflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2_4MDetailsWvrgcalflagRenderer generates the detailed T2_4M-level plots</span>
@@ -164,7 +160,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
 <div class="viewcode-block" id="T2_4MDetailsWvrgcalflagRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer.update_mako_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the Mako context appropriate to the results created by a</span>
@@ -311,8 +307,6 @@
         <span class="c1">#               key=operator.attrgetter(&#39;bandwidth&#39;, &#39;centre_frequency&#39;))</span>
         <span class="c1"># overview_spw = spws[-1]</span>
 
-<div class="viewcode-block" id="T2_4MDetailsWvrgcalflagRenderer.get_wvr_applications">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.T2_4MDetailsWvrgcalflagRenderer.get_wvr_applications">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_wvr_applications</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
         <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
@@ -337,12 +331,11 @@
         <span class="n">collect</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">applications</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="WvrcalflagMetricPlotsRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrcalflagMetricPlotsRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -355,7 +348,7 @@
                 <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WvrcalflagMetricPlotsRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrcalflagMetricPlotsRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span></div>
 </div>
@@ -363,7 +356,7 @@
 
 
 <div class="viewcode-block" id="WvrgcalflagPhaseOffsetPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagPhaseOffsetPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -381,7 +374,7 @@
                 <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WvrgcalflagPhaseOffsetPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">plot</span><span class="o">.</span><span class="n">qa_score</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -393,7 +386,7 @@
 
 
 <div class="viewcode-block" id="WvrgcalflagPhaseOffsetVsBaselinePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetVsBaselinePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetVsBaselinePlotRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagPhaseOffsetVsBaselinePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagPhaseOffsetVsBaselinePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -408,7 +401,7 @@
 
 
 <div class="viewcode-block" id="WvrgcalflagFlagPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagFlagPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagFlagPlotRenderer.html#pipeline.hifa.tasks.wvrgcalflag.renderer.WvrgcalflagFlagPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagFlagPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>

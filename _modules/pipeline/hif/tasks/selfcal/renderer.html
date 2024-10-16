@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="SelfCalQARenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">SelfCalQARenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">CommonRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;selfcalqa.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -177,14 +173,9 @@
             <span class="s1">&#39;phasefreq_plots&#39;</span><span class="p">:</span> <span class="n">phasefreq_plots</span><span class="p">,</span>
             <span class="s1">&#39;slib&#39;</span><span class="p">:</span> <span class="n">slib</span><span class="p">}</span>
 
-<div class="viewcode-block" id="SelfCalQARenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
-        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">)</span></div>
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_data</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SelfCalQARenderer.make_summary_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.SelfCalQARenderer.make_summary_table">[docs]</a>
     <span class="k">def</span> <span class="nf">make_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">image_plots</span><span class="p">,</span> <span class="n">antpos_plots</span><span class="p">):</span>
 
         <span class="n">slib</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_lib&#39;</span><span class="p">]</span>
@@ -258,12 +249,11 @@
                 <span class="n">nsol_rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">vis_desc</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">row_name</span><span class="p">]</span><span class="o">+</span><span class="n">row_values</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">nsol_rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsSelfcalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;selfcal.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Produce rms images&#39;</span><span class="p">,</span>
@@ -272,7 +262,7 @@
                          <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
 <div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_targets_summary_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_targets_summary_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_targets_summary_table">[docs]</a>
     <span class="k">def</span> <span class="nf">make_targets_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make the selfcal targets summary list table.&quot;&quot;&quot;</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -372,8 +362,6 @@
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 
         <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">results</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -406,11 +394,8 @@
                     <span class="s1">&#39;solint_tabs&#39;</span><span class="p">:</span> <span class="n">solint_tabs</span><span class="p">,</span>
                     <span class="s1">&#39;summary_tabs&#39;</span><span class="p">:</span> <span class="n">summary_tabs</span><span class="p">,</span>
                     <span class="s1">&#39;spw_tabs&#39;</span><span class="p">:</span> <span class="n">spw_tabs</span><span class="p">,</span>
-                    <span class="s1">&#39;cleantargets&#39;</span><span class="p">:</span> <span class="n">cleantargets</span><span class="p">,</span> <span class="p">})</span></div>
+                    <span class="s1">&#39;cleantargets&#39;</span><span class="p">:</span> <span class="n">cleantargets</span><span class="p">,</span> <span class="p">})</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_solint_summary_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_solint_summary_table">[docs]</a>
     <span class="k">def</span> <span class="nf">make_solint_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 
         <span class="n">solints</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">band</span> <span class="o">=</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_solints&#39;</span><span class="p">],</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;field_name&#39;</span><span class="p">],</span> <span class="n">cleantarget</span><span class="p">[</span><span class="s1">&#39;sc_band&#39;</span><span class="p">]</span>
@@ -570,11 +555,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_rows</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="n">new_rows</span></div>
+        <span class="k">return</span> <span class="n">new_rows</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_spw_summary_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_spw_summary_table">[docs]</a>
     <span class="k">def</span> <span class="nf">make_spw_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slib</span><span class="p">):</span>
 
         <span class="n">spwlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">slib</span><span class="p">[</span><span class="s1">&#39;per_spw_stats&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -613,11 +595,10 @@
         <span class="k">if</span> <span class="n">check_all_spws</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">warning_msg</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">warning_msg</span></div>
-
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">warning_msg</span>
 
 <div class="viewcode-block" id="T2_4MDetailsSelfcalRenderer.make_summary_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_summary_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.html#pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.make_summary_table">[docs]</a>
     <span class="k">def</span> <span class="nf">make_summary_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">cleantarget</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a per-target summary table.&quot;&quot;&quot;</span>
 
@@ -745,14 +726,14 @@
 
 
 <div class="viewcode-block" id="text_with_tooltip">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.text_with_tooltip">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.text_with_tooltip.html#pipeline.hif.tasks.selfcal.renderer.text_with_tooltip">[docs]</a>
 <span class="k">def</span> <span class="nf">text_with_tooltip</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tooltip</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;div data-toggle=&quot;tooltip&quot; data-placement=&quot;bottom&quot; title=&quot;</span><span class="si">{</span><span class="n">tooltip</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/div&gt;&#39;</span></div>
 
 
 
 <div class="viewcode-block" id="fm_target">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.selfcal.html#pipeline.hif.tasks.selfcal.renderer.fm_target">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.selfcal.renderer.fm_target.html#pipeline.hif.tasks.selfcal.renderer.fm_target">[docs]</a>
 <span class="k">def</span> <span class="nf">fm_target</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
     <span class="n">target_str</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;is_repr_target&#39;</span><span class="p">]:</span>

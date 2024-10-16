@@ -4,10 +4,30 @@ pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_taper
 .. automodule:: pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ImageParamsHeuristics
       ImageParamsHeuristicsVlassSeTaper
    
+   
+
+   
+   
+   
+
+
+

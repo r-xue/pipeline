@@ -4,17 +4,31 @@ pipeline.infrastructure.renderer.stats\_extractor
 .. automodule:: pipeline.infrastructure.renderer.stats_extractor
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       generate_stats
       get_stats_from_results
       union
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       FlagDeterALMAResults
@@ -25,3 +39,11 @@ pipeline.infrastructure.renderer.stats\_extractor
       StatsExtractor
       StatsExtractorRegistry
    
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casatools.msmetadata &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casatools.msmetadata</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casatools.msmetadata</h1><div class="highlight"><pre>
+<span></span><span class="c1">##################### generated by xml-casa (v2) from msmetadata.xml ################</span>
+<span class="c1">##################### f8044f2323cb192c8f36b31bf6064627 ##############################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span> 
+<span class="kn">from</span> <span class="nn">.__casac__.msmetadata</span> <span class="kn">import</span> <span class="n">msmetadata</span> <span class="k">as</span> <span class="n">_msmetadata</span>
+
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">create_error_string</span>
+<span class="kn">from</span> <span class="nn">.typecheck</span> <span class="kn">import</span> <span class="n">CasaValidator</span> <span class="k">as</span> <span class="n">_validator</span>
+<span class="n">_pc</span> <span class="o">=</span> <span class="n">_validator</span><span class="p">(</span> <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.coercetype</span> <span class="kn">import</span> <span class="n">coerce</span> <span class="k">as</span> <span class="n">_coerce</span>
+
+
+<span class="k">class</span> <span class="nc">msmetadata</span><span class="p">:</span>
+    <span class="n">_info_group_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;msmd&quot;&quot;&quot;</span>
+    <span class="n">_info_desc_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Operations to retrieve metadata from a measurment set&quot;&quot;&quot;</span>
+    <span class="c1">### self</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;swig_object&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">_msmetadata</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">almaspws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chavg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fdm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sqld</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tdm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wvr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get spectral window IDs based on ALMA-specific criteria. The inputs are or&#39;ed together</span>
+<span class="sd">        to form the returned list. If complement=True, then the complement of the selection</span>
+<span class="sd">        is returned.</span>
+<span class="sd">        </span>
+<span class="sd">        If the SPECTRAL_WINDOW table has the optional BBC_NO column and if the name</span>
+<span class="sd">        of the spectral window matches the regular expression &quot;BB_[0-9]#SQLD&quot;, where</span>
+<span class="sd">        [0-9] indicates that a single integer matches, the window is classified as</span>
+<span class="sd">        a *square law detector spectral window*.</span>
+<span class="sd">        </span>
+<span class="sd">        The following algorithm is used to identify WVR spwectral windows:</span>
+<span class="sd">        </span>
+<span class="sd">        1. check for water vapor radiometer (WVR) spectral windows using the spectral window</span>
+<span class="sd">        name &quot;WVR#NOMINAL&quot; and report these.</span>
+<span class="sd">        2. If no SPWs match that string, then the names are checked for &quot;WVR&quot; and are reported instead.</span>
+<span class="sd">        </span>
+<span class="sd">        If the window is not found to be a WVR window, it is then checked if</span>
+<span class="sd">        </span>
+<span class="sd">        The window is classified as a *channel average spectral window* if it is not</span>
+<span class="sd">        a WVR window, if the number of channels is one, and the spectral window name</span>
+<span class="sd">        does not contain the string &quot;FULL_RES&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        The window is classified as an *FDM window* if it is neither a WVR window nor</span>
+<span class="sd">        a channel average window and if either</span>
+<span class="sd">        </span>
+<span class="sd">        1. its bandwidth is less than 2 GHz, or</span>
+<span class="sd">        2. the number of channels it contains is greater than or equal to 15 but not</span>
+<span class="sd">        equal to 256, 128, 64, 32, 16, 248, 124, 62, or 31.</span>
+<span class="sd">        </span>
+<span class="sd">        The window is classified as a *TDM spectral window* if it is neither a WVR window,</span>
+<span class="sd">        a channel average window, nor an FDM window.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">almaspws</span><span class="p">(</span><span class="n">chavg</span><span class="p">,</span> <span class="n">fdm</span><span class="p">,</span> <span class="n">sqld</span><span class="p">,</span> <span class="n">tdm</span><span class="p">,</span> <span class="n">wvr</span><span class="p">,</span> <span class="n">complement</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennadiameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the diameter for the specified antenna. The antenna can be specified either by</span>
+<span class="sd">        its zero-based ID from the ANTENNA table or by its name in that table. The returned</span>
+<span class="sd">        dictionary is a valid quantity. If a negative integer is provided for the antenna, then</span>
+<span class="sd">        all atenna diameters will be returned in a dictionary that has keys that are the antenna IDs</span>
+<span class="sd">        and values that are dictionaries, each being a valid quantity representing the diameter for</span>
+<span class="sd">        that antenna ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennadiameter</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennaids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">mindiameter</span><span class="o">=</span><span class="s1">&#39;0m&#39;</span><span class="p">,</span> <span class="n">maxdiameter</span><span class="o">=</span><span class="s1">&#39;1pc&#39;</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the zero-based antenna IDs for the specfied antenna names and the specified diameter</span>
+<span class="sd">        range for the specified observation ID. An array of unique IDs in order of the specified names is returned.</span>
+<span class="sd">        Note that if a specified name is listed mulitple times in the ANTENNA table, the largest</span>
+<span class="sd">        ID is returned, unless the observation ID is specified to be non-negative, in which case, the</span>
+<span class="sd">        returned IDs are filtered based on the specified observation ID.</span>
+<span class="sd">        If no names and no diameter range is specified, all IDs are returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennaids</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mindiameter</span><span class="p">,</span> <span class="n">maxdiameter</span><span class="p">,</span> <span class="n">obsid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennanames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antennaids</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the name of the antenna for the specfied zero-based antenna ID. If antennaids is not specified,</span>
+<span class="sd">        all antenna names are returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennanames</span><span class="p">(</span><span class="n">antennaids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennaoffset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the offset position of the specified antenna relative to the array reference position. Antenna may</span>
+<span class="sd">        be specified as a zero-based integer (row number in the ANTENNA table) or a string representing a valid</span>
+<span class="sd">        antenna name. The returned</span>
+<span class="sd">        record contains the longitude, latitude, and elevation offsets as quantity records. The reported longitude and</span>
+<span class="sd">        latitude offsets are measured along the surface of a sphere whose center is coincident with the center of</span>
+<span class="sd">        the earth and whose surface contains the observatory reference position.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennaoffset</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennaposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the position of the specified antenna. The returned record represents a position measure,</span>
+<span class="sd">        and can be used as such by the measures (me) tool.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennaposition</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennastations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the station names of the specified antennas. If a specified antenna name is listed multiple</span>
+<span class="sd">        times in the ANTENNA table, obsid is negative, and which is specified as an array of names, then</span>
+<span class="sd">        the station associated with the largest ID for that antenna is returned. If obsid is nonnegative,</span>
+<span class="sd">        returned stations are filtered based on that. If which is specified as a string (antenna name),</span>
+<span class="sd">        then all the stations associated with that antenna are returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennastations</span><span class="p">(</span><span class="n">which</span><span class="p">,</span> <span class="n">obsid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">antennasforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique antennaIDs for the specified scan, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">antennasforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">bandwidths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bandwidths in Hz for the specified spectral windows. If spw less than zero, return bandwidths for all spectral windows.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">bandwidths</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">baseband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the baseband for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">baseband</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">baselines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a two dimensional boolean array representing baselines for data recorded in the MS. A value of True means</span>
+<span class="sd">        there is at least one row in the MS main table for that baseline, False means no rows for that baseline. Autocorrelation</span>
+<span class="sd">        &quot;baseline&quot; information is also present via the values along the diagonal.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">baselines</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">chanavgspws</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of spectral window IDs used for channel averages. These are windows that do have 1 channel.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">chanavgspws</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">chaneffbws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">asvel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of channel effective bandwidths for the specified spectral window. The parameter</span>
+<span class="sd">        asvel indicates if velocity widths (True) or frequency widths (False) should be returned.</span>
+<span class="sd">        The unit parameter specifies the units that the returned values should have. If empty (default),</span>
+<span class="sd">        &quot;Hz&quot; will be used if asvel=False, or &quot;km/s&quot; will be used if asvel=True.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">chaneffbws</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">asvel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">chanfreqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of channel frequencies for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">chanfreqs</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">chanres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">asvel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of channel resolutions for the specified spectral window. The parameter</span>
+<span class="sd">        asvel indicates if velocity widths (True) or frequency widths (False) should be returned.</span>
+<span class="sd">        The unit parameter specifies the units that the returned values should have. If empty (default),</span>
+<span class="sd">        &quot;Hz&quot; will be used if asvel=False, or &quot;km/s&quot; will be used if asvel=True.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">chanres</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">asvel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">chanwidths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of channel widths for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">chanwidths</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will close the tool and reclaim system resources it has been using. Returns true if successful.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">corrbit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the value of SPECTRAL_WINDOW::SDM_CORR_BIT column for the specified spw.</span>
+<span class="sd">        If spw &gt;= 0 is specified, a string value is returned. If spw &lt;0, a list</span>
+<span class="sd">        of string values with length equal to the number of spectral windows is returned.</span>
+<span class="sd">        If the SPECTRAL_WINDOW::SDM_CORR_BIT column does not exist, either</span>
+<span class="sd">        &quot;UNKNOWN&quot; is returned if spw&gt;=0, or a list with nspw entries of</span>
+<span class="sd">        &quot;UNKNOWN&quot; is returned if spw&lt;0. A list of integers may also be</span>
+<span class="sd">        supplied for the spw parameter. In this case, all integers should be in the</span>
+<span class="sd">        range [0, spw-1] or an exception will be thrown. The return value will</span>
+<span class="sd">        be a list containing the corresponding CORR_BIT values in the order</span>
+<span class="sd">        of the spws specified.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">corrbit</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">corrprodsforpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation products associated with the specified polarization ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">corrprodsforpol</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">corrtypesforpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the correlation types associated with the specified polarization ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">corrtypesforpol</span><span class="p">(</span><span class="n">pol</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">datadescids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">pol</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of data description IDs associated with the specified spectral window ID</span>
+<span class="sd">        and/or polarization ID. Values of less than zero for either means all IDs should be used</span>
+<span class="sd">        in the selection.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">datadescids</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will close the tool and reclaim system resources it has been using. Returns true if successful.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">effexposuretime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the effective exposure time (equivalent to what might be more commonly known as total integration</span>
+<span class="sd">        time or total sample time) is calculated by summing over all rows in the main MS table, excluding</span>
+<span class="sd">        autocorrelations or rows where FLAG_ROW is false, thusly:</span>
+<span class="sd">        </span>
+<span class="sd">        sum[over i] (exposure[i]*sum[over j](UFBW[i, j])/ncorrelations[i] )/ nmaxbaselines</span>
+<span class="sd">        </span>
+<span class="sd">        where exposure[i] is the value of EXPOSURE for the ith row, the inner sum is performed over each correlation</span>
+<span class="sd">        for that row, UFBW is the unflagged fractional bandwidth is determined by summing all the widths of the</span>
+<span class="sd">        unflagged channels for that correlation and dividing by the total bandwidth of all spectral windows observed</span>
+<span class="sd">        at the timestamp of row i, ncorrelations is the number of correlations determined by the number of rows in</span>
+<span class="sd">        the FLAG matrix for MS row i, and nmaxbaselines is the maximum number of antenna pairs,</span>
+<span class="sd">        nantennas*(nantennas-1)/2, where nantennas is the number of antennas in the ANTENNA table. This method returns</span>
+<span class="sd">        a quantity (a dictionary having a numerical value and a string unit).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">effexposuretime</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">exposuretime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spwid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">polid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the exposure time for the specified scan, spwid, polarization ID, array ID, and observation ID.</span>
+<span class="sd">        This is the exposure time of the record with the lowest time stamp of the records associated with</span>
+<span class="sd">        these parameters. Returns a quantity dictionary. If polid is not specified (or specified and negative)</span>
+<span class="sd">        and there is only one polarization ID in for the specified combination of scan, spwid, obsID, and</span>
+<span class="sd">        arrayID, then that polarization ID is used. If there are multiple polarization IDs for the</span>
+<span class="sd">        combination of other parameters, a list of these is logged and an empty dictionary is returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">exposuretime</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">polid</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fdmspws</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of spectral window IDs used for FDM. These are windows that do not have 64, 128, or 256 channels.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fdmspws</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">fieldnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of field names as they appear in the FIELD table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforintent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique fields for the specified intent. Note that * matches any number of characters of all character classes.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">asnames</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique, zero-based field IDs for the specified field name. If the field name is the</span>
+<span class="sd">        empty string (the default), a list of all unique field IDs in the main table of the MS will be returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforname</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique fields for the specified scan number, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">asnames</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforscans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="p">[</span>  <span class="p">],</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">asmap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array or dictionary of the unique fields for the specified scan numbers, observation ID, and array ID.</span>
+<span class="sd">        If asnames=True, the values returned will be the field names, if False, they will be field IDs.</span>
+<span class="sd">        If asmap=True, the structure returned will be a dictionary which maps scan number (as a string) to fields.</span>
+<span class="sd">        In this case, both obsid and arrayid must be nonnegative. If asmap=False, a single array of fields is returned</span>
+<span class="sd">        that matches the query. In this case, if obsid and/or arrayid are negative, then it indicates that all</span>
+<span class="sd">        fields matching any obsid and/or arrayid should be returned. An empty array specified for scans means</span>
+<span class="sd">        that all scans for the selected obsid and arrayid should be included.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforscans</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">asnames</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">,</span> <span class="n">asmap</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforsource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique fields for the specified source.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforsource</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">asnames</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforsources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a map of source IDs to fields. The keys (source IDs) will be strings.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforsources</span><span class="p">(</span><span class="n">asnames</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsforspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">asnames</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique fields for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsforspw</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">asnames</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fieldsfortimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique, zero-based, fieldIDs for the specified time range (time-tol to time+tol).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fieldsfortimes</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique intents associated with the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">intents</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">intentsforfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique intents for the specified field.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">intentsforfield</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">intentsforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique intents for the specified scan, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">intentsforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">intentsforspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique intents for the specified spectral window ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">intentsforspw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">meanfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the mean frequency for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">meanfreq</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the name of the attached MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">namesforfields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldids</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the name of the specified field.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">namesforfields</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">namesforspws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the name of the specified spw(s).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">namesforspws</span><span class="p">(</span><span class="n">spwids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nantennas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of antennas associated with the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nantennas</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">narrays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of arrays associated with the MS from the ARRAY table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">narrays</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nbaselines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ac</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of unique baselines (antenna pairs) represented in the main MS table. This can, in theory, be less than</span>
+<span class="sd">        n*(n-1)/2 (n being the number of antennas in the ANTENNA table), if data for certain baselines</span>
+<span class="sd">        are not included in the main MS table. Autocorrelation &quot;baselines&quot; are included in this count if ac=True.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nbaselines</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nchan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of channels associated with the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nchan</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ncorrforpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of correlations for the specified polarization ID. If the specified polarization ID</span>
+<span class="sd">        is negative, an array of numbers of correlations is returned. The indices of that array represent polarization IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">ncorrforpol</span><span class="p">(</span><span class="n">polid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nfields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of fields associated with the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nfields</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nobservations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of observations associated with the MS from the OBSERVATIONS table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nobservations</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">includewvr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will return the number of spectral windows in the associated MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nspw</span><span class="p">(</span><span class="n">includewvr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">nstates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will return the number of states (number of rows in the STATES table) in the associated MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nstates</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nscans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of scans associated with the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nscans</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nsources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of unique values from the SOURCE_ID column in the SOURCE table. The number of rows in the</span>
+<span class="sd">        SOURCE table may be greater than this value.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nsources</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">nrows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagged</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of visibilities (from the main table) associated with the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">nrows</span><span class="p">(</span><span class="n">autoc</span><span class="p">,</span> <span class="n">flagged</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">observers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of observers as they are listed in the OBSERVATIONS table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">observers</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">observatorynames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of MS telescope (observatory) names as they are listed in the OBSERVATIONS table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">observatorynames</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">observatoryposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the position of the specified telescope.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">observatoryposition</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">maxcache</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mi">50</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach this tool to the specified MS. This method runs a few basic MS validation tests, and if any of these</span>
+<span class="sd">        fail (which indicates that the MS is invalid), an error occurs and the tool is not attached to the MS.</span>
+<span class="sd">        Note that it is ultimately the user&#39;s responsibility to ensure that the MS is valid. Running the methods</span>
+<span class="sd">        of this tool on an invalid MS may result in incorrect results or even a crash of CASA. Such invalidities</span>
+<span class="sd">        include any MS subtable not having appropriate information (eg, an OBSERVATION subtable not having enough rows</span>
+<span class="sd">        to account for all the OBSERVATION_IDs in the main table).</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">msfile</span><span class="p">,</span> <span class="n">maxcache</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">phasecenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">epoch</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a direction measures for the phasecenter of the field id and time specified</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">phasecenter</span><span class="p">(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pointingdirection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownum</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">interpolate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">initialrow</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the pointing direction for antennas at the specified row number in the main MS table. Returns a record</span>
+<span class="sd">        containing the time, antenna IDs and corresponding pointing directions.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">pointingdirection</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span> <span class="n">interpolate</span><span class="p">,</span> <span class="n">initialrow</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">polidfordatadesc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ddid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the polarization ID associated with the specified data description ID. If the specified data description ID</span>
+<span class="sd">        is negative, an array of polarization IDs is returned. The indices of that array represent data description IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">polidfordatadesc</span><span class="p">(</span><span class="n">ddid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">projects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of projects as they are listed in the OBSERVATIONS table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">projects</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">propermotions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the values of the DIRECTION column from the SOURCE table. Returns a dictionary in which the</span>
+<span class="sd">        keys are the associated zero-based row numbers, represented as strings, in the SOURCE table. The</span>
+<span class="sd">        associated values are two element dictionaries, with keys &quot;longitude&quot; and &quot;latitude&quot;, containing</span>
+<span class="sd">        the longitudinal and latidinal components of the proper motion, which are valid quantity dictionaries.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">propermotions</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">refdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">epoch</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a direction measure for the reference direction of the field and time specified</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">refdir</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the reference frequency of the specified spectral window. The returned frequency is in</span>
+<span class="sd">        the form of a valid measures dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">reffreq</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">restfreqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourceid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the rest frequencies from the SOURCE table for the specified source and spectral window.</span>
+<span class="sd">        The return value will be a dictionary of frequency measures if the rest frequencies are</span>
+<span class="sd">        defined for the specified inputs, or False if they do not.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">restfreqs</span><span class="p">(</span><span class="n">sourceid</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">rxbands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ALMA-only. Returns an integer array containing the receiver band</span>
+<span class="sd">        of the specified spw(s). A return value of -1 means no receiver</span>
+<span class="sd">        band number could be determined. The name of the spw is first</span>
+<span class="sd">        checked to determine if the receiver band value is encoded</span>
+<span class="sd">        there. If not, the corresponding spectral window ID is sought in</span>
+<span class="sd">        the ASDM_RECEIVER table, if it exists, and if it has less than</span>
+<span class="sd">        or equal number of rows compared to the SPECTRAL_WINDOW table.</span>
+<span class="sd">        If the corresponding spectral window can be found in the</span>
+<span class="sd">        ASDM_RECEIVER table, then the corresponding frequencyBand column</span>
+<span class="sd">        value is checked to determine if the receiver band information</span>
+<span class="sd">        is encoded there. In the case where the spectral window ID is</span>
+<span class="sd">        present in multiple cells of the spectralWindowId column, the</span>
+<span class="sd">        first row in which the ID is found is used to determine the</span>
+<span class="sd">        receiver band. If all these tests fail, -1 is returned for the</span>
+<span class="sd">        specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">rxbands</span><span class="p">(</span><span class="n">spwids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scannumbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will return an array of unique scan numbers in the associated MS for the specified observation ID and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scannumbers</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique scan numbers associated with the specified field, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforfield</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforfields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary of which maps field ID to scan numbers for the specified observation ID</span>
+<span class="sd">        and array ID. The keys (field IDs) will be strings. obsid and arrayid must both</span>
+<span class="sd">        be non-negative.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforfields</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforintent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique scan numbers associated with the specified intent, observation ID, and arrayID.</span>
+<span class="sd">        The &quot;*&quot; character matches any number of characters from all character classes.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique scan numbers associated with the specified zero-based spectral window ID, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforspw</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforspws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary of which maps spw ID to scan numbers for the specified observation ID</span>
+<span class="sd">        and array ID. The keys (spectral window IDs) will be strings. obsid and arrayid must both</span>
+<span class="sd">        be non-negative.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforspws</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansforstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique scan numbers for the specified state, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansforstate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">scansfortimes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique scan numbers for the specified time range (time-tol to time+tol), observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">scansfortimes</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the schedule information for the specified observation ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">obsid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sideband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sideband for the specified spectral window.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sideband</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sourcedirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the values of the DIRECTION column from the SOURCE table. Returns a dictionary in which the</span>
+<span class="sd">        keys are the associated row numbers, represented as strings, in the SOURCE table. Each value</span>
+<span class="sd">        in the returned dictionary is a valid direction measure.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sourcedirs</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">sourcetimes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the values of the TIME column from the SOURCE table. Returns a dictionary in which the</span>
+<span class="sd">        keys are the associated row numbers, represented as strings, in the SOURCE table. Each value</span>
+<span class="sd">        in the returned dictionary is a valid time quantity.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sourcetimes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">sourceidforfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the source ID from the field table for the specified field ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sourceidforfield</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sourceidsfromsourcetable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the values of the SOURCE_ID column from the SOURCE table. It is unfortunate that the SOURCE</span>
+<span class="sd">        table has a column named SOURCE_ID, because implicitly the &quot;ID&quot; of a row in an MS subtable is</span>
+<span class="sd">        generally meant to reflect a row number in that table, but that is not the case for the SOURCE table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sourceidsfromsourcetable</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">sourcenames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the values of the SOURCE_NAME column from the SOURCE table.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sourcenames</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">spwsforbaseband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">baseband</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">sqldmode</span><span class="o">=</span><span class="s1">&#39;include&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the spectral windows associated with the specified baseband or dictionary that maps baseband to spectral windows.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforbaseband</span><span class="p">(</span><span class="n">baseband</span><span class="p">,</span> <span class="n">sqldmode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwfordatadesc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ddid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the spectral window ID associated with the specified data description ID. If the specified data description ID</span>
+<span class="sd">        is negative, an array of spectral window IDs is returned. The indices of that array represent data description IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwfordatadesc</span><span class="p">(</span><span class="n">ddid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwsforfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique spectral window IDs for the specified field.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforfield</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwsforfields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary which maps field IDs to spectral window IDs. The field IDs are keys in the</span>
+<span class="sd">        returned dictionary. To access a particular element, one must ensure the key is a string.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforfields</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">spwsforintent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique spectral window IDs for the specified intent. The &quot;*&quot; character matches any number of characters from all character classes.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwsfornames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the IDs of the specified spw(s). Returns a dictionary where the keys</span>
+<span class="sd">        are the requested spectral window names that are present in the data set</span>
+<span class="sd">        and the values are arrays of the spectral window IDs corresponding to the</span>
+<span class="sd">        name. If a specified name is not present, a warning message is logged and</span>
+<span class="sd">        that name is not included in the returned dictionary. Specifying no names</span>
+<span class="sd">        results in a dictionary containing the name to spw ID mapping for the</span>
+<span class="sd">        entire data set.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsfornames</span><span class="p">(</span><span class="n">spwids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwsforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique spectral window IDs for the specified scan number, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">spwsforscans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary of which maps scan number to spectral windows for the specified observation ID and array ID. The keys (scan</span>
+<span class="sd">        numbers) will be strings. obsid and arrayid must both be non-negative.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">spwsforscans</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">subwindows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ALMA-only. Returns an integer array containing the subwindow of</span>
+<span class="sd">        the specified spw(s). The spw name is checked to determine if</span>
+<span class="sd">        the subwindow value is encoded within it. A return value of -1</span>
+<span class="sd">        indicates that a subwindow number could be determined.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">subwindows</span><span class="p">(</span><span class="n">spwids</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">statesforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique state IDs for the specified scan number, observation ID, and array ID.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">statesforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">statesforscans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary which maps scan numbers to state IDs for the specified array and observation IDs. The returned dictionary</span>
+<span class="sd">        will have scan numbers, as strings, as keys.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">statesforscans</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dictionary summarizing the MS.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">tdmspws</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of spectral window IDs used for TDM. These are windows that have 64, 128, or 256 channels.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">tdmspws</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">timerangeforobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the time range for the specified observation ID. The return value is a dictionary containing</span>
+<span class="sd">        keys &quot;begin&quot; and &quot;end&quot;. Each of the associated value are dictionaries representing epochs which</span>
+<span class="sd">        are valid measure records. The values are taken directly from the OBSERVATION subtable; no</span>
+<span class="sd">        half-intervals are added or subtracted.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timerangeforobs</span><span class="p">(</span><span class="n">obsid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">timesforfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique times associated with the specified field ID. The times correspond to those in the TIME column, so are values of the time system associated with that column and have units associated with that column. Only unique times are returned; duplicates are dropped. Providing a negative field ID will result in an exception being thrown.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timesforfield</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">timesforintent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique times associated with the specified intent.  The times correspond to those in the TIME column, so are values of the time system associated with that column and have units associated with that column. Only unique times are returned; duplicates are dropped.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timesforintent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">timesforscan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">perspw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the unique times for the specified scan number, observation ID, and array ID. If perspw=True, the returned data structure is</span>
+<span class="sd">        a dictionary that has keys representing zero-based spectral window IDs and values representing the unique values of the TIME column</span>
+<span class="sd">        corrsponding to the specified scan and that corresponding spectral window ID. If False, an array of unique values from the TIME</span>
+<span class="sd">        column for the specified scan is returned; there is no separation into spectral window IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timesforscan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">,</span> <span class="n">perspw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">timesforscans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scans</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">obsid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">arrayid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of the unique times for the specified scan numbers, observation ID, and array ID.  The times correspond to those in the TIME column, so are values of the time system associated with that column and have units associated with that column. Only unique times are returned; duplicates are dropped. For the scans parameter, a single non-negative integer or a list of non-negative integers, all of which are valid scan numbers in the MS, must be supplied.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timesforscans</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">obsid</span><span class="p">,</span> <span class="n">arrayid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">timesforspws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the unique times corresponding to the specified spectral window(s). The input indicates the</span>
+<span class="sd">        spws for which times are to be retrieved, and can be a single integer or an array of</span>
+<span class="sd">        integers. If a single, non-negative integer, an array of unique times associated with</span>
+<span class="sd">        that spectral window are returned. Otherwise, a dictionary of times associated with the</span>
+<span class="sd">        specified spectral windows are returned, with the spws (as strings) as the keys and the</span>
+<span class="sd">        times as the values. A negative integer will cause a dictionary of all spws and their</span>
+<span class="sd">        associated times to be returned.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">timesforspws</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourceid</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the spectral transitions from the SOURCE table for the specified source and spectral window.</span>
+<span class="sd">        The return value will be an array of transitions if the transitions are</span>
+<span class="sd">        defined for the specified inputs, or False if they do not.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">transitions</span><span class="p">(</span><span class="n">sourceid</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wvrspws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">complement</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an array of spectral window IDs used for WVR. These are windows that have 4 channels.</span>
+<span class="sd">        If complement is True, return the complement set instead (all non-wvr spw IDs). WVR windows</span>
+<span class="sd">        are identified using the algorithm</span>
+<span class="sd">        1. check for water vapor radiometer (WVR) spectral windows using the spectral window</span>
+<span class="sd">        name &quot;WVR#NOMINAL&quot; and report these.</span>
+<span class="sd">        2. If no SPWs match that string, then the names are checked for &quot;WVR&quot; and are reported instead.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">wvrspws</span><span class="p">(</span><span class="n">complement</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

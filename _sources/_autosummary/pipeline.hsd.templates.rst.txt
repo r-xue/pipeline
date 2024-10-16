@@ -4,3 +4,20 @@ pipeline.hsd.templates
 .. automodule:: pipeline.hsd.templates
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

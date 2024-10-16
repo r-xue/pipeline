@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -153,14 +149,12 @@
 
 
 <div class="viewcode-block" id="WVRScoreFinder">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRScoreFinder">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRScoreFinder.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRScoreFinder">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRScoreFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delegate</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delegate</span> <span class="o">=</span> <span class="n">delegate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WVRScoreFinder.get_score">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRScoreFinder.get_score">[docs]</a>
     <span class="nd">@cachetools</span><span class="o">.</span><span class="n">cachedmethod</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;_cache&#39;</span><span class="p">),</span>
                              <span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">cachetools</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">hashkey</span><span class="p">,</span> <span class="s1">&#39;get_score&#39;</span><span class="p">))</span>
     <span class="k">def</span> <span class="nf">get_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
@@ -182,35 +176,25 @@
         <span class="n">scores_for_antenna</span> <span class="o">=</span> <span class="n">spw_imageresult</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">antenna_idx</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">scores_for_antenna</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="WVRPhaseVsBaselineChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRPhaseVsBaselineChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.WvrChartHelper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.WvrChartHelper">[docs]</a>
     <span class="k">class</span> <span class="nc">WvrChartHelper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_antennas</span> <span class="o">=</span> <span class="n">antennas</span>
 
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.WvrChartHelper.get_antennas">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.WvrChartHelper.get_antennas">[docs]</a>
         <span class="k">def</span> <span class="nf">get_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antennas</span><span class="p">[:]</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antennas</span><span class="p">[:]</span>
 
-
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.WvrChartHelper.label_antenna">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.WvrChartHelper.label_antenna">[docs]</a>
         <span class="k">def</span> <span class="nf">label_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;All Antennas&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
-
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;All Antennas&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
         <span class="nd">@property</span>
         <span class="k">def</span> <span class="nf">antenna_filename_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
-
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">_load_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caltables_loaded</span><span class="p">:</span>
@@ -250,7 +234,7 @@
                 <span class="k">for</span> <span class="n">scan_spw</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">spws</span> <span class="k">if</span> <span class="n">scan_spw</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">qa_spw</span><span class="p">]</span>
 
 <div class="viewcode-block" id="WVRPhaseVsBaselineChart.get_symbol_and_colour">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.get_symbol_and_colour">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.get_symbol_and_colour">[docs]</a>
     <span class="k">def</span> <span class="nf">get_symbol_and_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="s1">&#39;BEFORE&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the plot symbol and colour for this polarization and bandtype.</span>
@@ -296,16 +280,11 @@
         <span class="n">refant_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">nowvr_result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;refant&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">refant_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.get_data_object">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.get_data_object">[docs]</a>
     <span class="k">def</span> <span class="nf">get_data_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">corr_id</span><span class="p">):</span>
         <span class="n">delegate</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">PhaseVsBaselineData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">corr_id</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">_refant</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">XYData</span><span class="p">(</span><span class="n">delegate</span><span class="p">,</span> <span class="s1">&#39;distance_to_refant&#39;</span><span class="p">,</span> <span class="s1">&#39;median_offset&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">XYData</span><span class="p">(</span><span class="n">delegate</span><span class="p">,</span> <span class="s1">&#39;distance_to_refant&#39;</span><span class="p">,</span> <span class="s1">&#39;median_offset&#39;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_caltables</span><span class="p">()</span>
         <span class="n">data_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_before</span>
@@ -426,11 +405,8 @@
                 <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="p">[</span><span class="n">scan</span><span class="p">,</span> <span class="p">],</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">helper</span><span class="p">):</span>
         <span class="n">data_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_before</span>
         <span class="n">data_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_after</span>
@@ -577,21 +553,15 @@
 
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">helper</span><span class="o">.</span><span class="n">antenna_filename_component</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
         <span class="n">scan_ids</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%0.2d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">scan</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.phase_vs_baseline.spw</span><span class="si">%0.2d</span><span class="s1">.scan</span><span class="si">%s</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">scan_ids</span><span class="p">))</span></div>
+                            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.phase_vs_baseline.spw</span><span class="si">%0.2d</span><span class="s1">.scan</span><span class="si">%s</span><span class="s1">.png&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">scan_ids</span><span class="p">))</span>
 
-
-<div class="viewcode-block" id="WVRPhaseVsBaselineChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseVsBaselineChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antenna</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="n">scans</span><span class="p">,</span> <span class="n">antenna</span><span class="p">)</span>
         <span class="n">scan_ids</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">])</span>
@@ -620,12 +590,11 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">figfile</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">wrapper</span>
         <span class="k">return</span> <span class="kc">None</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="WVRPhaseOffsetPlotHelper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlotHelper">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlotHelper.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlotHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRPhaseOffsetPlotHelper</span><span class="p">(</span><span class="n">phaseoffset</span><span class="o">.</span><span class="n">PhaseOffsetPlotHelper</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plot_per_antenna</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">calapp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -652,7 +621,7 @@
 
 
 <div class="viewcode-block" id="WVRPhaseOffsetPlot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlot.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetPlot">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRPhaseOffsetPlot</span><span class="p">(</span><span class="n">phaseoffset</span><span class="o">.</span><span class="n">PhaseOffsetPlot</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -668,7 +637,7 @@
 
 
 <div class="viewcode-block" id="WVRPhaseOffsetSummaryPlotHelper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlotHelper">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlotHelper.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlotHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRPhaseOffsetSummaryPlotHelper</span><span class="p">(</span><span class="n">WVRPhaseOffsetPlotHelper</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">WVRPhaseOffsetSummaryPlotHelper</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plot_per_antenna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
@@ -676,7 +645,7 @@
 
 
 <div class="viewcode-block" id="WVRPhaseOffsetSummaryPlot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.wvrgcalflag.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlot.html#pipeline.hifa.tasks.wvrgcalflag.display.WVRPhaseOffsetSummaryPlot">[docs]</a>
 <span class="k">class</span> <span class="nc">WVRPhaseOffsetSummaryPlot</span><span class="p">(</span><span class="n">phaseoffset</span><span class="o">.</span><span class="n">PhaseOffsetPlot</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>

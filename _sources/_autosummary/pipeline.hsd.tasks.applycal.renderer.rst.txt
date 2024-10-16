@@ -4,11 +4,31 @@ pipeline.hsd.tasks.applycal.renderer
 .. automodule:: pipeline.hsd.tasks.applycal.renderer
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       ResultsList
       T2_4MDetailsSDApplycalRenderer
    
+   
+
+   
+   
+   
+
+
+

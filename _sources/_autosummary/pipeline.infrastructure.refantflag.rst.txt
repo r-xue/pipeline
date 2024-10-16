@@ -4,9 +4,16 @@ pipeline.infrastructure.refantflag
 .. automodule:: pipeline.infrastructure.refantflag
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       NamedTuple
       aggregate_fully_flagged_antenna_notifications
@@ -15,9 +22,16 @@ pipeline.infrastructure.refantflag
       identify_fully_flagged_antennas_from_flagview
       mark_antennas_for_refant_update
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       FieldIntent
       FieldIntentAntenna
@@ -28,3 +42,11 @@ pipeline.infrastructure.refantflag
       MeasurementSet
       Results
    
+   
+
+   
+   
+   
+
+
+

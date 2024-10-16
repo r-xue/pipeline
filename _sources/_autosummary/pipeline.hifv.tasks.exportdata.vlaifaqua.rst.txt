@@ -4,9 +4,16 @@ pipeline.hifv.tasks.exportdata.vlaifaqua
 .. automodule:: pipeline.hifv.tasks.exportdata.vlaifaqua
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       aqua_report_from_context
       aqua_report_from_file
@@ -16,9 +23,24 @@ pipeline.hifv.tasks.exportdata.vlaifaqua
       xml_for_extracted_flux_measurements
       xml_for_flux_stage
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       VLAAquaXmlGenerator
    
+   
+
+   
+   
+   
+
+
+

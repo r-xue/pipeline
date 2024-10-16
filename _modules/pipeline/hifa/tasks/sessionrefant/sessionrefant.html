@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -160,7 +156,7 @@
 
 
 <div class="viewcode-block" id="SessionRefAntInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAntInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.sessionrefant.sessionrefant.SessionRefAntInputs.html#pipeline.hifa.tasks.SessionRefAntInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SessionRefAntInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SessionRefAntInputs defines the inputs for the SessionRefAnt pipeline task.</span>
@@ -180,7 +176,7 @@
 
 
 <div class="viewcode-block" id="SessionRefAnt">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionRefAnt.html#pipeline.hifa.tasks.SessionRefAnt">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_session_refant&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;Reference antenna lists from all measurement sets within current session</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -198,7 +194,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">SessionRefAnt</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SessionRefAnt.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionRefAnt.html#pipeline.hifa.tasks.SessionRefAnt.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="c1"># Initialize results.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">SessionRefAntResults</span><span class="p">()</span>
@@ -221,7 +217,7 @@
 
 
 <div class="viewcode-block" id="SessionRefAnt.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.sessionrefant.html#pipeline.hifa.tasks.sessionrefant.qa.SessionRefAnt.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionRefAnt.html#pipeline.hifa.tasks.SessionRefAnt.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 

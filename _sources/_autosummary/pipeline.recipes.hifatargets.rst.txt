@@ -4,9 +4,16 @@ pipeline.recipes.hifatargets
 .. automodule:: pipeline.recipes.hifatargets
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       h_applycal
       h_export_calstate
@@ -122,3 +129,15 @@ pipeline.recipes.hifatargets
       hsdn_importdata
       hsdn_restoredata
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

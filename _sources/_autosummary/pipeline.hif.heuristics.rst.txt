@@ -4,9 +4,21 @@ pipeline.hif.heuristics
 .. automodule:: pipeline.hif.heuristics
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BPOrder
       MedianSNR
@@ -15,10 +27,17 @@ pipeline.hif.heuristics
       RefAntHeuristics
       Standard
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    auto_selfcal
@@ -43,3 +62,4 @@ pipeline.hif.heuristics
    mosaicoverlap
    solint
    standard
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -164,7 +160,7 @@
 
 
 <div class="viewcode-block" id="get_value_in_deg">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.get_value_in_deg">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.get_value_in_deg.html#pipeline.hsd.tasks.importdata.reader.get_value_in_deg">[docs]</a>
 <span class="k">def</span> <span class="nf">get_value_in_deg</span><span class="p">(</span><span class="n">quantity</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a casa quantity into a value in the unit of degree.</span>
 
@@ -179,7 +175,7 @@
 
 
 <div class="viewcode-block" id="mjdsec2str">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.mjdsec2str">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.mjdsec2str.html#pipeline.hsd.tasks.importdata.reader.mjdsec2str">[docs]</a>
 <span class="k">def</span> <span class="nf">mjdsec2str</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert datetime to string.</span>
 
@@ -195,7 +191,7 @@
 
 
 <div class="viewcode-block" id="get_state_id">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.get_state_id">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.get_state_id.html#pipeline.hsd.tasks.importdata.reader.get_state_id">[docs]</a>
 <span class="k">def</span> <span class="nf">get_state_id</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get state ID from MeasurementSet.</span>
 
@@ -224,7 +220,7 @@
 
 
 <div class="viewcode-block" id="merge_timerange">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.merge_timerange">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.merge_timerange.html#pipeline.hsd.tasks.importdata.reader.merge_timerange">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_timerange</span><span class="p">(</span><span class="n">timerange_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge time ranges.</span>
 
@@ -247,7 +243,7 @@
 
 
 <div class="viewcode-block" id="initialize_template">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.initialize_template">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.initialize_template.html#pipeline.hsd.tasks.importdata.reader.initialize_template">[docs]</a>
 <span class="k">def</span> <span class="nf">initialize_template</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialise flag template.</span>
 
@@ -265,7 +261,7 @@
 
 
 <div class="viewcode-block" id="merge_flagcmd">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.merge_flagcmd">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.merge_flagcmd.html#pipeline.hsd.tasks.importdata.reader.merge_flagcmd">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_flagcmd</span><span class="p">(</span><span class="n">commands</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Primitive merge of flag command.</span>
 
@@ -323,7 +319,7 @@
 
 
 <div class="viewcode-block" id="write_flagcmd">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.write_flagcmd">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.write_flagcmd.html#pipeline.hsd.tasks.importdata.reader.write_flagcmd">[docs]</a>
 <span class="k">def</span> <span class="nf">write_flagcmd</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cmd_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write command list to flagtemplate file.</span>
 
@@ -342,7 +338,7 @@
 
 
 <div class="viewcode-block" id="set_nominal_direction">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.set_nominal_direction">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.set_nominal_direction.html#pipeline.hsd.tasks.importdata.reader.set_nominal_direction">[docs]</a>
 <span class="k">def</span> <span class="nf">set_nominal_direction</span><span class="p">(</span><span class="n">ant</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">srctype</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">az</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                           <span class="n">shift_ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shift_dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset_ra</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset_dec</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace NaNs in input arrays with nominal directions.</span>
@@ -411,7 +407,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader">[docs]</a>
 <span class="k">class</span> <span class="nc">MetaDataReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;MetaData reading class.&quot;&quot;&quot;</span>
 
@@ -457,7 +453,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
 
 <div class="viewcode-block" id="MetaDataReader.get_datatable">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_datatable">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_datatable">[docs]</a>
     <span class="k">def</span> <span class="nf">get_datatable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return datatable.</span>
 
@@ -468,7 +464,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.detect_target_spw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">detect_target_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of science spectral window IDs.</span>
 
@@ -484,7 +480,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.detect_target_data_desc">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_data_desc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.detect_target_data_desc">[docs]</a>
     <span class="k">def</span> <span class="nf">detect_target_data_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of data description IDs associated with science spectral windows.</span>
 
@@ -505,7 +501,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.register_invalid_pointing_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.register_invalid_pointing_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.register_invalid_pointing_data">[docs]</a>
     <span class="k">def</span> <span class="nf">register_invalid_pointing_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Register invalid pointing data.</span>
 
@@ -517,7 +513,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.generate_flagcmd">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagcmd">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagcmd">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate flag commands based on pointings of observation and save them in the flag template file.</span>
@@ -567,7 +563,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.generate_flagdict_for_invalid_pointing_data">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_invalid_pointing_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_invalid_pointing_data">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_flagdict_for_invalid_pointing_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return row IDs of DataTable with invalid pointing information and a list of message.</span>
 
@@ -583,7 +579,7 @@
 
 
 <div class="viewcode-block" id="MetaDataReader.generate_flagdict_for_uniform_rms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_uniform_rms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.generate_flagdict_for_uniform_rms">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_flagdict_for_uniform_rms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rasterscan_heuristics_result</span><span class="p">:</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return row IDs of DataTable to flag.</span>
 
@@ -643,7 +639,7 @@
         <span class="n">write_flagcmd</span><span class="p">(</span><span class="n">flagtemplate</span><span class="p">,</span> <span class="n">cmd_merged</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MetaDataReader.execute">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.execute">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read MeasurementSet and fill DataTable.</span>
 
@@ -1131,7 +1127,7 @@
         <span class="k">return</span> <span class="s1">&#39;AZELGEO&#39;</span>
 
 <div class="viewcode-block" id="MetaDataReader.get_reference_direction">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.importdata.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_reference_direction">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.importdata.reader.MetaDataReader.html#pipeline.hsd.tasks.importdata.reader.MetaDataReader.get_reference_direction">[docs]</a>
     <span class="k">def</span> <span class="nf">get_reference_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ephem_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_known_eph_obj</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span>
                                 <span class="n">mposition</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">outframe</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get reference direction of a ephemeris object by specified a position and epoch timestamp.</span>

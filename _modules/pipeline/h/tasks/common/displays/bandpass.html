@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,13 +142,11 @@
 
 
 <div class="viewcode-block" id="BandpassDetailChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassDetailChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassDetailChart</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">PlotbandpassDetailBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BandpassDetailChart</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BandpassDetailChart.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassDetailChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># PIPE-110: create separate calls to plotbandpass for DSB and non-DSB</span>
         <span class="c1"># receivers.</span>
@@ -191,8 +185,7 @@
                     <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No plotbandpass detail plot found for </span><span class="si">%s</span><span class="s1"> spw &#39;</span>
                               <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1"> not found&#39;</span><span class="p">,</span>
                               <span class="bp">self</span><span class="o">.</span><span class="n">_vis_basename</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">ant_name</span><span class="p">,</span> <span class="n">figfile</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">wrappers</span></div>
-
+        <span class="k">return</span> <span class="n">wrappers</span>
 
     <span class="k">def</span> <span class="nf">_create_plotbandpass_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span> <span class="n">showimage</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Executing new plotbandpass job for missing figures&#39;</span><span class="p">)</span>
@@ -209,7 +202,7 @@
 
 
 <div class="viewcode-block" id="BandpassSummaryChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassSummaryChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassSummaryChart</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">PlotbandpassDetailBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BandpassSummaryChart</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="s1">&#39;baseband&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -228,8 +221,6 @@
         <span class="c1"># the image sideband.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showimage</span> <span class="o">=</span> <span class="s2">&quot;DSB&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxmap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="p">]</span>
 
-<div class="viewcode-block" id="BandpassSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant_id</span>
                    <span class="k">for</span> <span class="n">ant_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antmap</span>
@@ -262,12 +253,11 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No plotbandpass summary plot found for antenna &#39;</span>
                           <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antmap</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">wrappers</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="BandpassAmpVsFreqSummaryChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqSummaryChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassAmpVsFreqSummaryChart</span><span class="p">(</span><span class="n">BandpassSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amp vs freq plot for each antenna</span>
@@ -279,7 +269,7 @@
 
 
 <div class="viewcode-block" id="BandpassPhaseVsFreqSummaryChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqSummaryChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassPhaseVsFreqSummaryChart</span><span class="p">(</span><span class="n">BandpassSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an phase vs freq plot for each antenna</span>
@@ -292,7 +282,7 @@
 
 
 <div class="viewcode-block" id="BandpassAmpVsFreqDetailChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqDetailChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsFreqDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassAmpVsFreqDetailChart</span><span class="p">(</span><span class="n">BandpassDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amp vs freq plot for each spw/antenna combination.</span>
@@ -304,7 +294,7 @@
 
 
 <div class="viewcode-block" id="BandpassPhaseVsFreqDetailChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqDetailChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassPhaseVsFreqDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassPhaseVsFreqDetailChart</span><span class="p">(</span><span class="n">BandpassDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amp vs freq plot for each spw/antenna combination.</span>
@@ -317,7 +307,7 @@
 
 
 <div class="viewcode-block" id="BandpassAmpVsUVDetailChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsUVDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsUVDetailChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsUVDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassAmpVsUVDetailChart</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ydatacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
         <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>
@@ -340,7 +330,7 @@
 
 
 <div class="viewcode-block" id="BandpassAmpVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../../_apidoc/pipeline.h.tasks.common.displays.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsTimeDetailChart.html#pipeline.h.tasks.common.displays.bandpass.BandpassAmpVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassAmpVsTimeDetailChart</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ydatacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
         <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>

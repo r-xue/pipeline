@@ -4,9 +4,16 @@ pipeline.qa.bpcal
 .. automodule:: pipeline.qa.bpcal
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       MAD
       bpcal
@@ -30,3 +37,15 @@ pipeline.qa.bpcal
       nanmedian
       rms
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

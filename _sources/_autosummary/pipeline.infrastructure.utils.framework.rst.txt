@@ -4,9 +4,16 @@ pipeline.infrastructure.utils.framework
 .. automodule:: pipeline.infrastructure.utils.framework
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       collect_properties
       contains_single_dish
@@ -26,10 +33,25 @@ pipeline.infrastructure.utils.framework
       safe_split
       task_depth
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       JobRequest
       Plot
    
+   
+
+   
+   
+   
+
+
+

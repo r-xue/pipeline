@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="RenormResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.RenormResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.RenormResults.html#pipeline.hifa.tasks.RenormResults">[docs]</a>
 <span class="k">class</span> <span class="nc">RenormResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">createcaltable</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">excludechan</span><span class="p">,</span> <span class="n">calTableCreated</span><span class="p">,</span>
                  <span class="n">stats</span><span class="p">,</span> <span class="n">rnstats</span><span class="p">,</span> <span class="n">alltdm</span><span class="p">,</span> <span class="n">atmAutoExclude</span><span class="p">,</span> <span class="n">atmWarning</span><span class="p">,</span> <span class="n">atmExcludeCmd</span><span class="p">,</span> <span class="n">bwthreshspw</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">calapps</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -177,7 +173,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">exception</span>
 
 <div class="viewcode-block" id="RenormResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.RenormResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.RenormResults.html#pipeline.hifa.tasks.RenormResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -209,7 +205,7 @@
 
 
 <div class="viewcode-block" id="RenormInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.RenormInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.RenormInputs.html#pipeline.hifa.tasks.RenormInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">RenormInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">createcaltable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
@@ -249,12 +245,12 @@
 
 
 <div class="viewcode-block" id="SerialRenorm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.SerialRenorm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.SerialRenorm.html#pipeline.hifa.tasks.SerialRenorm">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialRenorm</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">RenormInputs</span>
 
 <div class="viewcode-block" id="SerialRenorm.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.SerialRenorm.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.SerialRenorm.html#pipeline.hifa.tasks.SerialRenorm.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -300,7 +296,7 @@
 
 
 <div class="viewcode-block" id="SerialRenorm.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.SerialRenorm.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.SerialRenorm.html#pipeline.hifa.tasks.SerialRenorm.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -369,7 +365,7 @@
 
 
 <div class="viewcode-block" id="Renorm">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.renorm.html#pipeline.hifa.tasks.renorm.qa.Renorm">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Renorm.html#pipeline.hifa.tasks.Renorm">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_renorm&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Renormalize data affected by strong line emission.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Renorm</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>

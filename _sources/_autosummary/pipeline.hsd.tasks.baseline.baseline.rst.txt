@@ -4,9 +4,16 @@ pipeline.hsd.tasks.baseline.baseline
 .. automodule:: pipeline.hsd.tasks.baseline.baseline
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       deviation_mask_heuristic
       generate_ms
@@ -14,9 +21,16 @@ pipeline.hsd.tasks.baseline.baseline
       merge_reduction_group
       test_deviation_mask_heuristic
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       DataType
       DeviationMaskHeuristicsTask
@@ -27,3 +41,11 @@ pipeline.hsd.tasks.baseline.baseline
       SDBaselineInputs
       SDBaselineResults
    
+   
+
+   
+   
+   
+
+
+

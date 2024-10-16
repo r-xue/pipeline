@@ -4,15 +4,29 @@ pipeline.hsd.tasks.baselineflag.worker
 .. automodule:: pipeline.hsd.tasks.baselineflag.worker
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       open_cal_bl_tables
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BLFlagTableContainer
       DataTable
@@ -22,3 +36,11 @@ pipeline.hsd.tasks.baselineflag.worker
       SDBLFlagWorkerInputs
       SDBLFlagWorkerResults
    
+   
+
+   
+   
+   
+
+
+

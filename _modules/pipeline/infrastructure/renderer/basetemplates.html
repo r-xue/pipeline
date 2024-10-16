@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsDefaultRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsDefaultRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;t2-4m_details-generic.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;No description set for this task&#39;</span><span class="p">,</span>
@@ -165,8 +161,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">always_rerender</span> <span class="o">=</span> <span class="n">always_rerender</span>
 
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">mako_context</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                         <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
@@ -177,23 +171,16 @@
         <span class="c1"># CAS-8216: multi-ms in time order in all weblog stages</span>
         <span class="n">time_ordered</span> <span class="o">=</span> <span class="n">time_order_dicts</span><span class="p">(</span><span class="n">mako_context</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">time_ordered</span></div>
+        <span class="k">return</span> <span class="n">time_ordered</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No-op update_mako_context for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No-op update_mako_context for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsDefaultRenderer.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">display_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span>
         <span class="n">template</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_log_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -211,7 +198,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsFailedTaskRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsFailedTaskRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsFailedTaskRenderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsFailedTaskRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsFailedTaskRenderer</span><span class="p">(</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renders detailed HTML output for a failed task.</span>
@@ -222,8 +209,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsFailedTaskRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsFailedTaskRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.T2_4MDetailsFailedTaskRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 
         <span class="c1"># Collect tracebacks from all failed results in result list.</span>
@@ -233,12 +218,11 @@
         <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;tracebacks&#39;</span><span class="p">:</span> <span class="n">tracebacks</span><span class="p">,</span>
         <span class="p">})</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="time_order_dicts">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.time_order_dicts">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.time_order_dicts.html#pipeline.infrastructure.renderer.basetemplates.time_order_dicts">[docs]</a>
 <span class="k">def</span> <span class="nf">time_order_dicts</span><span class="p">(</span><span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Time-sort any MS-related entries in the Mako context dictionary.</span>
@@ -254,7 +238,7 @@
 
 
 <div class="viewcode-block" id="reorder_dicts">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.reorder_dicts">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.reorder_dicts.html#pipeline.infrastructure.renderer.basetemplates.reorder_dicts">[docs]</a>
 <span class="k">def</span> <span class="nf">reorder_dicts</span><span class="p">(</span><span class="n">order_mapping</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
     <span class="c1"># Only reorder when it makes a difference. The test is not len(d)&lt;2 as the</span>
     <span class="c1"># dict could be a single key pointing to another collection that needs</span>
@@ -291,7 +275,7 @@
 
 
 <div class="viewcode-block" id="CommonRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.CommonRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.CommonRenderer.html#pipeline.infrastructure.renderer.basetemplates.CommonRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">CommonRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span>
@@ -312,8 +296,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CommonRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.CommonRenderer.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">path_to_resources_pkg</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">path_to_js</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_resources_pkg</span><span class="p">,</span> <span class="s1">&#39;js&#39;</span><span class="p">,</span> <span class="s1">&#39;pipeline_plots.min.js&#39;</span><span class="p">)</span>
@@ -327,17 +309,11 @@
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_mako_context</span><span class="p">(</span><span class="n">mako_context</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">mako_context</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">mako_context</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CommonRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.CommonRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
 
-
-<div class="viewcode-block" id="CommonRenderer.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.CommonRenderer.get_file">[docs]</a>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No path specified for renderer&#39;</span><span class="p">)</span>
@@ -348,12 +324,11 @@
 
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="JsonPlotRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">JsonPlotRenderer</span><span class="p">(</span><span class="n">CommonRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
@@ -393,7 +368,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JsonPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Hook function that can be used by extending classes to extract extra</span>
@@ -403,8 +378,6 @@
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="JsonPlotRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.basetemplates.JsonPlotRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonPlotRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update_mako_context</span><span class="p">(</span><span class="n">mako_context</span><span class="p">)</span>
         <span class="n">well_formed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&#39;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;quot;&#39;</span><span class="p">)</span>
@@ -412,7 +385,6 @@
         <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">,</span>
                              <span class="s1">&#39;json&#39;</span><span class="p">:</span> <span class="n">well_formed</span><span class="p">,</span>
                              <span class="s1">&#39;plot_title&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">})</span></div>
-</div>
 
 </pre></div>
 

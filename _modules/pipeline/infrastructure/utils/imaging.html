@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -186,7 +182,7 @@
 
 
 <div class="viewcode-block" id="chan_selection_to_frequencies">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.imaging.chan_selection_to_frequencies.html#pipeline.infrastructure.utils.chan_selection_to_frequencies">[docs]</a>
 <span class="k">def</span> <span class="nf">chan_selection_to_frequencies</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert channel selection to frequency tuples for a given CASA cube.</span>
@@ -238,7 +234,7 @@
 
 
 <div class="viewcode-block" id="freq_selection_to_channels">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.freq_selection_to_channels">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.imaging.freq_selection_to_channels.html#pipeline.infrastructure.utils.freq_selection_to_channels">[docs]</a>
 <span class="k">def</span> <span class="nf">freq_selection_to_channels</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert frequency selection to channel tuples for a given CASA cube.</span>
@@ -303,7 +299,7 @@
 
 
 <div class="viewcode-block" id="spw_intersect">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.spw_intersect">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.spw_intersect.html#pipeline.infrastructure.utils.spw_intersect">[docs]</a>
 <span class="k">def</span> <span class="nf">spw_intersect</span><span class="p">(</span><span class="n">spw_range</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">line_regions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This utility function takes a frequency range (as numbers with arbitrary</span>
@@ -346,7 +342,7 @@
 
 
 <div class="viewcode-block" id="update_sens_dict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_sens_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.update_sens_dict.html#pipeline.infrastructure.utils.update_sens_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">update_sens_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">udct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update a sensitivity dictionary. All generic solutions</span>
@@ -380,7 +376,7 @@
 
 
 <div class="viewcode-block" id="update_beams_dict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.update_beams_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.update_beams_dict.html#pipeline.infrastructure.utils.update_beams_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">update_beams_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">udct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update a beams dictionary. All generic solutions</span>
@@ -411,7 +407,7 @@
 
 
 <div class="viewcode-block" id="set_nested_dict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.set_nested_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.set_nested_dict.html#pipeline.infrastructure.utils.set_nested_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">set_nested_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set a hierarchy of dictionaries with given keys and value</span>
@@ -437,7 +433,7 @@
 
 
 <div class="viewcode-block" id="intersect_ranges">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.intersect_ranges.html#pipeline.infrastructure.utils.intersect_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">intersect_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute intersection of ranges.</span>
@@ -467,7 +463,7 @@
 
 
 <div class="viewcode-block" id="intersect_ranges_by_weight">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.intersect_ranges_by_weight">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.intersect_ranges_by_weight.html#pipeline.infrastructure.utils.intersect_ranges_by_weight">[docs]</a>
 <span class="k">def</span> <span class="nf">intersect_ranges_by_weight</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute intersection of ranges through weight arrays and a threshold.</span>
@@ -501,7 +497,7 @@
 
 
 <div class="viewcode-block" id="merge_ranges">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.merge_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.merge_ranges.html#pipeline.infrastructure.utils.merge_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge overlapping and adjacent ranges and yield the merged ranges</span>
@@ -540,7 +536,7 @@
 
 
 <div class="viewcode-block" id="equal_to_n_digits">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.equal_to_n_digits">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.imaging.equal_to_n_digits.html#pipeline.infrastructure.utils.equal_to_n_digits">[docs]</a>
 <span class="k">def</span> <span class="nf">equal_to_n_digits</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">numdigits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Approximate equality check up to a given number of digits.</span>
@@ -562,7 +558,7 @@
 
 
 <div class="viewcode-block" id="velocity_to_frequency">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.velocity_to_frequency">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.velocity_to_frequency.html#pipeline.infrastructure.utils.velocity_to_frequency">[docs]</a>
 <span class="k">def</span> <span class="nf">velocity_to_frequency</span><span class="p">(</span><span class="n">velocity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">restfreq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert radial velocity to frequency using radio convention.</span>
@@ -588,7 +584,7 @@
 
 
 <div class="viewcode-block" id="frequency_to_velocity">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.frequency_to_velocity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.imaging.frequency_to_velocity.html#pipeline.infrastructure.utils.frequency_to_velocity">[docs]</a>
 <span class="k">def</span> <span class="nf">frequency_to_velocity</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">restfreq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert frequency to radial velocity using radio convention.</span>
@@ -614,7 +610,7 @@
 
 
 <div class="viewcode-block" id="predict_kernel">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.imaging.predict_kernel">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.predict_kernel.html#pipeline.infrastructure.utils.predict_kernel">[docs]</a>
 <span class="k">def</span> <span class="nf">predict_kernel</span><span class="p">(</span><span class="n">beam</span><span class="p">,</span> <span class="n">target_beam</span><span class="p">,</span> <span class="n">pstol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">patol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Predict the required convolution kernel to each a target restoring beam.</span>
 <span class="sd">    </span>

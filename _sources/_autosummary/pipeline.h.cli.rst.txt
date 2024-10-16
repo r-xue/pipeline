@@ -4,9 +4,16 @@ pipeline.h.cli
 .. automodule:: pipeline.h.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       h_applycal
       h_export_calstate
@@ -22,11 +29,23 @@ pipeline.h.cli
       h_tsyscal
       h_weblog
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    cli
    utils
+

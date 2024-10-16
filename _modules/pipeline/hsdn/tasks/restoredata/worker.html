@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,7 +143,7 @@
 
 
 <div class="viewcode-block" id="SDAmpCalWorkerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDAmpCalWorkerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">caltype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -163,7 +159,7 @@
 
     <span class="c1"># Convert to CASA gencal task arguments.</span>
 <div class="viewcode-block" id="SDAmpCalWorkerInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
                 <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
@@ -173,7 +169,7 @@
 
 
 <div class="viewcode-block" id="SDAmpCalWorkerResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDAmpCalWorkerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">calapp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="p">{}):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDAmpCalWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -183,7 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">factors_ok</span> <span class="o">=</span> <span class="p">(</span><span class="n">calapp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDAmpCalWorkerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorkerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid MS name passed to Result class&quot;</span><span class="p">)</span>
@@ -194,7 +190,7 @@
 
 
 <div class="viewcode-block" id="SDAmpCalWorker">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker">[docs]</a>
 <span class="k">class</span> <span class="nc">SDAmpCalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Per MS caltable creation</span>
@@ -202,7 +198,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDAmpCalWorkerInputs</span>    
 
 <div class="viewcode-block" id="SDAmpCalWorker.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
@@ -254,7 +250,7 @@
 
 
 <div class="viewcode-block" id="SDAmpCalWorker.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsdn.tasks.restoredata.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.html#pipeline.hsdn.tasks.restoredata.worker.SDAmpCalWorker.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define factors actually used and analyze if the factors are provided to all relevant data in MS.</span>

@@ -4,15 +4,29 @@ pipeline.hifa.tasks.targetflag.targetflag
 .. automodule:: pipeline.hifa.tasks.targetflag.targetflag
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       create_plots
+   
+   
+
+   
    
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AmpVsXChart
       FlagdataSetter
@@ -20,3 +34,11 @@ pipeline.hifa.tasks.targetflag.targetflag
       TargetflagInputs
       TargetflagResults
    
+   
+
+   
+   
+   
+
+
+

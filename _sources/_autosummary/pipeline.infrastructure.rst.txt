@@ -4,17 +4,31 @@ pipeline.infrastructure
 .. automodule:: pipeline.infrastructure
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       generate_detail_plots
       get_logger
       set_plot_level
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CalApplication
       CalFrom
@@ -25,10 +39,17 @@ pipeline.infrastructure
       JobRequest
       Pipeline
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    adapters
@@ -68,3 +89,4 @@ pipeline.infrastructure
    utils_test
    vdp
    version
+

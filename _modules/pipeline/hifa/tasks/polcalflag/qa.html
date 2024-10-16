@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,7 +141,7 @@
 
 
 <div class="viewcode-block" id="PolcalflagQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.qa.PolcalflagQAHandler.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for an uncontained PolcalflagResults.</span>
@@ -153,8 +149,6 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">polcalflag</span><span class="o">.</span><span class="n">PolcalflagResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="PolcalflagQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Run correctedampflag QA on correctedampflag results.</span>
         <span class="n">cafresult</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">cafresult</span>
@@ -164,12 +158,11 @@
             <span class="c1"># Gather scores, store in result.</span>
             <span class="n">scores</span> <span class="o">=</span> <span class="n">cafresult</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span>
             <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">scores</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="PolcalflagListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.qa.PolcalflagListQAHandler.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing PolcalflagResults.</span>
@@ -177,8 +170,6 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">polcalflag</span><span class="o">.</span><span class="n">PolcalflagResults</span>
 
-<div class="viewcode-block" id="PolcalflagListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcalflag.html#pipeline.hifa.tasks.polcalflag.qa.PolcalflagListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
@@ -197,7 +188,6 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to find the list of fully flagged antennas&#39;</span><span class="p">)</span>
 
         <span class="n">results</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-</div>
 
 
 </pre></div>

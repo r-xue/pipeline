@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -153,7 +149,7 @@
 
 
 <div class="viewcode-block" id="VLASubPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.renderer.VLASubPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.priorcals.renderer.VLASubPlotRenderer.html#pipeline.hifv.tasks.priorcals.renderer.VLASubPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">VLASubPlotRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># template = &#39;testdelays_plots.html&#39;</span>
 
@@ -211,28 +207,22 @@
     <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-<div class="viewcode-block" id="VLASubPlotRenderer.get_file">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.renderer.VLASubPlotRenderer.get_file">[docs]</a>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dirname</span><span class="p">)</span>
 
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="VLASubPlotRenderer.render">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.renderer.VLASubPlotRenderer.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">display_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_display_context</span><span class="p">()</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailspriorcalsRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.renderer.T2_4MDetailspriorcalsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.priorcals.renderer.T2_4MDetailspriorcalsRenderer.html#pipeline.hifv.tasks.priorcals.renderer.T2_4MDetailspriorcalsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailspriorcalsRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;priorcals.mako&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Priorcals (gaincurves, opacities, antenna positions corrections, rq gains, and switched power)&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -240,8 +230,6 @@
                                                             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
                                                             <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailspriorcalsRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.priorcals.html#pipeline.hifv.tasks.priorcals.renderer.T2_4MDetailspriorcalsRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">super_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailspriorcalsRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="n">super_cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -348,7 +336,6 @@
                     <span class="s1">&#39;tec_plotfile&#39;</span><span class="p">:</span> <span class="n">tec_plotfile</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">ctx</span></div>
-</div>
 
 </pre></div>
 

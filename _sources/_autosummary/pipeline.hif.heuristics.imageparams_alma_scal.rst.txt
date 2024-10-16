@@ -4,10 +4,30 @@ pipeline.hif.heuristics.imageparams\_alma\_scal
 .. automodule:: pipeline.hif.heuristics.imageparams_alma_scal
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ImageParamsHeuristicsALMA
       ImageParamsHeuristicsALMAScal
    
+   
+
+   
+   
+   
+
+
+

@@ -4,9 +4,16 @@ pipeline.hifa.tasks.importdata.dbfluxes
 .. automodule:: pipeline.hifa.tasks.importdata.dbfluxes
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       add_catalogue_fluxes
       buildparams
@@ -19,9 +26,22 @@ pipeline.hifa.tasks.importdata.dbfluxes
       read_fluxes_db
       sanitize_string
    
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree:
    
       ExpatError
    
+   
+
+
+

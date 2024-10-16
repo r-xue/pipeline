@@ -4,16 +4,35 @@ pipeline.hsd.tasks.baseline
 .. automodule:: pipeline.hsd.tasks.baseline
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDBaseline
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    baseline
@@ -29,3 +48,4 @@ pipeline.hsd.tasks.baseline
    typing
    validation
    worker
+

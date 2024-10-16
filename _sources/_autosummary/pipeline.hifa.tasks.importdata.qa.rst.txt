@@ -4,9 +4,16 @@ pipeline.hifa.tasks.importdata.qa
 .. automodule:: pipeline.hifa.tasks.importdata.qa
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       ous_parallactic_range
       parallactic_angle_at_epoch
@@ -15,9 +22,16 @@ pipeline.hifa.tasks.importdata.qa
       to_positive_definite
       to_signed
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ALMAImportDataListQAHandler
       ALMAImportDataQAHandler
@@ -29,3 +43,11 @@ pipeline.hifa.tasks.importdata.qa
       SignedAngle
       chain
    
+   
+
+   
+   
+   
+
+
+

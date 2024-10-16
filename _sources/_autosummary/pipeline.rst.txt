@@ -4,9 +4,16 @@
 .. automodule:: pipeline
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       find_frame
       initcli
@@ -14,17 +21,31 @@
       show_weblog
       stop_weblog
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       Pipeline
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    cli
@@ -43,3 +64,4 @@
    recipes
    runpipeline
    runvlapipeline
+

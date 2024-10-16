@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -194,7 +190,7 @@
 
 
 <div class="viewcode-block" id="MatrixFlaggerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">MatrixFlaggerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">prepend</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">skip_fully_flagged</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -227,7 +223,7 @@
 
 
 <div class="viewcode-block" id="MatrixFlaggerResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">MatrixFlaggerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">,</span>
                            <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -242,7 +238,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">viewresult</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="MatrixFlaggerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults.html#pipeline.h.tasks.common.viewflaggers.MatrixFlaggerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
@@ -254,7 +250,7 @@
 
 
 <div class="viewcode-block" id="MatrixFlagger">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlagger.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger">[docs]</a>
 <span class="k">class</span> <span class="nc">MatrixFlagger</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MatrixFlaggerInputs</span>
 
@@ -278,7 +274,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
 
 <div class="viewcode-block" id="MatrixFlagger.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlagger.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -465,13 +461,11 @@
 
 
 <div class="viewcode-block" id="MatrixFlagger.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlagger.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="MatrixFlagger.flag_view">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.flag_view">[docs]</a>
     <span class="k">def</span> <span class="nf">flag_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
         <span class="n">newflags</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">newflags_reason</span> <span class="o">=</span> <span class="p">{}</span>
@@ -485,11 +479,8 @@
             <span class="n">newflags</span> <span class="o">+=</span> <span class="n">theseflags</span>
             <span class="n">newflags_reason</span><span class="p">[</span><span class="n">description</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_flag_reason_plane</span>
 
-        <span class="k">return</span> <span class="n">newflags</span><span class="p">,</span> <span class="n">newflags_reason</span></div>
+        <span class="k">return</span> <span class="n">newflags</span><span class="p">,</span> <span class="n">newflags_reason</span>
 
-
-<div class="viewcode-block" id="MatrixFlagger.set_flags">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.set_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">set_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">summarize_before</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">summarize_after</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># Initialize flag commands.</span>
         <span class="n">allflagcmds</span> <span class="o">=</span> <span class="p">[]</span>
@@ -539,11 +530,10 @@
                 <span class="k">if</span> <span class="n">flagsetterresult</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;after&#39;</span><span class="p">:</span>
                     <span class="n">stats_after</span> <span class="o">=</span> <span class="n">flagsetterresult</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span></div>
-
+        <span class="k">return</span> <span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span>
 
 <div class="viewcode-block" id="MatrixFlagger.make_flag_rules">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.make_flag_rules">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlagger.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.make_flag_rules">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">make_flag_rules</span><span class="p">(</span>
             <span class="n">flag_hilo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fhl_limit</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">fhl_minsample</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
@@ -616,7 +606,7 @@
 
 
 <div class="viewcode-block" id="MatrixFlagger.generate_flags">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.generate_flags">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.MatrixFlagger.html#pipeline.h.tasks.common.viewflaggers.MatrixFlagger.generate_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the statistics of a matrix and flag the data according</span>
@@ -1565,7 +1555,7 @@
 
 
 <div class="viewcode-block" id="VectorFlaggerInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">VectorFlaggerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">prepend</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">use_antenna_names</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1593,7 +1583,7 @@
 
 
 <div class="viewcode-block" id="VectorFlaggerResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">VectorFlaggerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">,</span> <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1607,7 +1597,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">viewresult</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="VectorFlaggerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults.html#pipeline.h.tasks.common.viewflaggers.VectorFlaggerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
@@ -1619,7 +1609,7 @@
 
 
 <div class="viewcode-block" id="VectorFlagger">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlagger.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger">[docs]</a>
 <span class="k">class</span> <span class="nc">VectorFlagger</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">VectorFlaggerInputs</span>
 
@@ -1631,7 +1621,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
 
 <div class="viewcode-block" id="VectorFlagger.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlagger.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -1793,13 +1783,11 @@
 
 
 <div class="viewcode-block" id="VectorFlagger.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlagger.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="VectorFlagger.flag_view">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.flag_view">[docs]</a>
     <span class="k">def</span> <span class="nf">flag_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="n">newflags</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">descriptionlist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">descriptions</span><span class="p">())</span>
@@ -1808,11 +1796,8 @@
             <span class="c1"># get flags for this view according to the rules</span>
             <span class="n">newflags</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_flags</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">newflags</span></div>
+        <span class="k">return</span> <span class="n">newflags</span>
 
-
-<div class="viewcode-block" id="VectorFlagger.set_flags">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.set_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">set_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">summarize_before</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">summarize_after</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># Initialize flagging summaries</span>
         <span class="n">allflagcmds</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1862,11 +1847,10 @@
                 <span class="k">if</span> <span class="n">flagsetterresult</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;after&#39;</span><span class="p">:</span>
                     <span class="n">stats_after</span> <span class="o">=</span> <span class="n">flagsetterresult</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span></div>
-
+        <span class="k">return</span> <span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span>
 
 <div class="viewcode-block" id="VectorFlagger.make_flag_rules">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.make_flag_rules">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlagger.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.make_flag_rules">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">make_flag_rules</span><span class="p">(</span>
             <span class="n">flag_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edge_limit</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -1902,7 +1886,7 @@
 
 
 <div class="viewcode-block" id="VectorFlagger.generate_flags">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.common.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.generate_flags">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.common.viewflaggers.VectorFlagger.html#pipeline.h.tasks.common.viewflaggers.VectorFlagger.generate_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">generate_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the statistics of a vector and flag the data according</span>

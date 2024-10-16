@@ -4,16 +4,30 @@ pipeline.infrastructure.eventbus
 .. automodule:: pipeline.infrastructure.eventbus
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       send_message
       subscribe
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ContextCreatedEvent
       ContextLifecycleEvent
@@ -35,11 +49,19 @@ pipeline.infrastructure.eventbus
       WebLogStageRenderingCompleteEvent
       WebLogStageRenderingStartedEvent
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    eventbus
    events
+

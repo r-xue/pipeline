@@ -4,9 +4,16 @@ pipeline.environment
 .. automodule:: pipeline.environment
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       cluster_details
       compare_casa_version
@@ -14,9 +21,16 @@ pipeline.environment
       get_version_string_from_git
       version
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CGroupController
       CGroupControllerParser
@@ -30,9 +44,18 @@ pipeline.environment
       Path
       StringIO
    
+   
+
+   
+   
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree:
    
       PackageNotFoundError
    
+   
+
+
+

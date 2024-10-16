@@ -4,9 +4,21 @@ pipeline.hsd.heuristics
 .. automodule:: pipeline.hsd.heuristics
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AntennaDiameter
       BaselineFitParamConfig
@@ -23,10 +35,17 @@ pipeline.hsd.heuristics
       SingleDishBeamSizeFromName
       TsysSpwMapHeuristics
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    MaskDeviation
@@ -42,3 +61,4 @@ pipeline.hsd.heuristics
    sdcaltype
    sddatatype
    tsysspwmap
+

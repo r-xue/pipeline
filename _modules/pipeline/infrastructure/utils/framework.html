@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -171,7 +167,7 @@
 
 
 <div class="viewcode-block" id="task_depth">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.task_depth">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.task_depth.html#pipeline.infrastructure.utils.task_depth">[docs]</a>
 <span class="k">def</span> <span class="nf">task_depth</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the number of executing tasks currently on the stack. If the depth is</span>
@@ -186,7 +182,7 @@
 
 
 <div class="viewcode-block" id="is_top_level_task">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.is_top_level_task">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.is_top_level_task.html#pipeline.infrastructure.utils.is_top_level_task">[docs]</a>
 <span class="k">def</span> <span class="nf">is_top_level_task</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if the callee if executing as part of a top-level task.</span>
@@ -204,7 +200,7 @@
 
 
 <div class="viewcode-block" id="get_calfroms">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.get_calfroms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_calfroms.html#pipeline.infrastructure.utils.get_calfroms">[docs]</a>
 <span class="k">def</span> <span class="nf">get_calfroms</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">caltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the CalFroms of the requested type from the callibrary.</span>
@@ -238,7 +234,7 @@
 
 
 <div class="viewcode-block" id="pickle_copy">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.pickle_copy">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.pickle_copy.html#pipeline.infrastructure.utils.pickle_copy">[docs]</a>
 <span class="k">def</span> <span class="nf">pickle_copy</span><span class="p">(</span><span class="n">original</span><span class="p">):</span>
     <span class="n">stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
@@ -250,14 +246,14 @@
 
 
 <div class="viewcode-block" id="pickle_load">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.pickle_load">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.pickle_load.html#pipeline.infrastructure.utils.pickle_load">[docs]</a>
 <span class="k">def</span> <span class="nf">pickle_load</span><span class="p">(</span><span class="n">fileobj</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fileobj</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="gen_hash">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.gen_hash">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.gen_hash.html#pipeline.infrastructure.utils.gen_hash">[docs]</a>
 <span class="k">def</span> <span class="nf">gen_hash</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a hash from a dictionary, list, tuple or set to any level, that</span>
@@ -282,7 +278,7 @@
 
 
 <div class="viewcode-block" id="collect_properties">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.collect_properties">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.framework.collect_properties.html#pipeline.infrastructure.utils.collect_properties">[docs]</a>
 <span class="k">def</span> <span class="nf">collect_properties</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the public properties of an object as a dictionary</span>
@@ -312,7 +308,7 @@
 
 
 <div class="viewcode-block" id="mkdir_p">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.mkdir_p">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.mkdir_p.html#pipeline.infrastructure.utils.mkdir_p">[docs]</a>
 <span class="k">def</span> <span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emulate mkdir -p functionality.</span>
@@ -328,7 +324,7 @@
 
 
 <div class="viewcode-block" id="get_tracebacks">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.get_tracebacks">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_tracebacks.html#pipeline.infrastructure.utils.get_tracebacks">[docs]</a>
 <span class="k">def</span> <span class="nf">get_tracebacks</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the tracebacks for the result, from any failures that may have</span>
@@ -346,7 +342,7 @@
 
 
 <div class="viewcode-block" id="get_qascores">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.get_qascores">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_qascores.html#pipeline.infrastructure.utils.get_qascores">[docs]</a>
 <span class="k">def</span> <span class="nf">get_qascores</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="c1"># PIPE-2178: collect QA scores from ResultsList.</span>
@@ -366,7 +362,7 @@
 
 
 <div class="viewcode-block" id="merge_jobs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.merge_jobs">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.merge_jobs.html#pipeline.infrastructure.utils.merge_jobs">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_jobs</span><span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge jobs that are identical apart from the arguments named in</span>
@@ -429,7 +425,7 @@
 
 
 <div class="viewcode-block" id="flatten_dict">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.flatten_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.framework.flatten_dict.html#pipeline.infrastructure.utils.flatten_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">join</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">lift</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,)):</span>
     <span class="n">flag_first</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
@@ -448,7 +444,7 @@
 
 
 <div class="viewcode-block" id="get_origin_input_arg">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.get_origin_input_arg">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_origin_input_arg.html#pipeline.infrastructure.utils.get_origin_input_arg">[docs]</a>
 <span class="k">def</span> <span class="nf">get_origin_input_arg</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a single-valued task input argument from a CalApp.</span>
@@ -470,7 +466,7 @@
 
 
 <div class="viewcode-block" id="contains_single_dish">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.contains_single_dish">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.framework.contains_single_dish.html#pipeline.infrastructure.utils.contains_single_dish">[docs]</a>
 <span class="k">def</span> <span class="nf">contains_single_dish</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if the context contains single-dish data.</span>
@@ -484,7 +480,7 @@
 
 
 <div class="viewcode-block" id="plotms_iterate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.utils.html#pipeline.infrastructure.utils.framework.plotms_iterate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.plotms_iterate.html#pipeline.infrastructure.utils.plotms_iterate">[docs]</a>
 <span class="k">def</span> <span class="nf">plotms_iterate</span><span class="p">(</span>
         <span class="n">jobs_and_wrappers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">JobRequest</span><span class="p">,</span><span class="n">Plot</span><span class="p">]],</span>
         <span class="n">iteraxis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="ContFileHandler">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.contfilehandler.ContFileHandler.html#pipeline.infrastructure.contfilehandler.ContFileHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">ContFileHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">warn_nonexist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -163,8 +159,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([\d.]*)(~)([\d.]*)(\D*)&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cont_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">warn_nonexist</span><span class="o">=</span><span class="n">warn_nonexist</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ContFileHandler.read">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler.read">[docs]</a>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">warn_nonexist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -232,11 +226,8 @@
                 <span class="k">if</span> <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">fkey</span><span class="p">][</span><span class="n">skey</span><span class="p">][</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[]:</span>
                     <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">][</span><span class="n">fkey</span><span class="p">][</span><span class="n">skey</span><span class="p">][</span><span class="s1">&#39;ranges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NONE&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">cont_ranges</span></div>
+        <span class="k">return</span> <span class="n">cont_ranges</span>
 
-
-<div class="viewcode-block" id="ContFileHandler.write">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler.write">[docs]</a>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cont_ranges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -281,11 +272,10 @@
                                     <span class="k">elif</span> <span class="n">cont_ranges</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                                         <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.10f</span><span class="s1">~</span><span class="si">%.10f</span><span class="s1">GHz </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">freq_range</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">freq_range</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
                                                                     <span class="n">freq_range</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]))</span>
-                        <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
+                        <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ContFileHandler.get_merged_selection">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler.get_merged_selection">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.contfilehandler.ContFileHandler.html#pipeline.infrastructure.contfilehandler.ContFileHandler.get_merged_selection">[docs]</a>
     <span class="k">def</span> <span class="nf">get_merged_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cont_ranges</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inputs:</span>
@@ -354,8 +344,6 @@
         <span class="k">return</span> <span class="n">cont_ranges_spwsel</span><span class="p">,</span> <span class="n">all_continuum</span><span class="p">,</span> <span class="n">low_bandwidth</span><span class="p">,</span> <span class="n">low_spread</span></div>
 
 
-<div class="viewcode-block" id="ContFileHandler.to_topo">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler.to_topo">[docs]</a>
     <span class="k">def</span> <span class="nf">to_topo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">msnames</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">fields</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">spw_id</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">observing_run</span><span class="p">:</span><span class="n">Any</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ctrim</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ctrim_nchan</span><span class="p">:</span><span class="nb">int</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]:</span>
 
         <span class="n">frame_freq_selection</span><span class="p">,</span> <span class="n">refer</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -426,11 +414,8 @@
             <span class="n">topo_freq_selections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> TOPO&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.10f</span><span class="s1">~</span><span class="si">%.10f</span><span class="s1">GHz&#39;</span> <span class="o">%</span>
                                                               <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">topo_freq_selection</span><span class="p">)))</span>
 
-        <span class="k">return</span> <span class="n">topo_freq_selections</span><span class="p">,</span> <span class="n">topo_chan_selections</span><span class="p">,</span> <span class="n">aggregate_frame_bw</span></div>
+        <span class="k">return</span> <span class="n">topo_freq_selections</span><span class="p">,</span> <span class="n">topo_chan_selections</span><span class="p">,</span> <span class="n">aggregate_frame_bw</span>
 
-
-<div class="viewcode-block" id="ContFileHandler.get_cont_dat_virt_spw_id">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler.get_cont_dat_virt_spw_id">[docs]</a>
     <span class="k">def</span> <span class="nf">get_cont_dat_virt_spw_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">spw_name</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
 
         <span class="n">virt_spw_id</span> <span class="o">=</span> <span class="kc">None</span>
@@ -453,12 +438,11 @@
                 <span class="n">virt_spw_id</span> <span class="o">=</span> <span class="n">spw_id</span>
 
         <span class="k">return</span> <span class="n">virt_spw_id</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="contfile_to_spwsel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.contfile_to_spwsel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.contfilehandler.contfile_to_spwsel.html#pipeline.infrastructure.contfilehandler.contfile_to_spwsel">[docs]</a>
 <span class="k">def</span> <span class="nf">contfile_to_spwsel</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="s1">&#39;cont.dat&#39;</span><span class="p">,</span> <span class="n">use_realspw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate continuum ranges specified in contfile to frequency selection string.</span>
 
@@ -533,7 +517,7 @@
 
 
 <div class="viewcode-block" id="contfile_to_chansel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.contfile_to_chansel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.contfilehandler.contfile_to_chansel.html#pipeline.infrastructure.contfilehandler.contfile_to_chansel">[docs]</a>
 <span class="k">def</span> <span class="nf">contfile_to_chansel</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="s1">&#39;cont.dat&#39;</span><span class="p">,</span> <span class="n">excludechans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate continuum ranges specified in contfile to channel selection string.</span>
 
@@ -553,7 +537,7 @@
 
 
 <div class="viewcode-block" id="spwsel2chansel">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.spwsel2chansel">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.contfilehandler.spwsel2chansel.html#pipeline.infrastructure.contfilehandler.spwsel2chansel">[docs]</a>
 <span class="k">def</span> <span class="nf">spwsel2chansel</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">,</span> <span class="n">excludechans</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert selections of frequecy ranges to channel indexes.</span>
 

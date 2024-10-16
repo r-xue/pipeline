@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,21 +141,18 @@
 
 <span class="c1"># object compression/decopmpression utility</span>
 <div class="viewcode-block" id="CompressedObj">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.CompressedObj">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.compress.CompressedObj.html#pipeline.hsd.tasks.common.compress.CompressedObj">[docs]</a>
 <span class="k">class</span> <span class="nc">CompressedObj</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compressed</span> <span class="o">=</span> <span class="n">compress_object</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="n">compresslevel</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CompressedObj.decompress">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.CompressedObj.decompress">[docs]</a>
     <span class="k">def</span> <span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">decompress_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compressed</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="compress_object">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.compress_object">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.compress.compress_object.html#pipeline.hsd.tasks.common.compress.compress_object">[docs]</a>
 <span class="k">def</span> <span class="nf">compress_object</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
     <span class="n">size_org</span> <span class="o">=</span> <span class="n">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -176,7 +169,7 @@
 
 
 <div class="viewcode-block" id="decompress_object">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.decompress_object">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.compress.decompress_object.html#pipeline.hsd.tasks.common.compress.decompress_object">[docs]</a>
 <span class="k">def</span> <span class="nf">decompress_object</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="n">size_comp</span> <span class="o">=</span> <span class="n">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -190,7 +183,7 @@
 
 
 <div class="viewcode-block" id="CompressedIter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.CompressedIter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.compress.CompressedIter.html#pipeline.hsd.tasks.common.compress.CompressedIter">[docs]</a>
 <span class="k">class</span> <span class="nc">CompressedIter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
@@ -210,7 +203,7 @@
 
 
 <div class="viewcode-block" id="CompressedList">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.compress.CompressedList">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.compress.CompressedList.html#pipeline.hsd.tasks.common.compress.CompressedList">[docs]</a>
 <span class="k">class</span> <span class="nc">CompressedList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">CompressedIter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>

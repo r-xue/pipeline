@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -177,14 +173,12 @@
 
 
 <div class="viewcode-block" id="GcorFluxscaleQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">GcorFluxscaleQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">gcorfluxscale</span><span class="o">.</span><span class="n">GcorFluxscale</span>
 
-<div class="viewcode-block" id="GcorFluxscaleQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -198,8 +192,7 @@
 
         <span class="n">scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">score_kspw</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
 
-        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_missing_derived_fluxes</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">measurements</span><span class="p">):</span>
@@ -218,7 +211,7 @@
 
 
 <div class="viewcode-block" id="GcorFluxscaleListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">GcorFluxscaleListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing FluxCalibrationResults.</span>
@@ -227,8 +220,6 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">gcorfluxscale</span><span class="o">.</span><span class="n">GcorFluxscale</span>
 
-<div class="viewcode-block" id="GcorFluxscaleListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
@@ -238,12 +229,11 @@
         <span class="n">mses</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
         <span class="n">longmsg</span> <span class="o">=</span> <span class="s1">&#39;No missing derived fluxes in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">conjunction</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="n">longmsg</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="score_kspw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.score_kspw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.score_kspw.html#pipeline.hifa.tasks.fluxscale.qa.score_kspw">[docs]</a>
 <span class="k">def</span> <span class="nf">score_kspw</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
     <span class="c1"># Spec from CAS-10792:</span>
     <span class="c1">#</span>
@@ -638,7 +628,7 @@
 
 
 <div class="viewcode-block" id="gaincalSNR">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.gaincalSNR">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.gaincalSNR.html#pipeline.hifa.tasks.fluxscale.qa.gaincalSNR">[docs]</a>
 <span class="k">def</span> <span class="nf">gaincalSNR</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsysTable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flux</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
                <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">spws</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">required_snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
                <span class="n">edge_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.03125</span><span class="p">,</span> <span class="n">min_snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -879,7 +869,7 @@
 
 
 <div class="viewcode-block" id="compute_aggregate_bandwidth">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.compute_aggregate_bandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.compute_aggregate_bandwidth.html#pipeline.hifa.tasks.fluxscale.qa.compute_aggregate_bandwidth">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_aggregate_bandwidth</span><span class="p">(</span><span class="n">spws</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the aggregate bandwidth for a list of spws of a measurement set.</span>
@@ -908,7 +898,7 @@
 
 
 <div class="viewcode-block" id="frequency_min_max_after_aliasing">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.frequency_min_max_after_aliasing">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.frequency_min_max_after_aliasing.html#pipeline.hifa.tasks.fluxscale.qa.frequency_min_max_after_aliasing">[docs]</a>
 <span class="k">def</span> <span class="nf">frequency_min_max_after_aliasing</span><span class="p">(</span><span class="n">spw</span><span class="p">):</span>
     <span class="n">two_ghz</span> <span class="o">=</span> <span class="n">Frequency</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;TDM&#39;</span> <span class="ow">and</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">==</span> <span class="n">two_ghz</span><span class="p">:</span>
@@ -927,18 +917,13 @@
 
 
 <div class="viewcode-block" id="CaltableWrapperFactory">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">CaltableWrapperFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="CaltableWrapperFactory.from_caltable">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory.from_caltable">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_caltable</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;CaltableWrapperFactory.from_caltable(</span><span class="si">%r</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">create_param_wrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">CaltableWrapperFactory</span><span class="o">.</span><span class="n">create_param_wrapper</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="CaltableWrapperFactory.create_param_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory.create_param_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_param_wrapper</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
@@ -996,7 +981,6 @@
                 <span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">table_keywords</span><span class="p">,</span> <span class="n">column_keywords</span><span class="p">)</span></div>
-</div>
 
 
 
@@ -1012,7 +996,7 @@
 
 
 <div class="viewcode-block" id="get_dtype">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.get_dtype">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.get_dtype.html#pipeline.hifa.tasks.fluxscale.qa.get_dtype">[docs]</a>
 <span class="k">def</span> <span class="nf">get_dtype</span><span class="p">(</span><span class="n">tb</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the numpy data type for a CASA caltable column.</span>
@@ -1051,7 +1035,7 @@
 
 
 <div class="viewcode-block" id="CaltableWrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapper">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.fluxscale.qa.CaltableWrapper.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapper">[docs]</a>
 <span class="k">class</span> <span class="nc">CaltableWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">table_keywords</span><span class="p">,</span> <span class="n">column_keywords</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -1083,8 +1067,6 @@
             <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask</span>
 
-<div class="viewcode-block" id="CaltableWrapper.filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.fluxscale.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapper.filter">[docs]</a>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">mask_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1112,7 +1094,6 @@
 
         <span class="c1"># create new object for the filtered data</span>
         <span class="k">return</span> <span class="n">CaltableWrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_keywords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_keywords</span><span class="p">)</span></div>
-</div>
 
 </pre></div>
 

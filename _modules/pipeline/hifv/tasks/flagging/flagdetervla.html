@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -262,7 +258,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterVLAInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs.html#pipeline.hifv.tasks.FlagDeterVLAInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterVLAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
 
     <span class="c1"># FlagDeterVLAInputs::__init__</span>
@@ -412,7 +408,7 @@
     <span class="c1">#               Initial version.</span>
 
 <div class="viewcode-block" id="FlagDeterVLAInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAInputs.html#pipeline.hifv.tasks.FlagDeterVLAInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Initialize the arguments from the inherited</span>
@@ -448,7 +444,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterVLAResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLAResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.FlagDeterVLAResults.html#pipeline.hifv.tasks.FlagDeterVLAResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterVLAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
@@ -481,7 +477,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterVLA">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.FlagDeterVLA.html#pipeline.hifv.tasks.FlagDeterVLA">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_flagdata&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">FlagDeterVLA</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
 
@@ -491,7 +487,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterVLAInputs</span>
 
 <div class="viewcode-block" id="FlagDeterVLA.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.FlagDeterVLA.html#pipeline.hifv.tasks.FlagDeterVLA.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
@@ -834,7 +830,7 @@
         <span class="k">return</span> <span class="n">baseband_cmd</span>
 
 <div class="viewcode-block" id="FlagDeterVLA.verify_spw">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.flagdetervla.FlagDeterVLA.verify_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.FlagDeterVLA.html#pipeline.hifv.tasks.FlagDeterVLA.verify_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
         <span class="c1"># override the default verifier, adding an extra test that bypasses</span>
         <span class="c1"># flagging of TDM windows</span>

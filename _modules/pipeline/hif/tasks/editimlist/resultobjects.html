@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -137,7 +133,7 @@
 
 
 <div class="viewcode-block" id="EditimlistResult">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.html#pipeline.hif.tasks.editimlist.editimlist.EditimlistResult">[docs]</a>
 <span class="k">class</span> <span class="nc">EditimlistResult</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">EditimlistResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -147,20 +143,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">img_mode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">editmode</span> <span class="o">=</span> <span class="s1">&#39;add&#39;</span>
 
-<div class="viewcode-block" id="EditimlistResult.add_target">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.add_target">[docs]</a>
     <span class="k">def</span> <span class="nf">add_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="EditimlistResult.capture_buffer_size">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.capture_buffer_size">[docs]</a>
     <span class="k">def</span> <span class="nf">capture_buffer_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffsize</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size_arcsec</span> <span class="o">=</span> <span class="n">buffsize</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_size_arcsec</span> <span class="o">=</span> <span class="n">buffsize</span>
 
 <div class="viewcode-block" id="EditimlistResult.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.html#pipeline.hif.tasks.editimlist.editimlist.EditimlistResult.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;clean_list_pending&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">editmode</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
             <span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span> <span class="o">=</span> <span class="p">[]</span>
@@ -182,11 +172,8 @@
     <span class="k">def</span> <span class="nf">max_num_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_num_targets</span>
 
-<div class="viewcode-block" id="EditimlistResult.set_max_num_targets">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.editimlist.html#pipeline.hif.tasks.editimlist.resultobjects.EditimlistResult.set_max_num_targets">[docs]</a>
     <span class="k">def</span> <span class="nf">set_max_num_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_num_targets</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_num_targets</span> <span class="o">=</span> <span class="n">max_num_targets</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_num_targets</span> <span class="o">=</span> <span class="n">max_num_targets</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Editimlist:&#39;</span></div>

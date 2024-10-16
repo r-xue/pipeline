@@ -4,9 +4,16 @@ pipeline.hifv.heuristics
 .. automodule:: pipeline.hifv.heuristics
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       cat_to_ds9_rgn
       computeChanFlag
@@ -22,18 +29,32 @@ pipeline.hifv.heuristics
       uvrange
       weakbp
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       RflagDevHeuristic
       Standard
       VLAScanHeuristics
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    bandpass
@@ -45,3 +66,4 @@ pipeline.hifv.heuristics
    uvrange_test
    vip_helper_functions
    vlascanheuristics
+

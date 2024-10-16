@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -204,7 +200,7 @@
 
 
 <div class="viewcode-block" id="RegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractor.html#pipeline.infrastructure.renderer.regression.RegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">RegressionExtractor</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The mandatory base class for all regression test result extractors.&quot;&quot;&quot;</span>
 
@@ -217,7 +213,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="RegressionExtractor.is_handler_for">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.is_handler_for">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractor.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.is_handler_for">[docs]</a>
     <span class="k">def</span> <span class="nf">is_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Results</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if this RegressionExtractor can process the Result.</span>
@@ -249,7 +245,7 @@
 
 
 <div class="viewcode-block" id="RegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractor.html#pipeline.infrastructure.renderer.regression.RegressionExtractor.handle">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -269,7 +265,7 @@
 
 
 <div class="viewcode-block" id="RegressionExtractorRegistry">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">RegressionExtractorRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The registry and manager of the regression result extractor framework.</span>
@@ -284,7 +280,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="RegressionExtractorRegistry.add_handler">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.add_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.add_handler">[docs]</a>
     <span class="k">def</span> <span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">RegressionExtractor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Push RegressionExtractor into handlers list __handler.</span>
@@ -306,7 +302,7 @@
 
 
 <div class="viewcode-block" id="RegressionExtractorRegistry.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Results</span><span class="p">,</span> <span class="n">ResultsList</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values from corresponding Extractor object of Result object.</span>
@@ -344,7 +340,7 @@
 
 
 <div class="viewcode-block" id="union">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.union">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.union.html#pipeline.infrastructure.renderer.regression.union">[docs]</a>
 <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="n">d1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">d2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the union of two dicts.</span>
@@ -368,7 +364,7 @@
 
 
 <div class="viewcode-block" id="key_intersection">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.key_intersection">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.key_intersection.html#pipeline.infrastructure.renderer.regression.key_intersection">[docs]</a>
 <span class="k">def</span> <span class="nf">key_intersection</span><span class="p">(</span><span class="n">d1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">d2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare keys of two dicts, returning duplicate keys.</span>
@@ -389,7 +385,7 @@
 
 
 <div class="viewcode-block" id="FluxcalflagRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxcalflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifa_gfluxscaleflag.</span>
@@ -404,7 +400,7 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="FluxcalflagRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">GfluxscaleflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -439,7 +435,7 @@
 
 
 <div class="viewcode-block" id="GcorFluxscaleRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">GcorFluxscaleRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifa_gcorfluxscale.</span>
@@ -453,7 +449,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">GcorFluxscale</span>
 
 <div class="viewcode-block" id="GcorFluxscaleRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">FluxCalibrationResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -481,7 +477,7 @@
 
 
 <div class="viewcode-block" id="ApplycalRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for applycal tasks.</span>
@@ -497,7 +493,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">IFApplycal</span>
 
 <div class="viewcode-block" id="ApplycalRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">ApplycalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -540,7 +536,7 @@
 
 
 <div class="viewcode-block" id="SDApplycalRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">SDApplycalRegressionExtractor</span><span class="p">(</span><span class="n">ApplycalRegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for sd_applycal.</span>
@@ -555,7 +551,7 @@
 
 
 <div class="viewcode-block" id="VLAApplycalRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAApplycalRegressionExtractor</span><span class="p">(</span><span class="n">ApplycalRegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_applycals</span>
@@ -570,7 +566,7 @@
 
 
 <div class="viewcode-block" id="CheckflagRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">CheckflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_checkflag</span>
@@ -583,7 +579,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Checkflag</span>
 
 <div class="viewcode-block" id="CheckflagRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">CheckflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -629,7 +625,7 @@
 
 
 <div class="viewcode-block" id="TargetflagRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">TargetflagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_targetflag</span>
@@ -642,7 +638,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Targetflag</span>
 
 <div class="viewcode-block" id="TargetflagRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">TargetflagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -672,7 +668,7 @@
 
 
 <div class="viewcode-block" id="FluxbootRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxbootRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_fluxboot.</span>
@@ -688,7 +684,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Fluxboot</span>
 
 <div class="viewcode-block" id="FluxbootRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FluxbootResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -721,7 +717,7 @@
 
 
 <div class="viewcode-block" id="SolintRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">SolintRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_solint.</span>
@@ -738,7 +734,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Solint</span>
 
 <div class="viewcode-block" id="SolintRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SolintResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -764,7 +760,7 @@
 
 
 <div class="viewcode-block" id="PriorcalsRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">PriorcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_priorcals</span>
@@ -778,7 +774,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Priorcals</span>
 
 <div class="viewcode-block" id="PriorcalsRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PriorcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -803,7 +799,7 @@
 
 
 <div class="viewcode-block" id="VLASetjyRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">VLASetjyRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_vlasetjy</span>
@@ -817,7 +813,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">VLASetjy</span>
 
 <div class="viewcode-block" id="VLASetjyRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FluxCalibrationResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -842,7 +838,7 @@
 
 
 <div class="viewcode-block" id="VLAStatwtRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAStatwtRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hifv_statwt</span>
@@ -856,7 +852,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Statwt</span>
 
 <div class="viewcode-block" id="VLAStatwtRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">StatwtResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -880,7 +876,7 @@
 
 
 <div class="viewcode-block" id="VLAImportDataRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">VLAImportDataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Regression test result extractor for hifv_importdata</span>
@@ -895,7 +891,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">VLAImportData</span>
 
 <div class="viewcode-block" id="VLAImportDataRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">VLAImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -919,7 +915,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterVLARegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterVLARegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Regression test result extractor for hifv_flagdata</span>
@@ -933,7 +929,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">FlagDeterVLA</span>
 
 <div class="viewcode-block" id="FlagDeterVLARegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FlagDeterVLAResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -959,7 +955,7 @@
 
 
 <div class="viewcode-block" id="testBPdcalsRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">testBPdcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Regression test result extractor for hifv_testBPdcals</span>
@@ -973,7 +969,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">testBPdcals</span>
 
 <div class="viewcode-block" id="testBPdcalsRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">testBPdcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1000,7 +996,7 @@
 
 
 <div class="viewcode-block" id="semiFinalBPdcalsRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">semiFinalBPdcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Regression test result extractor for hifv_semiFinalBPdcals</span>
@@ -1014,7 +1010,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">semiFinalBPdcals</span>
 
 <div class="viewcode-block" id="semiFinalBPdcalsRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">semiFinalBPdcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1041,7 +1037,7 @@
 
 
 <div class="viewcode-block" id="FinalcalsRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">FinalcalsRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Regression test result extractor for hifv_finalcals</span>
@@ -1055,7 +1051,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">Finalcals</span>
 
 <div class="viewcode-block" id="FinalcalsRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">FinalcalsResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1080,7 +1076,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBLFlagRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for sd_blfrag.</span>
@@ -1095,7 +1091,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDBLFlag</span>
 
 <div class="viewcode-block" id="SDBLFlagRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDBLFlagResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1131,7 +1127,7 @@
 
 
 <div class="viewcode-block" id="SDImagingRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for sd_imaging.</span>
@@ -1145,7 +1141,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDImaging</span>
 
 <div class="viewcode-block" id="SDImagingRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDImagingResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1168,7 +1164,7 @@
 
 
 <div class="viewcode-block" id="SDRestoredataRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">SDRestoredataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for sd_restoredata.</span>
@@ -1182,7 +1178,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">SDRestoreData</span>
 
 <div class="viewcode-block" id="SDRestoredataRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">SDRestoreDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1213,7 +1209,7 @@
 
 
 <div class="viewcode-block" id="NRORestoredataRegressionExtractor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">NRORestoredataRegressionExtractor</span><span class="p">(</span><span class="n">RegressionExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regression test result extractor for hsdn_restoredata.</span>
@@ -1227,7 +1223,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">NRORestoreData</span>
 
 <div class="viewcode-block" id="NRORestoredataRegressionExtractor.handle">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NRORestoreDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract values for testing.</span>
@@ -1259,7 +1255,7 @@
 
 
 <div class="viewcode-block" id="get_prefix">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.get_prefix">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.get_prefix.html#pipeline.infrastructure.renderer.regression.get_prefix">[docs]</a>
 <span class="k">def</span> <span class="nf">get_prefix</span><span class="p">(</span><span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span><span class="n">StandardTaskTemplate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a string used to prefix string of rows of result text.</span>
@@ -1281,7 +1277,7 @@
 
 
 <div class="viewcode-block" id="extract_qa_score_regression">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.extract_qa_score_regression">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.extract_qa_score_regression.html#pipeline.infrastructure.renderer.regression.extract_qa_score_regression">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_qa_score_regression</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span><span class="n">Results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create QA strings are properties of result, and insert them to OrderedDict.</span>
@@ -1311,7 +1307,7 @@
 
 
 <div class="viewcode-block" id="extract_regression_results">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.extract_regression_results">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.extract_regression_results.html#pipeline.infrastructure.renderer.regression.extract_regression_results">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_regression_results</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract regression result and return logs.</span>
@@ -1333,7 +1329,7 @@
 
 
 <div class="viewcode-block" id="get_all_subclasses">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.regression.get_all_subclasses">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.regression.get_all_subclasses.html#pipeline.infrastructure.renderer.regression.get_all_subclasses">[docs]</a>
 <span class="k">def</span> <span class="nf">get_all_subclasses</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">RegressionExtractor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RegressionExtractor</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get all subclasses from RegressionExtractor classes tree recursively.</span>

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -239,6 +235,8 @@
 
 <span class="c1"># - utility functions --------------------------------------------------------------------------------------------------</span>
 
+<div class="viewcode-block" id="log_qa">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.log_qa.html#pipeline.qa.scorecalculator.log_qa">[docs]</a>
 <span class="k">def</span> <span class="nf">log_qa</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator that logs QA evaluations as they return with a log level of</span>
@@ -260,13 +258,16 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">_qascore</span><span class="o">.</span><span class="n">longmsg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">qascore</span>
 
-    <span class="k">return</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
 
 
 <span class="c1"># struct to hold flagging statistics</span>
 <span class="n">AgentStats</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;AgentStats&quot;</span><span class="p">,</span> <span class="s2">&quot;name flagged total&quot;</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="calc_flags_per_agent">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.calc_flags_per_agent.html#pipeline.qa.scorecalculator.calc_flags_per_agent">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_flags_per_agent</span><span class="p">(</span><span class="n">summaries</span><span class="p">,</span> <span class="n">scanids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate flagging statistics per agents. If scanids are provided,</span>
@@ -305,9 +306,12 @@
         <span class="c1"># subsequent summaries.</span>
         <span class="n">flagsum</span> <span class="o">+=</span> <span class="n">flagcount</span>
 
-    <span class="k">return</span> <span class="n">stats</span>
+    <span class="k">return</span> <span class="n">stats</span></div>
 
 
+
+<div class="viewcode-block" id="calc_frac_total_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.calc_frac_total_flagged.html#pipeline.qa.scorecalculator.calc_frac_total_flagged">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_frac_total_flagged</span><span class="p">(</span><span class="n">summaries</span><span class="p">,</span> <span class="n">agents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scanids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate total fraction of data that is flagged. If agents are provided,</span>
@@ -321,9 +325,12 @@
     <span class="n">frac_flagged</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
         <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">flagged</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">total</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">agent_stats</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">frac_flagged</span>
+    <span class="k">return</span> <span class="n">frac_flagged</span></div>
 
 
+
+<div class="viewcode-block" id="calc_vla_science_frac_total_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.calc_vla_science_frac_total_flagged.html#pipeline.qa.scorecalculator.calc_vla_science_frac_total_flagged">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_vla_science_frac_total_flagged</span><span class="p">(</span><span class="n">summaries</span><span class="p">,</span> <span class="n">agents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scanids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate total fraction of vla science data that is flagged. If agents are provided,</span>
@@ -352,9 +359,12 @@
     <span class="n">frac_flagged</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">flagged</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">total</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">science_agents</span>
                                                    <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">frac_flagged</span>
+    <span class="k">return</span> <span class="n">frac_flagged</span></div>
 
 
+
+<div class="viewcode-block" id="calc_frac_newly_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.calc_frac_newly_flagged.html#pipeline.qa.scorecalculator.calc_frac_newly_flagged">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_frac_newly_flagged</span><span class="p">(</span><span class="n">summaries</span><span class="p">,</span> <span class="n">agents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scanids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate fraction of data that is newly flagged, i.e. exclude pre-existing</span>
@@ -368,9 +378,12 @@
     <span class="n">frac_flagged</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
         <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">flagged</span><span class="p">)</span><span class="o">/</span><span class="n">s</span><span class="o">.</span><span class="n">total</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">agent_stats</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">frac_flagged</span>
+    <span class="k">return</span> <span class="n">frac_flagged</span></div>
 
 
+
+<div class="viewcode-block" id="linear_score">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.linear_score.html#pipeline.qa.scorecalculator.linear_score">[docs]</a>
 <span class="k">def</span> <span class="nf">linear_score</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the score for the given data value, assuming the</span>
@@ -386,9 +399,12 @@
     <span class="n">clipped_x</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x2</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">)</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">m</span><span class="o">*</span><span class="n">x1</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">*</span><span class="n">clipped_x</span> <span class="o">+</span> <span class="n">c</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">*</span><span class="n">clipped_x</span> <span class="o">+</span> <span class="n">c</span></div>
 
 
+
+<div class="viewcode-block" id="score_data_flagged_by_agents">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_data_flagged_by_agents.html#pipeline.qa.scorecalculator.score_data_flagged_by_agents">[docs]</a>
 <span class="k">def</span> <span class="nf">score_data_flagged_by_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">min_frac</span><span class="p">,</span> <span class="n">max_frac</span><span class="p">,</span> <span class="n">agents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a score for the agentflagger summaries based on the fraction of</span>
@@ -426,9 +442,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_vla_science_data_flagged_by_agents">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_vla_science_data_flagged_by_agents.html#pipeline.qa.scorecalculator.score_vla_science_data_flagged_by_agents">[docs]</a>
 <span class="k">def</span> <span class="nf">score_vla_science_data_flagged_by_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">min_frac</span><span class="p">,</span> <span class="n">max_frac</span><span class="p">,</span> <span class="n">agents</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a score for the agentflagger summaries based on the fraction of</span>
@@ -465,13 +484,14 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
 
 <span class="c1"># - exported scoring functions -----------------------------------------------------------------------------------------</span>
 
 
 <div class="viewcode-block" id="score_ms_model_data_column_present">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ms_model_data_column_present">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_ms_model_data_column_present.html#pipeline.qa.scorecalculator.score_ms_model_data_column_present">[docs]</a>
 <span class="k">def</span> <span class="nf">score_ms_model_data_column_present</span><span class="p">(</span><span class="n">all_mses</span><span class="p">,</span> <span class="n">mses_with_column</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Give a score for a group of mses based on the number with modeldata</span>
@@ -510,7 +530,7 @@
 
 
 <div class="viewcode-block" id="score_ms_history_entries_present">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ms_history_entries_present">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_ms_history_entries_present.html#pipeline.qa.scorecalculator.score_ms_history_entries_present">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_ms_history_entries_present</span><span class="p">(</span><span class="n">all_mses</span><span class="p">,</span> <span class="n">mses_with_history</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -555,7 +575,7 @@
 
 
 <div class="viewcode-block" id="score_observing_modes">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_observing_modes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_observing_modes.html#pipeline.qa.scorecalculator.score_observing_modes">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_observing_modes</span><span class="p">(</span><span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -622,7 +642,7 @@
 
 
 <div class="viewcode-block" id="score_bands">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_bands">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_bands.html#pipeline.qa.scorecalculator.score_bands">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_bands</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -676,6 +696,8 @@
 
 
 
+<div class="viewcode-block" id="score_parallactic_range">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_parallactic_range.html#pipeline.qa.scorecalculator.score_parallactic_range">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_parallactic_range</span><span class="p">(</span>
         <span class="n">pol_intents_present</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">coverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>
@@ -736,11 +758,12 @@
                             <span class="n">applies_to</span><span class="o">=</span><span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="p">{</span><span class="n">session_name</span><span class="p">}))</span>
         <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">scores</span>
+    <span class="k">return</span> <span class="n">scores</span></div>
+
 
 
 <div class="viewcode-block" id="score_polintents">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polintents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polintents.html#pipeline.qa.scorecalculator.score_polintents">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polintents</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -848,6 +871,8 @@
 
 
 
+<div class="viewcode-block" id="score_samecalobjects">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_samecalobjects.html#pipeline.qa.scorecalculator.score_samecalobjects">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_samecalobjects</span><span class="p">(</span><span class="n">recipe_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -888,11 +913,12 @@
 
             <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">scores</span>
+    <span class="k">return</span> <span class="n">scores</span></div>
+
 
 
 <div class="viewcode-block" id="score_missing_intents">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_intents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_missing_intents.html#pipeline.qa.scorecalculator.score_missing_intents">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_missing_intents</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">array_type</span><span class="o">=</span><span class="s1">&#39;ALMA_12m&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -963,7 +989,7 @@
 
 
 <div class="viewcode-block" id="score_ephemeris_coordinates">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_ephemeris_coordinates">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_ephemeris_coordinates.html#pipeline.qa.scorecalculator.score_ephemeris_coordinates">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_ephemeris_coordinates</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
 
@@ -1016,7 +1042,7 @@
 
 
 <div class="viewcode-block" id="score_online_shadow_template_agents">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_online_shadow_template_agents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_online_shadow_template_agents.html#pipeline.qa.scorecalculator.score_online_shadow_template_agents">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_online_shadow_template_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1037,7 +1063,7 @@
 
 
 <div class="viewcode-block" id="score_lowtrans_flagcmds">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_lowtrans_flagcmds">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_lowtrans_flagcmds.html#pipeline.qa.scorecalculator.score_lowtrans_flagcmds">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_lowtrans_flagcmds</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1085,7 +1111,7 @@
 
 
 <div class="viewcode-block" id="score_vla_agents">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_vla_agents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_vla_agents.html#pipeline.qa.scorecalculator.score_vla_agents">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_vla_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1107,7 +1133,7 @@
 
 
 <div class="viewcode-block" id="score_applycal_agents">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_applycal_agents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_applycal_agents.html#pipeline.qa.scorecalculator.score_applycal_agents">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_applycal_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1144,7 +1170,7 @@
 
 
 <div class="viewcode-block" id="score_total_data_flagged">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_total_data_flagged.html#pipeline.qa.scorecalculator.score_total_data_flagged">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_total_data_flagged</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1178,7 +1204,7 @@
 
 
 <div class="viewcode-block" id="score_total_data_flagged_vla">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_total_data_flagged_vla.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_total_data_flagged_vla</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">summaries</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1212,7 +1238,7 @@
 
 
 <div class="viewcode-block" id="score_total_data_flagged_vla_bandpass">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla_bandpass">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_total_data_flagged_vla_bandpass.html#pipeline.qa.scorecalculator.score_total_data_flagged_vla_bandpass">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_total_data_flagged_vla_bandpass</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">frac_flagged</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1243,7 +1269,7 @@
 
 
 <div class="viewcode-block" id="score_flagged_vla_baddef">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flagged_vla_baddef">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_flagged_vla_baddef.html#pipeline.qa.scorecalculator.score_flagged_vla_baddef">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_flagged_vla_baddef</span><span class="p">(</span><span class="n">amp_collection</span><span class="p">,</span> <span class="n">phase_collection</span><span class="p">,</span> <span class="n">num_antennas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1278,6 +1304,8 @@
 
 
 
+<div class="viewcode-block" id="countbaddelays">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.countbaddelays.html#pipeline.qa.scorecalculator.countbaddelays">[docs]</a>
 <span class="k">def</span> <span class="nf">countbaddelays</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">delaytable</span><span class="p">,</span> <span class="n">delaymax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
@@ -1311,11 +1339,12 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">byspw</span><span class="p">):</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">byspw</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">delaydict</span>
+    <span class="k">return</span> <span class="n">delaydict</span></div>
+
 
 
 <div class="viewcode-block" id="score_total_data_vla_delay">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_total_data_vla_delay">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_total_data_vla_delay.html#pipeline.qa.scorecalculator.score_total_data_vla_delay">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_total_data_vla_delay</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1352,7 +1381,7 @@
 
 
 <div class="viewcode-block" id="score_vla_flux_residual_rms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_vla_flux_residual_rms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_vla_flux_residual_rms.html#pipeline.qa.scorecalculator.score_vla_flux_residual_rms">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_vla_flux_residual_rms</span><span class="p">(</span><span class="n">fractional_residuals</span><span class="p">,</span> <span class="n">num_spws</span><span class="p">,</span> <span class="n">spixl</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1402,6 +1431,8 @@
 
 
 
+<div class="viewcode-block" id="score_fraction_newly_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_fraction_newly_flagged.html#pipeline.qa.scorecalculator.score_fraction_newly_flagged">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_fraction_newly_flagged</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1430,9 +1461,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data that is newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="linear_score_fraction_newly_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.linear_score_fraction_newly_flagged.html#pipeline.qa.scorecalculator.linear_score_fraction_newly_flagged">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">linear_score_fraction_newly_flagged</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1456,9 +1490,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data that is newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="linear_score_fraction_unflagged_newly_flagged_for_intent">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.linear_score_fraction_unflagged_newly_flagged_for_intent.html#pipeline.qa.scorecalculator.linear_score_fraction_unflagged_newly_flagged_for_intent">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">linear_score_fraction_unflagged_newly_flagged_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1508,11 +1545,12 @@
         <span class="n">longmsg</span> <span class="o">+=</span> <span class="s1">&#39; Please investigate!&#39;</span>
         <span class="n">shortmsg</span> <span class="o">+=</span> <span class="s1">&#39; Please investigate!&#39;</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_contiguous_session">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_contiguous_session">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_contiguous_session.html#pipeline.qa.scorecalculator.score_contiguous_session">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_contiguous_session</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1569,6 +1607,8 @@
 
 
 
+<div class="viewcode-block" id="score_wvrgcal">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_wvrgcal.html#pipeline.qa.scorecalculator.score_wvrgcal">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_wvrgcal</span><span class="p">(</span><span class="n">ms_name</span><span class="p">,</span> <span class="n">dataresult</span><span class="p">):</span>
 
@@ -1706,9 +1746,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">wvr_score</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Phase RMS improvement after applying WVR correction&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms_name</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_sdtotal_data_flagged">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sdtotal_data_flagged.html#pipeline.qa.scorecalculator.score_sdtotal_data_flagged">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sdtotal_data_flagged</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">frac_flagged</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1732,9 +1775,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_sdtotal_data_flagged_old">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sdtotal_data_flagged_old.html#pipeline.qa.scorecalculator.score_sdtotal_data_flagged_old">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sdtotal_data_flagged_old</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">frac_flagged</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1762,11 +1808,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">frac_flagged</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Fraction of data newly flagged&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_tsysspwmap">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysspwmap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_tsysspwmap.html#pipeline.qa.scorecalculator.score_tsysspwmap">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_tsysspwmap</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">unmappedspws</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1796,7 +1843,7 @@
 
 
 <div class="viewcode-block" id="score_setjy_measurements">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_setjy_measurements">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_setjy_measurements.html#pipeline.qa.scorecalculator.score_setjy_measurements">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_setjy_measurements</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">reqfields</span><span class="p">,</span> <span class="n">reqintents</span><span class="p">,</span> <span class="n">reqspws</span><span class="p">,</span> <span class="n">measurements</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1853,7 +1900,7 @@
 
 
 <div class="viewcode-block" id="score_number_antenna_offsets">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_number_antenna_offsets">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_number_antenna_offsets.html#pipeline.qa.scorecalculator.score_number_antenna_offsets">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_number_antenna_offsets</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">offsets</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1883,7 +1930,7 @@
 
 
 <div class="viewcode-block" id="score_missing_derived_fluxes">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_derived_fluxes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_missing_derived_fluxes.html#pipeline.qa.scorecalculator.score_missing_derived_fluxes">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_missing_derived_fluxes</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">reqfields</span><span class="p">,</span> <span class="n">reqintents</span><span class="p">,</span> <span class="n">measurements</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1944,7 +1991,7 @@
 
 
 <div class="viewcode-block" id="score_refspw_mapping_fraction">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_refspw_mapping_fraction">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_refspw_mapping_fraction.html#pipeline.qa.scorecalculator.score_refspw_mapping_fraction">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_refspw_mapping_fraction</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">ref_spwmap</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1987,6 +2034,8 @@
 
 
 
+<div class="viewcode-block" id="score_combine_spwmapping">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_combine_spwmapping.html#pipeline.qa.scorecalculator.score_combine_spwmapping">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_combine_spwmapping</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spwmapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2009,9 +2058,12 @@
 
     <span class="n">applies_to</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="n">intent</span><span class="p">},</span> <span class="n">field</span><span class="o">=</span><span class="p">{</span><span class="n">field</span><span class="p">})</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">applies_to</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">applies_to</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_phaseup_mapping_fraction">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_phaseup_mapping_fraction.html#pipeline.qa.scorecalculator.score_phaseup_mapping_fraction">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_phaseup_mapping_fraction</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spwmapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2064,11 +2116,12 @@
 
     <span class="n">applies_to</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">TargetDataSelection</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">},</span> <span class="n">intent</span><span class="o">=</span><span class="p">{</span><span class="n">intent</span><span class="p">},</span> <span class="n">field</span><span class="o">=</span><span class="p">{</span><span class="n">field</span><span class="p">})</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">applies_to</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">applies_to</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_phaseup_spw_median_snr_for_phase">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_phase">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_phase.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_phase">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_phaseup_spw_median_snr_for_phase</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">median_snr</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2107,7 +2160,7 @@
 
 
 <div class="viewcode-block" id="score_decoherence_assessment">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_decoherence_assessment">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_decoherence_assessment.html#pipeline.qa.scorecalculator.score_decoherence_assessment">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_decoherence_assessment</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">phaserms_results</span><span class="p">,</span> <span class="n">outlier_antennas</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2211,7 +2264,7 @@
 
 
 <div class="viewcode-block" id="score_phaseup_spw_median_snr_for_check">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_check">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_check.html#pipeline.qa.scorecalculator.score_phaseup_spw_median_snr_for_check">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_phaseup_spw_median_snr_for_check</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">median_snr</span><span class="p">,</span> <span class="n">snr_threshold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2250,7 +2303,7 @@
 
 
 <div class="viewcode-block" id="score_missing_phaseup_snrs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_phaseup_snrs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_missing_phaseup_snrs.html#pipeline.qa.scorecalculator.score_missing_phaseup_snrs">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_missing_phaseup_snrs</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">phsolints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2289,7 +2342,7 @@
 
 
 <div class="viewcode-block" id="score_poor_phaseup_solutions">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_phaseup_solutions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_poor_phaseup_solutions.html#pipeline.qa.scorecalculator.score_poor_phaseup_solutions">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_poor_phaseup_solutions</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">nphsolutions</span><span class="p">,</span> <span class="n">min_nsolutions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2330,7 +2383,7 @@
 
 
 <div class="viewcode-block" id="score_missing_bandpass_snrs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_bandpass_snrs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_missing_bandpass_snrs.html#pipeline.qa.scorecalculator.score_missing_bandpass_snrs">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_missing_bandpass_snrs</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">bpsolints</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2368,7 +2421,7 @@
 
 
 <div class="viewcode-block" id="score_poor_bandpass_solutions">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_bandpass_solutions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_poor_bandpass_solutions.html#pipeline.qa.scorecalculator.score_poor_bandpass_solutions">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_poor_bandpass_solutions</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">nbpsolutions</span><span class="p">,</span> <span class="n">min_nsolutions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2406,7 +2459,7 @@
 
 
 <div class="viewcode-block" id="score_missing_phase_snrs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_missing_phase_snrs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_missing_phase_snrs.html#pipeline.qa.scorecalculator.score_missing_phase_snrs">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_missing_phase_snrs</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">snrs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2442,7 +2495,7 @@
 
 
 <div class="viewcode-block" id="score_poor_phase_snrs">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_poor_phase_snrs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_poor_phase_snrs.html#pipeline.qa.scorecalculator.score_poor_phase_snrs">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_poor_phase_snrs</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">,</span> <span class="n">minsnr</span><span class="p">,</span> <span class="n">snrs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2483,7 +2536,7 @@
 
 
 <div class="viewcode-block" id="score_derived_fluxes_snr">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_derived_fluxes_snr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_derived_fluxes_snr.html#pipeline.qa.scorecalculator.score_derived_fluxes_snr">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_derived_fluxes_snr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">measurements</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2552,7 +2605,7 @@
 
 
 <div class="viewcode-block" id="score_path_exists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_path_exists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_path_exists.html#pipeline.qa.scorecalculator.score_path_exists">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_path_exists</span><span class="p">(</span><span class="n">mspath</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">pathtype</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2578,7 +2631,7 @@
 
 
 <div class="viewcode-block" id="score_file_exists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_file_exists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_file_exists.html#pipeline.qa.scorecalculator.score_file_exists">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_file_exists</span><span class="p">(</span><span class="n">filedir</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filetype</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2616,7 +2669,7 @@
 
 
 <div class="viewcode-block" id="score_mses_exist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_mses_exist">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_mses_exist.html#pipeline.qa.scorecalculator.score_mses_exist">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_mses_exist</span><span class="p">(</span><span class="n">filedir</span><span class="p">,</span> <span class="n">visdict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2659,7 +2712,7 @@
 
 
 <div class="viewcode-block" id="score_flags_exist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flags_exist">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_flags_exist.html#pipeline.qa.scorecalculator.score_flags_exist">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_flags_exist</span><span class="p">(</span><span class="n">filedir</span><span class="p">,</span> <span class="n">visdict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2701,7 +2754,7 @@
 
 
 <div class="viewcode-block" id="score_flagging_view_exists">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_flagging_view_exists">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_flagging_view_exists.html#pipeline.qa.scorecalculator.score_flagging_view_exists">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_flagging_view_exists</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2747,7 +2800,7 @@
 
 
 <div class="viewcode-block" id="score_applycmds_exist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_applycmds_exist">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_applycmds_exist.html#pipeline.qa.scorecalculator.score_applycmds_exist">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_applycmds_exist</span><span class="p">(</span><span class="n">filedir</span><span class="p">,</span> <span class="n">visdict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2789,7 +2842,7 @@
 
 
 <div class="viewcode-block" id="score_caltables_exist">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_caltables_exist">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_caltables_exist.html#pipeline.qa.scorecalculator.score_caltables_exist">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_caltables_exist</span><span class="p">(</span><span class="n">filedir</span><span class="p">,</span> <span class="n">sessiondict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2830,6 +2883,8 @@
 
 
 
+<div class="viewcode-block" id="score_images_exist">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_images_exist.html#pipeline.qa.scorecalculator.score_images_exist">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_images_exist</span><span class="p">(</span><span class="n">filesdir</span><span class="p">,</span> <span class="n">imaging_products_only</span><span class="p">,</span> <span class="n">calimages</span><span class="p">,</span> <span class="n">targetimages</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">imaging_products_only</span><span class="p">:</span>
@@ -2859,9 +2914,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Number of exported images&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="get_line_ranges">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.get_line_ranges.html#pipeline.qa.scorecalculator.get_line_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">get_line_ranges</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get valid line ranges from list of line properties.</span>
 
@@ -2881,9 +2939,12 @@
             <span class="n">chan_right</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">center</span> <span class="o">+</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
             <span class="n">line_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chan_left</span><span class="p">,</span> <span class="n">chan_right</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">line_ranges</span>
+    <span class="k">return</span> <span class="n">line_ranges</span></div>
 
 
+
+<div class="viewcode-block" id="examine_sd_edge_lines">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.examine_sd_edge_lines.html#pipeline.qa.scorecalculator.examine_sd_edge_lines">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">examine_sd_edge_lines</span><span class="p">(</span><span class="n">line_ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Examine the existence of lines at edge channels.</span>
@@ -2906,9 +2967,12 @@
         <span class="s1">&#39;leftmost </span><span class="si">%s</span><span class="s1">, rightmost </span><span class="si">%s</span><span class="s1">, nchan </span><span class="si">%s</span><span class="s1">, edge (</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span>
         <span class="n">chan_leftmost</span><span class="p">,</span> <span class="n">chan_rightmost</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">chan_leftmost</span> <span class="o">&lt;=</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">chan_rightmost</span>
+    <span class="k">return</span> <span class="n">chan_leftmost</span> <span class="o">&lt;=</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">chan_rightmost</span></div>
 
 
+
+<div class="viewcode-block" id="examine_sd_wide_lines">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.examine_sd_wide_lines.html#pipeline.qa.scorecalculator.examine_sd_wide_lines">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">examine_sd_wide_lines</span><span class="p">(</span><span class="n">line_ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Examine the existence of wide lines.</span>
@@ -2943,9 +3007,12 @@
     <span class="n">effective_nchan</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
     <span class="n">line_coverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">line_coverage</span> <span class="o">&gt;</span> <span class="n">effective_nchan</span> <span class="o">*</span> <span class="n">fraction</span>
+    <span class="k">return</span> <span class="n">line_coverage</span> <span class="o">&gt;</span> <span class="n">effective_nchan</span> <span class="o">*</span> <span class="n">fraction</span></div>
 
 
+
+<div class="viewcode-block" id="select_deviation_masks">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.select_deviation_masks.html#pipeline.qa.scorecalculator.select_deviation_masks">[docs]</a>
 <span class="k">def</span> <span class="nf">select_deviation_masks</span><span class="p">(</span><span class="n">deviation_masks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">reduction_group_member</span><span class="p">:</span> <span class="s1">&#39;MSReductionGroupMember&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select deviation masks that belongs to given reduction group member.</span>
 
@@ -2960,9 +3027,12 @@
     <span class="n">field_id</span> <span class="o">=</span> <span class="n">reduction_group_member</span><span class="o">.</span><span class="n">field_id</span>
     <span class="n">spw_id</span> <span class="o">=</span> <span class="n">reduction_group_member</span><span class="o">.</span><span class="n">spw_id</span>
     <span class="n">antenna_id</span> <span class="o">=</span> <span class="n">reduction_group_member</span><span class="o">.</span><span class="n">antenna_id</span>
-    <span class="k">return</span> <span class="n">deviation_masks</span><span class="p">[</span><span class="n">ms_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">),</span> <span class="p">[])</span>
+    <span class="k">return</span> <span class="n">deviation_masks</span><span class="p">[</span><span class="n">ms_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">),</span> <span class="p">[])</span></div>
 
 
+
+<div class="viewcode-block" id="channel_ranges_for_image">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.channel_ranges_for_image.html#pipeline.qa.scorecalculator.channel_ranges_for_image">[docs]</a>
 <span class="k">def</span> <span class="nf">channel_ranges_for_image</span><span class="p">(</span><span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sideband</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert channel ranges in MS coordinate to those in image coordinate.</span>
 
@@ -3005,9 +3075,12 @@
 
     <span class="n">_ranges_image</span> <span class="o">=</span> <span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_offset_range</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_ranges_image</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_ranges_image</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">_ranges_image</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_sd_line_detection">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sd_line_detection.html#pipeline.qa.scorecalculator.score_sd_line_detection">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sd_line_detection</span><span class="p">(</span><span class="n">reduction_group</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDBaselineResults&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute QA score based on the line detection result.</span>
@@ -3197,10 +3270,13 @@
                 <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">line_detection_scores</span> <span class="o">+</span> <span class="n">deviation_mask_scores</span>
+    <span class="k">return</span> <span class="n">line_detection_scores</span> <span class="o">+</span> <span class="n">deviation_mask_scores</span></div>
 
 
 
+
+<div class="viewcode-block" id="score_sd_baseline_quality">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sd_baseline_quality.html#pipeline.qa.scorecalculator.score_sd_baseline_quality">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sd_baseline_quality</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vspw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                               <span class="n">pol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stat</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
@@ -3245,11 +3321,12 @@
                           <span class="n">metric_score</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">stat</span><span class="p">),</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;Statistics of binned spectra&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">final_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">final_score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_checksources">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_checksources">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_checksources.html#pipeline.qa.scorecalculator.score_checksources">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_checksources</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">rms</span><span class="p">,</span> <span class="n">gfluxscale</span><span class="p">,</span> <span class="n">gfluxscale_err</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3448,7 +3525,7 @@
 
 
 <div class="viewcode-block" id="score_multiply">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_multiply">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_multiply.html#pipeline.qa.scorecalculator.score_multiply">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_multiply</span><span class="p">(</span><span class="n">scores_list</span><span class="p">):</span>
     <span class="n">score</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="n">scores_list</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -3462,6 +3539,8 @@
 
 
 
+<div class="viewcode-block" id="score_sd_skycal_elevation_difference">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sd_skycal_elevation_difference.html#pipeline.qa.scorecalculator.score_sd_skycal_elevation_difference">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sd_skycal_elevation_difference</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">resultdict</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3532,9 +3611,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shortmsg</span> <span class="o">=</span> <span class="s1">&#39;Elevation difference between ON and OFF is below </span><span class="si">{}</span><span class="s1">deg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el_threshold</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="generate_metric_mask">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.generate_metric_mask.html#pipeline.qa.scorecalculator.generate_metric_mask">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_metric_mask</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate boolean mask array for metric calculation in</span>
@@ -3679,9 +3761,12 @@
     <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;edge channels: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">edge_channels</span><span class="p">))</span>
     <span class="n">metric_mask</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">edge_channels</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">return</span> <span class="n">metric_mask</span>
+    <span class="k">return</span> <span class="n">metric_mask</span></div>
 
 
+
+<div class="viewcode-block" id="direction_recover">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.direction_recover.html#pipeline.qa.scorecalculator.direction_recover">[docs]</a>
 <span class="k">def</span> <span class="nf">direction_recover</span><span class="p">(</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">org_direction</span> <span class="p">):</span>
     <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
     <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
@@ -3695,9 +3780,12 @@
     <span class="n">new_ra</span>  <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">new_direction</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span> <span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
     <span class="n">new_dec</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span> <span class="n">new_direction</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span> <span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">new_ra</span><span class="p">,</span> <span class="n">new_dec</span>
+    <span class="k">return</span> <span class="n">new_ra</span><span class="p">,</span> <span class="n">new_dec</span></div>
 
 
+
+<div class="viewcode-block" id="score_sdimage_masked_pixels">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sdimage_masked_pixels.html#pipeline.qa.scorecalculator.score_sdimage_masked_pixels">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sdimage_masked_pixels</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3812,9 +3900,12 @@
     <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span>
                        <span class="n">longmsg</span><span class="o">=</span><span class="n">lmsg</span><span class="p">,</span>
                        <span class="n">shortmsg</span><span class="o">=</span><span class="n">smsg</span><span class="p">,</span>
-                       <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+                       <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_sdimage_contamination">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_sdimage_contamination.html#pipeline.qa.scorecalculator.score_sdimage_contamination">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_sdimage_contamination</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDImagingResultItem&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate QA score based on the absorption feature in the image.</span>
@@ -3864,11 +3955,12 @@
                        <span class="n">longmsg</span><span class="o">=</span><span class="n">lmsg</span><span class="p">,</span>
                        <span class="n">shortmsg</span><span class="o">=</span><span class="n">smsg</span><span class="p">,</span>
                        <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
-                       <span class="n">applies_to</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+                       <span class="n">applies_to</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_gfluxscale_k_spw">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_gfluxscale_k_spw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_gfluxscale_k_spw.html#pipeline.qa.scorecalculator.score_gfluxscale_k_spw">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_gfluxscale_k_spw</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">k_spw</span><span class="p">,</span> <span class="n">ref_spw</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Convert internal spw_id-spw_id consistency ratio to a QA score.</span>
@@ -3916,7 +4008,7 @@
 
 
 <div class="viewcode-block" id="score_science_spw_names">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_science_spw_names">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_science_spw_names.html#pipeline.qa.scorecalculator.score_science_spw_names">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_science_spw_names</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">virtual_science_spw_names</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3952,7 +4044,7 @@
 
 
 <div class="viewcode-block" id="score_renorm">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_renorm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_renorm.html#pipeline.qa.scorecalculator.score_renorm">[docs]</a>
 <span class="k">def</span> <span class="nf">score_renorm</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">renorm_applied</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Restore successful with renormalization applied&#39;</span>
@@ -3969,7 +4061,7 @@
 
 
 <div class="viewcode-block" id="score_polcal_gain_ratio">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polcal_gain_ratio.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polcal_gain_ratio</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ant_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">xyratio_result</span><span class="p">:</span> <span class="n">GaincalResults</span><span class="p">,</span>
                             <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
@@ -4029,7 +4121,7 @@
 
 
 <div class="viewcode-block" id="score_polcal_gain_ratio_rms">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio_rms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polcal_gain_ratio_rms.html#pipeline.qa.scorecalculator.score_polcal_gain_ratio_rms">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polcal_gain_ratio_rms</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gain_ratio_rms</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">],</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
@@ -4072,7 +4164,7 @@
 
 
 <div class="viewcode-block" id="score_polcal_leakage">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_leakage">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polcal_leakage.html#pipeline.qa.scorecalculator.score_polcal_leakage">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polcal_leakage</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ant_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">leakage_result</span><span class="p">:</span> <span class="n">PolcalWorkerResults</span><span class="p">,</span> <span class="n">th_poor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.10</span><span class="p">,</span>
                          <span class="n">th_bad</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
@@ -4169,7 +4261,7 @@
 
 
 <div class="viewcode-block" id="score_polcal_residual_pol">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_residual_pol">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polcal_residual_pol.html#pipeline.qa.scorecalculator.score_polcal_residual_pol">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polcal_residual_pol</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pfg_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4221,7 +4313,7 @@
 
 
 <div class="viewcode-block" id="score_polcal_results">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_polcal_results">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_polcal_results.html#pipeline.qa.scorecalculator.score_polcal_results">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_polcal_results</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">caltables</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4252,7 +4344,7 @@
 
 
 <div class="viewcode-block" id="score_fluxservice">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_fluxservice">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_fluxservice.html#pipeline.qa.scorecalculator.score_fluxservice">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_fluxservice</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4325,6 +4417,8 @@
 
 
 
+<div class="viewcode-block" id="score_fluxservicemessages">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_fluxservicemessages.html#pipeline.qa.scorecalculator.score_fluxservicemessages">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_fluxservicemessages</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4352,9 +4446,12 @@
     <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;score_fluxservice_messaging&#39;</span><span class="p">,</span>
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;flux service messaging&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">longmsg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">shortmsg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_fluxservicestatuscodes">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_fluxservicestatuscodes.html#pipeline.qa.scorecalculator.score_fluxservicestatuscodes">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_fluxservicestatuscodes</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4377,9 +4474,12 @@
     <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;score_fluxservice_statuscode&#39;</span><span class="p">,</span>
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;flux service status code&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_fluxcsv">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_fluxcsv.html#pipeline.qa.scorecalculator.score_fluxcsv">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_fluxcsv</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4396,11 +4496,12 @@
     <span class="n">origin</span> <span class="o">=</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAOrigin</span><span class="p">(</span><span class="n">metric_name</span><span class="o">=</span><span class="s1">&#39;score_fluxcsv&#39;</span><span class="p">,</span>
                           <span class="n">metric_score</span><span class="o">=</span><span class="n">score</span><span class="p">,</span>
                           <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;flux csv&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="score_mom8_fc_image">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_mom8_fc_image">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_mom8_fc_image.html#pipeline.qa.scorecalculator.score_mom8_fc_image">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_mom8_fc_image</span><span class="p">(</span><span class="n">mom8_fc_name</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="p">,</span> <span class="n">mom8_10_fc_histogram_asymmetry</span><span class="p">,</span> <span class="n">mom8_fc_max_segment_beams</span><span class="p">,</span> <span class="n">mom8_fc_frac_max_segment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4449,6 +4550,8 @@
 
 
 
+<div class="viewcode-block" id="score_rasterscan_correctness_direction_domain_rasterscan_fail">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_rasterscan_correctness_direction_domain_rasterscan_fail.html#pipeline.qa.scorecalculator.score_rasterscan_correctness_direction_domain_rasterscan_fail">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_rasterscan_correctness_direction_domain_rasterscan_fail</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">SDImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.</span>
@@ -4460,9 +4563,12 @@
 <span class="sd">        List[pqa.QAScore]: list of QAScores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Direction-domain raster scan analysis failed, fallback to time-domain analysis&#39;</span>
-    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_direction</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_direction</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_rasterscan_correctness_time_domain_rasterscan_fail">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_rasterscan_correctness_time_domain_rasterscan_fail.html#pipeline.qa.scorecalculator.score_rasterscan_correctness_time_domain_rasterscan_fail">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_rasterscan_correctness_time_domain_rasterscan_fail</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">SDImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.</span>
@@ -4474,9 +4580,12 @@
 <span class="sd">        List[pqa.QAScore]: list of QAScores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration&#39;</span>
-    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_time</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_time</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_rasterscan_correctness_imaging_raster_gap">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_rasterscan_correctness_imaging_raster_gap.html#pipeline.qa.scorecalculator.score_rasterscan_correctness_imaging_raster_gap">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_rasterscan_correctness_imaging_raster_gap</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">SDImagingResultItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate QAScore of gap existence in raster pattern of imaging.</span>
@@ -4488,9 +4597,12 @@
 <span class="sd">        List[pqa.QAScore]: list of QAScores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Unable to identify gap between raster map iteration&#39;</span>
-    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_rgap</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_rgap</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="score_rasterscan_correctness_imaging_raster_analysis_incomplete">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_rasterscan_correctness_imaging_raster_analysis_incomplete.html#pipeline.qa.scorecalculator.score_rasterscan_correctness_imaging_raster_analysis_incomplete">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_rasterscan_correctness_imaging_raster_analysis_incomplete</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">SDImagingResultItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate QAScore when raster scan analysis was incomplete in imaging.</span>
@@ -4502,7 +4614,8 @@
 <span class="sd">        List[pqa.QAScore]: list of QAScores</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Raster scan analysis incomplete. Skipping calculation of theoretical image RMS&#39;</span>
-    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_incomp</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_incomp</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_score_rasterscan_correctness</span><span class="p">(</span><span class="n">rasterscan_heuristics_results</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RasterScanHeuristicsResult</span><span class="p">],</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
@@ -4549,7 +4662,7 @@
 
 
 <div class="viewcode-block" id="score_tsysflagcontamination_contamination_flagged">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_contamination_flagged">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_tsysflagcontamination_contamination_flagged.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_contamination_flagged">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_tsysflagcontamination_contamination_flagged</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">summaries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4585,7 +4698,7 @@
 
 
 <div class="viewcode-block" id="score_tsysflagcontamination_external_heuristic">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_external_heuristic">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_tsysflagcontamination_external_heuristic.html#pipeline.qa.scorecalculator.score_tsysflagcontamination_external_heuristic">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_tsysflagcontamination_external_heuristic</span><span class="p">(</span><span class="n">foreign_qascores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4616,7 +4729,7 @@
 
 
 <div class="viewcode-block" id="score_iersstate">
-<a class="viewcode-back" href="../../../_apidoc/pipeline.qa.html#pipeline.qa.scorecalculator.score_iersstate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.qa.scorecalculator.score_iersstate.html#pipeline.qa.scorecalculator.score_iersstate">[docs]</a>
 <span class="nd">@log_qa</span>
 <span class="k">def</span> <span class="nf">score_iersstate</span><span class="p">(</span><span class="n">mses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">domain</span><span class="o">.</span><span class="n">MeasurementSet</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

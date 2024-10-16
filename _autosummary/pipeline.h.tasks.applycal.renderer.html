@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.h.tasks.applycal.renderer.copy_callibrary" href="pipeline.h.tasks.applycal.renderer.copy_callibrary.html" />
+    <link rel="prev" title="pipeline.h.tasks.applycal.qa.ApplycalQAHandler" href="pipeline.h.tasks.applycal.qa.ApplycalQAHandler.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.html">pipeline.h</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.h.tasks.applycal.html">pipeline.h.tasks.applycal</a></li>
       <li class="breadcrumb-item active">pipeline.h.tasks.applycal.renderer</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.h.tasks.applycal.renderer.rst.txt" rel="nofollow"> View page source</a>
@@ -139,13 +142,13 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.copy_callibrary" title="pipeline.h.tasks.applycal.renderer.copy_callibrary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_callibrary</span></code></a>(results, report_dir)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.copy_callibrary.html#pipeline.h.tasks.applycal.renderer.copy_callibrary" title="pipeline.h.tasks.applycal.renderer.copy_callibrary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_callibrary</span></code></a></p></td>
 <td><p>Copy callibrary files across to the weblog stage directory, returning a Dict mapping MS name to the callibrary location on disk.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.deduplicate" title="pipeline.h.tasks.applycal.renderer.deduplicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deduplicate</span></code></a>(context, all_plots)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.deduplicate.html#pipeline.h.tasks.applycal.renderer.deduplicate" title="pipeline.h.tasks.applycal.renderer.deduplicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deduplicate</span></code></a></p></td>
 <td><p>Process a dict mapping vis to plots, deduplicating the plot list for each MS.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.get_brightest_field" title="pipeline.h.tasks.applycal.renderer.get_brightest_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_brightest_field</span></code></a>(ms, source[, intent])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.get_brightest_field.html#pipeline.h.tasks.applycal.renderer.get_brightest_field" title="pipeline.h.tasks.applycal.renderer.get_brightest_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_brightest_field</span></code></a></p></td>
 <td><p>Analyse all fields associated with a source, identifying the brightest field as the field with highest median flux averaged over all spws.</p></td>
 </tr>
 </tbody>
@@ -153,55 +156,55 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPerAntSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPerAntSciencePlotRenderer</span></code></a></p></td>
 <td><p>Class to render 'per antenna' Amp vs Freq plots for applycal</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqPlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqSciencePlotRenderer</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsFreqSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsFreqSciencePlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsTimePlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsTimePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsTimePlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsUVPlotRenderer</span></code></a>(context, result, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsUVPlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsUVSciencePlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalAmpVsUVSciencePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalAmpVsUVSciencePlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsFreqPlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsFreqPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsFreqPlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsTimePlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsTimePlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsTimePlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsUVPlotRenderer</span></code></a>(context, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer.html#pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer" title="pipeline.h.tasks.applycal.renderer.ApplycalPhaseVsUVPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalPhaseVsUVPlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalResults</span></code>([applied, callib_map, data_type])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ApplycalResults.html#pipeline.h.tasks.applycal.renderer.ApplycalResults" title="pipeline.h.tasks.applycal.renderer.ApplycalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalResults</span></code></a></p></td>
 <td><p>ApplycalResults is the results class for the pipeline Applycal task.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code>([name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.Context.html#pipeline.h.tasks.applycal.renderer.Context" title="pipeline.h.tasks.applycal.renderer.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
 <td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">JsonPlotRenderer</span></code>(uri, context, result, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.JsonPlotRenderer.html#pipeline.h.tasks.applycal.renderer.JsonPlotRenderer" title="pipeline.h.tasks.applycal.renderer.JsonPlotRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JsonPlotRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code>(name[, session])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.MeasurementSet.html#pipeline.h.tasks.applycal.renderer.MeasurementSet" title="pipeline.h.tasks.applycal.renderer.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
 <td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code>(filename[, x_axis, y_axis, field, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.Plot.html#pipeline.h.tasks.applycal.renderer.Plot" title="pipeline.h.tasks.applycal.renderer.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code>([results])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ResultsList.html#pipeline.h.tasks.applycal.renderer.ResultsList" title="pipeline.h.tasks.applycal.renderer.ResultsList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.h.tasks.applycal.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer" title="pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer</span></code></a>([uri, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer.html#pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer" title="pipeline.h.tasks.applycal.renderer.T2_4MDetailsApplycalRenderer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T2_4MDetailsApplycalRenderer</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UVChart</span></code>(context, ms[, customflagged, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.UVChart.html#pipeline.h.tasks.applycal.renderer.UVChart" title="pipeline.h.tasks.applycal.renderer.UVChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UVChart</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -211,7 +214,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.h.tasks.applycal.qa.ApplycalQAHandler.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.applycal.qa.ApplycalQAHandler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.tasks.applycal.renderer.copy_callibrary.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.applycal.renderer.copy_callibrary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

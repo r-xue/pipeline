@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="syspowerBoxChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.syspower.display.syspowerBoxChart.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart">[docs]</a>
 <span class="k">class</span> <span class="nc">syspowerBoxChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">dat_common</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -160,15 +156,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
         <span class="c1"># results[4].read()[0].rq_result[0].final[0].gaintable</span>
 
-<div class="viewcode-block" id="syspowerBoxChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;syspower_box&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="syspowerBoxChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -191,18 +182,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">clip_sp_template</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Template Pdiff   </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Antenna&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="syspowerBoxChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-box.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-box.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="syspowerBoxChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBoxChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -223,12 +208,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="syspowerBarChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.syspower.display.syspowerBarChart.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart">[docs]</a>
 <span class="k">class</span> <span class="nc">syspowerBarChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span>  <span class="n">dat_common</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -239,15 +223,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
         <span class="c1"># results[4].read()[0].rq_result[0].final[0].gaintable</span>
 
-<div class="viewcode-block" id="syspowerBarChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;syspower_bar&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="syspowerBarChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -272,18 +251,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Fraction of Flagged Solutions (%)     </span><span class="si">{!s}</span><span class="s1">-band&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Antenna&#39;</span><span class="p">)</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="syspowerBarChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-bar.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-bar.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="syspowerBarChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerBarChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -304,12 +277,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="compressionSummary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.syspower.display.compressionSummary.html#pipeline.hifv.tasks.syspower.display.compressionSummary">[docs]</a>
 <span class="k">class</span> <span class="nc">compressionSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">spowerdict</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -319,15 +291,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
 
-<div class="viewcode-block" id="compressionSummary.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;compressionSummary&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="compressionSummary.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Creating syspower compression summary chart for </span><span class="si">{!s}</span><span class="s2">-band...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">))</span>
@@ -423,18 +390,12 @@
         <span class="n">leg</span><span class="o">.</span><span class="n">set_bbox_to_anchor</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">))</span>
         <span class="c1"># mpld3.save_html(fig0, figname.replace(&#39;.png&#39;, &#39;.html&#39;))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig0</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="compressionSummary.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-compressionSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-compressionSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="compressionSummary.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.compressionSummary.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -455,12 +416,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="medianSummary">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.syspower.display.medianSummary.html#pipeline.hifv.tasks.syspower.display.medianSummary">[docs]</a>
 <span class="k">class</span> <span class="nc">medianSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">spowerdict</span><span class="p">,</span> <span class="n">band</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -470,15 +430,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">gaintable</span>
 
-<div class="viewcode-block" id="medianSummary.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;medianSummary&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="medianSummary.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -586,18 +541,12 @@
         <span class="n">leg</span><span class="o">.</span><span class="n">set_bbox_to_anchor</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">))</span>
         <span class="c1"># mpld3.save_html(fig0, figname.replace(&#39;.png&#39;, &#39;.html&#39;))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig0</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="medianSummary.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
-                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-medianSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span></div>
+                            <span class="s1">&#39;syspower-</span><span class="si">{!s}</span><span class="s1">-&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">)</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">-medianSummary.png&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="medianSummary.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.medianSummary.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
 
@@ -618,12 +567,11 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="syspowerPerAntennaChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart.html#pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart">[docs]</a>
 <span class="k">class</span> <span class="nc">syspowerPerAntennaChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">fileprefix</span><span class="p">,</span> <span class="n">tabletype</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">selectbasebands</span><span class="p">,</span> <span class="n">science_scan_ids</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -642,8 +590,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">json_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">,</span>
                                           <span class="n">yaxis</span> <span class="o">+</span> <span class="n">fileprefix</span> <span class="o">+</span> <span class="n">tabletype</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%s</span><span class="s1">.json&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-<div class="viewcode-block" id="syspowerPerAntennaChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.syspower.html#pipeline.hifv.tasks.syspower.display.syspowerPerAntennaChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
@@ -744,7 +690,6 @@
                 <span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-</div>
 
 </pre></div>
 

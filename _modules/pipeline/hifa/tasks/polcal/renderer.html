@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -150,7 +146,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsPolcalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsPolcalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renders detailed HTML output for the Polcal task.</span>
@@ -160,8 +156,6 @@
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># As a multi-vis task, there is only 1 Result for Polcal.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -241,11 +235,8 @@
             <span class="s1">&#39;amp_vs_ant&#39;</span><span class="p">:</span> <span class="n">amp_vs_ant</span><span class="p">,</span>
             <span class="s1">&#39;ampratio_vs_ant&#39;</span><span class="p">:</span> <span class="n">ampratio_vs_ant</span><span class="p">,</span>
             <span class="s1">&#39;real_vs_imag&#39;</span><span class="p">:</span> <span class="n">real_vs_imag</span><span class="p">,</span>
-        <span class="p">})</span></div>
+        <span class="p">})</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_pol_table_rows">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_pol_table_rows">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_pol_table_rows</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">tabletype</span><span class="p">):</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -266,11 +257,8 @@
                     <span class="n">iquv</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iquv</span><span class="p">]</span>
                     <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ResidPolTR</span><span class="p">(</span><span class="n">session_name</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Ave&#39;</span><span class="p">,</span> <span class="s1">&#39;Average&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">iquv</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_copy_pcontext_with_session_mses">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_copy_pcontext_with_session_mses">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_copy_pcontext_with_session_mses</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Create a copy of the pipeline context.</span>
@@ -287,11 +275,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No session MS found for session </span><span class="si">{</span><span class="n">session_results</span><span class="o">.</span><span class="n">session</span><span class="si">}</span><span class="s2">, unable to render.&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">context</span></div>
+        <span class="k">return</span> <span class="n">context</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_amp_parang_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_parang_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_amp_parang_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
@@ -300,11 +285,8 @@
                 <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">session_results</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
                 <span class="n">plots</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">AmpVsParangSummaryChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">plots</span></div>
+        <span class="k">return</span> <span class="n">plots</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_amp_scan_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_amp_scan_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_amp_scan_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -328,11 +310,8 @@
                 <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;calib&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;after&quot;</span>
             <span class="n">plots</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plots_after</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">plots</span></div>
+        <span class="k">return</span> <span class="n">plots</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_phase_channel_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_phase_channel_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_phase_channel_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
@@ -341,11 +320,8 @@
                 <span class="n">plots</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">PhaseVsChannelChart</span><span class="p">(</span>
                     <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">session_results</span><span class="o">.</span><span class="n">polcal_phase_result</span><span class="o">.</span><span class="n">final</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">plots</span></div>
+        <span class="k">return</span> <span class="n">plots</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_gain_ratio_rms_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_gain_ratio_rms_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_gain_ratio_rms_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
@@ -353,11 +329,8 @@
             <span class="k">if</span> <span class="n">sresults</span><span class="o">.</span><span class="n">vis</span><span class="p">:</span>
                 <span class="n">plots</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">GainRatioRMSVsScanChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">sresults</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">plots</span></div>
+        <span class="k">return</span> <span class="n">plots</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_leakage_vs_channel_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_leakage_vs_channel_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_leakage_vs_channel_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">summary_plots</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -395,11 +368,8 @@
         <span class="k">for</span> <span class="n">session_results</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">subpages</span><span class="p">[</span><span class="n">session_results</span><span class="o">.</span><span class="n">vis</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
 
-        <span class="k">return</span> <span class="n">summary_plots</span><span class="p">,</span> <span class="n">subpages</span></div>
+        <span class="k">return</span> <span class="n">summary_plots</span><span class="p">,</span> <span class="n">subpages</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_xy_amp_ant_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_xy_amp_ant_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_xy_amp_ant_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots_amp</span><span class="p">,</span> <span class="n">plots_ampratio</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{}</span>
@@ -411,11 +381,8 @@
             <span class="n">plots_ampratio</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">polcal</span><span class="o">.</span><span class="n">AmpVsAntennaChart</span><span class="p">(</span>
                 <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">session_results</span><span class="o">.</span><span class="n">xyratio_gcal_result</span><span class="o">.</span><span class="n">final</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">plots_amp</span><span class="p">,</span> <span class="n">plots_ampratio</span></div>
+        <span class="k">return</span> <span class="n">plots_amp</span><span class="p">,</span> <span class="n">plots_ampratio</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsPolcalRenderer.create_real_imag_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.T2_4MDetailsPolcalRenderer.create_real_imag_plots">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_real_imag_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
@@ -427,12 +394,11 @@
             <span class="n">plots</span><span class="p">[</span><span class="n">session_name</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">polcal</span><span class="o">.</span><span class="n">RealVsImagChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;XY,YX&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">plots</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="PolcalLeakagePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.renderer.PolcalLeakagePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.renderer.PolcalLeakagePlotRenderer.html#pipeline.hifa.tasks.polcal.renderer.PolcalLeakagePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalLeakagePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renders the page with the detailed plots for the leakage solutions gain vs</span>

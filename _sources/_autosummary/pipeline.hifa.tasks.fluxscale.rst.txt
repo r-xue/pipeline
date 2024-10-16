@@ -4,18 +4,37 @@ pipeline.hifa.tasks.fluxscale
 .. automodule:: pipeline.hifa.tasks.fluxscale
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       GcorFluxscale
       GcorFluxscaleResults
       SessionGcorFluxscale
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    display
@@ -23,3 +42,4 @@ pipeline.hifa.tasks.fluxscale
    gcorfluxscale
    qa
    renderer
+

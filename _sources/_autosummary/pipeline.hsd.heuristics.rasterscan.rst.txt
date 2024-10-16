@@ -4,9 +4,16 @@ pipeline.hsd.heuristics.rasterscan
 .. automodule:: pipeline.hsd.heuristics.rasterscan
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       create_range
       detect_peak
@@ -23,18 +30,34 @@ pipeline.hsd.heuristics.rasterscan
       refine_gaps
       shift_angle
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       HeuristicsParameter
       MeasurementSet
       RasterScanHeuristic
       RasterScanHeuristicsResult
    
+   
+
+   
+   
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree:
    
       RasterScanHeuristicsFailure
    
+   
+
+
+

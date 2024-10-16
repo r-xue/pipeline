@@ -21,7 +21,9 @@
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.contfilehandler.contfile_to_chansel" href="pipeline.infrastructure.contfilehandler.contfile_to_chansel.html" />
+    <link rel="prev" title="pipeline.infrastructure.casa_tools.tool_type" href="pipeline.infrastructure.casa_tools.tool_type.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -122,6 +120,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.contfilehandler</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.infrastructure.contfilehandler.rst.txt" rel="nofollow"> View page source</a>
@@ -141,13 +142,13 @@ frequency range.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.contfile_to_chansel" title="pipeline.infrastructure.contfilehandler.contfile_to_chansel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contfile_to_chansel</span></code></a>(vis, context[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.contfilehandler.contfile_to_chansel.html#pipeline.infrastructure.contfilehandler.contfile_to_chansel" title="pipeline.infrastructure.contfilehandler.contfile_to_chansel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contfile_to_chansel</span></code></a></p></td>
 <td><p>Translate continuum ranges specified in contfile to channel selection string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.contfile_to_spwsel" title="pipeline.infrastructure.contfilehandler.contfile_to_spwsel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contfile_to_spwsel</span></code></a>(vis, context[, contfile, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.contfilehandler.contfile_to_spwsel.html#pipeline.infrastructure.contfilehandler.contfile_to_spwsel" title="pipeline.infrastructure.contfilehandler.contfile_to_spwsel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contfile_to_spwsel</span></code></a></p></td>
 <td><p>Translate continuum ranges specified in contfile to frequency selection string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.spwsel2chansel" title="pipeline.infrastructure.contfilehandler.spwsel2chansel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwsel2chansel</span></code></a>(vis, field, spwsel, excludechans)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.contfilehandler.spwsel2chansel.html#pipeline.infrastructure.contfilehandler.spwsel2chansel" title="pipeline.infrastructure.contfilehandler.spwsel2chansel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwsel2chansel</span></code></a></p></td>
 <td><p>Convert selections of frequecy ranges to channel indexes.</p></td>
 </tr>
 </tbody>
@@ -155,7 +156,7 @@ frequency range.</p>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.contfilehandler.ContFileHandler" title="pipeline.infrastructure.contfilehandler.ContFileHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContFileHandler</span></code></a>(filename[, warn_nonexist])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.contfilehandler.ContFileHandler.html#pipeline.infrastructure.contfilehandler.ContFileHandler" title="pipeline.infrastructure.contfilehandler.ContFileHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContFileHandler</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -165,7 +166,10 @@ frequency range.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.casa_tools.tool_type.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.casa_tools.tool_type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.contfilehandler.contfile_to_chansel.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.contfilehandler.contfile_to_chansel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

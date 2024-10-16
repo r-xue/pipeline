@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -145,13 +141,11 @@
 
 
 <div class="viewcode-block" id="ExportDataQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.qa.ExportDataQAHandler.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportDataQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="ExportDataQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Check for existence of core pipeline products</span>
         <span class="n">score1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppr_exists</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;products_dir&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">pprequest</span><span class="p">)</span>
@@ -176,8 +170,7 @@
             <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">score1</span><span class="p">,</span> <span class="n">score2</span><span class="p">,</span> <span class="n">score3</span><span class="p">,</span> <span class="n">score4</span><span class="p">,</span> <span class="n">score5</span><span class="p">,</span> <span class="n">score6</span><span class="p">,</span> <span class="n">score7</span><span class="p">,</span> <span class="n">score8</span><span class="p">,</span> <span class="n">score9</span><span class="p">]</span>
 
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">scores</span>
-        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="s2">&quot;All expected pipeline products have been exported&quot;</span></div>
-
+        <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="s2">&quot;All expected pipeline products have been exported&quot;</span>
 
     <span class="k">def</span> <span class="nf">_ppr_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">ppr_file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check for the existence of the PPR&quot;&quot;&quot;</span>
@@ -222,7 +215,7 @@
 
 
 <div class="viewcode-block" id="ExportDataListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">ExportDataListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing ExportDataResults.</span>
@@ -230,15 +223,12 @@
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataResults</span>
 
-<div class="viewcode-block" id="ExportDataListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.exportdata.html#pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="s2">&quot;All expected pipeline products have been exported&quot;</span></div>
-</div>
 
 </pre></div>
 

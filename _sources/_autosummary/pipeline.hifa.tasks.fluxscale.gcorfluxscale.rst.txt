@@ -4,9 +4,16 @@ pipeline.hifa.tasks.fluxscale.gcorfluxscale
 .. automodule:: pipeline.hifa.tasks.fluxscale.gcorfluxscale
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       calc_averages_per_field
       collect_flux_measurements
@@ -15,9 +22,16 @@ pipeline.hifa.tasks.fluxscale.gcorfluxscale
       map_spw_names_to_id
       reduce
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       FlagdataSetter
       FluxMeasurement
@@ -29,3 +43,11 @@ pipeline.hifa.tasks.fluxscale.gcorfluxscale
       SessionGcorFluxscale
       SessionGcorFluxscaleInputs
    
+   
+
+   
+   
+   
+
+
+

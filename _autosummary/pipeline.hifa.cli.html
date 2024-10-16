@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifv.cli" href="pipeline.hifv.cli.html" />
-    <link rel="prev" title="pipeline.hif.cli" href="pipeline.hif.cli.html" /> 
+    <link rel="next" title="pipeline.hifa.cli.hifa_antpos" href="pipeline.hifa.cli.hifa_antpos.html" />
+    <link rel="prev" title="pipeline.hif.cli.hif_uvcontsub" href="pipeline.hif.cli.hif_uvcontsub.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,21 +48,55 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pipeline.hifa.cli</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_antpos.html">pipeline.hifa.cli.hifa_antpos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_bandpass.html">pipeline.hifa.cli.hifa_bandpass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_bandpassflag.html">pipeline.hifa.cli.hifa_bandpassflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_bpsolint.html">pipeline.hifa.cli.hifa_bpsolint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_diffgaincal.html">pipeline.hifa.cli.hifa_diffgaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_exportdata.html">pipeline.hifa.cli.hifa_exportdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_flagdata.html">pipeline.hifa.cli.hifa_flagdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_flagtargets.html">pipeline.hifa.cli.hifa_flagtargets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_fluxcalflag.html">pipeline.hifa.cli.hifa_fluxcalflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_gaincalsnr.html">pipeline.hifa.cli.hifa_gaincalsnr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_gfluxscale.html">pipeline.hifa.cli.hifa_gfluxscale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_gfluxscaleflag.html">pipeline.hifa.cli.hifa_gfluxscaleflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_imageprecheck.html">pipeline.hifa.cli.hifa_imageprecheck</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_importdata.html">pipeline.hifa.cli.hifa_importdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_lock_refant.html">pipeline.hifa.cli.hifa_lock_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_polcal.html">pipeline.hifa.cli.hifa_polcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_polcalflag.html">pipeline.hifa.cli.hifa_polcalflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_renorm.html">pipeline.hifa.cli.hifa_renorm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_restoredata.html">pipeline.hifa.cli.hifa_restoredata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_session_refant.html">pipeline.hifa.cli.hifa_session_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_spwphaseup.html">pipeline.hifa.cli.hifa_spwphaseup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_targetflag.html">pipeline.hifa.cli.hifa_targetflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_timegaincal.html">pipeline.hifa.cli.hifa_timegaincal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_tsysflag.html">pipeline.hifa.cli.hifa_tsysflag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_tsysflagcontamination.html">pipeline.hifa.cli.hifa_tsysflagcontamination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_unlock_refant.html">pipeline.hifa.cli.hifa_unlock_refant</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_wvrgcal.html">pipeline.hifa.cli.hifa_wvrgcal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.cli.hifa_wvrgcalflag.html">pipeline.hifa.cli.hifa_wvrgcalflag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -124,6 +158,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
       <li class="breadcrumb-item active">pipeline.hifa.cli</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hifa.cli.rst.txt" rel="nofollow"> View page source</a>
@@ -140,88 +175,88 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_antpos" title="pipeline.hifa.cli.hifa_antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_antpos</span></code></a>([vis, caltable, hm_antpos, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_antpos.html#pipeline.hifa.cli.hifa_antpos" title="pipeline.hifa.cli.hifa_antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_antpos</span></code></a></p></td>
 <td><p>hifa_antpos ---- Derive an antenna position calibration table</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpass" title="pipeline.hifa.cli.hifa_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpass</span></code></a>([vis, caltable, field, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_bandpass.html#pipeline.hifa.cli.hifa_bandpass" title="pipeline.hifa.cli.hifa_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpass</span></code></a></p></td>
 <td><p>hifa_bandpass ---- Compute bandpass calibration solutions</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bandpassflag" title="pipeline.hifa.cli.hifa_bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpassflag</span></code></a>([vis, caltable, intent, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_bandpassflag.html#pipeline.hifa.cli.hifa_bandpassflag" title="pipeline.hifa.cli.hifa_bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpassflag</span></code></a></p></td>
 <td><p>hifa_bandpassflag ---- Bandpass calibration flagging</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_bpsolint" title="pipeline.hifa.cli.hifa_bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bpsolint</span></code></a>([vis, field, intent, spw, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_bpsolint.html#pipeline.hifa.cli.hifa_bpsolint" title="pipeline.hifa.cli.hifa_bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bpsolint</span></code></a></p></td>
 <td><p>hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_diffgaincal" title="pipeline.hifa.cli.hifa_diffgaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_diffgaincal</span></code></a>([vis])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_diffgaincal.html#pipeline.hifa.cli.hifa_diffgaincal" title="pipeline.hifa.cli.hifa_diffgaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_diffgaincal</span></code></a></p></td>
 <td><p>hifa_diffgaincal ---- Derive SpW phase offsets from differential gain calibrator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_exportdata" title="pipeline.hifa.cli.hifa_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_exportdata</span></code></a>([vis, session, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_exportdata.html#pipeline.hifa.cli.hifa_exportdata" title="pipeline.hifa.cli.hifa_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_exportdata</span></code></a></p></td>
 <td><p>hifa_exportdata ---- Prepare interferometry data for export</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagdata" title="pipeline.hifa.cli.hifa_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagdata</span></code></a>([vis, autocorr, shadow, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_flagdata.html#pipeline.hifa.cli.hifa_flagdata" title="pipeline.hifa.cli.hifa_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagdata</span></code></a></p></td>
 <td><p>hifa_flagdata ---- Do metadata based flagging of a list of MeasurementSets.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_flagtargets" title="pipeline.hifa.cli.hifa_flagtargets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagtargets</span></code></a>([vis, template, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_flagtargets.html#pipeline.hifa.cli.hifa_flagtargets" title="pipeline.hifa.cli.hifa_flagtargets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagtargets</span></code></a></p></td>
 <td><p>hifa_flagtargets ---- Do science target flagging</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_fluxcalflag" title="pipeline.hifa.cli.hifa_fluxcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_fluxcalflag</span></code></a>([vis, field, intent, spw, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_fluxcalflag.html#pipeline.hifa.cli.hifa_fluxcalflag" title="pipeline.hifa.cli.hifa_fluxcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_fluxcalflag</span></code></a></p></td>
 <td><p>hifa_fluxcalflag ---- Locate and flag line regions in solar system flux calibrators</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gaincalsnr" title="pipeline.hifa.cli.hifa_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gaincalsnr</span></code></a>([vis, field, intent, spw, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_gaincalsnr.html#pipeline.hifa.cli.hifa_gaincalsnr" title="pipeline.hifa.cli.hifa_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gaincalsnr</span></code></a></p></td>
 <td><p>hifa_gaincalsnr ---- Compute gaincal signal-to-noise ratios per spw</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscale" title="pipeline.hifa.cli.hifa_gfluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscale</span></code></a>([vis, reference, transfer, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_gfluxscale.html#pipeline.hifa.cli.hifa_gfluxscale" title="pipeline.hifa.cli.hifa_gfluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscale</span></code></a></p></td>
 <td><p>hifa_gfluxscale ---- Derive flux density scales from standard calibrators</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_gfluxscaleflag" title="pipeline.hifa.cli.hifa_gfluxscaleflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag</span></code></a>([vis, intent, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_gfluxscaleflag.html#pipeline.hifa.cli.hifa_gfluxscaleflag" title="pipeline.hifa.cli.hifa_gfluxscaleflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag</span></code></a></p></td>
 <td><p>hifa_gfluxscaleflag ---- Flag the flux, diffgain, phase calibrators and check source</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_imageprecheck" title="pipeline.hifa.cli.hifa_imageprecheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_imageprecheck</span></code></a>([vis, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_imageprecheck.html#pipeline.hifa.cli.hifa_imageprecheck" title="pipeline.hifa.cli.hifa_imageprecheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_imageprecheck</span></code></a></p></td>
 <td><p>hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_importdata" title="pipeline.hifa.cli.hifa_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_importdata</span></code></a>([vis, session, asis, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_importdata.html#pipeline.hifa.cli.hifa_importdata" title="pipeline.hifa.cli.hifa_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_importdata</span></code></a></p></td>
 <td><p>hifa_importdata ---- Imports data into the interferometry pipeline</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_lock_refant" title="pipeline.hifa.cli.hifa_lock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_lock_refant</span></code></a>([vis])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_lock_refant.html#pipeline.hifa.cli.hifa_lock_refant" title="pipeline.hifa.cli.hifa_lock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_lock_refant</span></code></a></p></td>
 <td><p>hifa_lock_refant ---- Lock reference antenna list</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcal" title="pipeline.hifa.cli.hifa_polcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcal</span></code></a>([vis, minpacov, solint_chavg, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_polcal.html#pipeline.hifa.cli.hifa_polcal" title="pipeline.hifa.cli.hifa_polcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcal</span></code></a></p></td>
 <td><p>hifa_polcal ---- Derive instrumental polarization calibration for ALMA.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_polcalflag" title="pipeline.hifa.cli.hifa_polcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcalflag</span></code></a>([vis])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_polcalflag.html#pipeline.hifa.cli.hifa_polcalflag" title="pipeline.hifa.cli.hifa_polcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcalflag</span></code></a></p></td>
 <td><p>hifa_polcalflag ---- Flag polarization calibrators</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_renorm" title="pipeline.hifa.cli.hifa_renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_renorm</span></code></a>([vis, createcaltable, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_renorm.html#pipeline.hifa.cli.hifa_renorm" title="pipeline.hifa.cli.hifa_renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_renorm</span></code></a></p></td>
 <td><p>hifa_renorm ---- ALMA renormalization task</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_restoredata" title="pipeline.hifa.cli.hifa_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_restoredata</span></code></a>([vis, session, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_restoredata.html#pipeline.hifa.cli.hifa_restoredata" title="pipeline.hifa.cli.hifa_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_restoredata</span></code></a></p></td>
 <td><p>hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_session_refant" title="pipeline.hifa.cli.hifa_session_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_session_refant</span></code></a>([vis, phase_threshold])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_session_refant.html#pipeline.hifa.cli.hifa_session_refant" title="pipeline.hifa.cli.hifa_session_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_session_refant</span></code></a></p></td>
 <td><p>hifa_session_refant ---- Select best reference antenna for session(s)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_spwphaseup" title="pipeline.hifa.cli.hifa_spwphaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_spwphaseup</span></code></a>([vis, caltable, field, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_spwphaseup.html#pipeline.hifa.cli.hifa_spwphaseup" title="pipeline.hifa.cli.hifa_spwphaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_spwphaseup</span></code></a></p></td>
 <td><p>hifa_spwphaseup ---- Compute phase calibration spw map and per spw phase offsets</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_targetflag" title="pipeline.hifa.cli.hifa_targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_targetflag</span></code></a>([vis])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_targetflag.html#pipeline.hifa.cli.hifa_targetflag" title="pipeline.hifa.cli.hifa_targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_targetflag</span></code></a></p></td>
 <td><p>hifa_targetflag ---- Flag target source outliers</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_timegaincal" title="pipeline.hifa.cli.hifa_timegaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_timegaincal</span></code></a>([vis, calamptable, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_timegaincal.html#pipeline.hifa.cli.hifa_timegaincal" title="pipeline.hifa.cli.hifa_timegaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_timegaincal</span></code></a></p></td>
 <td><p>hifa_timegaincal ---- Determine temporal gains from calibrator observations</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflag" title="pipeline.hifa.cli.hifa_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflag</span></code></a>([vis, caltable, flag_nmedian, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_tsysflag.html#pipeline.hifa.cli.hifa_tsysflag" title="pipeline.hifa.cli.hifa_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflag</span></code></a></p></td>
 <td><p>hifa_tsysflag ---- Flag deviant system temperatures for ALMA interferometry measurements.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_tsysflagcontamination" title="pipeline.hifa.cli.hifa_tsysflagcontamination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination</span></code></a>([vis, caltable, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_tsysflagcontamination.html#pipeline.hifa.cli.hifa_tsysflagcontamination" title="pipeline.hifa.cli.hifa_tsysflagcontamination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination</span></code></a></p></td>
 <td><p>hifa_tsysflagcontamination ---- Flag line contamination in ALMA interferometric Tsys caltables</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_unlock_refant" title="pipeline.hifa.cli.hifa_unlock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_unlock_refant</span></code></a>([vis])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_unlock_refant.html#pipeline.hifa.cli.hifa_unlock_refant" title="pipeline.hifa.cli.hifa_unlock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_unlock_refant</span></code></a></p></td>
 <td><p>hifa_unlock_refant ---- Unlock reference antenna list</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcal" title="pipeline.hifa.cli.hifa_wvrgcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcal</span></code></a>([vis, caltable, offsetstable, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_wvrgcal.html#pipeline.hifa.cli.hifa_wvrgcal" title="pipeline.hifa.cli.hifa_wvrgcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcal</span></code></a></p></td>
 <td><p>hifa_wvrgcal ---- Generate a gain table based on Water Vapor Radiometer data, and calculate a QA score based on its effect on the interferometric data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_apidoc/pipeline.hifa.cli.html#pipeline.hifa.cli.hifa_wvrgcalflag" title="pipeline.hifa.cli.hifa_wvrgcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcalflag</span></code></a>([vis, caltable, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.cli.hifa_wvrgcalflag.html#pipeline.hifa.cli.hifa_wvrgcalflag" title="pipeline.hifa.cli.hifa_wvrgcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcalflag</span></code></a></p></td>
 <td><p>hifa_wvrgcalflag ---- Generate a gain table based on Water Vapor Radiometer data, interpolating over antennas with bad radiometers.</p></td>
 </tr>
 </tbody>
@@ -232,8 +267,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hif.cli.html" class="btn btn-neutral float-left" title="pipeline.hif.cli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifv.cli.html" class="btn btn-neutral float-right" title="pipeline.hifv.cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hif.cli.hif_uvcontsub.html" class="btn btn-neutral float-left" title="pipeline.hif.cli.hif_uvcontsub" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.cli.hifa_antpos.html" class="btn btn-neutral float-right" title="pipeline.hifa.cli.hifa_antpos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

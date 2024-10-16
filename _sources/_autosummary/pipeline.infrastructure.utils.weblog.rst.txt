@@ -4,9 +4,16 @@ pipeline.infrastructure.utils.weblog
 .. automodule:: pipeline.infrastructure.utils.weblog
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       flatten
       get_intervals
@@ -24,10 +31,25 @@ pipeline.infrastructure.utils.weblog
       total_time_on_source
       total_time_on_target_on_source
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       OrderedDefaultdict
       QTable
    
+   
+
+   
+   
+   
+
+
+

@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -151,7 +147,7 @@
 
 
 <div class="viewcode-block" id="TsysAfterPowerChange">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.TsysAfterPowerChange">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.tsysnormalize.TsysAfterPowerChange.html#pipeline.h.tasks.tsysflag.tsysflag.TsysAfterPowerChange">[docs]</a>
 <span class="k">def</span> <span class="nf">TsysAfterPowerChange</span><span class="p">(</span><span class="n">v_orig</span><span class="p">,</span> <span class="n">v_new</span><span class="p">,</span> <span class="n">tsys_orig</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">t_atm</span><span class="o">=</span><span class="mf">270.0</span><span class="p">):</span>
     <span class="c1"># The maths to derive a new Tsys</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">v_new</span> <span class="o">/</span> <span class="n">v_orig</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tsys_orig</span> <span class="o">/</span> <span class="p">(</span><span class="n">tsys_orig</span> <span class="o">+</span> <span class="n">t_atm</span><span class="p">))</span>
@@ -160,7 +156,7 @@
 
 
 <div class="viewcode-block" id="getPower">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.getPower">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.tsysnormalize.getPower.html#pipeline.h.tasks.tsysflag.tsysflag.getPower">[docs]</a>
 <span class="k">def</span> <span class="nf">getPower</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">fromEnd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skipStartSecs</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> 
              <span class="n">skipEndSecs</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">datacolname</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -235,7 +231,7 @@
 
 
 <div class="viewcode-block" id="scienceSpwForTsysSpw">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.scienceSpwForTsysSpw">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.tsysnormalize.scienceSpwForTsysSpw.html#pipeline.h.tasks.tsysflag.tsysflag.scienceSpwForTsysSpw">[docs]</a>
 <span class="k">def</span> <span class="nf">scienceSpwForTsysSpw</span><span class="p">(</span><span class="n">mymsmd</span><span class="p">,</span> <span class="n">tsysSpw</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Automatically pick one science spw for the specified Tsys spw.  </span>
@@ -264,7 +260,7 @@
 
 
 <div class="viewcode-block" id="tsysNormalize">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysnormalize.tsysNormalize">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.tasks.tsysflag.tsysflag.tsysNormalize.html#pipeline.h.tasks.tsysflag.tsysflag.tsysNormalize">[docs]</a>
 <span class="k">def</span> <span class="nf">tsysNormalize</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">tsysTable</span><span class="p">,</span> <span class="n">newTsysTable</span><span class="p">,</span> <span class="n">scaleSpws</span><span class="o">=</span><span class="p">[],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Tsys entries for one field from other fields, using autocorr</span>

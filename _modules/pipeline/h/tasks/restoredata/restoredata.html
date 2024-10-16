@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -183,7 +179,7 @@
 
 
 <div class="viewcode-block" id="RestoreDataInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.RestoreDataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.restoredata.restoredata.RestoreDataInputs.html#pipeline.h.tasks.RestoreDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">RestoreDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RestoreDataInputs manages the inputs for the RestoreData task.</span>
@@ -284,7 +280,7 @@
 
 
 <div class="viewcode-block" id="RestoreDataResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.RestoreDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.restoredata.restoredata.RestoreDataResults.html#pipeline.h.tasks.RestoreDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">RestoreDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">importdata_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagging_summaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">casa_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pipeline_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orig_mpi_servers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">renorm_applied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -302,7 +298,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">renorm_applied</span> <span class="o">=</span> <span class="n">renorm_applied</span>
 
 <div class="viewcode-block" id="RestoreDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.restoredata.html#pipeline.h.tasks.RestoreDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.restoredata.restoredata.RestoreDataResults.html#pipeline.h.tasks.RestoreDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>

@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.findContinuum.runFindContinuum &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.extern.findContinuum.sanitizeNames" href="pipeline.extern.findContinuum.sanitizeNames.html" />
+    <link rel="prev" title="pipeline.extern.findContinuum.round_half_up" href="pipeline.extern.findContinuum.round_half_up.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.html">pipeline.extern</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.findContinuum.html">pipeline.extern.findContinuum</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.findContinuum.runFindContinuum</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.extern.findContinuum.runFindContinuum.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-extern-findcontinuum-runfindcontinuum">
+<h1>pipeline.extern.findContinuum.runFindContinuum<a class="headerlink" href="#pipeline-extern-findcontinuum-runfindcontinuum" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.extern.findContinuum.runFindContinuum">
+<span class="sig-name descname"><span class="pre">runFindContinuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbcube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psfcube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minbeamfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baselineModeA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baselineModeB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmaCube</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nBaselineChannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.19</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmaFindContinuum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmaFindContinuumMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">png</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pngBasename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nanBufferChannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useAbsoluteValue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trimChannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuumThreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">narrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">';'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titleText</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxTrim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxTrimFraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meanSpectrumFile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centralArcsec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channelWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternateDirectory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imageInfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanInfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotAtmosphere</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'transmission'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airmass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pwv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channelFractionForSlopeRemoval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meanSpectrumMethod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'peakOverMad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peakFilterFWHM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullLegend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meanSpectrumMethodMessage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minSlopeToRemove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minGroupsForSFCAdjustment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regressionTest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadraticFit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">megapixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangularPatternSeen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxMemory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negativeThresholdFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">byteLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">singleContinuum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applyMaskToMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotBaselinePoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropBaselineChannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">madRatioUpperLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">madRatioLowerLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projectCode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useIAGetProfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useThresholdWithMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalizeByMAD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwriteMoments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialQuadraticImprovementThreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minPeakOverMadForSFCAdjustment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxMadRatioForSFCAdjustment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxMadRatioForSFCAdjustmentInLaterIterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minPixelsInJointMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">userJointMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signalRatioTier1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.965</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signalRatioTier2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.94</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snrThreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mom0minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mom8minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwriteMasks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmStatContQuadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quadraticNsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bidirectionalMaskPhase2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotQuadraticPoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">makeMovie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowBluePruning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoidance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enableRejectNarrowInnerWindows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avoidExtremaInNoiseCalcForJointMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amendMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amendMaskIterationName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useJointMaskPrior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'flat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subimage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momDiffSNR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peakOverMadCriterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momDiffApproachLevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mom08simultaneous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useUncorrectedMedian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returnBluePoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removeOutlierBaselineChannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enableInitialQuadratic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useBaseline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralDynamicRangeString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/extern/findContinuum.html#runFindContinuum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.findContinuum.runFindContinuum" title="Link to this definition"></a></dt>
+<dd><p>This function is called by findContinuum.  It calls functions that:
+1) compute the mean spectrum of a dirty cube
+2) find the continuum channels
+3) plot the results
+Inputs: channelWidth: in Hz
+Returns: 23 items
+<a href="#id1"><span class="problematic" id="id2">*</span></a>1 A channel selection string suitable for the spw parameter of clean.
+<a href="#id3"><span class="problematic" id="id4">*</span></a>2 The name of the png produced.
+<a href="#id5"><span class="problematic" id="id6">*</span></a>3 The slope of the linear fit (or None if no fit attempted).
+<a href="#id7"><span class="problematic" id="id8">*</span></a>4 The channel width in Hz (only necessary for the fitsTable option).
+<a href="#id9"><span class="problematic" id="id10">*</span></a>5 nchan in the cube (only necessary to return this for the fitsTable option, will be computed otherwise).
+<a href="#id11"><span class="problematic" id="id12">*</span></a>6 Boolean: True if it used low values as the baseline (as opposed to high values)
+<a href="#id13"><span class="problematic" id="id14">*</span></a>7 SNRs in the moment0 image (raw, outside mask, outside phase2 mask)
+<a href="#id15"><span class="problematic" id="id16">*</span></a>8 SNRs in the moment8 image (raw, outside mask, outside phase2 mask)
+<a href="#id17"><span class="problematic" id="id18">*</span></a>9 Boolean: True if the middle-valued channels were used as the baseline (as opposed to low or high)
+<a href="#id19"><span class="problematic" id="id20">*</span></a>10 list: selectionPreBluePruning
+<a href="#id21"><span class="problematic" id="id22">*</span></a>11 float: finalSigmaFindContinuum
+<a href="#id23"><span class="problematic" id="id24">*</span></a>12 string: name of jointMask
+<a href="#id25"><span class="problematic" id="id26">*</span></a>13 float array: avgspectrumAboveThreshold
+<a href="#id27"><span class="problematic" id="id28">*</span></a>14 float: the true median of the spectrum
+<a href="#id29"><span class="problematic" id="id30">*</span></a>15 list: of plot artist descriptors (things to potentially remove and replot)
+<a href="#id31"><span class="problematic" id="id32">*</span></a>16 axis instance: ax1 (lower x-axis)
+<a href="#id33"><span class="problematic" id="id34">*</span></a>17 axis instance: ax2 (upper x-axis)
+<a href="#id35"><span class="problematic" id="id36">*</span></a>18 float: threshold (the positive threshold for line detection)
+<a href="#id37"><span class="problematic" id="id38">*</span></a>19 string: final line of upper text legend
+<a href="#id39"><span class="problematic" id="id40">*</span></a>20 int: number of narrow central groups that were dropped (or would have been dropped</p>
+<blockquote>
+<div><p>if enableRejectNarrowWindows had been True, but wasn’t), summed over all runs
+of findContinuumChannels()</p>
+</div></blockquote>
+<p><a href="#id41"><span class="problematic" id="id42">*</span></a>21 float: effectiveSigma (product of finalSigmaFindContinuum*correctionFactor)
+<a href="#id43"><span class="problematic" id="id44">*</span></a>22 float: baselineMAD
+<a href="#id45"><span class="problematic" id="id46">*</span></a>23 string: upper x-axis label
+<a href="#id47"><span class="problematic" id="id48">*</span></a>24 list of int: allBaselineChannelsXY (channel numbers of baseline)
+<a href="#id49"><span class="problematic" id="id50">*</span></a>25 int: nbin
+<a href="#id51"><span class="problematic" id="id52">*</span></a>26 float: initialPeakOverMad
+<a href="#id53"><span class="problematic" id="id54">*</span></a>27 float or None: negativeThreshold
+Inputs:
+img: the image cube to operate upon
+spw: the spw name or number to put in the x-axis label
+transition: the name of the spectral transition (for the plot title)
+baselineModeA: ‘min’ or ‘edge’, method to define the baseline in meanSpectrum()
+sigmaCube: multiply this value by the MAD to get the threshold above which a pixel</p>
+<blockquote>
+<div><p>is included in the mean spectrum</p>
+</div></blockquote>
+<dl class="simple">
+<dt>nBaselineChannels: if integer, then the number of channels to use in:</dt><dd><ol class="loweralpha simple">
+<li><p>computing the mean spectrum with the ‘meanAboveThreshold’ methods.</p></li>
+<li><dl class="simple">
+<dt>computing the MAD of the lowest/highest channels in findContinuumChannels</dt><dd><p>if float, then the fraction of channels to use (i.e. the percentile)
+default = 0.19, which is 24 channels (i.e. 12 on each side) of a TDM window</p>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+<p>sigmaFindContinuum: passed to findContinuumChannels, ‘auto’ starts with 3.5
+sigmaFindContinuumMode: ‘auto’, ‘autolower’, or ‘fixed’
+verbose: if True, then print additional information during processing
+png: the name of the png to produce (’’ yields default name)
+pngBasename: if True, then remove the directory from img name before generating png name
+nanBufferChannels: when removing or replacing NaNs, do this many extra channels</p>
+<blockquote>
+<div><p>beyond their extent</p>
+</div></blockquote>
+<dl class="simple">
+<dt>source: the name of the source, to be shown in the title of the spectrum.</dt><dd><p>if None, then use the filename, up to the first underscore.</p>
+</dd>
+</dl>
+<p>findContinuum: if True, then find the continuum channels before plotting
+overwrite: if True, or ASCII file does not exist, then recalculate the mean spectrum</p>
+<blockquote>
+<div><blockquote>
+<div><p>writing it to &lt;img&gt;.meanSpectrum</p>
+</div></blockquote>
+<p>if False, then read the mean spectrum from the existing ASCII file</p>
+</div></blockquote>
+<dl class="simple">
+<dt>trimChannels: after doing best job of finding continuum, remove this many</dt><dd><p>channels from each edge of each block of channels found (for margin of safety)
+If it is a float between 0..1, then trim this fraction of channels in each
+group (rounding up). If it is ‘auto’, use 0.1 but not more than maxTrim channels
+and not more than maxTrimFraction</p>
+</dd>
+</dl>
+<p>percentile: control parameter used with baselineMode=’min’
+continuumThreshold: if specified, only use pixels above this intensity level
+narrow: the minimum number of channels that a group of channels must have to survive</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if 0&lt;narrow&lt;1, then it is interpreted as the fraction of all</dt><dd><p>channels within identified blocks</p>
+</dd>
+</dl>
+<p>if ‘auto’, then use int(ceil(log10(nchan)))</p>
+</div></blockquote>
+<p>titleText: default is img name and transition and the control parameter values
+meanSpectrumFile: an alternative ASCII text file to use for the mean spectrum.</p>
+<blockquote>
+<div><p>Must also set img=’’.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>meanSpectrumMethod: ‘peakOverMad’, ‘peakOverRms’, ‘meanAboveThreshold’,</dt><dd><dl class="simple">
+<dt>‘meanAboveThresholdOverRms’, ‘meanAboveThresholdOverMad’,</dt><dd><p>where ‘peak’ refers to the peak in a spatially-smoothed version of cube</p>
+</dd>
+</dl>
+</dd>
+<dt>peakFilterFWHM: value used by ‘peakOverRms’ and ‘peakOverMad’ to presmooth</dt><dd><p>each plane with a Gaussian kernel of this width (in pixels)
+Set to 1 to not do any smoothing.</p>
+</dd>
+<dt>centralArcsec: radius of central box within which to compute the mean spectrum</dt><dd><p>default=’auto’ means start with whole field, then reduce to 1/10 if only
+one window is found (unless mask is specified); or ‘fwhm’ for the central square
+with the same radius as the PB FWHM; or a floating point value in arcseconds</p>
+</dd>
+<dt>mask: a mask image equal in shape to the parent image that is used to determine the</dt><dd><p>region to compute the noise (outside the mask) and the mean spectrum (inside the mask)
+option ‘auto’ will look for the &lt;filename&gt;.mask that matches the &lt;filename&gt;.image
+and if it finds it, it will use it; otherwise it will use no mask</p>
+</dd>
+</dl>
+<p>plotAtmosphere: ‘’, ‘tsky’, or ‘transmission’
+airmass: for plot of atmospheric transmission
+pwv: in mm (for plot of atmospheric transmission)
+channelFractionForSlopeRemoval: if at least this many channels are initially selected, or</p>
+<blockquote>
+<div><p>if there are only 1-2 ranges found and the widest range has &gt; nchan*0.3 channels, then
+fit and remove a linear slope and re-identify continuum channels.  Set to 1 to turn off.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>quadraticFit: if True, fit quadratic polynomial to the noise regions when appropriate;</dt><dd><p>otherwise fit only a linear slope</p>
+</dd>
+</dl>
+<p>megapixels: simply used to label the plot
+triangularPatternSeen: if True, then slightly boost sigmaFindContinuum if it is in ‘auto’ mode
+maxMemory: only used to name the png if it is set
+applyMaskToMask: if True, apply the mask inside the user mask image to set its masked pixels to 0
+plotBaselinePoints: if True, then plot the baseline-defining points as black dots
+dropBaselineChannels: percentage of extreme values to drop in baseline mode ‘min’
+useIAGetProfile: if True, then for meanAboveThreshold and baselineMode=’min’, then</p>
+<blockquote>
+<div><p>use ia.getprofile instead of ia.getregion and subsequent arithmetic (faster)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>initialQuadraticImprovementThreshold: if removal of a quadratic from the raw meanSpectrum reduces</dt><dd><p>the MAD by this factor or more, then proceed with removing this quadratic (new Cycle 6 heuristic)</p>
+</dd>
+<dt>maxMadRatioForSFCAdjustment: madRatio must be below this value (among other things) in order</dt><dd><p>for automatic lowering of sigmaFindContinuum value to occur in .original iteration</p>
+</dd>
+<dt>maxMadRatioForSFCAdjustmentInLaterIterations: madRatio must be below this value (among other things) in order</dt><dd><p>for automatic lowering of sigmaFindContinuum value to occur in later iterations</p>
+</dd>
+<dt>avoidance: a CASA channel selection string to avoid selecting for continuum (for</dt><dd><p>manual use); invoked just before making the plot and returning</p>
+</dd>
+</dl>
+<p>Parameters only relevant to mom0mom8jointMask:
+mom0minsnr: sets the threshold for the mom0 image (i.e. median + mom0minsnr*scaledMAD)
+mom8minsnr: sets the threshold for the mom8 image (i.e. median + mom8minsnr*scaledMAD)
+snrThreshold: if SNR is higher than this, and phase2==True, then run a phase 2 mask calculation
+minPixelsInJointMask: if fewer than these pixels are found, then use all pixels above pb=0.3</p>
+<blockquote>
+<div><p>(when meanSpectrumMethod = ‘mom0mom8jointMask’)</p>
+</div></blockquote>
+<p>overwriteMoments: if True, then overwrite any existing moment0 or moment8 image
+overwriteMasks: if True, then overwrite any existing moment0 or moment8 mask image
+enableInitialQuadratic: if True, assess the need for quadratic removal, and use the</p>
+<blockquote>
+<div><p>old-style method to remove it</p>
+</div></blockquote>
+<dl class="simple">
+<dt>rmStatContQuadratic: if True, then do not do the initialQuadratic removal (if</dt><dd><p>enabled and deemed necessary), but instead always perform the new-style
+quadratic removal</p>
+</dd>
+<dt>quadraticNsigma: the stopping threshold to use when ignoring outliers prior to fitting</dt><dd><p>fitting the quadratic (in the rmStatContQuadratic option). To more quickly test
+different values, be sure to set the meanSpectrumFile option and overwrite=False)</p>
+</dd>
+</dl>
+<p>bidirectionalMaskPhase2: True=extend mask to negative values beyond threshold; False=Cycle6 behavior
+makeMovie: if True, then make a png for each quadratic fit as channels are</p>
+<blockquote>
+<div><p>removed one-by-one (in the rmStatContQuadratic option)</p>
+</div></blockquote>
+<p>outdir: where to write the .mom0 and .mom8 images, .dat, meanSpectrum, and the .png file
+maxGroups: maximum number of continuum regions below which the potential reduction</p>
+<blockquote>
+<div><blockquote>
+<div><p>factor of sigmaFindContinuum will be scaled by (1 - groups/maxGroups)**(bandwidth/1875e6)
+via the following equation:</p>
+</div></blockquote>
+<p>sFC_factor = np.max([scalingFactor/7.0, (1-groups/float(maxGroups))**(spwBandwidth/1.875e9)])</p>
+</div></blockquote>
+<p>Parameters passed to findContinuumChannels (and only used in there):
+useUncorrectedMedian: if True, then do not adjust the median (solid black line) upward</p>
+<blockquote>
+<div><p>from the median of the baseline points (dashed blue line)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>returnBluePoints: if True, then simply set the continuum ranges to the baseline points</dt><dd><p>(i.e. the blue points) instead of what the other heuristics might have found</p>
+</dd>
+</dl>
+<p>baselineModeB: ‘min’ or ‘edge’, method to define the baseline in findContinuumChannels()
+separator: the character to use to separate groups of channels in the string returned
+maxTrim: in trimChannels=’auto’, this is the max channels to trim per group for TDM spws; it is automatically scaled upward for FDM spws.
+maxTrimFraction: in trimChannels=’auto’, the max fraction of channels to trim per group
+negativeThresholdFactor: scale the nominal negative threshold by this factor (to adjust</p>
+<blockquote>
+<div><p>sensitivity to absorption features: smaller values=more sensitive)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>signalRatioTier1: threshold for signalRatio, above which we desensitize the level to</dt><dd><p>consider line emission in order to avoid small differences in noise levels from
+affecting the result (e.g. that occur between serial and parallel tclean cubes)
+signalRatio=1 means: no lines seen, while closer to zero: more lines seen</p>
+</dd>
+<dt>signalRatioTier2: second threshold for signalRatio, used for FDM spws (nchan&gt;192) and</dt><dd><p>for cases of peakOverMad &lt; 5.  Should be &lt; signalRatioTier1.</p>
+</dd>
+</dl>
+<p>dropBaselineChannels: percentage of extreme values to drop in baseline mode ‘min’
+madRatioUpperLimit, madRatioLowerLimit: determines when dropBaselineChannels is used
+mom08simultaneous: passed to meanSpectrumFromMom0Mom8JointMask
+useBaseline: ‘low’, ‘middle’, ‘high’ or ‘auto’; auto tries to automatically pick ‘low’ for</p>
+<blockquote>
+<div><p>spectra that are emission-line dominated, ‘high’ if absorption line dominated, or ‘both’ if
+both types of lines are present</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.extern.findContinuum.round_half_up.html" class="btn btn-neutral float-left" title="pipeline.extern.findContinuum.round_half_up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.extern.findContinuum.sanitizeNames.html" class="btn btn-neutral float-right" title="pipeline.extern.findContinuum.sanitizeNames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

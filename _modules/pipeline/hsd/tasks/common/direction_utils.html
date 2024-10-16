@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -169,7 +165,7 @@
 
 
 <div class="viewcode-block" id="direction_shift">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_shift">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.direction_utils.direction_shift.html#pipeline.hsd.tasks.common.direction_utils.direction_shift">[docs]</a>
 <span class="k">def</span> <span class="nf">direction_shift</span><span class="p">(</span> <span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the &#39;shifted-direction&#39; of the observing point.</span>
@@ -206,7 +202,7 @@
 
 
 <div class="viewcode-block" id="direction_offset">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_offset">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.direction_utils.direction_offset.html#pipeline.hsd.tasks.common.direction_utils.direction_offset">[docs]</a>
 <span class="k">def</span> <span class="nf">direction_offset</span><span class="p">(</span> <span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Direction</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the &#39;offset-direction&#39; of the observing point.</span>
@@ -244,7 +240,7 @@
 
 
 <div class="viewcode-block" id="direction_recover">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_recover">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.direction_utils.direction_recover.html#pipeline.hsd.tasks.common.direction_utils.direction_recover">[docs]</a>
 <span class="k">def</span> <span class="nf">direction_recover</span><span class="p">(</span> <span class="n">ra</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">:</span><span class="n">Direction</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recovers the &#39;Shifted-coordinate&#39; from &#39;Offset-coordinate&#39;.</span>
@@ -276,7 +272,7 @@
 
 
 <div class="viewcode-block" id="direction_convert">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.direction_utils.direction_convert">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.direction_utils.direction_convert.html#pipeline.hsd.tasks.common.direction_utils.direction_convert">[docs]</a>
 <span class="k">def</span> <span class="nf">direction_convert</span><span class="p">(</span><span class="n">direction</span><span class="p">:</span><span class="n">Direction</span><span class="p">,</span> <span class="n">mepoch</span><span class="p">:</span><span class="n">Epoch</span><span class="p">,</span> <span class="n">mposition</span><span class="p">:</span><span class="n">Position</span><span class="p">,</span> <span class="n">outframe</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the frame of the &#39;direction&#39; to &#39;outframe&#39;.</span>

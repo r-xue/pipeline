@@ -4,10 +4,26 @@ pipeline.hifa.tasks.applycal
 .. automodule:: pipeline.hifa.tasks.applycal
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    ampphase_vs_freq_qa
@@ -15,3 +31,4 @@ pipeline.hifa.tasks.applycal
    mswrapper
    mswrapper_test
    qa
+

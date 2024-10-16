@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.hifatargets.hsd_baseline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.hifatargets.hsd_blflag" href="pipeline.recipes.hifatargets.hsd_blflag.html" />
+    <link rel="prev" title="pipeline.recipes.hifatargets.hsd_atmcor" href="pipeline.recipes.hifatargets.hsd_atmcor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.hifatargets.html">pipeline.recipes.hifatargets</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.hifatargets.hsd_baseline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.hifatargets.hsd_baseline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-hifatargets-hsd-baseline">
+<h1>pipeline.recipes.hifatargets.hsd_baseline<a class="headerlink" href="#pipeline-recipes-hifatargets-hsd-baseline" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hsd_baseline">
+<span class="sig-name descname"><span class="pre">hsd_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switchpoly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewindow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewindowmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broadline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusteringalgorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviationmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_baseline.html#hsd_baseline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hsd_baseline" title="Link to this definition"></a></dt>
+<dd><p>hsd_baseline —- Detect and validate spectral lines, subtract baseline by masking detected lines</p>
+<p>The hsd_baseline task subtracts baseline from calibrated spectra.
+By default, the task tries to find spectral line feature using
+line detection and validation algorithms. Then, the task puts a
+mask on detected lines and perform baseline subtraction.
+The user is able to turn off automatic line masking by setting
+linewindow parameter, which specifies pre-defined line window.</p>
+<p>Fitting order is automatically determined by default. It can be
+disabled by specifying fitorder as non-negative value. In this
+case, the value specified by fitorder will be used.</p>
+<p><strong>*WARNING*</strong>
+Currently, hsd_baseline overwrites the result obtained by the
+previous run. Due to this behavior, users need to be careful
+about an order of the task execution when they run hsd_baseline
+multiple times with different data selection. Suppose there are
+two spectral windows (0 and 1) and hsd_baseline is executed
+separately for each spw as below,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Since the second run of hsd_baseline overwrites the result for
+spw 0 with the data before baseline subtraction, this will not
+produce correct result for spw 0. Proper sequence for this use
+case is to process each spw to the imaging stage separately,
+which looks like as follows:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:
+results – The results object for the pipeline task is returned.</p>
+<p>——— parameter descriptions ———————————————</p>
+<dl>
+<dt>fitfunc             Fitting function for baseline subtraction. You can choose</dt><dd><p>either cubic spline (‘spline’ or ‘cspline’) or polynomial
+(‘poly’ or ‘polynomial’). Default is ‘cspline’.</p>
+</dd>
+<dt>fitorder            Fitting order for polynomial. For cubic spline, it is used</dt><dd><p>to determine how much the spectrum is segmented into.
+Default (-1) is to determine the order automatically.</p>
+</dd>
+<dt>switchpoly          Whether to fall back the fits from cubic spline to 1st or</dt><dd><p>2nd order polynomial when large masks exist at the edges
+of the spw. Condition for switching is as follows:</p>
+<blockquote>
+<div><p>if nmask &gt; nchan/2      =&gt; 1st order polynomial
+else if nmask &gt; nchan/4 =&gt; 2nd order polynomial
+else                    =&gt; use fitfunc and fitorder</p>
+</div></blockquote>
+<p>where nmask is a number of channels for mask at edge while
+nchan is a number of channels of entire spectral window.</p>
+</dd>
+<dt>linewindow          Pre-defined line window. If this is set, specified line</dt><dd><p>windows are used as a line mask for baseline subtraction
+instead to determine masks based on line detection and
+validation stage. Several types of format are acceptable.
+One is channel-based window,</p>
+<blockquote>
+<div><p>[min_chan, max_chan]</p>
+</div></blockquote>
+<p>where min_chan and max_chan should be an integer. For
+multiple  windows, nested list is also acceptable,</p>
+<blockquote>
+<div><p>[[min_chan0, max_chan0], [min_chan1, max_chan1], …]</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Another way is frequency-based window,</dt><dd><p>[min_freq, max_freq]</p>
+</dd>
+</dl>
+<p>where min_freq and max_freq should be either a float or
+a string. If float value is given, it is interpreted as
+a frequency in Hz. String should be a quantity consisting
+of “value” and “unit”,
+e.g., ‘100GHz’. Multiple windows are also supported.</p>
+<blockquote>
+<div><p>[[min_freq0, max_freq0], [min_freq1, max_freq1], …]</p>
+</div></blockquote>
+<p>Note that the specified frequencies are assumed to be
+the value in LSRK frame. Note also that there is a
+limitation when multiple MSes are processed.
+If native frequency frame of the data is not LSRK
+(e.g. TOPO), frequencies need to be converted to that
+frame. As a result, corresponding channel range may vary
+between MSes. However, current implementation is not
+able to handle such case. Frequencies are converted to
+desired frame using representative MS (time, position,
+direction).</p>
+<p>In the above cases, specified line windows are applied
+to all science spws. In case when line windows vary with
+spw, line windows can be specified by a dictionary whose
+key is spw id while value is line window.
+For example, the following dictionary gives different
+line windows to spws 17 and 19. Other spws, if available,
+will have an empty line window.</p>
+<blockquote>
+<div><p>{17: [[100, 200], [1200, 1400]], 19: [‘112115MHz’, ‘112116MHz’]}</p>
+</div></blockquote>
+<p>Furthermore, linewindow accepts MS selection string.
+The following string gives [[100,200],[1200,1400]] for
+spw 17 while [1000,1500] for spw 21.</p>
+<blockquote>
+<div><p>“17:100~200;1200~1400,21:1000~1500”</p>
+</div></blockquote>
+<p>The string also accepts frequency with units. Note,
+however, that frequency reference frame in this case is
+not fixed to LSRK. Instead, the frame will be taken from
+the MS (typically TOPO for ALMA).
+Thus, the following two frequency-based line windows
+result different channel selections.</p>
+<blockquote>
+<div><p>{19: [‘112115MHz’, ‘112116MHz’]} # frequency frame is LSRK
+“19:11215MHz~11216MHz” # frequency frame is taken from the data</p>
+<blockquote>
+<div><p># (TOPO for ALMA)</p>
+</div></blockquote>
+</div></blockquote>
+<p>None is allowed as a value of dictionary input to indicate that
+no line detection/validation is required even if manually specified
+line window does not exist. When None is given as a value and if
+<code class="docutils literal notranslate"><span class="pre">linewindowmode</span></code> is ‘replace’, line detection/validation is not performed
+for the corresponding spw. For example, suppose the following parameters
+are given for the data with four science spws, 17, 19, 21, and 23.</p>
+<blockquote>
+<div><p>linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
+linewindowmode=’replace’</p>
+</div></blockquote>
+<p>The task will use given line window for 17 and 19 while the task performs
+line deteciton/validation for spw 23 because no line window is set.
+On the other hand, line detection/validation is skipped for spw 21 due to
+the effect of None.</p>
+<dl class="simple">
+<dt>example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz)</dt><dd><p>[‘115GHz’, ‘115.1GHz’], see above for more examples</p>
+</dd>
+</dl>
+</dd>
+<dt>linewindowmode      Merge or replace given manual line window with line</dt><dd><p>detection/validation result. If ‘replace’ is given, line
+detection and validation will not be performed.
+On the other hand, when ‘merge’ is specified, line
+detection/validation will be performed and manually
+specified line windows are added to the result.</p>
+<p>Note that this has no effect when linewindow for target
+spw is an empty list. In that case, line detection/validation
+will be performed regardless of the value of linewindowmode.
+In case if no linewindow nor line detection/validation
+are necessary, you should set linewindowmode to ‘replace’
+and specify None as a value of the linewindow dictionary
+for the spw to apply. See parameter description of <code class="docutils literal notranslate"><span class="pre">linewindow</span></code>
+for detail.</p>
+</dd>
+<dt>edge                Number of edge channels to be dropped from baseline</dt><dd><p>subtraction. The value must be a list with length of 2,
+whose values specify left and right edge channels,
+respectively.</p>
+<p>example: [10,10]</p>
+</dd>
+</dl>
+<p>broadline           Try to detect broad component of spectral line if True.</p>
+<dl>
+<dt>clusteringalgorithm Selection of the algorithm used in the clustering</dt><dd><blockquote>
+<div><p>analysis to check the validity of detected line features.</p>
+</div></blockquote>
+<p>‘kmean’ algorithm and hierarchical clustering algorithm
+‘hierarchy’, and their combination (‘both’) are so far
+implemented.</p>
+</dd>
+<dt>deviationmask       Apply deviation mask in addition to masks determined by</dt><dd><p>the automatic line detection.</p>
+</dd>
+<dt>parallel            Execute using CASA HPC functionality, if available.</dt><dd><p>options: ‘automatic’, ‘true’, ‘false’, True, False
+default: None (equivalent to ‘automatic’)</p>
+</dd>
+<dt>infiles             List of data files. These must be a name of</dt><dd><p>MeasurementSets that are registered to context via
+hsd_importdata task.</p>
+<p>example: vis=[‘X227.ms’, ‘X228.ms’]</p>
+</dd>
+<dt>field               Data selection by field.</dt><dd><dl class="simple">
+<dt>example: ‘1’ (select by FIELD_ID)</dt><dd><p>‘M100*’ (select by field name)
+‘’ (all fields)</p>
+</dd>
+</dl>
+</dd>
+<dt>antenna             Data selection by antenna.</dt><dd><dl class="simple">
+<dt>example: ‘1’ (select by ANTENNA_ID)</dt><dd><p>‘PM03’ (select by antenna name)
+‘’ (all antennas)</p>
+</dd>
+</dl>
+</dd>
+<dt>spw                 Data selection by spw.</dt><dd><dl class="simple">
+<dt>example: ‘3,4’ (generate caltable for spw 3 and 4)</dt><dd><p>[‘0’,’2’] (spw 0 for first data, 2 for second)
+‘’ (all spws)</p>
+</dd>
+</dl>
+</dd>
+<dt>pol                 Data selection by polarizations.</dt><dd><dl class="simple">
+<dt>example: ‘0’ (generate caltable for pol 0)</dt><dd><p>[‘0~1’,’0’] (pol 0 and 1 for first data, only 0 for second)
+‘’ (all polarizations)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>——— examples ———————————————————–</p>
+<ol class="arabic simple">
+<li><p>Basic usage with automatic line detection and validation</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;PM03&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;17,19&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Using pre-defined line windows without automatic line detection
+and edge channels</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">linewindow</span><span class="o">=</span><span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1400</span><span class="p">]],</span>
+<span class="go">                 linewindowmode=&#39;replace&#39;, edge=[10, 10])</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Using per spw pre-defined line windows with automatic line detection</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">linewindow</span><span class="o">=</span><span class="p">{</span><span class="mi">19</span><span class="p">:</span> <span class="p">[[</span><span class="mi">390</span><span class="p">,</span> <span class="mi">550</span><span class="p">]],</span> <span class="mi">23</span><span class="p">:</span> <span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1400</span><span class="p">]]},</span>
+<span class="go">                 linewindowmode=&#39;merge&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.hifatargets.hsd_atmcor.html" class="btn btn-neutral float-left" title="pipeline.recipes.hifatargets.hsd_atmcor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.hifatargets.hsd_blflag.html" class="btn btn-neutral float-right" title="pipeline.recipes.hifatargets.hsd_blflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

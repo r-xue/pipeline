@@ -4,9 +4,16 @@ pipeline.infrastructure.mpihelpers
 .. automodule:: pipeline.infrastructure.mpihelpers
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       get_obj_size
       is_mpi_ready
@@ -14,9 +21,16 @@ pipeline.infrastructure.mpihelpers
       parse_mpi_input_parameter
       signature
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       AsyncTask
       Executable
@@ -29,3 +43,11 @@ pipeline.infrastructure.mpihelpers
       Tier0JobRequest
       Tier0PipelineTask
    
+   
+
+   
+   
+   
+
+
+

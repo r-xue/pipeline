@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="plot_mosaic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.plot_mosaic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.plot_mosaic.html#pipeline.infrastructure.displays.plotmosaic.plot_mosaic">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_mosaic</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">figfile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Produce a plot of the pointings with the primary beam FWHM and field names.</span>
@@ -267,7 +263,7 @@
 
 
 <div class="viewcode-block" id="get_arc_formatter">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.get_arc_formatter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.get_arc_formatter.html#pipeline.infrastructure.displays.plotmosaic.get_arc_formatter">[docs]</a>
 <span class="k">def</span> <span class="nf">get_arc_formatter</span><span class="p">(</span><span class="n">precision</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Presents a value of equatorial arc in user-friendly units.</span>
@@ -288,7 +284,7 @@
 
 
 <div class="viewcode-block" id="label_format">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.label_format">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.label_format.html#pipeline.infrastructure.displays.plotmosaic.label_format">[docs]</a>
 <span class="k">def</span> <span class="nf">label_format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Labels plot axes for plots specified in units of arcseconds&quot;&quot;&quot;</span>
     <span class="c1"># x is given in arcsecs, _ is tick position</span>
@@ -297,7 +293,7 @@
 
 
 <div class="viewcode-block" id="get_dish_colour">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.get_dish_colour">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.get_dish_colour.html#pipeline.infrastructure.displays.plotmosaic.get_dish_colour">[docs]</a>
 <span class="k">def</span> <span class="nf">get_dish_colour</span><span class="p">(</span><span class="n">dish_diameter</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">is_tsys_only</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;r&#39;</span>
@@ -309,7 +305,7 @@
 
 
 <div class="viewcode-block" id="is_tsys_only">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.is_tsys_only">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.is_tsys_only.html#pipeline.infrastructure.displays.plotmosaic.is_tsys_only">[docs]</a>
 <span class="k">def</span> <span class="nf">is_tsys_only</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the field was only used to observe Tsys fields.</span>
@@ -319,7 +315,7 @@
 
 
 <div class="viewcode-block" id="primary_beam_fwhm">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm.html#pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm">[docs]</a>
 <span class="k">def</span> <span class="nf">primary_beam_fwhm</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">diameter</span><span class="p">,</span> <span class="n">taper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implements the Baars formula: b*lambda / D.</span>
@@ -341,7 +337,7 @@
 
 
 <div class="viewcode-block" id="central_obstruction_factor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.central_obstruction_factor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.central_obstruction_factor.html#pipeline.infrastructure.displays.plotmosaic.central_obstruction_factor">[docs]</a>
 <span class="k">def</span> <span class="nf">central_obstruction_factor</span><span class="p">(</span><span class="n">diameter</span><span class="p">,</span> <span class="n">obscuration</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the scale factor of an Airy pattern as a function of the</span>
@@ -355,7 +351,7 @@
 
 
 <div class="viewcode-block" id="baars_taper_factor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.baars_taper_factor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.baars_taper_factor.html#pipeline.infrastructure.displays.plotmosaic.baars_taper_factor">[docs]</a>
 <span class="k">def</span> <span class="nf">baars_taper_factor</span><span class="p">(</span><span class="n">taper_dB</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a taper in dB to the constant X</span>
@@ -370,7 +366,7 @@
 
 
 <div class="viewcode-block" id="antenna_taper_factor">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotmosaic.antenna_taper_factor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotmosaic.antenna_taper_factor.html#pipeline.infrastructure.displays.plotmosaic.antenna_taper_factor">[docs]</a>
 <span class="k">def</span> <span class="nf">antenna_taper_factor</span><span class="p">(</span><span class="n">array_name</span><span class="p">):</span>
     <span class="c1"># Primary beam taper in dB.</span>
     <span class="n">antenna_taper</span> <span class="o">=</span> <span class="p">{</span>

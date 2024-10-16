@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -158,7 +154,7 @@
 
 
 <div class="viewcode-block" id="gridding_factory">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.gridding_factory">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.gridding_factory.html#pipeline.hsd.tasks.imaging.gridding.gridding_factory">[docs]</a>
 <span class="k">def</span> <span class="nf">gridding_factory</span><span class="p">(</span><span class="n">observing_pattern</span><span class="p">):</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ObsPattern = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">observing_pattern</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">observing_pattern</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;RASTER&#39;</span><span class="p">:</span>
@@ -173,7 +169,7 @@
 
 
 <div class="viewcode-block" id="GriddingInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingInputs.html#pipeline.hsd.tasks.imaging.gridding.GriddingInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">GriddingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">BASELINED</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span>
@@ -207,13 +203,13 @@
 
 
 <div class="viewcode-block" id="GriddingResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingResults.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults">[docs]</a>
 <span class="k">class</span> <span class="nc">GriddingResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GriddingResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GriddingResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingResults.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GriddingResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
 
@@ -229,7 +225,7 @@
 <span class="c1"># MS names as an input (although parent name is internally resolved in</span>
 <span class="c1"># the class).</span>
 <div class="viewcode-block" id="GriddingBase">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase">[docs]</a>
 <span class="k">class</span> <span class="nc">GriddingBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GriddingInputs</span>
     <span class="n">Rule</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WeightDistance&#39;</span><span class="p">:</span> <span class="s1">&#39;Gauss&#39;</span><span class="p">,</span> \
@@ -240,7 +236,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="GriddingBase.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">datatable_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -319,13 +315,13 @@
 
 
 <div class="viewcode-block" id="GriddingBase.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
 <div class="viewcode-block" id="GriddingBase.dogrid">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.dogrid">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase.dogrid">[docs]</a>
     <span class="k">def</span> <span class="nf">dogrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataIn</span><span class="p">,</span> <span class="n">kernel_width</span><span class="p">,</span> <span class="n">combine_radius</span><span class="p">,</span> <span class="n">allowance_radius</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">is_eph_obj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">datatable_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The process does re-map and combine spectrum for each position</span>
@@ -547,7 +543,7 @@
 
 
 <div class="viewcode-block" id="RasterGridding">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.RasterGridding">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.RasterGridding.html#pipeline.hsd.tasks.imaging.gridding.RasterGridding">[docs]</a>
 <span class="k">class</span> <span class="nc">RasterGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
@@ -655,7 +651,7 @@
 
 
 <div class="viewcode-block" id="SinglePointGridding">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.SinglePointGridding">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.SinglePointGridding.html#pipeline.hsd.tasks.imaging.gridding.SinglePointGridding">[docs]</a>
 <span class="k">class</span> <span class="nc">SinglePointGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
@@ -710,7 +706,7 @@
 
 
 <div class="viewcode-block" id="MultiPointGridding">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.imaging.html#pipeline.hsd.tasks.imaging.gridding.MultiPointGridding">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.MultiPointGridding.html#pipeline.hsd.tasks.imaging.gridding.MultiPointGridding">[docs]</a>
 <span class="k">class</span> <span class="nc">MultiPointGridding</span><span class="p">(</span><span class="n">GriddingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">msids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ras</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                <span class="n">decs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">stats</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>

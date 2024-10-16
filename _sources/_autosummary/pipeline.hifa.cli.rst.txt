@@ -4,9 +4,16 @@ pipeline.hifa.cli
 .. automodule:: pipeline.hifa.cli
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       hifa_antpos
       hifa_bandpass
@@ -37,3 +44,15 @@ pipeline.hifa.cli
       hifa_wvrgcal
       hifa_wvrgcalflag
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

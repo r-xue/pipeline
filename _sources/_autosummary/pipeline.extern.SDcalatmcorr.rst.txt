@@ -4,9 +4,16 @@ pipeline.extern.SDcalatmcorr
 .. automodule:: pipeline.extern.SDcalatmcorr
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       atmcorr
       binnedstats
@@ -41,9 +48,16 @@ pipeline.extern.SDcalatmcorr
       skysel
       smooth
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       CubicSpline
       aftool
@@ -53,3 +67,11 @@ pipeline.extern.SDcalatmcorr
       qatool
       tbtool
    
+   
+
+   
+   
+   
+
+
+

@@ -48,21 +48,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -171,28 +167,28 @@ allowing pipeline sessions to be interrupted and resumed.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.observing_run">
 <span class="sig-name descname"><span class="pre">observing_run</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.observing_run" title="Link to this definition"></a></dt>
-<dd><p>the top-level (<a class="reference internal" href="../_apidoc/pipeline.domain.html#pipeline.domain.observingrun.ObservingRun" title="pipeline.domain.observingrun.ObservingRun"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservingRun</span></code></a>)
+<dd><p>the top-level (<a class="reference internal" href="../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.ObservingRun.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.ObservingRun" title="pipeline.domain.observingrun.ObservingRun"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservingRun</span></code></a>)
 through which all other pipeline.domain objects can be accessed</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.callibrary">
 <span class="sig-name descname"><span class="pre">callibrary</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.callibrary" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.callibrary.CalLibrary" title="pipeline.infrastructure.callibrary.CalLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalLibrary</span></code></a>) object
+<dd><p>the (<a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.CalLibrary.html#pipeline.infrastructure.callibrary.CalLibrary" title="pipeline.infrastructure.callibrary.CalLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalLibrary</span></code></a>) object
 holding the calibration state for registered measurement sets</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.calimlist">
 <span class="sig-name descname"><span class="pre">calimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.calimlist" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
+<dd><p>the (<a class="reference internal" href="../_autosummary/pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
 object holding final images of calibrators</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.sciimlist">
 <span class="sig-name descname"><span class="pre">sciimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.sciimlist" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="../_apidoc/pipeline.infrastructure.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
+<dd><p>the (<a class="reference internal" href="../_autosummary/pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
 object holding final images of science targets</p>
 </dd></dl>
 
@@ -276,7 +272,7 @@ hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.stage" title="pipeline.infrastructure.launcher.Context.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_skip_mfs_and_cube_imaging</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.html#id0" title="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_skip_mfs_and_cube_imaging</span></code></a></p></td>
 <td><p>Check the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p></td>
 </tr>
 </tbody>
@@ -284,16 +280,16 @@ hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)</p>
 <p class="rubric">Methods Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.get_oussid" title="pipeline.infrastructure.launcher.Context.get_oussid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_oussid</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid" title="pipeline.infrastructure.launcher.Context.get_oussid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_oussid</span></code></a>()</p></td>
 <td><p>Get the parent OUS 'ousstatus' name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.get_recipe_name" title="pipeline.infrastructure.launcher.Context.get_recipe_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_recipe_name</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name" title="pipeline.infrastructure.launcher.Context.get_recipe_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_recipe_name</span></code></a>()</p></td>
 <td><p>Get the recipe name from project structure.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.save" title="pipeline.infrastructure.launcher.Context.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>([filename])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.set_state" title="pipeline.infrastructure.launcher.Context.set_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_state</span></code></a>(cls, name, value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state" title="pipeline.infrastructure.launcher.Context.set_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_state</span></code></a>(cls, name, value)</p></td>
 <td><p>Set a context property using the class name, property name and property value.</p></td>
 </tr>
 </tbody>

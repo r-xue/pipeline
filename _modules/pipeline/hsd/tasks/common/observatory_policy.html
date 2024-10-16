@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -152,12 +148,12 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy">[docs]</a>
 <span class="k">class</span> <span class="nc">ObservatoryImagingPolicy</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for observatory imaging policy.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_beam_size_arcsec">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_beam_size_arcsec">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_beam_size_arcsec">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_arcsec</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -177,7 +173,7 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_beam_size_pixel">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_beam_size_pixel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_beam_size_pixel">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_pixel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -193,7 +189,7 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_convsupport">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_convsupport">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_convsupport">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_convsupport</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -209,7 +205,7 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_image_margin">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_image_margin">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_image_margin">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_image_margin</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -225,7 +221,7 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_conv1d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_conv1d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_conv1d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_conv1d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -241,7 +237,7 @@
 
 
 <div class="viewcode-block" id="ObservatoryImagingPolicy.get_conv2d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_conv2d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ObservatoryImagingPolicy.get_conv2d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_conv2d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -259,12 +255,12 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy">[docs]</a>
 <span class="k">class</span> <span class="nc">ALMAImagingPolicy</span><span class="p">(</span><span class="n">ObservatoryImagingPolicy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of imaging policy for ALMA.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_beam_size_arcsec">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_beam_size_arcsec">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_beam_size_arcsec">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_arcsec</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get beam size in arcsec.</span>
@@ -297,7 +293,7 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_beam_size_pixel">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_beam_size_pixel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_beam_size_pixel">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_pixel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get beam size as number of pixels.</span>
@@ -309,7 +305,7 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_convsupport">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_convsupport">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_convsupport">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_convsupport</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get convolution support.</span>
@@ -321,7 +317,7 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_image_margin">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_image_margin">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_image_margin">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_image_margin</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get image margin in pixel numbers.</span>
@@ -335,7 +331,7 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_conv1d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_conv1d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_conv1d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_conv1d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the constant of conv1d. This is to obtain convolution factors in sdimaging task.</span>
@@ -347,7 +343,7 @@
 
 
 <div class="viewcode-block" id="ALMAImagingPolicy.get_conv2d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_conv2d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.get_conv2d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_conv2d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the constant of conv2d. This is to obtain convolution factors in sdimaging task.</span>
@@ -360,12 +356,12 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy">[docs]</a>
 <span class="k">class</span> <span class="nc">NROImagingPolicy</span><span class="p">(</span><span class="n">ObservatoryImagingPolicy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of imaging policy for NRO 45m telescope.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="NROImagingPolicy.get_beam_size_arcsec">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_beam_size_arcsec">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_beam_size_arcsec">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_arcsec</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get beam size in arcsec.</span>
@@ -388,7 +384,7 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy.get_beam_size_pixel">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_beam_size_pixel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_beam_size_pixel">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_beam_size_pixel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get beam size as number of pixels.</span>
@@ -400,7 +396,7 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy.get_convsupport">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_convsupport">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_convsupport">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_convsupport</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get convolution support.</span>
@@ -412,7 +408,7 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy.get_image_margin">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_image_margin">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_image_margin">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_image_margin</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get image margin in pixel numbers.</span>
@@ -424,7 +420,7 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy.get_conv1d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_conv1d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_conv1d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_conv1d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the constant of conv1d. This is to obtain convolution factors in sdimaging task.</span>
@@ -436,7 +432,7 @@
 
 
 <div class="viewcode-block" id="NROImagingPolicy.get_conv2d">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_conv2d">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.get_conv2d">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_conv2d</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the constant of conv2d. This is to obtain convolution factors in sdimaging task.</span>
@@ -450,7 +446,7 @@
 
 
 <div class="viewcode-block" id="get_imaging_policy">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.common.html#pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy.html#pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy">[docs]</a>
 <span class="k">def</span> <span class="nf">get_imaging_policy</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">ObservatoryImagingPolicy</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get appropriate observatory policy for imaging.</span>
 

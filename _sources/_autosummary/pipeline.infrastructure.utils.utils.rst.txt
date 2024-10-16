@@ -4,9 +4,16 @@ pipeline.infrastructure.utils.utils
 .. automodule:: pipeline.infrastructure.utils.utils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       absolute_path
       approx_equal
@@ -48,10 +55,25 @@ pipeline.infrastructure.utils.utils
       string_to_val
       to_plain_dict
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Number
       pl_defaultdict
    
+   
+
+   
+   
+   
+
+
+

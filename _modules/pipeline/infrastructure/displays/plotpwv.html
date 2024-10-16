@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -174,7 +170,7 @@
 
 
 <div class="viewcode-block" id="plotPWV">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.plotPWV">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotpwv.plotPWV.html#pipeline.infrastructure.displays.plotpwv.plotPWV">[docs]</a>
 <span class="k">def</span> <span class="nf">plotPWV</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">figfile</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">plotrange</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read and plot the PWV values from the ms via the ASDM_CALWVR table.</span>
@@ -306,7 +302,7 @@
 
 
 <div class="viewcode-block" id="readPWVFromMS">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.readPWVFromMS">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotpwv.readPWVFromMS.html#pipeline.infrastructure.displays.plotpwv.readPWVFromMS">[docs]</a>
 <span class="k">def</span> <span class="nf">readPWVFromMS</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads all the PWV values from a measurement set, returning a list</span>
@@ -332,7 +328,7 @@
 
 
 <div class="viewcode-block" id="readPWVFromASDM_CALATMOSPHERE">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotpwv.readPWVFromASDM_CALATMOSPHERE.html#pipeline.infrastructure.displays.plotpwv.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
 <span class="k">def</span> <span class="nf">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.</span>
@@ -363,7 +359,7 @@
 <span class="c1"># be useful elsewhere.</span>
 
 <div class="viewcode-block" id="getObservatoryName">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.getObservatoryName">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotpwv.getObservatoryName.html#pipeline.infrastructure.displays.plotpwv.getObservatoryName">[docs]</a>
 <span class="k">def</span> <span class="nf">getObservatoryName</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the observatory name in the specified ms.</span>
@@ -380,7 +376,7 @@
 
 
 <div class="viewcode-block" id="MAD">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.displays.html#pipeline.infrastructure.displays.plotpwv.MAD">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.displays.plotpwv.MAD.html#pipeline.infrastructure.displays.plotpwv.MAD">[docs]</a>
 <span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Median Absolute Deviation along given axis of an array:</span>

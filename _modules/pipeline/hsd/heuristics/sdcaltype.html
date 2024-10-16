@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -146,12 +142,12 @@
 
 
 <div class="viewcode-block" id="CalibrationTypeHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">CalibrationTypeHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="CalibrationTypeHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.CalibrationTypeHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heuristics_factory</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">h</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
@@ -180,13 +176,13 @@
 
 
 <div class="viewcode-block" id="DefaultCalibrationTypeHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">DefaultCalibrationTypeHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Always return calibration mode &#39;none&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="DefaultCalibrationTypeHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.DefaultCalibrationTypeHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return calibration type. Always return &#39;none&#39;.</span>
@@ -247,14 +243,14 @@
 
 
 <div class="viewcode-block" id="MsCalibrationTypeHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">MsCalibrationTypeHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return appropriate calibration type by examining</span>
 <span class="sd">    STATE subtable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="MsCalibrationTypeHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.MsCalibrationTypeHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return calibration type, which is determined</span>
@@ -289,12 +285,12 @@
 
 
 <div class="viewcode-block" id="AsdmCalibrationTypeHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">AsdmCalibrationTypeHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="AsdmCalibrationTypeHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hsd.heuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.AsdmCalibrationTypeHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">caltype</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
 

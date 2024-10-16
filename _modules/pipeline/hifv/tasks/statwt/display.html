@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="weightboxChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.weightboxChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.statwt.display.weightboxChart.html#pipeline.hifv.tasks.statwt.display.weightboxChart">[docs]</a>
 <span class="k">class</span> <span class="nc">weightboxChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">whis</span> <span class="o">=</span> <span class="mf">3.944</span>
 
@@ -205,14 +201,11 @@
             <span class="n">stb</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">scans</span>
 
-<div class="viewcode-block" id="weightboxChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.weightboxChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">wtables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_wrapper</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="n">k</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_split</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">]:</span> 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to divide the input list to_split into sublists of size n and return </span>
@@ -223,7 +216,7 @@
 
 
 <div class="viewcode-block" id="vlaWeightboxChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.vlaWeightboxChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.statwt.display.vlaWeightboxChart.html#pipeline.hifv.tasks.statwt.display.vlaWeightboxChart">[docs]</a>
 <span class="k">class</span> <span class="nc">vlaWeightboxChart</span><span class="p">(</span><span class="n">weightboxChart</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># A dict where the keys are the band names and the values are lists of the spws for that band</span>
@@ -423,7 +416,7 @@
 
 
 <div class="viewcode-block" id="vlassWeightboxChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.statwt.html#pipeline.hifv.tasks.statwt.display.vlassWeightboxChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.statwt.display.vlassWeightboxChart.html#pipeline.hifv.tasks.statwt.display.vlassWeightboxChart">[docs]</a>
 <span class="k">class</span> <span class="nc">vlassWeightboxChart</span><span class="p">(</span><span class="n">weightboxChart</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>

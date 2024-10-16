@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -144,7 +140,7 @@
 
 
 <div class="viewcode-block" id="RefAntInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAntInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAntInputs.html#pipeline.hif.tasks.refant.session_refant.RefAntInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAntInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">flagging</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -160,7 +156,7 @@
         <span class="k">return</span> <span class="s1">&#39;manual&#39;</span> <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;manual&#39;</span> <span class="k">else</span> <span class="s1">&#39;automatic&#39;</span>
 
 <div class="viewcode-block" id="RefAntInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAntInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAntInputs.html#pipeline.hif.tasks.refant.session_refant.RefAntInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># refant does not use CASA tasks</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -186,7 +182,7 @@
 
 
 <div class="viewcode-block" id="RefAntResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAntResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAntResults.html#pipeline.hif.tasks.refant.session_refant.RefAntResults">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAntResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RefAntResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -194,7 +190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_refant</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">refant</span><span class="p">])</span>
 
 <div class="viewcode-block" id="RefAntResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAntResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAntResults.html#pipeline.hif.tasks.refant.session_refant.RefAntResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refant</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
@@ -223,12 +219,12 @@
 
 
 <div class="viewcode-block" id="RefAnt">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAnt">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAnt.html#pipeline.hif.tasks.refant.session_refant.RefAnt">[docs]</a>
 <span class="k">class</span> <span class="nc">RefAnt</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">RefAntInputs</span>
 
 <div class="viewcode-block" id="RefAnt.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAnt.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAnt.html#pipeline.hif.tasks.refant.session_refant.RefAnt.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -247,7 +243,7 @@
 
 
 <div class="viewcode-block" id="RefAnt.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.refant.html#pipeline.hif.tasks.refant.session_refant.RefAnt.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.refant.session_refant.RefAnt.html#pipeline.hif.tasks.refant.session_refant.RefAnt.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 </div>

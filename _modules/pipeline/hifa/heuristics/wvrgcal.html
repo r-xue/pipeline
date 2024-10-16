@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -143,7 +139,7 @@
 
 
 <div class="viewcode-block" id="WvrgcalHeuristics">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">hm_tie</span><span class="p">,</span> <span class="n">tie</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="p">,</span> <span class="n">sourceflag</span><span class="p">,</span> <span class="n">nsol</span><span class="p">,</span> <span class="n">segsource</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -310,20 +306,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="WvrgcalHeuristics.nsol">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.nsol">[docs]</a>
     <span class="k">def</span> <span class="nf">nsol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nsol</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nsol</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.segsource">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.segsource">[docs]</a>
     <span class="k">def</span> <span class="nf">segsource</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_segsource</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_segsource</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.smoothall">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.smoothall">[docs]</a>
     <span class="k">def</span> <span class="nf">smoothall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allspws</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_smooth</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
             <span class="n">temp</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -331,34 +319,22 @@
                 <span class="n">temp</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">science_integration</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">wvr_integration</span><span class="p">)</span>
             <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">temp</span>        
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.smooth">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.smooth">[docs]</a>
     <span class="k">def</span> <span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_smooth</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
             <span class="c1"># the wvr integration time is the minimum sensible value for smooth</span>
             <span class="n">temp</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">science_integration</span><span class="p">[</span><span class="n">spw</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">wvr_integration</span><span class="p">)</span>
             <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">temp</span>        
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.sourceflag">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.sourceflag">[docs]</a>
     <span class="k">def</span> <span class="nf">sourceflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sourceflag</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sourceflag</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.tie">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.tie">[docs]</a>
     <span class="k">def</span> <span class="nf">tie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tie</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tie</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.toffset">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.toffset">[docs]</a>
     <span class="k">def</span> <span class="nf">toffset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
@@ -369,14 +345,10 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MS taken before </span><span class="si">%s</span><span class="s1">: toffset = -1&#39;</span> <span class="o">%</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">cut</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fits&#39;</span><span class="p">]))</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
-
-<div class="viewcode-block" id="WvrgcalHeuristics.wvr_available">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.hifa.heuristics.html#pipeline.hifa.heuristics.wvrgcal.WvrgcalHeuristics.wvr_available">[docs]</a>
     <span class="k">def</span> <span class="nf">wvr_available</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wvr_available</span></div>
-</div>
 
 </pre></div>
 

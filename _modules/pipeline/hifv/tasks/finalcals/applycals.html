@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,7 +143,7 @@
 
 
 <div class="viewcode-block" id="ApplycalsInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.ApplycalsInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.applycals.ApplycalsInputs.html#pipeline.hifv.tasks.ApplycalsInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalsInputs</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">IFApplycalInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalInputs defines the inputs for the Applycal pipeline task.</span>
@@ -174,7 +170,7 @@
     <span class="n">gainmap</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ApplycalsInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.ApplycalsInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.finalcals.applycals.ApplycalsInputs.html#pipeline.hifv.tasks.ApplycalsInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ApplycalsInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -186,7 +182,7 @@
 
 
 <div class="viewcode-block" id="Applycals">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.Applycals">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_applycals&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Applycals</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ApplycalsInputs</span>
@@ -195,7 +191,7 @@
     <span class="n">antenna_to_apply</span> <span class="o">=</span> <span class="s1">&#39;*&amp;*&#39;</span>
 
 <div class="viewcode-block" id="Applycals.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.Applycals.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Run applycal</span>
@@ -205,7 +201,7 @@
 
 
 <div class="viewcode-block" id="Applycals.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.Applycals.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
@@ -217,7 +213,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="Applycals.applycal_run">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.Applycals.applycal_run">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals.applycal_run">[docs]</a>
     <span class="k">def</span> <span class="nf">applycal_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -422,7 +418,7 @@
 
 
 <div class="viewcode-block" id="Applycals.match_fields_scans">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.finalcals.html#pipeline.hifv.tasks.finalcals.applycals.Applycals.match_fields_scans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals.match_fields_scans">[docs]</a>
     <span class="k">def</span> <span class="nf">match_fields_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 

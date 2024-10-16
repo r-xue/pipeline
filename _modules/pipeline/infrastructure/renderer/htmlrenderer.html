@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -177,7 +173,7 @@
 
 
 <div class="viewcode-block" id="get_task_description">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_task_description">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_task_description.html#pipeline.infrastructure.renderer.htmlrenderer.get_task_description">[docs]</a>
 <span class="k">def</span> <span class="nf">get_task_description</span><span class="p">(</span><span class="n">result_obj</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">include_stage</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">get_task_description</span><span class="p">([</span><span class="n">result_obj</span><span class="p">,</span> <span class="p">],</span> <span class="n">context</span><span class="p">)</span>
@@ -263,7 +259,7 @@
 
 
 <div class="viewcode-block" id="get_task_name">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_task_name">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_task_name.html#pipeline.infrastructure.renderer.htmlrenderer.get_task_name">[docs]</a>
 <span class="k">def</span> <span class="nf">get_task_name</span><span class="p">(</span><span class="n">result_obj</span><span class="p">,</span> <span class="n">include_stage</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">stage</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">. &#39;</span> <span class="o">%</span> <span class="n">get_stage_number</span><span class="p">(</span><span class="n">result_obj</span><span class="p">)</span> <span class="k">if</span> <span class="n">include_stage</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
 
@@ -336,7 +332,7 @@
 
 
 <div class="viewcode-block" id="get_stage_number">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_stage_number">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_stage_number.html#pipeline.infrastructure.renderer.htmlrenderer.get_stage_number">[docs]</a>
 <span class="k">def</span> <span class="nf">get_stage_number</span><span class="p">(</span><span class="n">result_obj</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result_obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">get_stage_number</span><span class="p">([</span><span class="n">result_obj</span><span class="p">,</span> <span class="p">])</span>
@@ -351,7 +347,7 @@
 
 
 <div class="viewcode-block" id="get_plot_dir">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_plot_dir">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_plot_dir.html#pipeline.infrastructure.renderer.htmlrenderer.get_plot_dir">[docs]</a>
 <span class="k">def</span> <span class="nf">get_plot_dir</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">stage_number</span><span class="p">):</span>
     <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">stage_number</span><span class="p">)</span>
     <span class="n">plots_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="s1">&#39;plots&#39;</span><span class="p">)</span>
@@ -360,7 +356,7 @@
 
 
 <div class="viewcode-block" id="is_singledish_ms">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.is_singledish_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.is_singledish_ms.html#pipeline.infrastructure.renderer.htmlrenderer.is_singledish_ms">[docs]</a>
 <span class="k">def</span> <span class="nf">is_singledish_ms</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
     <span class="c1"># importdata results</span>
     <span class="n">result0</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -378,7 +374,7 @@
 
 
 <div class="viewcode-block" id="scan_has_intent">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.scan_has_intent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.scan_has_intent.html#pipeline.infrastructure.renderer.htmlrenderer.scan_has_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">scan_has_intent</span><span class="p">(</span><span class="n">scans</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the list of scans includes a specified intent&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
@@ -388,14 +384,12 @@
 
 
 <div class="viewcode-block" id="Session">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.Session">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.Session.html#pipeline.infrastructure.renderer.htmlrenderer.Session">[docs]</a>
 <span class="k">class</span> <span class="nc">Session</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Unnamed Session&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">mses</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mses</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-<div class="viewcode-block" id="Session.get_sessions">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.Session.get_sessions">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="c1"># eventually we will need to sort by OUS ID too, but at the moment data</span>
@@ -422,42 +416,30 @@
                 <span class="k">return</span> <span class="mi">0</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">Session</span><span class="p">(</span><span class="n">mses</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mses</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">session_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="n">mycmp</span><span class="p">))]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="RendererBase">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.RendererBase.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase">[docs]</a>
 <span class="k">class</span> <span class="nc">RendererBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base renderer class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="RendererBase.rerender">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase.rerender">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">rerender</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;RendererBase: I think I</span><span class="se">\&#39;</span><span class="s1">m rerendering all pages!&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="kc">True</span>
 
-
-<div class="viewcode-block" id="RendererBase.get_path">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase.get_path">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="RendererBase.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase.get_file">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="RendererBase.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.RendererBase.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># give the implementing class a chance to bypass rendering. This is</span>
@@ -476,12 +458,11 @@
             <span class="n">display_context</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
             <span class="n">display_context</span><span class="p">[</span><span class="s1">&#39;use_minified_js&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">use_minified_js</span>
             <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T1_1Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T1_1Renderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T1-1 OUS Splash Page renderer</span>
@@ -509,7 +490,7 @@
                 <span class="s1">&#39;merge2_version&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="T1_1Renderer.EnvironmentProperty">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.EnvironmentProperty">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.EnvironmentProperty">[docs]</a>
     <span class="k">class</span> <span class="nc">EnvironmentProperty</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Enumeration of environment properties that describe the host</span>
@@ -535,17 +516,14 @@
         <span class="n">CGROUP_CPU_WEIGHT</span> <span class="o">=</span> <span class="s2">&quot;CPU distribution within cgroup&quot;</span>
         <span class="n">CGROUP_MEM_LIMIT</span> <span class="o">=</span> <span class="s2">&quot;Cgroup memory limit&quot;</span>
 
-<div class="viewcode-block" id="T1_1Renderer.EnvironmentProperty.description">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.EnvironmentProperty.description">[docs]</a>
         <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">CASA_MEMORY</span><span class="p">:</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Memory available to </span><span class="si">{</span><span class="s2">&quot;pipeline&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_singledish_ms</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;tclean&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
-</div>
 
 
 <div class="viewcode-block" id="T1_1Renderer.EnvironmentTable">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.EnvironmentTable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.EnvironmentTable">[docs]</a>
     <span class="k">class</span> <span class="nc">EnvironmentTable</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Representation of the resource limit table in the weblog.</span>
@@ -589,8 +567,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">num_columns</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">T1_1Renderer</span><span class="o">.</span><span class="n">EnvironmentProperty</span><span class="o">.</span><span class="n">HOSTNAME</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="T1_1Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">obs_start</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">start_datetime</span>
@@ -744,11 +720,8 @@
             <span class="s1">&#39;ms_summary_rows&#39;</span><span class="p">:</span> <span class="n">ms_summary_rows</span><span class="p">,</span>
             <span class="s1">&#39;environment_tables&#39;</span><span class="p">:</span> <span class="n">environment_tables</span><span class="p">,</span>
             <span class="s1">&#39;execution_mode&#39;</span><span class="p">:</span> <span class="n">execution_mode</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
 
-
-<div class="viewcode-block" id="T1_1Renderer.get_environment_tables">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_1Renderer.get_environment_tables">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_environment_tables</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
         <span class="c1"># alias to make the following code more compact and easier to read</span>
@@ -826,12 +799,11 @@
         <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;Parallel&#39;</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="s1">&#39;MPI Server&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">role</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">cluster_details</span><span class="p">()])</span> <span class="k">else</span> <span class="s1">&#39;Serial&#39;</span>
 
         <span class="k">return</span> <span class="n">mode</span><span class="p">,</span> <span class="n">tables</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T1_2Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_2Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_2Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_2Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T1_2Renderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T1-2 Observation Summary renderer</span>
@@ -848,8 +820,6 @@
                 <span class="s1">&#39;time_start time_end time_on_source &#39;</span>
                 <span class="s1">&#39;baseline_min baseline_max baseline_rms&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T1_2Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_2Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">ms_summary_rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -896,12 +866,11 @@
 
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                 <span class="s1">&#39;ms_summary_rows&#39;</span><span class="p">:</span> <span class="n">ms_summary_rows</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T1_3MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_3MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_3MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_3MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T1_3MRenderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T1-3M renderer</span>
@@ -911,8 +880,6 @@
 
     <span class="n">MsgTableRow</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;MsgTableRow&#39;</span><span class="p">,</span> <span class="s1">&#39;stage task type message target&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T1_3MRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_3MRenderer.get_display_context">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">registry</span> <span class="o">=</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span>
@@ -986,12 +953,11 @@
                 <span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="n">scores</span><span class="p">,</span>
                 <span class="s1">&#39;tablerows&#39;</span><span class="p">:</span> <span class="n">tablerows</span><span class="p">,</span>
                 <span class="s1">&#39;flagtables&#39;</span><span class="p">:</span> <span class="n">flagtables</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T1_4MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_4MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T1_4MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_4MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T1_4MRenderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T1-4M renderer</span>
@@ -1000,8 +966,6 @@
     <span class="c1"># TODO get template at run-time</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t1-4m.mako&#39;</span>
 
-<div class="viewcode-block" id="T1_4MRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T1_4MRenderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1032,12 +996,11 @@
                 <span class="s1">&#39;results&#39;</span>  <span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">,</span>
                 <span class="s1">&#39;scores&#39;</span>   <span class="p">:</span> <span class="n">scores</span><span class="p">,</span>
                 <span class="s1">&#39;task_duration&#39;</span><span class="p">:</span> <span class="n">task_duration</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_1Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_1Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_1Renderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-4M renderer</span>
@@ -1045,25 +1008,20 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-1.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-1.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_1Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">sessions</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">get_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span> <span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                 <span class="s1">&#39;sessions&#39;</span> <span class="p">:</span> <span class="n">sessions</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_1DetailsRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_1DetailsRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-1_details.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-1_details.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_1DetailsRenderer.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.get_file">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">ms_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -1072,21 +1030,15 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ms_dir</span><span class="p">)</span>
 
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_1DetailsRenderer.get_filename">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.get_filename">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;session</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">session</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                             <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
-                            <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span></div>
+                            <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_1DetailsRenderer.write_listobs">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.write_listobs">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">write_listobs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">listfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> 
@@ -1098,11 +1050,8 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Writing listobs output to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">listfile</span><span class="p">)</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">listobs</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                                      <span class="n">listfile</span><span class="o">=</span><span class="n">listfile</span><span class="p">)</span>
-            <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
+            <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="T2_1DetailsRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">T2_1DetailsRenderer</span><span class="o">.</span><span class="n">write_listobs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
@@ -1237,11 +1186,8 @@
             <span class="s1">&#39;el_min&#39;</span>          <span class="p">:</span> <span class="n">el_min</span><span class="p">,</span>
             <span class="s1">&#39;el_max&#39;</span>          <span class="p">:</span> <span class="n">el_max</span><span class="p">,</span>
             <span class="s1">&#39;vla_basebands&#39;</span>   <span class="p">:</span> <span class="n">vla_basebands</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
 
-
-<div class="viewcode-block" id="T2_1DetailsRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">Session</span><span class="o">.</span><span class="n">get_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
@@ -1257,15 +1203,12 @@
                     <span class="n">template</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
                     <span class="n">display_context</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
                     <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="MetadataRendererBase">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.MetadataRendererBase">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.MetadataRendererBase.html#pipeline.infrastructure.renderer.htmlrenderer.MetadataRendererBase">[docs]</a>
 <span class="k">class</span> <span class="nc">MetadataRendererBase</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
-<div class="viewcode-block" id="MetadataRendererBase.rerender">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.MetadataRendererBase.rerender">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">rerender</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># TODO: only rerender when a new ImportData result is queued</span>
@@ -1273,18 +1216,15 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Always rerendering </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_XRendererBase">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_XRendererBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base renderer for T2-2-X series of pages.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="T2_2_XRendererBase.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase.get_file">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">ms_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -1293,21 +1233,15 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ms_dir</span><span class="p">)</span>
 
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_2_XRendererBase.get_filename">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase.get_filename">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                             <span class="s1">&#39;session</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">session</span><span class="p">,</span>
                             <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
-                            <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span></div>
+                            <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_2_XRendererBase.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_XRendererBase.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
@@ -1320,12 +1254,11 @@
                     <span class="n">template</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
                     <span class="n">display_context</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
                     <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_1Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_1Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_1Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_1Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_1Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-1 renderer - spatial setup</span>
@@ -1333,8 +1266,6 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-2-1.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-1.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_2_1Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_1Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">mosaics</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1348,12 +1279,11 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span> <span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                 <span class="s1">&#39;ms&#39;</span>       <span class="p">:</span> <span class="n">ms</span><span class="p">,</span>
                 <span class="s1">&#39;mosaics&#39;</span>  <span class="p">:</span> <span class="n">mosaics</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_2Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_2Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-2 renderer</span>
@@ -1362,7 +1292,7 @@
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-2.mako&#39;</span>
 
 <div class="viewcode-block" id="T2_2_2Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer.get_display_context">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_2Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine whether to show the Online Spec. Avg. column on the Spectral Setup Details page.&quot;&quot;&quot;</span>
@@ -1398,7 +1328,7 @@
 
 
 <div class="viewcode-block" id="T2_2_3Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_3Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_3Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_3Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_3Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-3 renderer</span>
@@ -1406,8 +1336,6 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-2-3.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-3.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_2_3Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_3Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;NRO&#39;</span><span class="p">,):</span>
@@ -1440,12 +1368,11 @@
                 <span class="s1">&#39;plot_uv&#39;</span><span class="p">:</span> <span class="n">plot_uv</span><span class="p">,</span>
                 <span class="s1">&#39;ms&#39;</span><span class="p">:</span> <span class="n">ms</span><span class="p">,</span>
                 <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">dirname</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_4Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_4Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_4Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_4Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_4Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-4 renderer</span>
@@ -1453,8 +1380,6 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-2-4.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-4.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_2_4Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_4Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">task</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">AzElChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
@@ -1483,12 +1408,11 @@
                 <span class="s1">&#39;el_vs_time_plot&#39;</span><span class="p">:</span> <span class="n">el_vs_time_plot</span><span class="p">,</span>
                 <span class="s1">&#39;plot_uv&#39;</span><span class="p">:</span> <span class="n">plot_uv</span><span class="p">,</span>
                 <span class="s1">&#39;dirname&#39;</span><span class="p">:</span> <span class="n">dirname</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_5Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_5Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_5Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_5Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_5Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-5 renderer - weather page</span>
@@ -1496,8 +1420,6 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-2-5.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-5.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_2_5Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_5Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">task</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">WeatherChart</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
@@ -1509,12 +1431,11 @@
                 <span class="s1">&#39;ms&#39;</span>           <span class="p">:</span> <span class="n">ms</span><span class="p">,</span>
                 <span class="s1">&#39;weather_plot&#39;</span> <span class="p">:</span> <span class="n">weather_plot</span><span class="p">,</span>
                 <span class="s1">&#39;dirname&#39;</span>      <span class="p">:</span> <span class="n">dirname</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_6Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_6Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_6Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_6Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_6Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-6 renderer - scans page</span>
@@ -1527,8 +1448,6 @@
         <span class="s1">&#39;id time_start time_end duration intents fields spws&#39;</span>
     <span class="p">)</span>
 
-<div class="viewcode-block" id="T2_2_6Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_6Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">tablerows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1560,12 +1479,11 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span>     <span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                 <span class="s1">&#39;ms&#39;</span>           <span class="p">:</span> <span class="n">ms</span><span class="p">,</span>
                 <span class="s1">&#39;tablerows&#39;</span>    <span class="p">:</span> <span class="n">tablerows</span><span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_2_7Renderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_2_7Renderer</span><span class="p">(</span><span class="n">T2_2_XRendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-2-7 renderer (single dish specific)</span>
@@ -1573,16 +1491,13 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-2-7.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-2-7.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_2_7Renderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">is_singledish_ms</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">T2_2_7Renderer</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
-
+            <span class="nb">super</span><span class="p">(</span><span class="n">T2_2_7Renderer</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
 <div class="viewcode-block" id="T2_2_7Renderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer.get_display_context">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_2_7Renderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">:</span><span class="n">Context</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get display context and plots points</span>
@@ -1640,15 +1555,13 @@
 
 
 <div class="viewcode-block" id="T2_3_XMBaseRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_XMBaseRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_XMBaseRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_XMBaseRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_XMBaseRenderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
     <span class="c1"># the filename to which output will be directed</span>
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;overrideme&#39;</span>
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;overrideme&#39;</span>
 
-<div class="viewcode-block" id="T2_3_XMBaseRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_XMBaseRenderer.get_display_context">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">topic</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_topic</span><span class="p">()</span>
@@ -1676,12 +1589,11 @@
             <span class="s1">&#39;tablerows&#39;</span><span class="p">:</span> <span class="n">tablerows</span><span class="p">,</span>
             <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="n">topic</span>
         <span class="p">}</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_1MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_1MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_1MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_1MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_1MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-1M, the data set topic.</span>
@@ -1691,17 +1603,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-1m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_1MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_1MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_dataset_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_2MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_2MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_2MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_2MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_2MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-2M: the QA calibration section.</span>
@@ -1711,17 +1620,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-2m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_2MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_2MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_calibration_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_3MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_3MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_3MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_3MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_3MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-3M: the QA flagging section.</span>
@@ -1731,17 +1637,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-3m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_3MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_3MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_flagging_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_4MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_4MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_4MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_4MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_4MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-4M: the QA line finding section.</span>
@@ -1751,17 +1654,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-4m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_4MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_4MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_linefinding_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_5MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_5MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_5MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_5MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_5MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-5M: the imaging topic</span>
@@ -1771,17 +1671,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-5m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_5MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_5MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_imaging_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_3_6MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_6MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_3_6MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_6MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_3_6MRenderer</span><span class="p">(</span><span class="n">T2_3_XMBaseRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Renderer for T2-3-6M: the miscellaneous topic</span>
@@ -1791,17 +1688,14 @@
     <span class="c1"># the template file for this renderer</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-3-6m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_3_6MRenderer.get_topic">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_3_6MRenderer.get_topic">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_topic</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">qaadapter</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get_miscellaneous_topic</span><span class="p">()</span>        </div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_4MRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MRenderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    T2-4M renderer</span>
@@ -1809,13 +1703,10 @@
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-4m.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-4m.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_4MRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MRenderer.get_display_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span> <span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                 <span class="s1">&#39;results&#39;</span>  <span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">}</span></div>
-</div>
 
 
 <span class="c1">#     @classmethod</span>
@@ -1871,15 +1762,13 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsDefaultRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsDefaultRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s1">&#39;t2-4m_details-generic.mako&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">always_rerender</span> <span class="o">=</span> <span class="n">always_rerender</span>
 
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.get_display_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer.get_display_context">[docs]</a>
     <span class="k">def</span> <span class="nf">get_display_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">mako_context</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pcontext&#39;</span> <span class="p">:</span> <span class="n">context</span><span class="p">,</span>
                         <span class="s1">&#39;result&#39;</span>   <span class="p">:</span> <span class="n">result</span><span class="p">,</span>
@@ -1887,17 +1776,11 @@
                         <span class="s1">&#39;taskhelp&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_help</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">),</span>
                         <span class="s1">&#39;dirname&#39;</span>  <span class="p">:</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_mako_context</span><span class="p">(</span><span class="n">mako_context</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mako_context</span></div>
+        <span class="k">return</span> <span class="n">mako_context</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No-op update_mako_context for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;No-op update_mako_context for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsDefaultRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsDefaultRenderer.render">[docs]</a>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">display_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_display_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="c1"># TODO remove fallback access once all templates are converted </span>
@@ -1905,8 +1788,7 @@
         <span class="k">if</span> <span class="n">uri</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span>
         <span class="n">template</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">display_context</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_log_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1939,31 +1821,23 @@
 <span class="c1"># ----------------------------------------------------------------------</span>
 
 <div class="viewcode-block" id="T2_4MDetailsContainerRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsContainerRenderer</span><span class="p">(</span><span class="n">RendererBase</span><span class="p">):</span>
     <span class="n">output_file</span> <span class="o">=</span> <span class="s1">&#39;t2-4m_details-container.html&#39;</span>
     <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;t2-4m_details-container.mako&#39;</span>
 
-<div class="viewcode-block" id="T2_4MDetailsContainerRenderer.get_path">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer.get_path">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">stage</span> <span class="o">=</span> <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span>
         <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsContainerRenderer.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer.get_file">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="n">file_obj</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsContainerRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsContainerRenderer.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">urls</span><span class="p">):</span>
         <span class="c1"># give the implementing class a chance to bypass rendering. This is</span>
@@ -1980,12 +1854,11 @@
         <span class="n">template</span> <span class="o">=</span> <span class="n">weblog</span><span class="o">.</span><span class="n">TEMPLATE_LOOKUP</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
         <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
             <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">mako_context</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="T2_4MDetailsRenderer">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsRenderer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># the filename component of the output file. While this is the same for</span>
     <span class="c1"># all results, the directory is stage-specific, so there&#39;s no risk of</span>
@@ -2007,8 +1880,6 @@
 <span class="sd">    :type root: string</span>
 <span class="sd">    :rtype: a file object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="T2_4MDetailsRenderer.get_file">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer.get_file">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
         <span class="c1"># construct the relative filename, eg. &#39;stageX/t2-4m_details.html&#39;</span>
@@ -2026,8 +1897,7 @@
 
         <span class="c1"># return the file object wrapped in a context manager, so we can use</span>
         <span class="c1"># it with the autoclosing &#39;with fileobj as f:&#39; construct</span>
-        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">file_obj</span><span class="p">)</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the template output path.</span>
@@ -2040,8 +1910,6 @@
 <span class="sd">    :type root: string</span>
 <span class="sd">    :rtype: string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="T2_4MDetailsRenderer.get_path">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer.get_path">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="c1"># HTML output will be written to the directory &#39;stageX&#39; </span>
@@ -2049,8 +1917,7 @@
         <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">stage</span><span class="p">)</span>
 
         <span class="c1"># construct the relative filename, eg. &#39;stageX/t2-4m_details.html&#39;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">output_file</span><span class="p">)</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Render the detailed task-centric view of each Results in the given</span>
@@ -2063,8 +1930,6 @@
 <span class="sd">    :param context: the pipeline Context</span>
 <span class="sd">    :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="T2_4MDetailsRenderer.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer.render">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># for each result accepted and stored in the context..</span>
@@ -2120,11 +1985,8 @@
                 <span class="n">container</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_result</span><span class="p">,</span> <span class="n">container_urls</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Don</span><span class="se">\&#39;</span><span class="s1">t know how to group </span><span class="si">%s</span><span class="s1"> renderer&#39;</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Don</span><span class="se">\&#39;</span><span class="s1">t know how to group </span><span class="si">%s</span><span class="s1"> renderer&#39;</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsRenderer.render_result">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.T2_4MDetailsRenderer.render_result">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">render_result</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>                
         <span class="c1"># details pages do not need to be updated once written unless the</span>
@@ -2168,12 +2030,11 @@
 
                 <span class="n">event</span> <span class="o">=</span> <span class="n">WebLogStageRenderingAbnormalExitEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stage_number</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
                 <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="wrap_in_resultslist">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.wrap_in_resultslist">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.wrap_in_resultslist.html#pipeline.infrastructure.renderer.htmlrenderer.wrap_in_resultslist">[docs]</a>
 <span class="k">def</span> <span class="nf">wrap_in_resultslist</span><span class="p">(</span><span class="n">task_result</span><span class="p">):</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
     <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task_result</span><span class="p">)</span>
@@ -2202,7 +2063,7 @@
 
 
 <div class="viewcode-block" id="group_into_sessions">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.group_into_sessions">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.group_into_sessions.html#pipeline.infrastructure.renderer.htmlrenderer.group_into_sessions">[docs]</a>
 <span class="k">def</span> <span class="nf">group_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return results grouped into lists by session. </span>
@@ -2236,7 +2097,7 @@
 
 
 <div class="viewcode-block" id="group_into_measurement_sets">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.group_into_measurement_sets">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.group_into_measurement_sets.html#pipeline.infrastructure.renderer.htmlrenderer.group_into_measurement_sets">[docs]</a>
 <span class="k">def</span> <span class="nf">group_into_measurement_sets</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_results</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_vis</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ImportDataResults&#39;</span><span class="p">,</span> <span class="s1">&#39;SDImportDataResults&#39;</span><span class="p">,</span> <span class="s1">&#39;NROImportDataResults&#39;</span><span class="p">):</span>
@@ -2261,7 +2122,7 @@
 
 
 <div class="viewcode-block" id="sort_by_time">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.sort_by_time">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.sort_by_time.html#pipeline.infrastructure.renderer.htmlrenderer.sort_by_time">[docs]</a>
 <span class="k">def</span> <span class="nf">sort_by_time</span><span class="p">(</span><span class="n">mses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return measurement sets sorted by time order.</span>
@@ -2272,7 +2133,7 @@
 
 
 <div class="viewcode-block" id="get_rootdir">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_rootdir">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_rootdir.html#pipeline.infrastructure.renderer.htmlrenderer.get_rootdir">[docs]</a>
 <span class="k">def</span> <span class="nf">get_rootdir</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ImportDataResults&#39;</span><span class="p">,</span> <span class="s1">&#39;SDImportDataResults&#39;</span><span class="p">,</span> <span class="s1">&#39;NROImportDataResults&#39;</span><span class="p">):</span>
@@ -2285,7 +2146,7 @@
 
 
 <div class="viewcode-block" id="group_by_root">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.group_by_root">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.group_by_root.html#pipeline.infrastructure.renderer.htmlrenderer.group_by_root">[docs]</a>
 <span class="k">def</span> <span class="nf">group_by_root</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_results</span><span class="p">):</span>
     <span class="n">results_by_root</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">task_results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">get_rootdir</span><span class="p">)</span>
 
@@ -2305,7 +2166,7 @@
 
 
 <div class="viewcode-block" id="WebLogGenerator">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.WebLogGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.WebLogGenerator.html#pipeline.infrastructure.renderer.htmlrenderer.WebLogGenerator">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">renderers</span> <span class="o">=</span> <span class="p">[</span><span class="n">T1_1Renderer</span><span class="p">,</span>         <span class="c1"># OUS splash page</span>
                  <span class="n">T1_2Renderer</span><span class="p">,</span>         <span class="c1"># observation summary</span>
@@ -2331,8 +2192,6 @@
         <span class="c1"># some summary renderers are placed last for access to scores</span>
                  <span class="n">T1_4MRenderer</span><span class="p">]</span>        <span class="c1"># task summary</span>
 
-<div class="viewcode-block" id="WebLogGenerator.copy_resources">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.WebLogGenerator.copy_resources">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">copy_resources</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;resources&#39;</span><span class="p">)</span>
@@ -2349,11 +2208,8 @@
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> 
                         <span class="n">dst</span><span class="p">,</span> 
                         <span class="n">symlinks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
-                        <span class="n">ignore</span><span class="o">=</span><span class="n">ignore_fn</span><span class="p">)</span></div>
+                        <span class="n">ignore</span><span class="o">=</span><span class="n">ignore_fn</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="WebLogGenerator.render">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.WebLogGenerator.render">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="c1"># copy CSS, javascript etc. to weblog directory</span>
@@ -2383,12 +2239,11 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">link_relsrc</span><span class="p">,</span> <span class="n">link_dst</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">context</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">proxies</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="LogCopier">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.LogCopier">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.LogCopier.html#pipeline.infrastructure.renderer.htmlrenderer.LogCopier">[docs]</a>
 <span class="k">class</span> <span class="nc">LogCopier</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LogCopier copies and handles the CASA logs so that they may be referenced</span>
@@ -2417,8 +2272,6 @@
     <span class="c1"># Thanks to the unique timestamps in the CASA log, the implementation</span>
     <span class="c1"># turns out to be quite simple. Is a class overkill?</span>
 
-<div class="viewcode-block" id="LogCopier.copy">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.LogCopier.copy">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;casapy.log&#39;</span><span class="p">)</span>
@@ -2436,7 +2289,6 @@
                 <span class="n">to_append</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">casalog</span> 
                              <span class="k">if</span> <span class="n">entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_entries</span><span class="p">]</span>
             <span class="n">weblog</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">to_append</span><span class="p">)</span></div>
-</div>
 
 
 <span class="c1">#     @staticmethod    </span>
@@ -2552,7 +2404,7 @@
 
 
 <div class="viewcode-block" id="get_mses_by_time">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_mses_by_time">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_mses_by_time.html#pipeline.infrastructure.renderer.htmlrenderer.get_mses_by_time">[docs]</a>
 <span class="k">def</span> <span class="nf">get_mses_by_time</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">,</span>
                   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ms</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">])</span></div>
@@ -2560,7 +2412,7 @@
 
 
 <div class="viewcode-block" id="get_results_by_time">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_results_by_time">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_results_by_time.html#pipeline.infrastructure.renderer.htmlrenderer.get_results_by_time">[docs]</a>
 <span class="k">def</span> <span class="nf">get_results_by_time</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">resultslist</span><span class="p">):</span>
     <span class="c1"># as this is a ResultsList with important properties attached, results</span>
     <span class="c1"># should be sorted in place.</span>
@@ -2576,7 +2428,7 @@
 
 
 <div class="viewcode-block" id="get_ms_start_time_for_result">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_ms_start_time_for_result">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_ms_start_time_for_result.html#pipeline.infrastructure.renderer.htmlrenderer.get_ms_start_time_for_result">[docs]</a>
 <span class="k">def</span> <span class="nf">get_ms_start_time_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
     <span class="c1"># single dish tasks do not attach Inputs to their component results, so</span>
     <span class="c1"># there&#39;s no reference or sort the results by.</span>
@@ -2588,7 +2440,7 @@
 
 
 <div class="viewcode-block" id="get_ms_attr_for_result">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.get_ms_attr_for_result">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.get_ms_attr_for_result.html#pipeline.infrastructure.renderer.htmlrenderer.get_ms_attr_for_result">[docs]</a>
 <span class="k">def</span> <span class="nf">get_ms_attr_for_result</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">accessor</span><span class="p">):</span>
     <span class="n">ms_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
     <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms_basename</span><span class="p">)</span>
@@ -2597,7 +2449,7 @@
 
 
 <div class="viewcode-block" id="compute_az_el_to_field">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_to_field">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_to_field.html#pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_to_field">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_az_el_to_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">observatory</span><span class="p">):</span>
     <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
 
@@ -2614,7 +2466,7 @@
 
 
 <div class="viewcode-block" id="compute_az_el_for_ms">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_for_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_for_ms.html#pipeline.infrastructure.renderer.htmlrenderer.compute_az_el_for_ms">[docs]</a>
 <span class="k">def</span> <span class="nf">compute_az_el_for_ms</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">observatory</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
     <span class="n">cal_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;POINTING,SIDEBAND,ATMOSPHERE&#39;</span><span class="p">)</span>
     <span class="n">scans</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">scans</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cal_scans</span><span class="p">]</span>
@@ -2633,7 +2485,7 @@
 
 
 <div class="viewcode-block" id="cmp">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.cmp">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.cmp.html#pipeline.infrastructure.renderer.htmlrenderer.cmp">[docs]</a>
 <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span></div>
 
@@ -2650,7 +2502,7 @@
 <span class="c1">#   logrecords_to_tablerows</span>
 <span class="c1">#</span>
 <div class="viewcode-block" id="filter_qascores">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.filter_qascores">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.filter_qascores.html#pipeline.infrastructure.renderer.htmlrenderer.filter_qascores">[docs]</a>
 <span class="k">def</span> <span class="nf">filter_qascores</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="n">lo</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">hi</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pipelineqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]:</span>
     <span class="n">all_scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pipelineqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_list</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span>
     <span class="c1"># suppress scores not intended for the weblog, taking care not to suppress</span>
@@ -2669,7 +2521,7 @@
 
 
 <div class="viewcode-block" id="create_tablerow">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.create_tablerow">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.create_tablerow.html#pipeline.infrastructure.renderer.htmlrenderer.create_tablerow">[docs]</a>
 <span class="k">def</span> <span class="nf">create_tablerow</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msgtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MsgTableRow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a table entry struct from a web log message.</span>
@@ -2683,7 +2535,7 @@
 
 
 <div class="viewcode-block" id="qascores_to_tablerows">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.qascores_to_tablerows">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.qascores_to_tablerows.html#pipeline.infrastructure.renderer.htmlrenderer.qascores_to_tablerows">[docs]</a>
 <span class="k">def</span> <span class="nf">qascores_to_tablerows</span><span class="p">(</span><span class="n">qascores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pipelineqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">],</span>
                           <span class="n">results</span><span class="p">,</span>
                           <span class="n">msgtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MsgTableRow</span><span class="p">]:</span>
@@ -2705,7 +2557,7 @@
 
 
 <div class="viewcode-block" id="logrecords_to_tablerows">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.renderer.html#pipeline.infrastructure.renderer.htmlrenderer.logrecords_to_tablerows">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.htmlrenderer.logrecords_to_tablerows.html#pipeline.infrastructure.renderer.htmlrenderer.logrecords_to_tablerows">[docs]</a>
 <span class="k">def</span> <span class="nf">logrecords_to_tablerows</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">msgtype</span><span class="o">=</span><span class="s1">&#39;ERROR&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">MsgTableRow</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a list of LogRecords to a list of table entries, ready for</span>

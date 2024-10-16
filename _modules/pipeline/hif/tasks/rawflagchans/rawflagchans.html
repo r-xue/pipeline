@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -157,7 +153,7 @@
 
 
 <div class="viewcode-block" id="RawflagchansInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.rawflagchans.html#pipeline.hif.tasks.RawflagchansInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansInputs.html#pipeline.hif.tasks.RawflagchansInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">RawflagchansInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RawflagchansInputs defines the inputs for the Rawflagchans pipeline task.</span>
@@ -317,6 +313,8 @@
 
 
 
+<div class="viewcode-block" id="RawflagchansDataInputs">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansDataInputs.html#pipeline.hif.tasks.RawflagchansDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">RawflagchansDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -336,15 +334,20 @@
 
         <span class="c1"># data selection arguments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span></div>
 
 
+
+<div class="viewcode-block" id="RawflagchansData">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansData.html#pipeline.hif.tasks.RawflagchansData">[docs]</a>
 <span class="k">class</span> <span class="nc">RawflagchansData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">RawflagchansDataInputs</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RawflagchansData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
+<div class="viewcode-block" id="RawflagchansData.prepare">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansData.html#pipeline.hif.tasks.RawflagchansData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Initialize result structure</span>
@@ -461,12 +464,19 @@
                 <span class="s1">&#39;corrs&#39;</span><span class="p">:</span> <span class="n">corrs</span>
             <span class="p">}</span>
 
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 
+
+<div class="viewcode-block" id="RawflagchansData.analyse">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansData.html#pipeline.hif.tasks.RawflagchansData.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="RawflagchansView">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansView.html#pipeline.hif.tasks.RawflagchansView">[docs]</a>
 <span class="k">class</span> <span class="nc">RawflagchansView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -481,6 +491,8 @@
         <span class="c1"># incoming data task result is not new.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">RawflagchansViewResults</span><span class="p">()</span>
 
+<div class="viewcode-block" id="RawflagchansView.__call__">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansView.html#pipeline.hif.tasks.RawflagchansView.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataresult</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When called, the RawflagchansView object calculates flagging views</span>
@@ -569,8 +581,11 @@
                           <span class="s1">&#39; views available to create a refined view from. &#39;</span>
                           <span class="s1">&#39;Cannot create flagging views.&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span></div>
 
+
+<div class="viewcode-block" id="RawflagchansView.refine_view">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.rawflagchans.rawflagchans.RawflagchansView.html#pipeline.hif.tasks.RawflagchansView.refine_view">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">refine_view</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine the data view by subtracting the median from each</span>
@@ -586,7 +601,9 @@
         <span class="k">for</span> <span class="n">chan</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="p">:][</span><span class="n">flag</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid</span><span class="p">):</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">chan</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>

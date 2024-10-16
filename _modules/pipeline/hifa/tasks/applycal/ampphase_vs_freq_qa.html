@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -181,7 +177,7 @@
 
 
 <div class="viewcode-block" id="score_all_scans">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all_scans">[docs]</a>
 <span class="k">def</span> <span class="nf">score_all_scans</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">memory_gb</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MEMORY_CHUNK_SIZE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Outlier</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate best fits for amplitude vs frequency and phase vs frequency</span>
@@ -252,7 +248,7 @@
 
 
 <div class="viewcode-block" id="get_best_fits_per_ant">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_best_fits_per_ant">[docs]</a>
 <span class="k">def</span> <span class="nf">get_best_fits_per_ant</span><span class="p">(</span><span class="n">wrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return the best amp/phase vs freq fits for data in the input</span>
@@ -372,7 +368,7 @@
 
 
 <div class="viewcode-block" id="score_all">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_all">[docs]</a>
 <span class="k">def</span> <span class="nf">score_all</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">flag_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare and score the calculated best fits based on how they deviate from</span>
@@ -418,7 +414,7 @@
 
 
 <div class="viewcode-block" id="get_median_fit">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_median_fit">[docs]</a>
 <span class="k">def</span> <span class="nf">get_median_fit</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">accessor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the median best fit from a list of best fits.</span>
@@ -440,7 +436,7 @@
 
 
 <div class="viewcode-block" id="score_X_vs_freq_fits">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_X_vs_freq_fits">[docs]</a>
 <span class="k">def</span> <span class="nf">score_X_vs_freq_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">ref_value_fn</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">sigma_threshold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Score a set of best fits, comparing the fits identified by the &#39;attr&#39;</span>
@@ -485,7 +481,7 @@
 
 
 <div class="viewcode-block" id="score_fits">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.score_fits">[docs]</a>
 <span class="k">def</span> <span class="nf">score_fits</span><span class="p">(</span><span class="n">all_fits</span><span class="p">,</span> <span class="n">reference_value_fn</span><span class="p">,</span> <span class="n">accessor</span><span class="p">,</span> <span class="n">outlier_fn</span><span class="p">,</span> <span class="n">sigma_threshold</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Score a list of best fit parameters against a reference value, identifying</span>
@@ -528,7 +524,7 @@
 
 
 <div class="viewcode-block" id="to_linear_fit_parameters">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.to_linear_fit_parameters">[docs]</a>
 <span class="k">def</span> <span class="nf">to_linear_fit_parameters</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert tuples from the best fit evaluation into a LinearFitParameters</span>
@@ -544,7 +540,7 @@
 
 
 <div class="viewcode-block" id="get_amp_fit">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_amp_fit">[docs]</a>
 <span class="k">def</span> <span class="nf">get_amp_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fit a linear amplitude vs frequency model to a set of time-averaged</span>
@@ -582,7 +578,7 @@
 
 
 <div class="viewcode-block" id="get_phase_fit">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_phase_fit">[docs]</a>
 <span class="k">def</span> <span class="nf">get_phase_fit</span><span class="p">(</span><span class="n">amp_model_fn</span><span class="p">,</span> <span class="n">ang_model_fn</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fit a linear model for phase vs frequency to a set of time-averaged</span>
@@ -642,7 +638,7 @@
 
 
 <div class="viewcode-block" id="get_linear_function">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_linear_function">[docs]</a>
 <span class="k">def</span> <span class="nf">get_linear_function</span><span class="p">(</span><span class="n">midpoint</span><span class="p">,</span> <span class="n">x_scale</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a scaled linear function (a function of slope and intercept).</span>
@@ -663,7 +659,7 @@
 
 
 <div class="viewcode-block" id="get_angular_linear_function">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_angular_linear_function">[docs]</a>
 <span class="k">def</span> <span class="nf">get_angular_linear_function</span><span class="p">(</span><span class="n">midpoint</span><span class="p">,</span> <span class="n">x_scale</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Angular linear model to fit phases only.</span>
@@ -682,7 +678,7 @@
 
 
 <div class="viewcode-block" id="get_chi2_ang_model">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.get_chi2_ang_model">[docs]</a>
 <span class="k">def</span> <span class="nf">get_chi2_ang_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">):</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">angular_model</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">angdata</span> <span class="o">-</span> <span class="n">m</span>
@@ -692,7 +688,7 @@
 
 
 <div class="viewcode-block" id="fit_angular_model">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.fit_angular_model">[docs]</a>
 <span class="k">def</span> <span class="nf">fit_angular_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">):</span>
     <span class="n">f_aux</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">omega_phi</span><span class="p">:</span> <span class="n">get_chi2_ang_model</span><span class="p">(</span><span class="n">angular_model</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">omega_phi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_phi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">angdata</span><span class="p">,</span> <span class="n">angsigma</span><span class="p">)</span>
     <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">angdata</span><span class="p">[</span><span class="o">~</span><span class="n">angdata</span><span class="o">.</span><span class="n">mask</span><span class="p">])</span>
@@ -703,7 +699,7 @@
 
 
 <div class="viewcode-block" id="robust_stats">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.robust_stats">[docs]</a>
 <span class="k">def</span> <span class="nf">robust_stats</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return median and estimate standard deviation</span>
@@ -731,7 +727,7 @@
 
 
 <div class="viewcode-block" id="consolidate_data_selections">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.consolidate_data_selections">[docs]</a>
 <span class="k">def</span> <span class="nf">consolidate_data_selections</span><span class="p">(</span><span class="n">outliers</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Consolidate a list of Outliers into a smaller set of equivalent Outliers</span>
@@ -813,7 +809,7 @@
 
 
 <div class="viewcode-block" id="data_selection_contains">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains.html#pipeline.hifa.tasks.applycal.ampphase_vs_freq_qa.data_selection_contains">[docs]</a>
 <span class="k">def</span> <span class="nf">data_selection_contains</span><span class="p">(</span><span class="n">proposed</span><span class="p">,</span> <span class="n">ds_args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if one data selection is contained within another.</span>

@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>astropy.coordinates.builtin_frames.altaz &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">astropy.coordinates.builtin_frames.altaz</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for astropy.coordinates.builtin_frames.altaz</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">representation</span> <span class="k">as</span> <span class="n">r</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates.attributes</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EarthLocationAttribute</span><span class="p">,</span>
+    <span class="n">QuantityAttribute</span><span class="p">,</span>
+    <span class="n">TimeAttribute</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates.baseframe</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseCoordinateFrame</span><span class="p">,</span>
+    <span class="n">RepresentationMapping</span><span class="p">,</span>
+    <span class="n">base_doc</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">astropy.utils.decorators</span> <span class="kn">import</span> <span class="n">format_doc</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AltAz&quot;</span><span class="p">]</span>
+
+
+<span class="n">_90DEG</span> <span class="o">=</span> <span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+
+<span class="n">doc_components</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    az : `~astropy.coordinates.Angle`, optional, keyword-only</span>
+<span class="s2">        The Azimuth for this object (``alt`` must also be given and</span>
+<span class="s2">        ``representation`` must be None).</span>
+<span class="s2">    alt : `~astropy.coordinates.Angle`, optional, keyword-only</span>
+<span class="s2">        The Altitude for this object (``az`` must also be given and</span>
+<span class="s2">        ``representation`` must be None).</span>
+<span class="s2">    distance : `~astropy.units.Quantity` [&#39;length&#39;], optional, keyword-only</span>
+<span class="s2">        The Distance for this object along the line-of-sight.</span>
+
+<span class="s2">    pm_az_cosalt : `~astropy.units.Quantity` [&#39;angular speed&#39;], optional, keyword-only</span>
+<span class="s2">        The proper motion in azimuth (including the ``cos(alt)`` factor) for</span>
+<span class="s2">        this object (``pm_alt`` must also be given).</span>
+<span class="s2">    pm_alt : `~astropy.units.Quantity` [&#39;angular speed&#39;], optional, keyword-only</span>
+<span class="s2">        The proper motion in altitude for this object (``pm_az_cosalt`` must</span>
+<span class="s2">        also be given).</span>
+<span class="s2">    radial_velocity : `~astropy.units.Quantity` [&#39;speed&#39;], optional, keyword-only</span>
+<span class="s2">        The radial velocity of this object.&quot;&quot;&quot;</span>
+
+<span class="n">doc_footer</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Other parameters</span>
+<span class="s2">    ----------------</span>
+<span class="s2">    obstime : `~astropy.time.Time`</span>
+<span class="s2">        The time at which the observation is taken.  Used for determining the</span>
+<span class="s2">        position and orientation of the Earth.</span>
+<span class="s2">    location : `~astropy.coordinates.EarthLocation`</span>
+<span class="s2">        The location on the Earth.  This can be specified either as an</span>
+<span class="s2">        `~astropy.coordinates.EarthLocation` object or as anything that can be</span>
+<span class="s2">        transformed to an `~astropy.coordinates.ITRS` frame.</span>
+<span class="s2">    pressure : `~astropy.units.Quantity` [&#39;pressure&#39;]</span>
+<span class="s2">        The atmospheric pressure as an `~astropy.units.Quantity` with pressure</span>
+<span class="s2">        units.  This is necessary for performing refraction corrections.</span>
+<span class="s2">        Setting this to 0 (the default) will disable refraction calculations</span>
+<span class="s2">        when transforming to/from this frame.</span>
+<span class="s2">    temperature : `~astropy.units.Quantity` [&#39;temperature&#39;]</span>
+<span class="s2">        The ground-level temperature as an `~astropy.units.Quantity` in</span>
+<span class="s2">        deg C.  This is necessary for performing refraction corrections.</span>
+<span class="s2">    relative_humidity : `~astropy.units.Quantity` [&#39;dimensionless&#39;] or number</span>
+<span class="s2">        The relative humidity as a dimensionless quantity between 0 to 1.</span>
+<span class="s2">        This is necessary for performing refraction corrections.</span>
+<span class="s2">    obswl : `~astropy.units.Quantity` [&#39;length&#39;]</span>
+<span class="s2">        The average wavelength of observations as an `~astropy.units.Quantity`</span>
+<span class="s2">         with length units.  This is necessary for performing refraction</span>
+<span class="s2">         corrections.</span>
+
+<span class="s2">    Notes</span>
+<span class="s2">    -----</span>
+<span class="s2">    The refraction model is based on that implemented in ERFA, which is fast</span>
+<span class="s2">    but becomes inaccurate for altitudes below about 5 degrees.  Near and below</span>
+<span class="s2">    altitudes of 0, it can even give meaningless answers, and in this case</span>
+<span class="s2">    transforming to AltAz and back to another frame can give highly discrepant</span>
+<span class="s2">    results.  For much better numerical stability, leave the ``pressure`` at</span>
+<span class="s2">    ``0`` (the default), thereby disabling the refraction correction and</span>
+<span class="s2">    yielding &quot;topocentric&quot; horizontal coordinates.</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="AltAz">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.AltAz.html#pipeline.hifa.tasks.flagging.flagdeteralma.AltAz">[docs]</a>
+<span class="nd">@format_doc</span><span class="p">(</span><span class="n">base_doc</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="n">doc_components</span><span class="p">,</span> <span class="n">footer</span><span class="o">=</span><span class="n">doc_footer</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AltAz</span><span class="p">(</span><span class="n">BaseCoordinateFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A coordinate or frame in the Altitude-Azimuth system (Horizontal</span>
+<span class="sd">    coordinates) with respect to the WGS84 ellipsoid.  Azimuth is oriented</span>
+<span class="sd">    East of North (i.e., N=0, E=90 degrees).  Altitude is also known as</span>
+<span class="sd">    elevation angle, so this frame is also in the Azimuth-Elevation system.</span>
+
+<span class="sd">    This frame is assumed to *include* refraction effects if the ``pressure``</span>
+<span class="sd">    frame attribute is non-zero.</span>
+
+<span class="sd">    The frame attributes are listed under **Other Parameters**, which are</span>
+<span class="sd">    necessary for transforming from AltAz to some other system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">frame_specific_representation_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">SphericalRepresentation</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">RepresentationMapping</span><span class="p">(</span><span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="s2">&quot;az&quot;</span><span class="p">),</span>
+            <span class="n">RepresentationMapping</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;alt&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="n">default_representation</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">SphericalRepresentation</span>
+    <span class="n">default_differential</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">SphericalCosLatDifferential</span>
+
+    <span class="n">obstime</span> <span class="o">=</span> <span class="n">TimeAttribute</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The reference time (e.g., time of observation)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">EarthLocationAttribute</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The location on Earth of the observer&quot;</span>
+    <span class="p">)</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">QuantityAttribute</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">hPa</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The atmospheric pressure&quot;</span><span class="p">)</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">QuantityAttribute</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">deg_C</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The ground-level temperature&quot;</span>
+    <span class="p">)</span>
+    <span class="n">relative_humidity</span> <span class="o">=</span> <span class="n">QuantityAttribute</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">dimensionless_unscaled</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The relative humidity&quot;</span>
+    <span class="p">)</span>
+    <span class="n">obswl</span> <span class="o">=</span> <span class="n">QuantityAttribute</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">micron</span><span class="p">,</span>
+        <span class="n">unit</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">micron</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;The average wavelength of observations&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">secz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Secant of the zenith angle for this coordinate, a common estimate of</span>
+<span class="sd">        the airmass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">zen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The zenith angle (or zenith distance / co-altitude) for this coordinate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_90DEG</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alt</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alt</span></div>
+
+
+
+<span class="c1"># self-transform defined in icrs_observed_transforms.py</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

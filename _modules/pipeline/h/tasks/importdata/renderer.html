@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsImportDataRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.T2_4MDetailsImportDataRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.importdata.renderer.T2_4MDetailsImportDataRenderer.html#pipeline.hifa.tasks.restoredata.renderer.T2_4MDetailsImportDataRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsImportDataRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;importdata.mako&#39;</span><span class="p">,</span> 
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Register measurement sets with the pipeline&#39;</span><span class="p">,</span> 
@@ -162,8 +158,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">T2_4MDetailsImportDataRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsImportDataRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.T2_4MDetailsImportDataRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">weblog_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
                                   <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
@@ -203,7 +197,6 @@
             <span class="s1">&#39;fluxcsv_files&#39;</span><span class="p">:</span> <span class="n">fluxcsv_files</span><span class="p">,</span>
             <span class="s1">&#39;weblog_dir&#39;</span><span class="p">:</span> <span class="n">weblog_dir</span>
         <span class="p">})</span></div>
-</div>
 
 
 
@@ -211,7 +204,7 @@
 
 
 <div class="viewcode-block" id="make_flux_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.make_flux_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.importdata.renderer.make_flux_table.html#pipeline.hifa.tasks.restoredata.renderer.make_flux_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_flux_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the flux stat table rows for the results</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -268,7 +261,7 @@
 
 
 <div class="viewcode-block" id="make_repsource_table">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.h.tasks.importdata.html#pipeline.h.tasks.importdata.renderer.make_repsource_table">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.restoredata.renderer.make_repsource_table.html#pipeline.hifa.tasks.restoredata.renderer.make_repsource_table">[docs]</a>
 <span class="k">def</span> <span class="nf">make_repsource_table</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="c1"># will hold all the representative source table rows for the results</span>
 

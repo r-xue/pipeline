@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -166,7 +162,7 @@
 
 
 <div class="viewcode-block" id="get_field_from_ms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.get_field_from_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.get_field_from_ms.html#pipeline.hsd.tasks.skycal.display.get_field_from_ms">[docs]</a>
 <span class="k">def</span> <span class="nf">get_field_from_ms</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Field&#39;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return list of fields that matches field selection.</span>
 
@@ -194,12 +190,12 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalDisplayBase">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalDisplayBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base display class for skycal stage.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SingleDishSkyCalDisplayBase.init_with_field">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.init_with_field">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.init_with_field">[docs]</a>
     <span class="k">def</span> <span class="nf">init_with_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDSkyCalResults&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize attributes using field information.</span>
 
@@ -235,7 +231,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalDisplayBase.add_field_identifier">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.add_field_identifier">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalDisplayBase.add_field_identifier">[docs]</a>
     <span class="k">def</span> <span class="nf">add_field_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add field identifier.</span>
 
@@ -258,7 +254,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalAmpVsFreqSummaryChart</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">PlotbandpassDetailBase</span><span class="p">,</span> <span class="n">SingleDishSkyCalDisplayBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for plotting Amplitude vs. Frequency summary chart.</span>
 
@@ -288,7 +284,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_with_field</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot the Amplitude vs. Frequency summary chart.</span>
 
@@ -373,7 +369,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_figfile</span><span class="p">[</span><span class="n">spw_id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqSummaryChart.create_task_for_tp_spectral_scan">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.create_task_for_tp_spectral_scan">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.create_task_for_tp_spectral_scan">[docs]</a>
     <span class="k">def</span> <span class="nf">create_task_for_tp_spectral_scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_arg</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">antenna_arg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                          <span class="n">showimage</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JobRequest&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -427,7 +423,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqSummaryChart.rename_and_clear_figure">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.rename_and_clear_figure">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqSummaryChart.rename_and_clear_figure">[docs]</a>
     <span class="k">def</span> <span class="nf">rename_and_clear_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select one figure per spw and rename the figure.</span>
@@ -451,7 +447,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqDetailChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalAmpVsFreqDetailChart</span><span class="p">(</span><span class="n">bandpass</span><span class="o">.</span><span class="n">BandpassDetailChart</span><span class="p">,</span> <span class="n">SingleDishSkyCalDisplayBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for plotting Amplitude vs. Frequency detail chart.</span>
 
@@ -461,7 +457,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqDetailChart.get_caltable_from_result">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.get_caltable_from_result">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.get_caltable_from_result">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_caltable_from_result</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDSkyCalResults&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract caltable name from the results object.</span>
@@ -483,7 +479,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqDetailChart.get_solution_interval">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.get_solution_interval">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.get_solution_interval">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_solution_interval</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute appropriate solution interval for caltable.</span>
@@ -559,7 +555,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_with_field</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsFreqDetailChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsFreqDetailChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Amplitude vs. Frequency detail plot.</span>
 
@@ -588,7 +584,7 @@
 
 
 <div class="viewcode-block" id="SingleDishPlotmsLeaf">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishPlotmsLeaf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to execute plotms and return a plot wrapper.</span>
 
@@ -660,7 +656,7 @@
                                      <span class="s1">&#39;stage</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SingleDishPlotmsLeaf.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsLeaf.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a sky calibration plot.</span>
 
@@ -743,7 +739,7 @@
 
 
 <div class="viewcode-block" id="SingleDishPlotmsAntComposite">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntComposite.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishPlotmsAntComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">AntComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to create a PlotLeaf for each antenna.&quot;&quot;&quot;</span>
 
@@ -752,7 +748,7 @@
 
 
 <div class="viewcode-block" id="SingleDishPlotmsSpwComposite">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishPlotmsSpwComposite.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishPlotmsSpwComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to create a PlotLeaf for each spw.&quot;&quot;&quot;</span>
 
@@ -761,7 +757,7 @@
 
 
 <div class="viewcode-block" id="SingleDishPlotmsAntSpwComposite">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntSpwComposite.html#pipeline.hsd.tasks.skycal.display.SingleDishPlotmsAntSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishPlotmsAntSpwComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">AntSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to create a PlotLeaf for each antenna and spw.&quot;&quot;&quot;</span>
 
@@ -770,7 +766,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsTimeSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeSummaryChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalAmpVsTimeSummaryChart</span><span class="p">(</span><span class="n">SingleDishPlotmsSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for plotting Amplitude vs. Time summary chart.</span>
 
@@ -793,7 +789,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalAmpVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeDetailChart.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalAmpVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalAmpVsTimeDetailChart</span><span class="p">(</span><span class="n">SingleDishPlotmsAntSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for plotting Amplitude vs. Time detail chart.</span>
 
@@ -817,7 +813,7 @@
 
 
 <div class="viewcode-block" id="SingleDishSkyCalIntervalVsTimeDisplay">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.skycal.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalIntervalVsTimeDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.skycal.display.SingleDishSkyCalIntervalVsTimeDisplay.html#pipeline.hsd.tasks.skycal.display.SingleDishSkyCalIntervalVsTimeDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishSkyCalIntervalVsTimeDisplay</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">PlotbandpassDetailBase</span><span class="p">,</span> <span class="n">SingleDishSkyCalDisplayBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to execute pyplot and return a plot (figure) of Interval vs. Time.</span>
 

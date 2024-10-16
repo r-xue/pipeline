@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -151,7 +147,7 @@
 
 
 <div class="viewcode-block" id="SDK2JyCalQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">SDK2JyCalQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to handle QA score for k2jycal result.&quot;&quot;&quot;</span>
 
@@ -159,7 +155,7 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SDK2JyCalQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">k2jycal</span><span class="o">.</span><span class="n">SDK2JyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate QA score for k2jycal result.</span>
 
@@ -198,7 +194,7 @@
 
 
 <div class="viewcode-block" id="SDK2JyCalListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">SDK2JyCalListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to handle QA score for a list of k2jycal results.&quot;&quot;&quot;</span>
 
@@ -206,7 +202,7 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">k2jycal</span><span class="o">.</span><span class="n">SDK2JyCalResults</span>
 
 <div class="viewcode-block" id="SDK2JyCalListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.k2jycal.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.handle">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.html#pipeline.hsd.tasks.k2jycal.qa.SDK2JyCalListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;ResultsList&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate QA score for a list of k2jycal results.</span>
 

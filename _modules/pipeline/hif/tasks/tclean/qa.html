@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -152,13 +148,11 @@
 
 
 <div class="viewcode-block" id="TcleanQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.qa.TcleanQAHandler.html#pipeline.hif.tasks.tclean.qa.TcleanQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TcleanQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TcleanResult</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TcleanQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="n">qaTool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
@@ -468,24 +462,20 @@
                                       <span class="n">metric_units</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAScore</span><span class="p">(</span><span class="mf">0.34</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Fitting Stokes parameter failed&#39;</span><span class="p">,</span>
                                                   <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">applies_to</span><span class="o">=</span><span class="n">data_selection</span><span class="p">))</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="TcleanListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.qa.TcleanListQAHandler.html#pipeline.hif.tasks.tclean.qa.TcleanListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TcleanListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TcleanResult</span>
 
-<div class="viewcode-block" id="TcleanListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hif.tasks.tclean.html#pipeline.hif.tasks.tclean.qa.TcleanListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 
 

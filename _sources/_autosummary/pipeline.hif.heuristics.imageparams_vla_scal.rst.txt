@@ -4,10 +4,30 @@ pipeline.hif.heuristics.imageparams\_vla\_scal
 .. automodule:: pipeline.hif.heuristics.imageparams_vla_scal
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ImageParamsHeuristicsVLA
       ImageParamsHeuristicsVLAScal
    
+   
+
+   
+   
+   
+
+
+

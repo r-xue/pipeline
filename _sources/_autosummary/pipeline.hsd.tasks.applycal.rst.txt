@@ -4,19 +4,39 @@ pipeline.hsd.tasks.applycal
 .. automodule:: pipeline.hsd.tasks.applycal
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       SDApplycal
       SDApplycalResults
       SerialSDApplycal
    
-.. rubric:: Modules
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    applycal
    renderer
+

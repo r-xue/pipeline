@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -155,13 +151,11 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsGaincalRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer.html#pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsGaincalRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;timegaincal.mako&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Gain calibration&#39;</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsGaincalRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">spw_mapping</span> <span class="o">=</span> <span class="p">{}</span>
@@ -397,11 +391,8 @@
             <span class="s1">&#39;diagnostic_phase_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">diagnostic_phase_vs_time_subpages</span><span class="p">,</span>
             <span class="s1">&#39;diagnostic_phaseoffset_vs_time_subpages&#39;</span><span class="p">:</span> <span class="n">diagnostic_phaseoffset_vs_time_subpages</span><span class="p">,</span>
             <span class="s1">&#39;diagnostic_solints&#39;</span><span class="p">:</span> <span class="n">diagnostic_solints</span>
-        <span class="p">})</span></div>
+        <span class="p">})</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsGaincalRenderer.get_gaincal_applications">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer.get_gaincal_applications">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_gaincal_applications</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="n">applications</span> <span class="o">=</span> <span class="p">[]</span>
@@ -444,11 +435,8 @@
             <span class="n">a</span> <span class="o">=</span> <span class="n">GaincalApplication</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">,</span> <span class="n">calmode</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">to_intent</span><span class="p">,</span> <span class="n">to_field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">)</span>
             <span class="n">applications</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">applications</span></div>
+        <span class="k">return</span> <span class="n">applications</span>
 
-
-<div class="viewcode-block" id="T2_4MDetailsGaincalRenderer.get_spw_mappings">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.T2_4MDetailsGaincalRenderer.get_spw_mappings">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_spw_mappings</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">omit_intent</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">combined</span> <span class="o">=</span> <span class="p">[]</span>
@@ -475,12 +463,11 @@
         <span class="n">summary_str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">combined_str</span><span class="p">,</span> <span class="n">default_mapped_str</span><span class="p">,</span> <span class="n">mapped_str</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">summary_str</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="GaincalPhaseVsTimePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimePlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalPhaseVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -494,7 +481,7 @@
 
 
 <div class="viewcode-block" id="GaincalPhaseVsTimeDiagnosticPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalPhaseVsTimeDiagnosticPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -517,7 +504,7 @@
             <span class="s1">&#39;diagnostic_phase_vs_time_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GaincalPhaseVsTimeDiagnosticPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseVsTimeDiagnosticPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="n">ant_name</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;ant&#39;</span><span class="p">]</span>
         <span class="n">spw_id</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
@@ -563,7 +550,7 @@
 
 
 <div class="viewcode-block" id="GaincalAmpVsTimePlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimePlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimePlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimePlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalAmpVsTimePlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -577,7 +564,7 @@
 
 
 <div class="viewcode-block" id="GaincalAmpVsTimeDiagnosticPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimeDiagnosticPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimeDiagnosticPlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalAmpVsTimeDiagnosticPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalAmpVsTimeDiagnosticPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -591,7 +578,7 @@
 
 
 <div class="viewcode-block" id="GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.gaincal.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer.html#pipeline.hifa.tasks.gaincal.renderer.GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>

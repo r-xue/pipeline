@@ -4,18 +4,32 @@ pipeline.hsd.tasks.imaging.display
 .. automodule:: pipeline.hsd.tasks.imaging.display
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       DDMMSSs
       HHMMSSss
       SDImageDisplayFactory
       casa5style_plot
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ChannelMapAxesManager
       ChannelSelection
@@ -38,3 +52,11 @@ pipeline.hsd.tasks.imaging.display
       SpectralImage
       SpectralMapAxesManager
    
+   
+
+   
+   
+   
+
+
+

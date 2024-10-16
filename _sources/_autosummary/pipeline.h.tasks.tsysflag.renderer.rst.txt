@@ -4,9 +4,16 @@ pipeline.h.tasks.tsysflag.renderer
 .. automodule:: pipeline.h.tasks.tsysflag.renderer
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       convert_field_id_to_field_names
       create_plot_detail_page
@@ -16,9 +23,16 @@ pipeline.h.tasks.tsysflag.renderer
       plot_slice_displays
       plot_tsys_spectra
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ComponentRendererMap
       Context
@@ -27,3 +41,11 @@ pipeline.h.tasks.tsysflag.renderer
       ResultsList
       T2_4MDetailsTsysflagRenderer
    
+   
+
+   
+   
+   
+
+
+

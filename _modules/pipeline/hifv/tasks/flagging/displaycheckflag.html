@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="checkflagSummaryChart">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart.html#pipeline.hifv.tasks.flagging.checkflag.checkflagSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">checkflagSummaryChart</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">plotms_args</span><span class="o">=</span><span class="p">{}):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -159,8 +155,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plotms_args</span> <span class="o">=</span> <span class="n">plotms_args</span>
         <span class="c1"># self.caltable = result.final[0].gaintable</span>
 
-<div class="viewcode-block" id="checkflagSummaryChart.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
 
@@ -172,11 +166,8 @@
             <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;targets-vlass&#39;</span><span class="p">)]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;checkflagmode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;target-vla&#39;</span><span class="p">:</span>
             <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_wrapper</span><span class="p">(</span><span class="s1">&#39;targets&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plots</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-
-<div class="viewcode-block" id="checkflagSummaryChart.create_plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart.create_plot">[docs]</a>
     <span class="k">def</span> <span class="nf">create_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
 
         <span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figfile</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
@@ -222,22 +213,16 @@
         <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">plotms</span><span class="p">(</span><span class="o">**</span><span class="n">plotms_args</span><span class="p">)</span>
         <span class="n">job</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">plotms_args</span></div>
+        <span class="k">return</span> <span class="n">plotms_args</span>
 
-
-<div class="viewcode-block" id="checkflagSummaryChart.get_figfile">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart.get_figfile">[docs]</a>
     <span class="k">def</span> <span class="nf">get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
         <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
         <span class="n">fig_basename</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;checkflag&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">])))</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">fig_basename</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">fig_basename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="checkflagSummaryChart.get_plot_wrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagSummaryChart.get_plot_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">get_plot_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s1">&#39;delaycal&#39;</span><span class="p">:</span>
@@ -263,12 +248,11 @@
                                           <span class="s1">&#39;plotms_args&#39;</span><span class="p">:</span> <span class="n">plotms_args</span><span class="p">,</span>
                                           <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">wrapper</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="checkflagPercentageMap">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagPercentageMap">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.displaycheckflag.checkflagPercentageMap.html#pipeline.hifv.tasks.flagging.checkflag.checkflagPercentageMap">[docs]</a>
 <span class="k">class</span> <span class="nc">checkflagPercentageMap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -276,8 +260,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figfile</span><span class="p">()</span>
 
-<div class="viewcode-block" id="checkflagPercentageMap.plot">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.displaycheckflag.checkflagPercentageMap.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figfile</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Returning existing checkflag percentage map plot&#39;</span><span class="p">)</span>
@@ -311,8 +293,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception: Could not create the flagging percentage map plot. </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_object</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_figfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>

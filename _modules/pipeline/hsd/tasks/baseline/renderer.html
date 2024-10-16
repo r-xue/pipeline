@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -159,7 +155,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsSingleDishBaselineRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsSingleDishBaselineRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates task detail page for baseline subtraction task.&quot;&quot;&quot;</span>
 
@@ -181,7 +177,7 @@
                                                                      <span class="n">always_rerender</span><span class="p">)</span>
 
 <div class="viewcode-block" id="T2_4MDetailsSingleDishBaselineRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.update_mako_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="s1">&#39;ResultsList&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update context object for Mako template in place.</span>
 
@@ -422,7 +418,7 @@
         <span class="k">return</span> <span class="n">summary_plots</span>
 
 <div class="viewcode-block" id="T2_4MDetailsSingleDishBaselineRenderer.get_field_key">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.get_field_key">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.html#pipeline.hsd.tasks.baseline.renderer.T2_4MDetailsSingleDishBaselineRenderer.get_field_key">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_field_key</span><span class="p">(</span><span class="n">plot_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">field_domain</span><span class="p">:</span> <span class="s1">&#39;Field&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get field name consistent with dictionary key.</span>
@@ -459,7 +455,7 @@
 
 
 <div class="viewcode-block" id="SingleDishClusterPlotsRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer.html#pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishClusterPlotsRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom JsonPlotRenderer for clustering plot.&quot;&quot;&quot;</span>
 
@@ -479,7 +475,7 @@
             <span class="s1">&#39;hsd_cluster_plots.mako&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">new_title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SingleDishClusterPlotsRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hsd.tasks.baseline.html#pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer.html#pipeline.hsd.tasks.baseline.renderer.SingleDishClusterPlotsRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="s1">&#39;Plot&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update JSON dictionary in place.</span>
 

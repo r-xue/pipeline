@@ -4,9 +4,16 @@ pipeline.hsd.tasks.common.utils
 .. automodule:: pipeline.hsd.tasks.common.utils
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       TableSelector
       absolute_path
@@ -43,9 +50,16 @@ pipeline.hsd.tasks.common.utils
       to_list
       to_numeric
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       Context
       DataTable
@@ -62,3 +76,11 @@ pipeline.hsd.tasks.common.utils
       casa_table
       pyLogger
    
+   
+
+   
+   
+   
+
+
+

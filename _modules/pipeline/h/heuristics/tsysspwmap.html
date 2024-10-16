@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -159,8 +155,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SpwMap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwMap">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwMap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This object is basically set up to hold the information needed </span>
@@ -169,41 +163,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">calSpwId</span> <span class="o">=</span> <span class="n">calSpwId</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validFreqRange</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mapsToSpw</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-
-<div class="viewcode-block" id="SpwInfo">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwInfo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTableAndSpwId</span><span class="p">(</span><span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SpwInfo.setTableAndSpwId">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setTableAndSpwId">[docs]</a>
     <span class="k">def</span> <span class="nf">setTableAndSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTable</span><span class="p">(</span><span class="n">mstable</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setSpwId</span><span class="p">(</span><span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSpwId</span><span class="p">(</span><span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SpwInfo.setTable">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setTable">[docs]</a>
     <span class="k">def</span> <span class="nf">setTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="SpwInfo.setSpwId">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.SpwInfo.setSpwId">[docs]</a>
     <span class="k">def</span> <span class="nf">setSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span></div>
-</div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="areIdentical">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.areIdentical">[docs]</a>
 <span class="k">def</span> <span class="nf">areIdentical</span><span class="p">(</span><span class="n">spwInfo1</span><span class="p">,</span> <span class="n">spwInfo2</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo1</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo2</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo1</span><span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo2</span>
@@ -221,23 +200,19 @@
     <span class="k">if</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">valueCompare</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="kc">True</span>
 
 
-
-<div class="viewcode-block" id="trimSpwmap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.trimSpwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">trimSpwmap</span><span class="p">(</span><span class="n">spwMap</span><span class="p">):</span>
     <span class="n">compare</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">compare</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">compare</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="o">==</span> <span class="n">spwMap</span><span class="p">[</span><span class="n">i</span><span class="p">:]:</span>
             <span class="k">break</span>
-    <span class="k">return</span> <span class="n">spwMap</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span></div>
-
+    <span class="k">return</span> <span class="n">spwMap</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="tsysspwmap">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.h.heuristics.html#pipeline.h.heuristics.tsysspwmap.tsysspwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.atm.tsysspwmap.html#pipeline.hifa.heuristics.atm.tsysspwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">tsysspwmap</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">relax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tsysChanTol</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations</span>

@@ -4,9 +4,16 @@ pipeline.extern.TsysDataClassFile
 .. automodule:: pipeline.extern.TsysDataClassFile
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       ATMtrans
       chanfreq_records_to_functions
@@ -15,9 +22,16 @@ pipeline.extern.TsysDataClassFile
       tsysspwmap
       weather_function
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       TsysData
       attool
@@ -27,3 +41,11 @@ pipeline.extern.TsysDataClassFile
       qatool
       tbtool
    
+   
+
+   
+   
+   
+
+
+

@@ -4,10 +4,26 @@ pipeline.h.tasks.common.displays
 .. automodule:: pipeline.h.tasks.common.displays
 
    
-.. rubric:: Modules
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
 
 .. autosummary::
    :toctree:
+   :template: custom-module-template.rst
    :recursive:
 
    applycal
@@ -20,3 +36,4 @@ pipeline.h.tasks.common.displays
    sky
    slice
    tsys
+

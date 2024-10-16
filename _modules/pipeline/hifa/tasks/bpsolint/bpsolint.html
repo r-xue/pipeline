@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="BpSolintInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintInputs.html#pipeline.hifa.tasks.BpSolintInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">BpSolintInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
@@ -226,14 +222,14 @@
 
 
 <div class="viewcode-block" id="BpSolint">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.BpSolint.html#pipeline.hifa.tasks.BpSolint">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_bpsolint&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the best per spw bandpass solution intervals.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BpSolint</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">BpSolintInputs</span>
 
 <div class="viewcode-block" id="BpSolint.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.BpSolint.html#pipeline.hifa.tasks.BpSolint.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 
         <span class="c1"># Simplify the inputs</span>
@@ -290,7 +286,7 @@
 
 
 <div class="viewcode-block" id="BpSolint.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolint.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.BpSolint.html#pipeline.hifa.tasks.BpSolint.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -401,7 +397,7 @@
 
 
 <div class="viewcode-block" id="BpSolintResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bpsolint.bpsolint.BpSolintResults.html#pipeline.hifa.tasks.BpSolintResults">[docs]</a>
 <span class="k">class</span> <span class="nc">BpSolintResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">phsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">phintsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">nphsolutions</span><span class="o">=</span><span class="p">[],</span>
@@ -457,7 +453,7 @@
 
 
 <div class="viewcode-block" id="check_strong_atm_lines">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.check_strong_atm_lines">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bpsolint.bpsolint.check_strong_atm_lines.html#pipeline.hifa.tasks.check_strong_atm_lines">[docs]</a>
 <span class="k">def</span> <span class="nf">check_strong_atm_lines</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldlist</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">,</span> <span class="n">tsysname</span><span class="p">,</span> <span class="n">lineStrengthThreshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                            <span class="n">minAdjacantChannels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nSigma</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -560,7 +556,7 @@
 
 
 <div class="viewcode-block" id="get_median_tsys_spectrum_from_caltable">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.bpsolint.html#pipeline.hifa.tasks.bpsolint.bpsolint.get_median_tsys_spectrum_from_caltable">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.bpsolint.bpsolint.get_median_tsys_spectrum_from_caltable.html#pipeline.hifa.tasks.get_median_tsys_spectrum_from_caltable">[docs]</a>
 <span class="k">def</span> <span class="nf">get_median_tsys_spectrum_from_caltable</span><span class="p">(</span><span class="n">tsysname</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">interpolate_flagged</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.</span>

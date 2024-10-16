@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -164,7 +160,7 @@
 
 
 <div class="viewcode-block" id="PolcalResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.polcal.PolcalResults.html#pipeline.hifa.tasks.PolcalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -172,7 +168,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="PolcalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.polcal.PolcalResults.html#pipeline.hifa.tasks.PolcalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -187,6 +183,8 @@
 
 
 
+<div class="viewcode-block" id="PolcalSessionResults">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.polcal.PolcalSessionResults.html#pipeline.hifa.tasks.PolcalSessionResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalSessionResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">init_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_ratio_rms_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uncal_pfg_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">best_scan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -231,6 +229,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vs_diffs</span> <span class="o">=</span> <span class="n">vs_diffs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">polcal_amp_results</span> <span class="o">=</span> <span class="n">polcal_amp_results</span>
 
+<div class="viewcode-block" id="PolcalSessionResults.merge_with_context">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.polcal.PolcalSessionResults.html#pipeline.hifa.tasks.PolcalSessionResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -239,14 +239,16 @@
         <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;PolcalSessionResults&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;PolcalSessionResults&#39;</span></div>
+
 
 
 <div class="viewcode-block" id="PolcalInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.PolcalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcal.polcal.PolcalInputs.html#pipeline.hifa.tasks.PolcalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">)</span>
@@ -267,7 +269,7 @@
 
 
 <div class="viewcode-block" id="Polcal">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_polcal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the polarization calibration.&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Polcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -278,7 +280,7 @@
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Polcal.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute polarization calibration heuristics and return Results object</span>
@@ -301,7 +303,7 @@
 
 
 <div class="viewcode-block" id="Polcal.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.polcal.html#pipeline.hifa.tasks.polcal.polcal.Polcal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PolcalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyze the PolcalResults: check that all caltables from</span>

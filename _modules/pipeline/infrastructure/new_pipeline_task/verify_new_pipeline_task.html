@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -147,14 +143,12 @@
 <span class="n">pipeline</span><span class="o">.</span><span class="n">initcli</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NewTask">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.verify_new_pipeline_task.NewTask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.new_pipeline_task.verify_new_pipeline_task.NewTask.html#pipeline.infrastructure.new_pipeline_task.verify_new_pipeline_task.NewTask">[docs]</a>
 <span class="k">class</span> <span class="nc">NewTask</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repository_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SCIPIPE_HEURISTICS&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="NewTask.parse_command_line">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.verify_new_pipeline_task.NewTask.parse_command_line">[docs]</a>
     <span class="k">def</span> <span class="nf">parse_command_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
         <span class="n">script_args</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
@@ -176,11 +170,8 @@
         <span class="n">area</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">package</span>
         <span class="n">task_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">task</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">vis</span>
-        <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">vis</span></div>
+        <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">vis</span>
 
-
-<div class="viewcode-block" id="NewTask.verify">
-<a class="viewcode-back" href="../../../../_apidoc/pipeline.infrastructure.new_pipeline_task.html#pipeline.infrastructure.new_pipeline_task.verify_new_pipeline_task.NewTask.verify">[docs]</a>
     <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
         <span class="c1"># ---------------------------</span>
         <span class="c1">#  prepare to check the task</span>
@@ -212,7 +203,6 @@
         <span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">ee</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: </span><span class="si">{msg}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ee</span><span class="p">)))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Try using &#39;python3 setup.py install&#39; to register the new task with CASA first.&quot;</span><span class="p">)</span></div>
-</div>
 
 
 

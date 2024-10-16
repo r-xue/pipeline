@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -148,14 +144,12 @@
 
 
 <div class="viewcode-block" id="TargetflagQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.TargetflagQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.TargetflagQAHandler.html#pipeline.hifv.tasks.flagging.qa.TargetflagQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TargetflagQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">TargetflagResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">Targetflag</span>
 
-<div class="viewcode-block" id="TargetflagQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.TargetflagQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># get a QA score for flagging</span>
         <span class="c1"># &lt; 5%   of data flagged  --&gt; 1</span>
@@ -172,12 +166,11 @@
                                   <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Flag Summary off&#39;</span><span class="p">)]</span>
 
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">scores</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="TargetflagListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.TargetflagListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.TargetflagListQAHandler.html#pipeline.hifv.tasks.flagging.qa.TargetflagListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">TargetflagListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing TargetflagResults.</span>
@@ -186,38 +179,32 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">TargetflagResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">Targetflag</span>
 
-<div class="viewcode-block" id="TargetflagListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.TargetflagListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="FlagdataQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.FlagdataQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.FlagdataQAHandler.html#pipeline.hifv.tasks.flagging.qa.FlagdataQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagdataQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">flagdetervla</span><span class="o">.</span><span class="n">FlagDeterVLAResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">flagdetervla</span><span class="o">.</span><span class="n">FlagDeterVLA</span>
 
-<div class="viewcode-block" id="FlagdataQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.FlagdataQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
 
         <span class="n">score</span> <span class="o">=</span> <span class="n">qacalc</span><span class="o">.</span><span class="n">score_vla_agents</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">summaries</span><span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="p">]</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="FlagdataListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.FlagdataListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.FlagdataListQAHandler.html#pipeline.hifv.tasks.flagging.qa.FlagdataListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagdataListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing TargetflagResults.</span>
@@ -226,26 +213,21 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">TargetflagResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">targetflag</span><span class="o">.</span><span class="n">Targetflag</span>
 
-<div class="viewcode-block" id="FlagdataListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.FlagdataListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="CheckflagQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.CheckflagQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.CheckflagQAHandler.html#pipeline.hifv.tasks.flagging.qa.CheckflagQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">CheckflagQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
     <span class="n">result_cls</span> <span class="o">=</span> <span class="n">checkflag</span><span class="o">.</span><span class="n">CheckflagResults</span>
     <span class="n">child_cls</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">checkflag</span><span class="o">.</span><span class="n">Checkflag</span>
 
-<div class="viewcode-block" id="CheckflagQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.CheckflagQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># get a QA score for flagging</span>
         <span class="c1"># &lt; 5%   of data flagged  --&gt; 1</span>
@@ -262,12 +244,11 @@
                                   <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;Flag Summary off&#39;</span><span class="p">)]</span>
 
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">scores</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="CheckflagListQAHandler">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.CheckflagListQAHandler">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.qa.CheckflagListQAHandler.html#pipeline.hifv.tasks.flagging.qa.CheckflagListQAHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">CheckflagListQAHandler</span><span class="p">(</span><span class="n">pqa</span><span class="o">.</span><span class="n">QAPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QA handler for a list containing CheckflagResults.</span>
@@ -276,14 +257,11 @@
     <span class="n">child_cls</span> <span class="o">=</span> <span class="n">checkflag</span><span class="o">.</span><span class="n">CheckflagResults</span>
     <span class="n">generating_task</span> <span class="o">=</span> <span class="n">checkflag</span><span class="o">.</span><span class="n">Checkflag</span>
 
-<div class="viewcode-block" id="CheckflagListQAHandler.handle">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifv.tasks.flagging.html#pipeline.hifv.tasks.flagging.qa.CheckflagListQAHandler.handle">[docs]</a>
     <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># collate the QAScores from each child result, pulling them into our</span>
         <span class="c1"># own QAscore list</span>
         <span class="n">collated</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
         <span class="n">result</span><span class="o">.</span><span class="n">qa</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">collated</span></div>
-</div>
 
 
 </pre></div>

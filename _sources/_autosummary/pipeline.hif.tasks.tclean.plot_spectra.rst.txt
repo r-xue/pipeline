@@ -4,9 +4,16 @@ pipeline.hif.tasks.tclean.plot\_spectra
 .. automodule:: pipeline.hif.tasks.tclean.plot_spectra
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       CalcAtmTransmissionForImage
       RescaleTrans
@@ -25,3 +32,15 @@ pipeline.hif.tasks.tclean.plot\_spectra
       rad2radec
       restToTopo
    
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

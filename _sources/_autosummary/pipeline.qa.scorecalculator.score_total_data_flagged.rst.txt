@@ -1,0 +1,6 @@
+pipeline.qa.scorecalculator.score\_total\_data\_flagged
+=======================================================
+
+.. currentmodule:: pipeline.qa.scorecalculator
+
+.. autofunction:: score_total_data_flagged

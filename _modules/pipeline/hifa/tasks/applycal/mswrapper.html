@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -142,7 +138,7 @@
 
 
 <div class="viewcode-block" id="create_V_array">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.create_V_array">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.create_V_array.html#pipeline.hifa.tasks.applycal.mswrapper.create_V_array">[docs]</a>
 <span class="k">def</span> <span class="nf">create_V_array</span><span class="p">(</span><span class="n">n_pol</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an empty array to hold the time averaged visibilities.</span>
 
@@ -171,7 +167,7 @@
 
 
 <div class="viewcode-block" id="MSWrapper">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper">[docs]</a>
 <span class="k">class</span> <span class="nc">MSWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MSWrapper is a wrapper around a NumPy array populated with measurement set</span>
@@ -188,7 +184,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MSWrapper.create_from_ms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_from_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_from_ms">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_from_ms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -242,7 +238,7 @@
 
 
 <div class="viewcode-block" id="MSWrapper.filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.filter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.filter">[docs]</a>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new MSWrapper containing rows matching the column selection</span>
@@ -283,7 +279,7 @@
 
 
 <div class="viewcode-block" id="MSWrapper.xor_filter">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.xor_filter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.xor_filter">[docs]</a>
     <span class="k">def</span> <span class="nf">xor_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new MSWrapper containing rows matching the column selection</span>
@@ -337,7 +333,7 @@
 
 
 <div class="viewcode-block" id="MSWrapper.create_averages_from_ms">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_ms">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_averages_from_ms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">memlim</span><span class="p">,</span> <span class="n">perantave</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -519,7 +515,7 @@
 
 
 <div class="viewcode-block" id="MSWrapper.create_averages_from_combination">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_combination">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.html#pipeline.hifa.tasks.applycal.mswrapper.MSWrapper.create_averages_from_combination">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_averages_from_combination</span><span class="p">(</span><span class="n">mswlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -622,7 +618,7 @@
 
 
 <div class="viewcode-block" id="get_dtype">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.get_dtype">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.get_dtype.html#pipeline.hifa.tasks.applycal.mswrapper.get_dtype">[docs]</a>
 <span class="k">def</span> <span class="nf">get_dtype</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the numpy data type for a CASA caltable column.</span>
@@ -643,7 +639,7 @@
 
 
 <div class="viewcode-block" id="calc_vk">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.applycal.html#pipeline.hifa.tasks.applycal.mswrapper.calc_vk">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.applycal.mswrapper.calc_vk.html#pipeline.hifa.tasks.applycal.mswrapper.calc_vk">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_vk</span><span class="p">(</span><span class="n">wrapper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a NumPy array containing time-averaged visibilities for each</span>

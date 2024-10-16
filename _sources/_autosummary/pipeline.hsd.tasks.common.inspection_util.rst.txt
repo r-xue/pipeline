@@ -4,9 +4,16 @@ pipeline.hsd.tasks.common.inspection\_util
 .. automodule:: pipeline.hsd.tasks.common.inspection_util
 
    
+   
+   
+
+   
+   
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree:
+      :nosignatures:
    
       generate_ms
       inspect_reduction_group
@@ -14,11 +21,26 @@ pipeline.hsd.tasks.common.inspection\_util
       relative_path
       set_beam_size
    
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       MSReductionGroupDesc
       MeasurementSet
       ObservingRun
    
+   
+
+   
+   
+   
+
+
+

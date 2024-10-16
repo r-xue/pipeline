@@ -4,9 +4,21 @@ pipeline.hif.heuristics.imageparams\_factory
 .. automodule:: pipeline.hif.heuristics.imageparams_factory
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       ImageParamsHeuristicsALMA
       ImageParamsHeuristicsALMAScal
@@ -21,3 +33,11 @@ pipeline.hif.heuristics.imageparams\_factory
       ImageParamsHeuristicsVlassSeCube
       ImageParamsHeuristicsVlassSeTaper
    
+   
+
+   
+   
+   
+
+
+

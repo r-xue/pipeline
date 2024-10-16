@@ -4,10 +4,30 @@ pipeline.hif.tasks.tclean.basecleansequence
 .. automodule:: pipeline.hif.tasks.tclean.basecleansequence
 
    
+   
+   
+
+   
+   
+   
+
+   
+   
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
    
       BaseCleanSequence
       BoxResult
    
+   
+
+   
+   
+   
+
+
+

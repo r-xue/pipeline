@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -149,10 +145,10 @@
 
 
 <div class="viewcode-block" id="UnlockRefAntInputs">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntInputs.html#pipeline.hifa.tasks.UnlockRefAntInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">UnlockRefAntInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <div class="viewcode-block" id="UnlockRefAntInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntInputs.html#pipeline.hifa.tasks.UnlockRefAntInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># does not use CASA tasks</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -166,14 +162,14 @@
 
 
 <div class="viewcode-block" id="UnlockRefAntResults">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntResults.html#pipeline.hifa.tasks.UnlockRefAntResults">[docs]</a>
 <span class="k">class</span> <span class="nc">UnlockRefAntResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="o">=</span> <span class="n">vis</span>
 
 <div class="viewcode-block" id="UnlockRefAntResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntResults.html#pipeline.hifa.tasks.UnlockRefAntResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
@@ -194,7 +190,7 @@
 
 
 <div class="viewcode-block" id="UnlockRefAnt">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAnt">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.UnlockRefAnt.html#pipeline.hifa.tasks.UnlockRefAnt">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_unlock_refant&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;The reference antenna list for all measurement sets is unlocked to allow modification&#39;</span>
@@ -203,13 +199,13 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">UnlockRefAntInputs</span>
 
 <div class="viewcode-block" id="UnlockRefAnt.prepare">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAnt.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.UnlockRefAnt.html#pipeline.hifa.tasks.UnlockRefAnt.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">UnlockRefAntResults</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UnlockRefAnt.analyse">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.unlock_refant.html#pipeline.hifa.tasks.unlock_refant.unlock_refant.UnlockRefAnt.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.UnlockRefAnt.html#pipeline.hifa.tasks.UnlockRefAnt.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 </div>

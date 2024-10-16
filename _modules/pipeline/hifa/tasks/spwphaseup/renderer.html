@@ -45,21 +45,17 @@
               <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../pipeline_tasks/pipeline_tasks.html">Pipeline Heuristics Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Tasks (autosummary)</span></p>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.h.cli.html">pipeline.h.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hif.cli.html">pipeline.hif.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hifv.cli.html">pipeline.hifv.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.hsdn.cli.html">pipeline.hsdn.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
@@ -156,15 +152,13 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsSpwPhaseupRenderer">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer.html#pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsSpwPhaseupRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;spwphaseup.mako&#39;</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Spw phase offsets calibration&#39;</span><span class="p">,</span>
                  <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
 
-<div class="viewcode-block" id="T2_4MDetailsSpwPhaseupRenderer.update_mako_context">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.T2_4MDetailsSpwPhaseupRenderer.update_mako_context">[docs]</a>
     <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="c1"># Get info on spectral window mappings.</span>
         <span class="n">spwmaps</span> <span class="o">=</span> <span class="n">get_spwmaps</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
@@ -195,12 +189,11 @@
             <span class="s1">&#39;spwmaps&#39;</span><span class="p">:</span> <span class="n">spwmaps</span><span class="p">,</span>
             <span class="s1">&#39;rmsplots&#39;</span><span class="p">:</span> <span class="n">rmsplots</span>
         <span class="p">})</span></div>
-</div>
 
 
 
 <div class="viewcode-block" id="get_gaincal_applications">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_gaincal_applications">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.get_gaincal_applications.html#pipeline.hifa.tasks.spwphaseup.renderer.get_gaincal_applications">[docs]</a>
 <span class="k">def</span> <span class="nf">get_gaincal_applications</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SpwPhaseupApplication</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of SpwPhaseupApplication entries that contain all the necessary</span>
@@ -256,7 +249,7 @@
 
 
 <div class="viewcode-block" id="get_spwmaps">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_spwmaps">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.get_spwmaps.html#pipeline.hifa.tasks.spwphaseup.renderer.get_spwmaps">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spwmaps</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SpwMapInfo</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of SpwMapInfo entries that contain all the necessary</span>
@@ -295,7 +288,7 @@
 
 
 <div class="viewcode-block" id="get_pcal_table_rows">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_pcal_table_rows">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.get_pcal_table_rows.html#pipeline.hifa.tasks.spwphaseup.renderer.get_pcal_table_rows">[docs]</a>
 <span class="k">def</span> <span class="nf">get_pcal_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
@@ -324,7 +317,7 @@
 
 
 <div class="viewcode-block" id="get_snr_table_rows">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_snr_table_rows">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.get_snr_table_rows.html#pipeline.hifa.tasks.spwphaseup.renderer.get_snr_table_rows">[docs]</a>
 <span class="k">def</span> <span class="nf">get_snr_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
@@ -375,7 +368,7 @@
 
 
 <div class="viewcode-block" id="get_phaserms_table_rows">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.get_phaserms_table_rows">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.get_phaserms_table_rows.html#pipeline.hifa.tasks.spwphaseup.renderer.get_phaserms_table_rows">[docs]</a>
 <span class="k">def</span> <span class="nf">get_phaserms_table_rows</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of strings containing HTML TD columns, representing rows for</span>
@@ -410,7 +403,7 @@
 
 
 <div class="viewcode-block" id="make_rms_plots">
-<a class="viewcode-back" href="../../../../../_apidoc/pipeline.hifa.tasks.spwphaseup.html#pipeline.hifa.tasks.spwphaseup.renderer.make_rms_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.renderer.make_rms_plots.html#pipeline.hifa.tasks.spwphaseup.renderer.make_rms_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">make_rms_plots</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create and return a list of the Spatial Structure Functions (SSF) plots. </span>
