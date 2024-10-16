@@ -44,9 +44,13 @@ taskdocs:
 	@${PYTHON} ./source/pipeline_tasks/create_docs.py --outdir ${SOURCEDIR}/_taskdocs --srcdir ../
 
 html_docs:
+	@rm -rf ${SOURCEDIR}/_apidoc
+	@rm -rf ${SOURCEDIR}/_taskdocs
+	# @make apidoc
 	@make taskdocs
-	@make apidoc
-	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_automodapi ${SOURCEDIR}/pipeline_tasks/_autosummary_tasks
+	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees 
+	@rm -rf ${SOURCEDIR}/_autosummary*
+	@rm -rf ${SOURCEDIR}/_automodapi
 	@make html
 	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log
 

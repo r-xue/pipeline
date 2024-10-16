@@ -1,32 +1,23 @@
-Pipeline Documentation
-======================
-
 
 .. toctree::
    :maxdepth: 2
    :caption: Releases etc.
 
    releases
-   modular
    dependencies
+   modular
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Pipeline Tasks
+   :maxdepth: 3
+   :caption: API Reference
 
-   pipeline_tasks/pipeline_tasks.rst
+   apisummary
 
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Tasks (autosummary)
+.. toctree::
+   :maxdepth: 3
+   :caption: TaskRef (create_docs.py)
 
-   pipeline.h.cli
-   pipeline.hif.cli
-   pipeline.hifa.cli
-   pipeline.hifv.cli
-   pipeline.hsd.cli
-   pipeline.hsdn.cli
-
+   _taskdocs/taskdocs
 
 
 .. toctree::

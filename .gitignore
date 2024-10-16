@@ -73,10 +73,9 @@ instance/
 # Sphinx documentation
 docs/_build/**
 docs/source/_apidoc/**
-docs/source/_autosummary/**
+docs/source/_autosummary*/**
 docs/source/_taskdocs/**
 docs/source/_automodapi/**
-docs/source/pipeline_tasks/_autosummary_tasks/**
 
 # CASA log files
 casa-*.log
