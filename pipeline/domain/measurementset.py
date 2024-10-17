@@ -1,26 +1,27 @@
 """Provide a class to store logical representation of MeasurementSet."""
 import collections
 import contextlib
+import inspect
 import itertools
 import operator
 import os
+import re
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
-import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import conversion
+
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
-from . import measures
-from . import spectralwindow
+from pipeline.infrastructure import logging
+
+from . import measures, spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
-from pipeline.infrastructure.utils import range_to_list
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -256,7 +257,7 @@ class MeasurementSet(object):
                 if spw in ('', '*'):
                     spw = ','.join(str(spw.id) for spw in self.spectral_windows)
                 if '~' in spw:
-                    spw = conversion.range_to_list(spw)
+                    spw = utils.range_to_list(spw)
                 else:
                     spw = spw.split(',')
             spw = {int(i) for i in spw}
@@ -299,6 +300,12 @@ class MeasurementSet(object):
         """
         qa = casa_tools.quanta
         cme = casa_tools.measures
+
+        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
+        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+            log_level = logging.WARNING
+        else:
+            log_level = logging.INFO
 
         if source_name:
             # Use the first target source that matches the user defined name
@@ -380,8 +387,8 @@ class MeasurementSet(object):
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                LOG.warning('Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
-                            self.representative_window)
+                LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
+                        self.representative_window)
 
         if target_spwid is not None:
             return (target_source_name, target_spwid)
@@ -389,8 +396,10 @@ class MeasurementSet(object):
         # Get the representative bandwidth
         #     Return if there isn't one
         if not self.representative_target[2]:
-            LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
+            if self.antenna_array.name not in ('VLA', 'EVLA'):
+                LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
             return (target_source_name, None)
+        
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
             qa.getunit(self.representative_target[2])))
@@ -475,8 +484,9 @@ class MeasurementSet(object):
         target_spws_freq = [spw for spw in target_spws_bw
                             if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
         if len(target_spws_freq) <= 0:
-            LOG.warning('No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
-                        self.basename)
+            LOG.log(log_level,
+                    'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
+                    self.basename)
             max_chanwidth = None
             for spw in target_spws_bw:
                 chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
@@ -588,7 +598,7 @@ class MeasurementSet(object):
             return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
-        if self.antenna_array.name == 'VLA' or self.antenna_array.name == 'EVLA':
+        if self.antenna_array.name in ('VLA', 'EVLA'):
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
@@ -1356,9 +1366,9 @@ class MeasurementSet(object):
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
     def set_data_column(self, dtype: DataType, column: str,
-                        source: Optional[str]=None,
-                        spw: Optional[str]=None,
-                        overwrite: bool=False):
+                        source: Optional[str] = None,
+                        spw: Optional[str] = None,
+                        overwrite: bool = False):
         """
         Set data type and column.
 
@@ -1390,33 +1400,20 @@ class MeasurementSet(object):
 
         # Check if data type is already associated with another column
         if not overwrite and dtype in self.data_column and self.get_data_column(dtype) != column:
-            raise ValueError('Data type {} is already associated with column {} in {}'.format(dtype, self.get_data_column(dtype), self.basename))
+            raise ValueError('Data type {} is already associated with column {} in {}'.format(
+                dtype, self.get_data_column(dtype), self.basename))
 
         # Check if column is already assigned to another data type
         if not overwrite and column in self.data_column.values() and self.get_data_column(dtype) != column:
-            raise ValueError('Column {} is already associated with data type {} in {}'.format(column, [k for k,v in self.data_column.items() if v == column][0], self.basename))
+            raise ValueError('Column {} is already associated with data type {} in {}'.format(
+                column, [k for k, v in self.data_column.items() if v == column][0], self.basename))
+
+        source_name_list = self._source_select_to_list(source)
+        spw_id_list = self._spw_select_to_list(spw)
 
         # Update data types per (source,spw) selection
-        if source is None:
-            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
-        else:
-            # Check for empty or blank strings
-            if source.strip():
-                source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
-            else:
-                source_names = ','.join(utils.dequote(s.name) for s in self.sources)
-
-        if spw is None:
-            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
-        else:
-            # Check for empty or blank strings
-            if spw.strip():
-                spw_ids = spw
-            else:
-                spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
-
-        for source_name in source_names.split(','):
-            for spw_id in map(int, range_to_list(spw_ids)):
+        for source_name in source_name_list:
+            for spw_id in spw_id_list:
                 key = (source_name, spw_id)
                 if key in self.data_types_per_source_and_spw:
                     if dtype not in self.data_types_per_source_and_spw[key]:
@@ -1425,24 +1422,26 @@ class MeasurementSet(object):
                     self.data_types_per_source_and_spw[key] = [dtype]
 
         # Check for existing column registration and remove it
-        column_keys = [k for k,v in self.data_column.items() if v == column]
-        if column_keys!= []:
+        column_keys = [k for k, v in self.data_column.items() if v == column]
+        if column_keys != []:
             for k in column_keys:
-                del(self.data_column[k])
+                del (self.data_column[k])
 
         # Update MS domain object
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
 
-    def get_data_column(self, dtype: DataType, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[str]:
+    def get_data_column(self, dtype: DataType, source: Optional[str] = None, spw: Optional[str] = None) -> Optional[str]:
         """
         Return the column name associated with a DataType in an MS domain object.
 
         Args:
             dtype: DataType to fetch column name for
-            source: Comma separated list of source names to filter for.
-            spw: Comma separated list of real spw IDs to filter for.
+            source: source names (comma separated name selection string) to filter for. 
+                    If unset, all sources will be used.
+            spw: spectral windows (comma separated real spw ID selection string) to filter for. 
+                 If unset, all real spw IDs will be used.
 
             If source and spw are both unset, the method will just look
             at the MS data type and column information. If one or both
@@ -1459,20 +1458,13 @@ class MeasurementSet(object):
         if source is None and spw is None:
             return self.data_column[dtype]
 
-        if source is None:
-            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
-        else:
-            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
-
-        if spw is None:
-            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
-        else:
-            spw_ids = spw
+        source_name_list = self._source_select_to_list(source)
+        spw_id_list = self._spw_select_to_list(spw)
 
         # Check all (source,spw) combinations
         data_exists_for_all_source_spw_combinations = True
-        for source_name in source_names.split(','):
-            for spw_id in map(int, spw_ids.split(',')):
+        for source_name in source_name_list:
+            for spw_id in spw_id_list:
                 key = (source_name, spw_id)
                 if dtype not in self.data_types_per_source_and_spw.get(key, []):
                     data_exists_for_all_source_spw_combinations = False
@@ -1482,14 +1474,16 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_data_type(self, column: str, source: Optional[str]=None, spw: Optional[str]=None) -> Optional[DataType]:
+    def get_data_type(self, column: str, source: Optional[str] = None, spw: Optional[str] = None) -> Optional[DataType]:
         """
         Return the DataType associated with a column in an MS domain object.
 
         Args:
             column: name of column in MS
-            source: Comma separated list of source names to filter for.
-            spw: Comma separated list of real spw IDs to filter for.
+            source: source names (comma separated name selection string) to filter for. 
+                    If unset, all sources will be used.
+            spw: spectral windows (comma separated real spw ID selection string) to filter for. 
+                 If unset, all real spw IDs will be used.
 
             If source and spw are both unset, the method will just look
             at the MS data type and column information. If one or both
@@ -1511,21 +1505,14 @@ class MeasurementSet(object):
         if source is None and spw is None:
             return data_type[column]
 
-        if source is None:
-            source_names = ','.join(utils.dequote(s.name) for s in self.sources)
-        else:
-            source_names = ','.join(utils.dequote(s.strip()) for s in source.split(','))
-
-        if spw is None:
-            spw_ids = ','.join(str(s.id) for s in self.spectral_windows)
-        else:
-            spw_ids = spw
+        source_name_list = self._source_select_to_list(source)
+        spw_id_list = self._spw_select_to_list(spw)
 
         # Check all (source,spw) combinations
         data_exists_for_all_source_spw_combinations = True
         column_dtype = data_type[column]
-        for source_name in source_names.split(','):
-            for spw_id in map(int, spw_ids.split(',')):
+        for source_name in source_name_list:
+            for spw_id in spw_id_list:
                 key = (source_name, spw_id)
                 if column_dtype not in self.data_types_per_source_and_spw.get(key, []):
                     data_exists_for_all_source_spw_combinations = False
@@ -1534,3 +1521,41 @@ class MeasurementSet(object):
             return column_dtype
         else:
             return None
+
+    def _source_select_to_list(self, source_select: Union[str, None]) -> List[str]:
+        """
+        Convert a CASA-style source selection string to a list of source names.
+
+        Args:
+            source_select: source string to convert
+
+        Returns:
+            A list of source names (as strings)
+        """
+
+        if source_select is None or not source_select.strip():
+            # if None or empty or blank selection string, use all sources
+            source_list = [utils.dequote(s.name) for s in self.sources]
+        else:
+            source_list = [utils.dequote(s.strip()) for s in source_select.split(',')]
+
+        return source_list
+
+    def _spw_select_to_list(self, spw_select: Union[str, None]) -> List[int]:
+        """
+        Convert a CASA-style spw selection string to a list of spw IDs.
+
+        Args:
+            spw_select: spw selection string to convert
+
+        Returns:
+            A list of spw IDs (as integers)
+        """
+
+        if spw_select is None or not spw_select.strip():
+            # if None or empty or blank selection string, use all spws
+            spw_list = [s.id for s in self.spectral_windows]
+        else:
+            spw_list = utils.range_to_list(spw_select)
+
+        return spw_list

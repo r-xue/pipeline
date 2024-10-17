@@ -220,7 +220,7 @@ class ContFileHandler(object):
             LOG.error(msg)
             raise Exception(msg)
 
-        virt_spw_id = int(self.get_cont_dat_virt_spw_id(spw_id, spw_name))
+        virt_spw_id = int(self.get_cont_dat_virt_spw_id(str(spw_id), spw_name))
 
         qaTool = casa_tools.quanta
         suTool = casa_tools.synthesisutils
@@ -302,6 +302,7 @@ class ContFileHandler(object):
 
         return virt_spw_id
 
+
 def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
     """Translate continuum ranges specified in contfile to frequency selection string.
 
@@ -314,26 +315,29 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
     contfile_handler = ContFileHandler(contfile)
     contdict = contfile_handler.read(warn_nonexist=False)
-    m = context.observing_run.get_ms(vis)
+    ms = context.observing_run.get_ms(vis)
     fielddict = {}
 
     for field in contdict['fields']:
 
-        fieldobj = m.get_fields(name=field)
-        fieldobjlist = [fieldobjitem for fieldobjitem in fieldobj]
+        # Note that ContFileHandler and cont.dat use original field names from CASA tables, rather than 
+        # the "CASA-safe" names (see PIPE-1887 and heurtsics/field_parameter.md). So we need the dequotation
+        # and then match.
+        fieldid_list = [fieldobj.id for fieldobj in ms.fields if utils.dequote(fieldobj.name) == field]
 
-        # If field is not found, skip it.
-        if not fieldobjlist:
+        # If no field is found, skip it.
+        if not fieldid_list:
             continue
 
         spwstring = ''
         for virt_spw_id in contdict['fields'][field]:
             spw_name = context.observing_run.virtual_science_spw_ids[int(virt_spw_id)]
-            crange_list = [crange for crange in contdict['fields'][field][virt_spw_id]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
+            crange_list = [crange for crange in contdict['fields'][field]
+                           [virt_spw_id]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
             if crange_list[0]['refer'] in ('LSRK', 'SOURCE'):
                 LOG.info("Converting from %s to TOPO...", crange_list[0]['refer'])
                 sname = field
-                field_id = str(fieldobjlist[0].id)
+                field_id = str(fieldid_list[0])
 
                 cranges_spwsel = collections.OrderedDict()
                 cranges_spwsel[sname] = collections.OrderedDict()
@@ -383,7 +387,7 @@ def contfile_to_chansel(vis, context, contfile='cont.dat', excludechans=False):
     spwsel_dict = contfile_to_spwsel(vis, context, contfile, use_realspw=True)
     chansel_dict = collections.OrderedDict()
     for field, spwsel in spwsel_dict.items():
-        chansel_dict[field] = spwsel2chansel(vis, field, spwsel, excludechans)
+        chansel_dict[field] = spwsel2chansel(vis, utils.fieldname_for_casa(field), spwsel, excludechans)
 
     return chansel_dict
 
@@ -413,6 +417,9 @@ def spwsel2chansel(vis, field, spwsel, excludechans):
 
     CASA <19>: spwsel2chansel('uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms','helms30','0:215369.8696MHz~215490.8696MHz',True)
     Out[19]: '0:0~55,0:64~127'
+
+    Note: the field input value is a string in CASA/field selection syntax, e.g. a "CASA-safe" field name
+    also see https://casacore.github.io/casacore-notes/263.html#x1-190004
     """
 
     with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as tb:

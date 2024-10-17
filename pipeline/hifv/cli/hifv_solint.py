@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_solint(vis=None, limit_short_solint=None, refantignore=None):
+def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=None):
 
     """
     hifv_solint ---- Determines different solution intervals
@@ -28,6 +28,8 @@ def hifv_solint(vis=None, limit_short_solint=None, refantignore=None):
                        Can be set to a string value of 'int'.
     refantignore       String list of antennas to ignore
                        Example:  refantignore='ea02,ea03'
+    refant             A csv string of reference antenna(s). When used, disables ``refantignore``.
+                       Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------
 

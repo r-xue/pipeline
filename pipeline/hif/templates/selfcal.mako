@@ -91,11 +91,7 @@ img {
 import numpy as np
 
 def fm_band(band):
-    return band.replace('_',' ')
-
-def fm_target(target):
-    target_str=target['field'].replace('_',' ')
-    return target_str
+    return '('+band.strip().replace('EVLA_', '').replace('_', ' ').capitalize()+')'
 
 def fm_sc_success(success):
     if success:
@@ -135,7 +131,7 @@ def fm_reason(slib):
             <th>Imsize</th>
             <th>Solints to attempt</th>
             <th>Success</th>
-            <th>Contline<br>applied</th>
+            <th>Cont.<br>applied</th>
             <th>Line<br>applied</th>
         <tr>
   </thead>
@@ -177,7 +173,7 @@ def fm_reason(slib):
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      ${fm_target(target)}&nbsp;${fm_band(target['sc_band'])}&nbsp;
+      ${target['field']}&nbsp;${fm_band(target['sc_band'])}&nbsp;
       <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 

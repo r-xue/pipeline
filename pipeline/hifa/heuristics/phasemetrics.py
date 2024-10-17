@@ -58,7 +58,7 @@ class PhaseStabilityHeuristics(object):
             self.antlist.append(ant.name)
 
         # Select which SpW to use for phase stability analysis.
-        self.spw = self._select_spw_to_analyse(inputsin)
+        spw_candidates = self._get_spw_candidates(inputsin)
 
         ##################
         # PIPE-1661 related
@@ -76,8 +76,8 @@ class PhaseStabilityHeuristics(object):
         # bnot expected to be used in standard observing practice 
         ####################
 
-        # Get the bandpass scans
-        targeted_scans = inputsin.ms.get_scans(scan_intent='BANDPASS', spw=str(self.spw))
+        # Get the bandpass, using the first of the SpW candidates.
+        targeted_scans = inputsin.ms.get_scans(scan_intent='BANDPASS', spw=str(spw_candidates[0]))
         bp_scan = []
         bp_field = []
         bp_id = []
@@ -91,6 +91,10 @@ class PhaseStabilityHeuristics(object):
         self.field = bp_field[0]
         self.fieldId = bp_id[0]  # PIPE-1661 needs ID not a name 
 
+        # Select which SpW to use for phase stability analysis, and retrieve
+        # corresponding baseline flagging information.
+        self.spw, self.blflags = self._get_final_spw_and_blflags(inputsin, spw_candidates)
+
         # Check to see if data are ACA or not
         self.PMinACA = self._pm_in_aca()
 
@@ -103,9 +107,6 @@ class PhaseStabilityHeuristics(object):
 
         # getcycletime will use a lookup if there is 1 or less phase cal scans (PIPE-1848)
         self.cycletime = self._getcycletime()
-
-        # Retrieve flagging information for the selected SpW (PIPE-1661).
-        self.blflags = self._getblflags(spw=self.spw)  # index back is 'all' and 'phasecalonly' intents
 
         # PIPE-2081: for BandToBand MSes, also retrieve flagging information for
         # the diffgain reference SpW associated with the selected SpW; to be
@@ -793,9 +794,65 @@ class PhaseStabilityHeuristics(object):
 
         return flaggedbl
 
+    def _get_final_spw_and_blflags(self, inputsin, qa_spw_candidates) \
+            -> Tuple[int, Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+        """
+        Select the best candidate SpW for the phase decoherence analysis based
+        on ranked list and baseline flagging information.
+
+        Args:
+            inputsin: inputs from caller task (expected to be hifa_spwphaseup)
+
+        Returns:
+            2-Tuple containing:
+                - selected SpW ID (integer)
+                - 4-tuple representing baseline flagging info for selected SpW
+        """
+        # PIPE-1871: from the ranked list of SpWs, pick the first SpW for which
+        # the baselines are not fully flagged.
+        spwid, blflags = None, None
+        for qa_spw in qa_spw_candidates:
+            candidate_spwid = int(qa_spw)
+            LOG.debug(f"{inputsin.ms.basename}: assessing baseline flags for SpW {candidate_spwid}.")
+
+            # Retrieve flagging information for the selected SpW (PIPE-1661).
+            blflags = self._getblflags(spw=candidate_spwid)
+
+            # Check whether for current spw (and bandpass field), all
+            # corresponding baselines rows are entirely flagged in all pol and
+            # all channels:
+            # - blflags[3] represents the field, with shape (nrow).
+            # - blflags[0] represents the flag, with shape (npol, nchan, nrow).
+            # - np.all(blflags[0], (0, 1)) performs an AND on flags in each
+            #   (npol, nchan) plane, i.e. checking for each row if all pol, chan
+            #   are flagged.
+            # If the baselines are not entirely flagged, then keep this Spw as
+            # the one to analyse, and stop looking.
+            if not np.all(np.all(blflags[0], (0, 1))[blflags[3] == self.fieldId]):
+                spwid = candidate_spwid
+                break
+            else:
+                LOG.info(f"{inputsin.ms.basename}: SpW {candidate_spwid} appears to be fully flagged.")
+
+        if spwid is None:
+            raise Exception(f"{inputsin.ms.basename}: unable to identify a SpW for assessing phase decoherence; all"
+                            f" candidate SpWs appear to be fully flagged.")
+
+        return spwid, blflags
+
     # Static methods
     @staticmethod
-    def _select_spw_to_analyse(inputsin):
+    def _get_spw_candidates(inputsin) -> List[str]:
+        """
+        Retrieves a list of spectral window candidates for the phase decoherence
+        analysis, ranked based on atmosphere heuristics.
+
+        Args:
+            inputsin: inputs from caller task (expected to be hifa_spwphaseup)
+
+        Returns:
+            List of SpW IDs (string)
+        """
         # Retrieve SpWs to consider.
         if inputsin.ms.is_band_to_band:
             # For a BandToBand MS, restrict to diffgain on-source SpWs.
@@ -815,7 +872,17 @@ class PhaseStabilityHeuristics(object):
                      f" and opacity instead.")
             qa_spw_list = atmheuristics.spwid_rank_by_opacity_and_bandwidth()
 
-        return int(qa_spw_list[0])
+        if not qa_spw_list:
+            raise Exception(f"{inputsin.ms.basename}: unable to identify a SpW for assessing phase decoherence; no"
+                            f" candidate SpWs found.")
+
+        # PIPE-1871: as potential fall-back candidates, keep only those SpWs
+        # that have the same SpectralSpec as the top candidate.
+        qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
+        qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
+        qa_spw_list = [str(spw.id) for spw in qa_spws if spw.spectralspec == qa_spws[0].spectralspec]
+
+        return qa_spw_list
 
     @staticmethod
     def phase_unwrap(phase: np.ndarray) -> np.ndarray:

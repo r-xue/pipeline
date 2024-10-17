@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_hanning(vis=None):
+def hifv_hanning(vis=None, maser_detection=None):
 
     """
     hifv_hanning ---- Hanning smoothing on a dataset
@@ -20,8 +20,9 @@ def hifv_hanning(vis=None):
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
+    vis              The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                     specified in the h_init or hifv_importdata task.
+    maser_detection  Run maser detect algorithm on spectral line windows. Defaults to True.
 
     --------- examples -----------------------------------------------------------
 

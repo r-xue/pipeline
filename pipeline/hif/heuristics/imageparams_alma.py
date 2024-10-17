@@ -20,7 +20,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                                        linesfile, imaging_params)
         self.imaging_mode = 'ALMA'
 
-    def robust(self):
+    def robust(self, specmode=None):
         """robust parameter heuristic."""
         if 'robust' in self.imaging_params:
             robust = self.imaging_params['robust']
@@ -465,13 +465,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             return 'IQUV'
         else:
             return 'I'
-
-    def weighting(self, specmode: str) -> str:
-        """Determine the weighting scheme."""
-        if specmode in ('mfs', 'cont'):
-            return 'briggs'
-        else:
-            return 'briggsbwtaper'
 
     def reffreq(self, deconvolver: Optional[str] = None, specmode: Optional[str] = None, spwsel: Optional[dict] = None) -> Optional[str]:
         """PIPE-1838: Tclean reffreq parameter heuristics."""

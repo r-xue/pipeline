@@ -258,6 +258,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
+        # Check if this stage has been disabled for vla (never set for ALMA)
+        if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
+            result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
+            result.contfile = None
+            result.linesfile = None
+            return result
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
             if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
@@ -670,7 +679,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
-                        imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
+                        imagename_prefix = utils.remove_trailing_string(os.path.basename(vislist[0]), '.ms')
                     elif inputs.per_session:
                         imagename_prefix = inputs.context.observing_run.get_ms(vislist[0]).session
                     else:
@@ -867,7 +876,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     elif 'robust' in inputs.context.imaging_parameters:
                         robust = inputs.context.imaging_parameters['robust']
                     else:
-                        robust = self.heuristics.robust()
+                        robust = self.heuristics.robust(specmode=inputs.specmode)
 
                     if inputs.uvtaper not in (None, []):
                         uvtaper = inputs.uvtaper
@@ -875,22 +884,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         uvtaper = inputs.context.imaging_parameters['uvtaper']
                     else:
                         uvtaper = self.heuristics.uvtaper()
-
-                    # Get field specific uvrange value
-                    uvrange = {}
-                    bl_ratio = {}
-                    for field_intent in field_intent_list:
-                        for spwspec in filtered_spwlist_local:
-                            if inputs.uvrange not in (None, [], ''):
-                                uvrange[(field_intent[0], spwspec)] = inputs.uvrange
-                            else:
-                                try:
-                                    (uvrange[(field_intent[0], spwspec)], bl_ratio[(field_intent[0], spwspec)]) = \
-                                        self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
-                                except Exception as e:
-                                    # problem defining uvrange
-                                    LOG.warning(e)
-                                    pass
 
                     # cell is a list of form [cellx, celly]. If the list has form [cell]
                     # then that means the cell is the same size in x and y. If cell is
@@ -987,9 +980,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
                                     imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
                                     h_imsize = self.heuristics.imsize(
-                                        fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                        sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'],
-                                        spwspec=imsize_spwlist, intent=field_intent[1], joint_intents=inputs.intent)
+                                        fields=field_ids, cell=cells[spwspec],
+                                        primary_beam=largest_primary_beams[spwspec],
+                                        sfpblimit=sfpblimit, centreonly=False,
+                                        vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'],
+                                        spwspec=imsize_spwlist, intent=field_intent[1],
+                                        joint_intents=inputs.intent, specmode=inputs.specmode)
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',
@@ -1305,8 +1301,20 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
-                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec)
+                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
+                                # Get field-specific uvrange value
+                                uvrange = inputs.uvrange if inputs.uvrange not in (None, [], '') else None
+                                bl_ratio = None
+                                if uvrange is None:
+                                    try:
+                                        uvrange, bl_ratio = self.heuristics.uvrange(field=field_intent[0], spwspec=actual_spwspec)
+                                    except Exception as ex:
+                                        # After PIPE-2266, an exception is unlikely to occur because a null-selection condition has been excluded.
+                                        # Nevertheless, we retain this exception handler as an extra precaution.
+                                        LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
+                                                    field_intent[0], actual_spwspec, ex)
+                                              
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1330,8 +1338,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     nbin=nbin,
                                     nchan=nchans[(field_intent[0], spwspec)],
                                     robust=robust,
-                                    uvrange=uvrange[(field_intent[0], spwspec)],
-                                    bl_ratio=bl_ratio[(field_intent[0], spwspec)],
+                                    uvrange=uvrange,
+                                    bl_ratio=bl_ratio,
                                     uvtaper=uvtaper,
                                     stokes=stokes,
                                     heuristics=target_heuristics,

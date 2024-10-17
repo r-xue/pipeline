@@ -1,6 +1,7 @@
 import collections
 import copy
 import fnmatch
+import inspect
 import math
 import operator
 import os.path
@@ -24,7 +25,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, logging
 from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
                                                       refcode_to_skyframe)
 
@@ -769,13 +770,22 @@ class ImageParamsHeuristics(object):
 
         is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
         if not is_mos_or_het:
-            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0]  # in micro arcsec
+            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, "uarcsec"))[0]  # in micro arcsec
+            # PIPE-1504: only issue this message at the WARNING level if it's executed by hifa_imageprecheck
+            if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+                log_level = logging.WARNING
+            else:
+                log_level = logging.INFO
             for mdirection in mdirections:
                 separation = cme.separation(mdirection, mdirections[0])
                 if cqa.gt(separation, max_separation):
-                    separation_arcsec = cqa.getvalue(cqa.convert(separation, 'arcsec'))[0]
-                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (
-                        field_names[0], separation_arcsec, max_separation_uarcsec))
+                    separation_arcsec = cqa.getvalue(cqa.convert(separation, "arcsec"))[0]
+                    LOG.log(
+                        log_level,
+                        "The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). "
+                        "This is only normal for an ephemeris source or a source with a large proper motion or parallax." %
+                        (field_names[0],
+                         separation_arcsec, max_separation_uarcsec))
             mdirections = [mdirections[0]]
 
         # it should be easy to calculate some 'average' direction
@@ -1138,7 +1148,7 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = ''):
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None):
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -1404,8 +1414,7 @@ class ImageParamsHeuristics(object):
         return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
                (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
-    def robust(self):
-
+    def robust(self, specmode=None):
         """Default robust value."""
 
         return 0.5
@@ -2011,6 +2020,8 @@ class ImageParamsHeuristics(object):
         in case of online smoothing.
 
         This heuristic is currently optimized for ALMA data only.
+
+        Note: the input 'field' is a field id as an integer.
         """
 
         real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
@@ -2024,7 +2035,7 @@ class ImageParamsHeuristics(object):
 
             scanids = [str(scan.id) for scan in ms_do.scans
                        if intent in scan.intents
-                       and field in [fld.name for fld in scan.fields]]
+                       and field in [fld.id for fld in scan.fields]]
             scanids = ','.join(scanids)
             antenna_ids = self.antenna_ids(intent, [os.path.basename(ms_do.name)])
             taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])}&&" \
@@ -2210,13 +2221,15 @@ class ImageParamsHeuristics(object):
     def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None):
         return None
 
-    def uvrange(self, field=None, spwspec=None):
+    def uvrange(self, field=None, spwspec=None, specmode=None):
         return None, None
 
     def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
-    def restfreq(self):
+    def restfreq(
+            self, specmode: Optional[str] = None, nchan: Optional[int] = None, start: Optional[Union[str, float]] = None,
+            width: Optional[Union[str, float]] = None) -> Optional[str]:
         return None
 
     def conjbeams(self):
@@ -2471,13 +2484,16 @@ class ImageParamsHeuristics(object):
         return None
 
     def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
-                         pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
+                         pblimit: float = 0.4, frac_lim: float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask"""
         return None
 
     def weighting(self, specmode: str) -> str:
         """Determine the weighting scheme."""
-        return 'briggs'
+        if specmode in ('mfs', 'cont'):
+            return 'briggs'
+        else:
+            return 'briggsbwtaper'
 
     def perchanweightdensity(self, specmode: str) -> bool:
         """Determine the perchanweightdensity parameter."""

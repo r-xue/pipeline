@@ -28,13 +28,13 @@ from .conversion import dequote, range_to_list
 
 LOG = logging.get_logger(__name__)
 
-__all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
+__all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations', 'fieldname_for_casa',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
            'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered', 'deduplicate',
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val']
+           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -875,4 +875,14 @@ def string_to_val(s):
     except ValueError:
         return s
     except SyntaxError:
+        return s
+
+
+def remove_trailing_string(s, t):
+    """
+    Remove a trailing string if it exists.
+    """
+    if s.endswith(t):
+        return s[:-len(t)]
+    else:
         return s
