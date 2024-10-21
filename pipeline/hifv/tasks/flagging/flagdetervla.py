@@ -448,6 +448,12 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
                 flag_cmds.append('mode=\'manual\' intent=\'%s\' reason=\'intents\'' % intent)
             flag_cmds.append('mode=\'summary\' name=\'intents\'')
 
+        # PIPE-1033: Moving zero flagging before template.
+        # Flag mode clip
+        if inputs.clip:
+            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
+            flag_cmds.append('mode=\'summary\' name=\'clip\'')
+
         # flag template?
         if inputs.template:
             if not os.path.exists(inputs.filetemplate):
@@ -484,11 +490,6 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
                 flag_cmds.append('mode=\'summary\' name=\'edgespw\'')
 
         # VLA specific commands
-
-        # Flag mode clip
-        if inputs.clip:
-            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
-            flag_cmds.append('mode=\'summary\' name=\'clip\'')
 
         # Flag quack
         if inputs.quack: 
