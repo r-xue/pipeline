@@ -284,7 +284,7 @@ html_show_sourcelink = True
 # Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the
 # reference manual
 autosummary_generate = True
-autosummary_generate_overwrite = True
+autosummary_generate_overwrite = autosummary_generate
 autosummary_imported_members = True
 autosummary_ignore_module_all = True
 # autodoc_mock_imports = ["pipeline"]
@@ -322,8 +322,8 @@ def setup(app):
     app.add_css_file('custom_theme.css')
 
 
-# sphinx-astrorefs
-bibtex_bibfiles = ['references/pipeline.bib']
+# sphinxcontrib.bibtex/sphinx-astrorefs
+bibtex_bibfiles = ['references/pipeline-resolved.bib']
 bibtex_encoding = "utf-8"
 astrorefs_resolve_aas_macros = True
 astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
