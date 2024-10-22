@@ -91,8 +91,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.inheritance_diagram',
               'sphinx_automodapi.automodapi',
               'sphinx_automodapi.smart_resolver',
-              # 'sphinxcontrib.bibtex',
-              # 'sphinx_astrorefs',
+              'sphinxcontrib.bibtex',
+              'sphinx_astrorefs',
               'recommonmark',
               'sphinx.ext.graphviz',
               'sphinx.ext.viewcode',
@@ -321,12 +321,13 @@ automodapi_toctreedirnm = '_automodapi'
 def setup(app):
     app.add_css_file('custom_theme.css')
 
-# astrorefs
-# bibtex_bibfiles = ['references/pipeline.bib']
-# bibtex_encoding = "utf-8"
-# astrorefs_resolve_aas_macros = True
-# astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
-# astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
+
+# sphinx-astrorefs
+bibtex_bibfiles = ['references/pipeline.bib']
+bibtex_encoding = "utf-8"
+astrorefs_resolve_aas_macros = True
+astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
+astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
 
 
 # inheritance_graph_attrs = dict(rankdir="TB", size='""')

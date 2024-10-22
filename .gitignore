@@ -167,3 +167,4 @@ tags
 # ignore _version.py, created by setup.py
 _version.py
 
+docs/source/references/pipeline-resolved.bib
