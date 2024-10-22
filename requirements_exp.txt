@@ -11,9 +11,13 @@ line_profiler==4.1.2        # https://github.com/pyutils/line_profiler
 build                       # https://packaging.python.org/en/latest/key_projects/#build
 twine                       # https://packaging.python.org/en/latest/key_projects/#twine
 wheel                       # https://packaging.python.org/en/latest/key_projects/#wheel
-# setuptools_scm              # https://pypi.org/project/setuptools-scm/
+# setuptools_scm            # https://pypi.org/project/setuptools-scm/
 
 jupyterlab
 dask[distributed]
 bokeh>=3.1.0
 jupyterlab
+
+# xradio                    # https://github.com/casangi/xradio
+                            # this might downgrade certain packages due to spec-pins
+                            # both casacore and casatools would be present, but not interoperable
