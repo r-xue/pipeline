@@ -10,6 +10,7 @@ from inspect import signature
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import logging
+from . import daskhelpers
 from . import mpihelpers
 from . import utils
 from . import vdp
@@ -231,7 +232,7 @@ class VDPTaskFactory(object):
         is_mpi_ready = mpihelpers.is_mpi_ready()
         is_tier0_job = is_mpi_ready
 
-        parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
         # PIPE-2114: always execute per-EB "SerialTasks" from the MPI client process in a single-EB
         # data processing session.
@@ -243,6 +244,10 @@ class VDPTaskFactory(object):
         if is_tier0_job and parallel_wanted:
             executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
             return valid_args, mpihelpers.AsyncTask(executable)
+        elif bool(daskhelpers.daskclient) and parallel_wanted:
+            inputs = vdp.InputsContainer(self.__task, self.__context, **valid_args)
+            task = self.__task(inputs)
+            return valid_args, daskhelpers.FutureTask(task, self.__executor)
         else:
             inputs = vdp.InputsContainer(self.__task, self.__context, **valid_args)
             task = self.__task(inputs)

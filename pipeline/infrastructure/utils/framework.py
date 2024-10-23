@@ -26,7 +26,8 @@ from .conversion import flatten, safe_split
 from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
-from pipeline.infrastructure.basetask import ResultsProxy
+from .. import daskhelpers
+
 from pipeline.infrastructure.jobrequest import JobRequest
 from pipeline.infrastructure.renderer.logger import Plot
 
@@ -442,6 +443,8 @@ def plotms_iterate(
             if tier0_plots_enabled and mpihelpers.is_mpi_ready():
                 executable = mpihelpers.Tier0JobRequest(casa_tasks.plotms, job_to_execute.kw)
                 queued_job = mpihelpers.AsyncTask(executable)
+            elif tier0_plots_enabled and bool(daskhelpers.daskclient):
+                queued_job = daskhelpers.FutureTask(job_to_execute)
             else:
                 queued_job = mpihelpers.SyncTask(job_to_execute)
 

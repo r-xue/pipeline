@@ -6,7 +6,7 @@ from inspect import signature
 import pprint 
 
 from pipeline.domain.unitformat import file_size
-
+from . import daskhelpers
 try:
     from casampi.MPIEnvironment import MPIEnvironment
     from casampi.MPICommandClient import MPICommandClient
@@ -417,6 +417,18 @@ def parse_mpi_input_parameter(input_arg):
         raise ValueError('Arg must be one of true, false or automatic. Got %s' % input_arg)
 
 
+def parse_parallel_input_parameter(input_arg):
+    lowercase = str(input_arg).lower()
+    if lowercase == 'automatic':
+        return is_mpi_ready() or bool(daskhelpers.daskclient)
+    elif lowercase == 'true':
+        return True
+    elif lowercase == 'false':
+        return False
+    else:
+        raise ValueError('Arg must be one of true, false or automatic. Got %s' % input_arg)
+    
+
 mpiclient = None
 mpi_server_list = None
 
@@ -486,10 +498,10 @@ class TaskQueue:
         self.__running = True
         self.__executor = executor
         self.__mpi_server_list = mpi_server_list
-        self.__is_mpi_ready = is_mpi_ready()
-        self.__async = parallel and self.__is_mpi_ready
+        self.__is_cluster_ready = is_mpi_ready() or bool(daskhelpers.daskclient)
+        self.__async = parallel and self.__is_cluster_ready
 
-        LOG.info('TaskQueue initialized; MPI server list: %s', self.__mpi_server_list)
+        LOG.info('TaskQueue initialized: MPI server list: %s; Dask client: %s', self.__mpi_server_list, daskhelpers.daskclient)
 
     def __enter__(self):
         return self
@@ -547,8 +559,11 @@ class TaskQueue:
         if executor is None:
             executor = self.__executor
         if self.__async:
-            executable = Tier0JobRequest(fn, job_args, executor=executor)
-            task = AsyncTask(executable)
+            if is_mpi_ready():
+                executable = Tier0JobRequest(fn, job_args, executor=executor)
+                task = AsyncTask(executable)
+            else:  # dask enabled
+                task = daskhelpers.FutureTask(fn(**job_args), executor)
         else:
             task = SyncTask(fn(**job_args), executor)
         self.__queue.append(task)
@@ -556,8 +571,11 @@ class TaskQueue:
     def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
 
         if self.__async:
-            executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
-            task = AsyncTask(executable)
+            if is_mpi_ready():
+                executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
+                task = AsyncTask(executable)
+            else:  # dask enabled
+                task = daskhelpers.FutureTask(lambda: fn(*args, **kwargs))
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
         self.__queue.append(task)
@@ -568,14 +586,19 @@ class TaskQueue:
             executor = self.__executor
 
         if self.__async:
-            tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
-                                                  dir=context.output_dir,
-                                                  delete=True)
-            tmpfile.close()
-            context_path = tmpfile.name
-            context.save(context_path)
-            executable = Tier0PipelineTask(task_cls, task_args, context_path)
-            task = AsyncTask(executable)
+            if is_mpi_ready():
+                tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                                      dir=context.output_dir,
+                                                      delete=True)
+                tmpfile.close()
+                context_path = tmpfile.name
+                context.save(context_path)
+                executable = Tier0PipelineTask(task_cls, task_args, context_path)
+                task = AsyncTask(executable)
+            else:  # dask enabled
+                inputs = task_cls.Inputs(context, **task_args)
+                task = task_cls(inputs)
+                task = daskhelpers.FutureTask(task, executor)
         else:
             inputs = task_cls.Inputs(context, **task_args)
             task = task_cls(inputs)
