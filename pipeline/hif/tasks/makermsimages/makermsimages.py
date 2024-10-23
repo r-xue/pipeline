@@ -1,14 +1,14 @@
 import os
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.daskhelpers as daskhelpers
+import pipeline.infrastructure.imagelibrary as imagelibrary
+import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.domain import DataType
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.mpihelpers as mpihelpers
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -91,6 +91,8 @@ class Makermsimages(basetask.StandardTaskTemplate):
                     executable = mpihelpers.Tier0JobRequest(
                         casa_tasks.imdev, job_to_execute.kw, executor=self._executor)
                     queued_job = mpihelpers.AsyncTask(executable)
+                elif bool(daskhelpers.daskclient) and tier0_imdev_enabled:
+                    queued_job = daskhelpers.FutureTask(job_to_execute, self._executor)
                 else:
                     queued_job = mpihelpers.SyncTask(job_to_execute, self._executor)
                 queued_job_rmsimagename.append((queued_job, rmsimagename))

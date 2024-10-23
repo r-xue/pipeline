@@ -4,6 +4,7 @@ from inspect import signature
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -440,26 +441,26 @@ class CleanTaskFactory(object):
         """
         task_args = self.__get_task_args(target)
 
-        is_mpi_ready = mpihelpers.is_mpi_ready()
+        is_cluster_ready = mpihelpers.is_mpi_ready() or bool(daskhelpers.daskclient)
         is_cal_image = 'TARGET' not in target['intent']
 
-        is_tier0_job = is_mpi_ready and is_cal_image
+        is_tier0_job = is_cluster_ready and is_cal_image
         # PIPE-1923 asks to temporarily turn off Tier-0 mode for
         # POLARIZATION intent when imaging IQUV because of a
         # potential CASA bug. This should be undone when this
         # bug is fixed.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
             is_tier0_job = False
-            if is_mpi_ready:
+            if is_cluster_ready:
                 LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
 
-        parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
         # PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
         # Also see the disscussions in PIPE-1357
         vlass_se_cube_tier0_wanted = True
         is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
-        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_mpi_ready]):
+        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_cluster_ready]):
             is_tier0_job = True
             task_args['parallel'] = False
 
@@ -469,11 +470,22 @@ class CleanTaskFactory(object):
         task_inputs_args = list(signature(Tclean.Inputs).parameters)
         task_args = {k: v for k, v in task_args.items() if k in task_inputs_args}
 
+        LOG.debug('MakeImages Parallelization Config:')
+        LOG.debug('is_tier0_job:              %s', is_tier0_job)
+        LOG.debug('parallel_wanted:           %s', parallel_wanted)
+        LOG.debug('daskhelpers.daskclient:    %s', daskhelpers.daskclient)
+        LOG.debug('mpihelpers.is_mpi_ready()  %s', mpihelpers.is_mpi_ready())
+
         if is_tier0_job and parallel_wanted:
-            executable = mpihelpers.Tier0PipelineTask(Tclean,
-                                                      task_args,
-                                                      self.__context_path)
-            return mpihelpers.AsyncTask(executable)
+            if mpihelpers.is_mpi_ready():
+                executable = mpihelpers.Tier0PipelineTask(Tclean,
+                                                          task_args,
+                                                          self.__context_path)
+                return mpihelpers.AsyncTask(executable)
+            else:
+                inputs = Tclean.Inputs(self.__context, **task_args)
+                task = Tclean(inputs)
+                return daskhelpers.FutureTask(task, self.__executor)
         else:
             inputs = Tclean.Inputs(self.__context, **task_args)
             task = Tclean(inputs)

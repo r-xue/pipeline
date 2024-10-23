@@ -425,7 +425,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         else:
             inf_EB_gaincal_combine = 'scan'
 
-        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(scal_targets) > 1 and parallel
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
@@ -554,7 +554,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         vislist = sorted(set(vislist))
-        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(vislist) > 1 and parallel
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
@@ -655,7 +655,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         # therefore len(mt_inputvis_list) represents the number of ms to be split out
         mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype']) for target in scal_targets for vis in target['vis']]
 
-        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
 
         inputvis_list = utils.deduplicate([m[0] for m in mt_inputvis_list])
