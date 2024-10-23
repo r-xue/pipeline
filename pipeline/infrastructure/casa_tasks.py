@@ -212,8 +212,8 @@ def xvfb_plotms(self, *args, **kwargs):
     return ret
 
 # copy the casa/plotms callable attribute to the wrapper function.
-xvfb_plotms.__name__ = casaplotms.plotms.__call__.__name__
-xvfb_plotms.__doc__ = casaplotms.plotms.__call__.__doc__
+xvfb_plotms.__name__ = 'plotms'
+xvfb_plotms.__doc__ = casaplotms.plotms.__doc__
 xvfb_plotms.__wrapped__ = casaplotms.plotms.__call__
 xvfb_plotms.__signature__ = signature(casaplotms.plotms.__call__)
 xvfb_plotms.__defaults__ = casaplotms.plotms.__call__.__defaults__
@@ -222,7 +222,7 @@ xvfb_plotms.__kwdefaults__ = casaplotms.plotms.__call__.__kwdefaults__
 
 @register_task
 def plotms(*v, **k) -> JobRequest:
-    xvfb_subprocess = True
+    xvfb_subprocess = False
     if xvfb_subprocess:
         return JobRequest(xvfb_plotms, *v, **k)
     else:
