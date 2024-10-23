@@ -199,7 +199,7 @@ def xvfb_plotms(self, *args, **kwargs):
     python = sys.executable
     cmd = [xvfb_run, '-a', python, '-c']
     all_args = [f"{value!r}" for value in args] + [f"{name}={value!r}" for name, value in kwargs.items()]
-    py_cmds = ['from casaplotms import plotms', 'plotms({})'.format(', '.join(all_args))]
+    py_cmds = ['from casaplotms import plotms', 'import numpy as np', 'plotms({})'.format(', '.join(all_args))]
     py_cmd = '; '.join(py_cmds)
     cmd.append(f'"{py_cmd}"')
     cmd = ' '.join(cmd)
