@@ -1,73 +1,32 @@
-#######################################################################################################################
-#
-# General / Conda Env.:
-#
-#   Install Miniforge3: the recommended minimal Conda installer
-#     https://github.com/conda-forge/miniforge
-#
-#   Step-by-step to reproduce the Pipeline/CASA environment
-#     $ git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git --branch PIPE-1669-run-dev-pipeline-with-modular-casa6
-#     $ cd pipeline
-#
-#     $ mamba env create -f pipe1669.yaml
-#     $ # or
-#     $ mamba create -n pipe1669
-#     $ mamba env update -f pipe1669.yaml
-#
-#   Update:
-#     $ mamba update -n pipe1669 --all
-#     $ mamba env update -f pipe1669.yaml
-#
-#   Remove:
-#     $ mamba env remove -n pipe1669
-#     $ mamba remove -n pipe1669 mpi4py
-#
-#   Clean:
-#     $ conda clean --all
-#
-# pipe1669.yaml vs. requirements.txt
-#     * The scope of pipe1669.yaml is used to create a pseudo monolithic-CASA6-like Python environment
-#     * And pyproject.toml+requirements.txt only handle pipeline installation inside that environment
-#       and are designed to work for both monolithic and modular CASA cases.
-#
-# Typical use pattern (but see more details below)
-#
-#     $ mamba activate pipe1669
-#     $ xvfb-run -a python run_pipeline.py
-#     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
-#
-#
-#######################################################################################################################
-
 name: pipe1669
 
 channels:
-  - conda-forge
-  - defaults
+    - conda-forge
+    - defaults
 
 dependencies:
-  - conda-ecosystem-user-package-isolation
-  - git
-  - python=3.10
-  - ipython
-  - pip
-  - numpy
-  - matplotlib
-  - scipy
-  - openmpi
-  - mpi4py<4.0.0
-  - certifi
-  - protobuf=3.20 # casatplotms requires ver<=3.20 currently
-  - poppler # required for PL
-  - imagemagick # required for PL
-  - pandoc # nbsphinx requires 'pandoc'; available from macports/homebrew or apt; different from 'pandoc' on PyPI)
-  # - python-casacore # if you want a different I/O option.
-  - pip:
-      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-      - casatools==6.6.6.* #  native macOS/ARM64 builds started from ver6.6.4.*
-      - casatasks==6.6.6.*
-      - casashell==6.6.6.*
-      - casampi
-      - casaplotms
-      - casaplotserver
-      # - .
+    - conda-ecosystem-user-package-isolation
+    - git
+    - python=3.10
+    - ipython
+    - pip
+    - numpy
+    - matplotlib
+    - scipy
+    - openmpi
+    - mpi4py<4.0.0
+    - certifi
+    - protobuf=3.20 # casatplotms requires ver<=3.20 currently
+    - poppler # required for PL
+    - imagemagick # required for PL
+    - pandoc # nbsphinx requires 'pandoc'; available from macports/homebrew or apt; different from 'pandoc' on PyPI)
+    # - python-casacore # if you want a different I/O option.
+    - pip:
+          - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
+          - casatools==6.6.6.* #  native macOS/ARM64 builds started from ver6.6.4.*
+          - casatasks==6.6.6.*
+          - casashell==6.6.6.*
+          - casampi
+          - casaplotms
+          - casaplotserver
+          # - .
