@@ -17,6 +17,7 @@ jupyterlab
 dask[distributed]
 bokeh>=3.1.0
 jupyterlab
+pyvirtualdisplay            # https://github.com/ponty/pyvirtualdisplay
 
 # xradio                    # https://github.com/casangi/xradio
                             # this might downgrade certain packages due to spec-pins

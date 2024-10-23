@@ -429,7 +429,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         taskqueue_parallel_request = len(scal_targets) > 1 and parallel
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
-                target['sc_parallel'] = (parallel and not tq.is_async())
+                target['sc_parallel'] = (parallel and mpihelpers.is_mpi_ready() and not tq.is_async())
                 tq.add_functioncall(self._run_selfcal_sequence, target,
                                     gaincal_minsnr=self.inputs.gaincal_minsnr,
                                     minsnr_to_proceed=self.inputs.minsnr_to_proceed,

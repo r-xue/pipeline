@@ -53,7 +53,7 @@
 
 .. toctree::
    :maxdepth: 3
-   :caption: Pipeline Domain/Context (automodapi)
+   :caption: Pipeline Domain/Context/etc. (automodapi)
 
    basics
 
@@ -70,6 +70,13 @@
    :caption: Pipeline Task/Inputs/Results Classes
 
    classes
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Notebooks
+
+   notebooks/context.ipynb
+   notebooks/tier0dask.ipynb   
 
 .. toctree::
    :maxdepth: 2
