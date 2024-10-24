@@ -18,9 +18,8 @@ classifiers = [
 Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
 Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
 
-# [project.scripts]
-# pipe_exec = "pipeline.pipe_exec:cli_interface"
-# pipe_sch = "pipeline.pipe_sch:cli_interface"
+[project.scripts]
+paris = "pipeline.__main__:cli_interface"
 
 [tool.setuptools.packages.find]
 include = ["pipeline*"]
@@ -52,3 +51,4 @@ include = ["pipeline*"]
 dependencies = { file = ["requirements.txt"] }
 optional-dependencies.dev = { file = ["requirements_dev.txt"] }
 optional-dependencies.docs = { file = ["requirements_docs.txt"] }
+optional-dependencies.exp = { file = ["requirements_exp.txt"] }
