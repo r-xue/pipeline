@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
 
   
@@ -82,10 +83,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -96,6 +101,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -151,8 +161,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifv.tasks.importdata.VLAImportData.execute" title="pipeline.hifv.tasks.importdata.VLAImportData.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a></p></td>
 <td><p>Run this task and return the <code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_result_for_exception</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifv.tasks.importdata.VLAImportData.get_result_for_exception" title="pipeline.hifv.tasks.importdata.VLAImportData.get_result_for_exception"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_result_for_exception</span></code></a></p></td>
+<td><p>Generate FailedTaskResults with exception raised.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifv.tasks.importdata.VLAImportData.prepare" title="pipeline.hifv.tasks.importdata.VLAImportData.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a></p></td>
 <td><p>Prepare job requests for execution.</p></td>
@@ -240,11 +250,29 @@ and returns it with optional modifications.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hifv.tasks.importdata.VLAImportData.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifv.tasks.importdata.VLAImportData.execute" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hifv.tasks.importdata.VLAImportData.execute" title="Link to this definition"></a></dt>
 <dd><p>Run this task and return the <code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code>.</p>
 <p>The contract of the method execute is that it may take any action
 whatsoever, providing that it returns an instance implementing Results
 that summarises those actions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifv.tasks.importdata.VLAImportData.get_result_for_exception">
+<span class="sig-name descname"><span class="pre">get_result_for_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.infrastructure.basetask.FailedTaskResults.html#pipeline.infrastructure.basetask.FailedTaskResults" title="pipeline.infrastructure.basetask.FailedTaskResults"><span class="pre">FailedTaskResults</span></a></span></span><a class="headerlink" href="#pipeline.hifv.tasks.importdata.VLAImportData.get_result_for_exception" title="Link to this definition"></a></dt>
+<dd><p>Generate FailedTaskResults with exception raised.</p>
+<p>This provides default implementation of exception handling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input visibility data</p></li>
+<li><p><strong>exception</strong> – Exception occurred</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a results object with exception raised</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

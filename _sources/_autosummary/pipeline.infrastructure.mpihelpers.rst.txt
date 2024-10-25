@@ -19,6 +19,7 @@ pipeline.infrastructure.mpihelpers
       is_mpi_ready
       mpiexec
       parse_mpi_input_parameter
+      parse_parallel_input_parameter
       signature
    
    

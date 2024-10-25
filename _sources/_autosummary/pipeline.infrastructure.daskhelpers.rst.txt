@@ -1,0 +1,40 @@
+pipeline.infrastructure.daskhelpers
+===================================
+
+.. automodule:: pipeline.infrastructure.daskhelpers
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      get_obj_size
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      FutureTask
+   
+   
+
+   
+   
+   
+
+
+

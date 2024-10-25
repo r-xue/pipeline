@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntervalCalLibrary &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=f03c384a" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="IntervalCalState" href="pipeline.infrastructure.callibrary.IntervalCalState.html" />
+    <link rel="prev" title="DictCalState" href="pipeline.infrastructure.callibrary.DictCalState.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basics.html#functions">Functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../basics.html#id2">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalAppOrigin.html">CalAppOrigin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalApplication.html">CalApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html">CalFrom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalLibrary.html">CalLibrary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalState.html">CalState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html">CalTo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToArgs.html">CalToArgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIdAdapter.html">CalToIdAdapter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIntervalAdapter.html">CalToIntervalAdapter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalLibrary.html">DictCalLibrary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalState.html">DictCalState</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">IntervalCalLibrary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary"><code class="docutils literal notranslate"><span class="pre">IntervalCalLibrary</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.IntervalCalState.html">IntervalCalState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html">TimestampedData</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basics.html#id3">Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basics.html#module-0">Functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../basics.html#id5">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalAppOrigin.html">CalAppOrigin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalApplication.html">CalApplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html">CalFrom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalLibrary.html">CalLibrary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalState.html">CalState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html">CalTo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToArgs.html">CalToArgs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIdAdapter.html">CalToIdAdapter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIntervalAdapter.html">CalToIntervalAdapter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalLibrary.html">DictCalLibrary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalState.html">DictCalState</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">IntervalCalLibrary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary"><code class="docutils literal notranslate"><span class="pre">IntervalCalLibrary</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.IntervalCalState.html">IntervalCalState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html">TimestampedData</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basics.html#id6">Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+      <li class="breadcrumb-item active">IntervalCalLibrary</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="intervalcallibrary">
+<h1>IntervalCalLibrary<a class="headerlink" href="#intervalcallibrary" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IntervalCalLibrary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>CalLibrary is the root object for the pipeline calibration state.</p>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.active" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.active"><code class="xref py py-obj docutils literal notranslate"><span class="pre">active</span></code></a></p></td>
+<td><p>CalState holding CalApplications to be (pre-)applied to the MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.applied" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.applied"><code class="xref py py-obj docutils literal notranslate"><span class="pre">applied</span></code></a></p></td>
+<td><p>CalState holding CalApplications that have been applied to the MS via the pipeline applycal task.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.add" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(calto, calfroms)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.clear" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export</span></code></a>([filename])</p></td>
+<td><p>Export the pre-apply calibration state to disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_applied</span></code></a>([filename])</p></td>
+<td><p>Export the applied calibration state to disk.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_calstate</span></code></a>(calto[, ignore])</p></td>
+<td><p>Get the active calibration state for a target data selection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">import_state</span></code></a>([filename, append])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.mark_as_applied" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.mark_as_applied"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_as_applied</span></code></a>(calto, calfrom)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations" title="pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unregister_calibrations</span></code></a>(predicate_fn)</p></td>
+<td><p>Delete active calibrations that match the input predicate function.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.active">
+<span class="sig-name descname"><span class="pre">active</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.active" title="Link to this definition"></a></dt>
+<dd><p>CalState holding CalApplications to be (pre-)applied to the MS.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.applied">
+<span class="sig-name descname"><span class="pre">applied</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.applied" title="Link to this definition"></a></dt>
+<dd><p>CalState holding CalApplications that have been applied to the MS via
+the pipeline applycal task.</p>
+</dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calfroms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.clear" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.export" title="Link to this definition"></a></dt>
+<dd><p>Export the pre-apply calibration state to disk.</p>
+<p>The pre-apply calibrations held in the ‘active’ CalState will be
+written to disk as a set of equivalent applycal calls.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied">
+<span class="sig-name descname"><span class="pre">export_applied</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.export_applied"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied" title="Link to this definition"></a></dt>
+<dd><p>Export the applied calibration state to disk.</p>
+<p>The calibrations held in the ‘applied’ CalState will be written to
+disk as a set of equivalent applycal calls.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate">
+<span class="sig-name descname"><span class="pre">get_calstate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.get_calstate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate" title="Link to this definition"></a></dt>
+<dd><p>Get the active calibration state for a target data selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calto</strong> – the data selection</p></li>
+<li><p><strong>ignore</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state">
+<span class="sig-name descname"><span class="pre">import_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.import_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.mark_as_applied">
+<span class="sig-name descname"><span class="pre">mark_as_applied</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calfrom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.mark_as_applied"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.mark_as_applied" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations">
+<span class="sig-name descname"><span class="pre">unregister_calibrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicate_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.CalToArgs.html#pipeline.infrastructure.callibrary.CalToArgs" title="pipeline.infrastructure.callibrary.CalToArgs"><span class="pre">CalToArgs</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../_autosummary/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><span class="pre">CalFrom</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.unregister_calibrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations" title="Link to this definition"></a></dt>
+<dd><p>Delete active calibrations that match the input predicate function.</p>
+<section id="context">
+<h2>Context<a class="headerlink" href="#context" title="Link to this heading"></a></h2>
+<p>Previously, calibration had to be removed by calling private callibrary
+functions, e.g.,</p>
+<blockquote>
+<div><p>calto = callibrary.CalTo(self.inputs.vis)
+calfrom = callibrary.CalFrom(gaintable=ktypecaltable, interp=’’, calwt=False)
+context.callibrary._remove(calto, calfrom, context.callibrary._active)</p>
+</div></blockquote>
+<p>This function makes calibration removal a first-class public function
+of the callibrary, and requires less knowledge of the calibration to remove.</p>
+</section>
+<section id="example-usage">
+<h2>Example usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<p>The predicate function passed in by the caller defines which
+calibrations should be unregistered. For example, Tsys caltable
+removal can be achieved with the code below.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def match_tsys(calto, calfrom):</dt><dd><p>return calfrom.type == ‘tsys’</p>
+</dd>
+</dl>
+<p>callibrary.unregister_calibrations(match_tsys)</p>
+</div></blockquote>
+<p>The pipeline inserts the task name into the caltable filename,
+which can be used to unregister caltables generated by that task. For
+example,</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def match_task_caltable(calto, calfrom):</dt><dd><p>return ‘hifa_bandpass’ in calfrom.gaintable</p>
+</dd>
+</dl>
+<p>context.callibrary.unregister_calibrations(match_task_caltable)</p>
+</div></blockquote>
+<p>If you wanted to match calwt, interp, vis, etc. then that could be
+done in the matcher function too, but if it’s not necessary to
+identify the caltable then it doesn’t need to be tested in the
+predicate function.</p>
+</section>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.callibrary.DictCalState.html" class="btn btn-neutral float-left" title="DictCalState" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.callibrary.IntervalCalState.html" class="btn btn-neutral float-right" title="IntervalCalState" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

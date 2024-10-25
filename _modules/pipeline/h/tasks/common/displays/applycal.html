@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -147,7 +157,7 @@
 
 
 <div class="viewcode-block" id="PlotmsLeaf">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsLeaf.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsLeaf">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsLeaf.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsLeaf">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsLeaf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to execute plotms and return a plot wrapper. It passes the spw and</span>
@@ -290,7 +300,7 @@
         <span class="k">return</span> <span class="n">is_null_select</span>
 
 <div class="viewcode-block" id="PlotmsLeaf.plot">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsLeaf.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsLeaf.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsLeaf.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsLeaf.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the jobrequest and its plot wrapper ready, before the plot is generated.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_null_select</span><span class="p">():</span>
@@ -392,7 +402,7 @@
 
 
 <div class="viewcode-block" id="SpwComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.SpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwComposite.html#pipeline.hifa.tasks.targetflag.targetflag.SpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw in the applied calibration.</span>
@@ -430,7 +440,7 @@
 
 
 <div class="viewcode-block" id="BasebandComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.BasebandComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.BasebandComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.BasebandComposite.html#pipeline.hifa.tasks.targetflag.targetflag.BasebandComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">BasebandComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each baseband in the applied calibration.</span>
@@ -490,7 +500,7 @@
 
 
 <div class="viewcode-block" id="AntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.AntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.AntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">AntComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each antenna in the applied calibration.</span>
@@ -513,7 +523,7 @@
 
 
 <div class="viewcode-block" id="FieldComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.FieldComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldComposite.html#pipeline.hifa.tasks.targetflag.targetflag.FieldComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each field in the applied calibration.</span>
@@ -543,7 +553,7 @@
 
 
 <div class="viewcode-block" id="FieldSpwComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.FieldSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwComposite.html#pipeline.hifa.tasks.targetflag.targetflag.FieldSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldSpwComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each field and spw in the applied calibration</span>
@@ -584,7 +594,7 @@
 
 
 <div class="viewcode-block" id="SpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwAntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.SpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwAntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.SpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwAntComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each spw and antenna in the applied calibration</span>
@@ -606,7 +616,7 @@
 
 
 <div class="viewcode-block" id="FieldSpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwAntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.FieldSpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwAntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.FieldSpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldSpwAntComposite</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">LeafComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PlotLeaf for each field, spw and antenna in the applied calibration</span>
@@ -632,7 +642,7 @@
 
 
 <div class="viewcode-block" id="PlotmsAntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsAntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsAntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsAntComposite</span><span class="p">(</span><span class="n">AntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsLeaf</span>
 
@@ -648,7 +658,7 @@
 
 
 <div class="viewcode-block" id="PlotmsSpwComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsSpwComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsSpwComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsSpwComposite</span><span class="p">(</span><span class="n">SpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsLeaf</span>
 
@@ -661,7 +671,7 @@
 
 
 <div class="viewcode-block" id="PlotmsBasebandComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsBasebandComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsBasebandComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsBasebandComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsBasebandComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsBasebandComposite</span><span class="p">(</span><span class="n">BasebandComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsLeaf</span>
 
@@ -674,7 +684,7 @@
 
 
 <div class="viewcode-block" id="PlotmsFieldComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsFieldComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsFieldComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsFieldComposite</span><span class="p">(</span><span class="n">FieldComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsLeaf</span>
 
@@ -687,35 +697,35 @@
 
 
 <div class="viewcode-block" id="PlotmsFieldSpwComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsFieldSpwComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsFieldSpwComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsFieldSpwComposite</span><span class="p">(</span><span class="n">FieldSpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsSpwComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsFieldBasebandComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldBasebandComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsFieldBasebandComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldBasebandComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsFieldBasebandComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsFieldBasebandComposite</span><span class="p">(</span><span class="n">FieldSpwComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsBasebandComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsSpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsSpwAntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsSpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsSpwAntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsSpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsSpwAntComposite</span><span class="p">(</span><span class="n">SpwAntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsAntComposite</span></div>
 
 
 
 <div class="viewcode-block" id="PlotmsFieldSpwAntComposite">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwAntComposite.html#pipeline.hifa.tasks.polcalflag.polcalflag.PlotmsFieldSpwAntComposite">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PlotmsFieldSpwAntComposite.html#pipeline.hifa.tasks.targetflag.targetflag.PlotmsFieldSpwAntComposite">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotmsFieldSpwAntComposite</span><span class="p">(</span><span class="n">FieldSpwAntComposite</span><span class="p">):</span>
     <span class="n">leaf_class</span> <span class="o">=</span> <span class="n">PlotmsSpwAntComposite</span></div>
 
 
 
 <div class="viewcode-block" id="SpwFieldSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwFieldSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.SpwFieldSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwFieldSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.SpwFieldSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwFieldSummaryChart</span><span class="p">(</span><span class="n">PlotmsFieldSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like SpwSummaryChart, but creates separate plots for each field</span>
@@ -739,7 +749,7 @@
 
 
 <div class="viewcode-block" id="SpwSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.SpwSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.SpwSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwSummaryChart</span><span class="p">(</span><span class="n">PlotmsSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per calibrator field and spw</span>
@@ -764,7 +774,7 @@
 
 
 <div class="viewcode-block" id="BasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.BasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.BasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.BasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.BasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">BasebandSummaryChart</span><span class="p">(</span><span class="n">PlotmsBasebandComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per baseband</span>
@@ -790,7 +800,7 @@
 
 
 <div class="viewcode-block" id="FieldBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.FieldBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.FieldBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldBasebandSummaryChart</span><span class="p">(</span><span class="n">PlotmsFieldBasebandComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Like BasebandSummaryChart, but creates separate plots for each field</span>
@@ -812,7 +822,7 @@
 
 
 <div class="viewcode-block" id="AmpVsUVSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsUVSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsUVSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsUVSummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</span>
@@ -840,7 +850,7 @@
 
 
 <div class="viewcode-block" id="AmpVsUVFieldSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVFieldSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsUVFieldSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVFieldSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsUVFieldSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsUVFieldSummaryChart</span><span class="p">(</span><span class="n">SpwFieldSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each spw, overplotting by antenna, with separate plots for each field.</span>
@@ -868,7 +878,7 @@
 
 
 <div class="viewcode-block" id="AmpVsUVBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsUVBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsUVBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsUVBasebandSummaryChart</span><span class="p">(</span><span class="n">BasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</span>
@@ -893,7 +903,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsUVSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsUVSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsUVSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsUVSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsUVSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsUVSummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each spw, overplotting by antenna.</span>
@@ -918,7 +928,7 @@
 
 
 <div class="viewcode-block" id="AmpVsTimeSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsTimeSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsTimeSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsTimeSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsTimeSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsTimeSummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna.</span>
@@ -942,7 +952,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsTimeSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsTimeSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsTimeSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsTimeSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsTimeSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsTimeSummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna.</span>
@@ -966,7 +976,7 @@
 
 
 <div class="viewcode-block" id="AmpVsFrequencySummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencySummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsFrequencySummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencySummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsFrequencySummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsFrequencySummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna.</span>
@@ -994,7 +1004,7 @@
 
 
 <div class="viewcode-block" id="AmpVsFrequencyFieldSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyFieldSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsFrequencyFieldSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyFieldSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsFrequencyFieldSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsFrequencyFieldSummaryChart</span><span class="p">(</span><span class="n">SpwFieldSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</span>
@@ -1023,7 +1033,7 @@
 
 
 <div class="viewcode-block" id="AmpVsFrequencyPerBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsFrequencyPerBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsFrequencyPerBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsFrequencyPerBasebandSummaryChart</span><span class="p">(</span><span class="n">BasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an Amp vs Frequency plot for each baseband, overplotting by antenna.</span>
@@ -1046,7 +1056,7 @@
 
 
 <div class="viewcode-block" id="AmpVsFrequencyPerFieldBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerFieldBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsFrequencyPerFieldBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyPerFieldBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsFrequencyPerFieldBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsFrequencyPerFieldBasebandSummaryChart</span><span class="p">(</span><span class="n">FieldBasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</span>
@@ -1072,7 +1082,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsFrequencyPerSpwSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerSpwSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsFrequencyPerSpwSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerSpwSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsFrequencyPerSpwSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsFrequencyPerSpwSummaryChart</span><span class="p">(</span><span class="n">SpwFieldSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.</span>
@@ -1098,7 +1108,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsFrequencyPerBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsFrequencyPerBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsFrequencyPerBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsFrequencyPerBasebandSummaryChart</span><span class="p">(</span><span class="n">BasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an Phase vs Frequency plot for each baseband, overplotting by antenna.</span>
@@ -1122,7 +1132,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsFrequencyPerFieldBasebandSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsFrequencyPerFieldBasebandSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsFrequencyPerFieldBasebandSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsFrequencyPerFieldBasebandSummaryChart</span><span class="p">(</span><span class="n">FieldBasebandSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an Phase vs Frequency plot for each baseband, overplotting by antenna, with separate plots for each field.</span>
@@ -1145,7 +1155,7 @@
 
 
 <div class="viewcode-block" id="SpwAntDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwAntDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.SpwAntDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.SpwAntDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.SpwAntDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwAntDetailChart</span><span class="p">(</span><span class="n">PlotmsSpwAntComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per calibrator field and spw</span>
@@ -1171,7 +1181,7 @@
 
 
 <div class="viewcode-block" id="FieldSpwAntDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwAntDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.FieldSpwAntDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.FieldSpwAntDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.FieldSpwAntDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">FieldSpwAntDetailChart</span><span class="p">(</span><span class="n">PlotmsFieldSpwAntComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for executing plotms per calibrator field, spw and antenna</span>
@@ -1187,7 +1197,7 @@
 
 
 <div class="viewcode-block" id="AmpVsFrequencyDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsFrequencyDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsFrequencyDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsFrequencyDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsFrequencyDetailChart</span><span class="p">(</span><span class="n">FieldSpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs frequency plot for each spw and antenna,</span>
@@ -1214,7 +1224,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsFrequencyDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsFrequencyDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsFrequencyDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsFrequencyDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsFrequencyDetailChart</span><span class="p">(</span><span class="n">FieldSpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a phase vs frequency plot for each spw and antenna, overplotting</span>
@@ -1241,7 +1251,7 @@
 
 
 <div class="viewcode-block" id="AmpVsUVDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsUVDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsUVDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsUVDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsUVDetailChart</span><span class="p">(</span><span class="n">FieldSpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each field, spw and antenna</span>
@@ -1266,7 +1276,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsUVDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsUVDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsUVDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsUVDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsUVDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsUVDetailChart</span><span class="p">(</span><span class="n">SpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs UV distance plot for each spw and antenna</span>
@@ -1291,7 +1301,7 @@
 
 
 <div class="viewcode-block" id="AmpVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsTimeDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.AmpVsTimeDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.AmpVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsTimeDetailChart</span><span class="p">(</span><span class="n">FieldSpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each field, spw and antenna,</span>
@@ -1316,7 +1326,7 @@
 
 
 <div class="viewcode-block" id="CAS9154AmpVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CAS9154AmpVsTimeDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.CAS9154AmpVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CAS9154AmpVsTimeDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.CAS9154AmpVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">CAS9154AmpVsTimeDetailChart</span><span class="p">(</span><span class="n">SpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot per spw and antenna, overplotting by</span>
@@ -1345,7 +1355,7 @@
 
 
 <div class="viewcode-block" id="PhaseVsTimeDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsTimeDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.PhaseVsTimeDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.PhaseVsTimeDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.PhaseVsTimeDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseVsTimeDetailChart</span><span class="p">(</span><span class="n">FieldSpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an phase vs time plot for each field, spw and antenna,</span>
@@ -1370,7 +1380,7 @@
 
 
 <div class="viewcode-block" id="CorrectedToModelRatioVsAntenna1SummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsAntenna1SummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.CorrectedToModelRatioVsAntenna1SummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsAntenna1SummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.CorrectedToModelRatioVsAntenna1SummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">CorrectedToModelRatioVsAntenna1SummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna.</span>
@@ -1391,7 +1401,7 @@
 
 
 <div class="viewcode-block" id="CorrectedToModelRatioVsUVDistanceSummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsUVDistanceSummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.CorrectedToModelRatioVsUVDistanceSummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.CorrectedToModelRatioVsUVDistanceSummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.CorrectedToModelRatioVsUVDistanceSummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">CorrectedToModelRatioVsUVDistanceSummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an amplitude vs time plot for each spw, overplotting by antenna.</span>
@@ -1412,7 +1422,7 @@
 
 
 <div class="viewcode-block" id="RealVsFrequencySummaryChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.RealVsFrequencySummaryChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.RealVsFrequencySummaryChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.RealVsFrequencySummaryChart.html#pipeline.hifa.tasks.targetflag.targetflag.RealVsFrequencySummaryChart">[docs]</a>
 <span class="k">class</span> <span class="nc">RealVsFrequencySummaryChart</span><span class="p">(</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a real vs time plot for each spw, overplotting by antenna.</span>
@@ -1438,7 +1448,7 @@
 
 
 <div class="viewcode-block" id="RealVsFrequencyDetailChart">
-<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.RealVsFrequencyDetailChart.html#pipeline.hifa.tasks.polcalflag.polcalflag.RealVsFrequencyDetailChart">[docs]</a>
+<a class="viewcode-back" href="../../../../../../_autosummary/pipeline.h.tasks.common.displays.applycal.RealVsFrequencyDetailChart.html#pipeline.hifa.tasks.targetflag.targetflag.RealVsFrequencyDetailChart">[docs]</a>
 <span class="k">class</span> <span class="nc">RealVsFrequencyDetailChart</span><span class="p">(</span><span class="n">SpwAntDetailChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a real vs time plot for each spw and antenna</span>

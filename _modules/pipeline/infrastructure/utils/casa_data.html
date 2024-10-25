@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -165,7 +175,7 @@
 
 
 <div class="viewcode-block" id="get_file_md5">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_file_md5.html#pipeline.infrastructure.utils.get_file_md5">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_file_md5.html#pipeline.infrastructure.utils.casa_data.get_file_md5">[docs]</a>
 <span class="k">def</span> <span class="nf">get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a readable hex string of the MD5 hash of a given file&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
@@ -173,7 +183,7 @@
 
 
 <div class="viewcode-block" id="get_iso_mtime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_iso_mtime.html#pipeline.infrastructure.utils.get_iso_mtime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_iso_mtime.html#pipeline.infrastructure.utils.casa_data.get_iso_mtime">[docs]</a>
 <span class="k">def</span> <span class="nf">get_iso_mtime</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ISO 8601 datetime string corresponding to the</span>
 <span class="sd">    modification time of a given file&quot;&quot;&quot;</span>
@@ -182,7 +192,7 @@
 
 
 <div class="viewcode-block" id="get_solar_system_model_files">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_solar_system_model_files.html#pipeline.infrastructure.utils.get_solar_system_model_files">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_solar_system_model_files.html#pipeline.infrastructure.utils.casa_data.get_solar_system_model_files">[docs]</a>
 <span class="k">def</span> <span class="nf">get_solar_system_model_files</span><span class="p">(</span><span class="n">ss_object</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ss_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SOLAR_SYSTEM_MODELS_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the data files corresponding to a Solar System object&quot;&quot;&quot;</span>
     <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ss_path</span><span class="p">,</span> <span class="s2">&quot;*.dat&quot;</span><span class="p">))</span>
@@ -194,7 +204,7 @@
 
 
 <div class="viewcode-block" id="get_filename_info">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_filename_info.html#pipeline.infrastructure.utils.get_filename_info">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_filename_info.html#pipeline.infrastructure.utils.casa_data.get_filename_info">[docs]</a>
 <span class="k">def</span> <span class="nf">get_filename_info</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a string with information about the modification date and MD5 hash of a file&quot;&quot;&quot;</span>
     <span class="n">md5_hex</span> <span class="o">=</span> <span class="n">get_file_md5</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -204,7 +214,7 @@
 
 
 <div class="viewcode-block" id="get_object_info_string">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_object_info_string.html#pipeline.infrastructure.utils.get_object_info_string">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_object_info_string.html#pipeline.infrastructure.utils.casa_data.get_object_info_string">[docs]</a>
 <span class="k">def</span> <span class="nf">get_object_info_string</span><span class="p">(</span><span class="n">ss_object</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ss_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">SOLAR_SYSTEM_MODELS_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the file information (MD5 hash and modification date) for a given</span>
 <span class="sd">    Solar System object.</span>
@@ -222,7 +232,7 @@
 
 <span class="c1"># Get IERSpredict version</span>
 <div class="viewcode-block" id="from_mjd_to_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.from_mjd_to_datetime.html#pipeline.infrastructure.utils.from_mjd_to_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.from_mjd_to_datetime.html#pipeline.infrastructure.utils.casa_data.from_mjd_to_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">from_mjd_to_datetime</span><span class="p">(</span><span class="n">mjd</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a MJD float into a datetime&quot;&quot;&quot;</span>
     <span class="n">mt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
@@ -232,7 +242,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo">[docs]</a>
 <span class="k">class</span> <span class="nc">IERSInfo</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to store, retrieve and process the information from the IERS geodetic tables</span>
 
@@ -267,7 +277,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="IERSInfo.get_IERS_version">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.get_IERS_version">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.get_IERS_version">[docs]</a>
     <span class="k">def</span> <span class="nf">get_IERS_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IERS_tablename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the VS_VERSION header of the IERSpredict table</span>
 
@@ -287,7 +297,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo.get_IERS_last_entry">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.get_IERS_last_entry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.get_IERS_last_entry">[docs]</a>
     <span class="k">def</span> <span class="nf">get_IERS_last_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;IERSeop2000&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the last entry in the MJD column of the specified IERS table. Defaults to IERSeop2000.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -301,7 +311,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo.load_info">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.load_info">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.load_info">[docs]</a>
     <span class="k">def</span> <span class="nf">load_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the following data from the casa geodetic tables:</span>
 <span class="sd">            * IERSpredict version</span>
@@ -326,7 +336,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo.validate_date">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.validate_date">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.validate_date">[docs]</a>
     <span class="k">def</span> <span class="nf">validate_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a date is lower or equal than the last entry of the IERSeop2000 table.</span>
 <span class="sd">        The end date of the MS should be lower (see PIPE-734).</span>
@@ -339,7 +349,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo.date_message_type">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.date_message_type">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.date_message_type">[docs]</a>
     <span class="k">def</span> <span class="nf">date_message_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if and where a date falls within the time ranges covered by the IERSeop2000 table and the IERSpredict table, and return a string indicating what kind of message should be displayed about this.</span>
 <span class="sd">        See PIPE-734 and PIPE-1231 for more information.</span>
@@ -371,7 +381,7 @@
 
 
 <div class="viewcode-block" id="IERSInfo.__call__">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.IERSInfo.__call__">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.casa_data.IERSInfo.html#pipeline.infrastructure.utils.casa_data.IERSInfo.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span></div>
 

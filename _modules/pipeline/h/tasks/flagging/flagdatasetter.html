@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -147,7 +157,7 @@
 
 
 <div class="viewcode-block" id="FlagdataSetterInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetterInputs.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetterInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetterInputs.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetterInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagdataSetterInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagdataSetterInputs manages the inputs for the FlagdataSetter task.</span>
@@ -182,7 +192,7 @@
 
 
 <div class="viewcode-block" id="FlagdataSetterResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetterResults.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetterResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdatasetter.FlagdataSetterResults.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetterResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagdataSetterResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -207,14 +217,14 @@
 
 
 <div class="viewcode-block" id="FlagdataSetter">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagdataSetter</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagdataSetterInputs</span>
 
 <div class="viewcode-block" id="FlagdataSetter.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetter.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
@@ -248,7 +258,7 @@
 
 
 <div class="viewcode-block" id="FlagdataSetter.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetter.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -256,7 +266,7 @@
 
 
 <div class="viewcode-block" id="FlagdataSetter.flags_to_set">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.polcalflag.polcalflag.FlagdataSetter.flags_to_set">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.html#pipeline.hifa.tasks.targetflag.targetflag.FlagdataSetter.flags_to_set">[docs]</a>
     <span class="k">def</span> <span class="nf">flags_to_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the list of flags.</span>

@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -233,7 +243,7 @@
 
 <span class="c1"># Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).</span>
 <div class="viewcode-block" id="alma_renorm">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.alma_renorm.html#pipeline.extern.almarenorm.alma_renorm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hifa.tasks.renorm.renorm.alma_renorm.html#pipeline.hifa.tasks.renorm.renorm.alma_renorm">[docs]</a>
 <span class="k">def</span> <span class="nf">alma_renorm</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">create_cal_table</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">excludechan</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
         <span class="n">atm_auto_exclude</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">bwthreshspw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>   <span class="c1">## PIPE-1469 for bwthreshspw</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -325,7 +335,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm">[docs]</a>
 <span class="k">class</span> <span class="nc">ACreNorm</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
 
@@ -959,7 +969,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormalize">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormalize">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormalize">[docs]</a>
     <span class="k">def</span> <span class="nf">renormalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spws</span><span class="o">=</span><span class="p">[],</span> <span class="n">excludespws</span><span class="o">=</span><span class="p">[],</span> <span class="n">targscans</span><span class="o">=</span><span class="p">[],</span> 
             <span class="n">excludeants</span><span class="o">=</span><span class="p">[],</span> <span class="n">excludechan</span><span class="o">=</span><span class="p">{},</span> <span class="n">excflagged</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fixOutliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mededge</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  
             <span class="n">atmAutoExclude</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkFalsePositives</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">correctATM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">limATM</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">plotATM</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
@@ -2369,7 +2379,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.fixCalTable">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.fixCalTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.fixCalTable">[docs]</a>
     <span class="k">def</span> <span class="nf">fixCalTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -2393,7 +2403,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.writeCalTable">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.writeCalTable">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.writeCalTable">[docs]</a>
     <span class="k">def</span> <span class="nf">writeCalTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">iter_n</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose: </span>
@@ -2573,7 +2583,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnstats</span>
 
 <div class="viewcode-block" id="ACreNorm.merge_dicts">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.merge_dicts">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.merge_dicts">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict1</span><span class="p">,</span> <span class="n">dict2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -2599,7 +2609,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.interpretExcludechan">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.interpretExcludechan">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.interpretExcludechan">[docs]</a>
     <span class="k">def</span> <span class="nf">interpretExcludechan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pupose: </span>
@@ -2670,7 +2680,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.fitAtmLines">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.fitAtmLines">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.fitAtmLines">[docs]</a>
     <span class="k">def</span> <span class="nf">fitAtmLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ATMprof</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -2815,7 +2825,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.plotSpectra">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.plotSpectra">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.plotSpectra">[docs]</a>
     <span class="k">def</span> <span class="nf">plotSpectra</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> 
             <span class="n">plotATM</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
@@ -3547,7 +3557,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.calcReNorm1">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.calcReNorm1">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.calcReNorm1">[docs]</a>
     <span class="k">def</span> <span class="nf">calcReNorm1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">checkFit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">iden</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>   
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -3716,7 +3726,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.calcRenormLegendre">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.calcRenormLegendre">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.calcRenormLegendre">[docs]</a>
     <span class="k">def</span> <span class="nf">calcRenormLegendre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">nseg</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -3782,7 +3792,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.checkOutlierAnt">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.checkOutlierAnt">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.checkOutlierAnt">[docs]</a>
     <span class="k">def</span> <span class="nf">checkOutlierAnt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -3845,7 +3855,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.calcFixReNorm">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.calcFixReNorm">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.calcFixReNorm">[docs]</a>
     <span class="k">def</span> <span class="nf">calcFixReNorm</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">R</span><span class="p">,</span>
@@ -4189,7 +4199,7 @@
     <span class="c1"># Main diagnostic spectra at lowest level - scaling that each spw, scan, field, ant, correlation will have</span>
     <span class="c1"># these plots should look good</span>
 <div class="viewcode-block" id="ACreNorm.plotdiagSpectra">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.plotdiagSpectra">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.plotdiagSpectra">[docs]</a>
     <span class="k">def</span> <span class="nf">plotdiagSpectra</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> 
             <span class="n">R</span><span class="p">,</span> 
@@ -4535,7 +4545,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.ATMtrans">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.ATMtrans">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.ATMtrans">[docs]</a>
     <span class="k">def</span> <span class="nf">ATMtrans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iscan</span><span class="p">,</span> <span class="n">ispw</span><span class="p">,</span> <span class="n">ifld</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -4765,7 +4775,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.onlineBinningFactor">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.onlineBinningFactor">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.onlineBinningFactor">[docs]</a>
     <span class="k">def</span> <span class="nf">onlineBinningFactor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -4881,7 +4891,7 @@
     <span class="c1"># No return acts on the rescaling spectrum directly </span>
 
 <div class="viewcode-block" id="ACreNorm.suggestAtmExclude">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.suggestAtmExclude">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.suggestAtmExclude">[docs]</a>
     <span class="k">def</span> <span class="nf">suggestAtmExclude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">return_command</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5073,7 +5083,7 @@
  
 
 <div class="viewcode-block" id="ACreNorm.getband">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.getband">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.getband">[docs]</a>
     <span class="k">def</span> <span class="nf">getband</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">freq</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Identify the Band for specific frequency (in GHz)</span>
@@ -5088,7 +5098,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.writeTsysTemps">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.writeTsysTemps">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.writeTsysTemps">[docs]</a>
     <span class="k">def</span> <span class="nf">writeTsysTemps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictIn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rettemplist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5164,7 +5174,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.channel_ranges">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.channel_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.channel_ranges">[docs]</a>
     <span class="k">def</span> <span class="nf">channel_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">TDM</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5199,7 +5209,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.writeTsysFlags">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.writeTsysFlags">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.writeTsysFlags">[docs]</a>
     <span class="k">def</span> <span class="nf">writeTsysFlags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsys_flags</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5215,7 +5225,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormcomputeAzElFromRADecMJD">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormcomputeAzElFromRADecMJD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormcomputeAzElFromRADecMJD">[docs]</a>
     <span class="k">def</span> <span class="nf">renormcomputeAzElFromRADecMJD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raDec</span><span class="p">,</span> <span class="n">mjd</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5262,7 +5272,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormradec2rad">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormradec2rad">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormradec2rad">[docs]</a>
     <span class="k">def</span> <span class="nf">renormradec2rad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radecstring</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5359,7 +5369,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormdirection2radec">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormdirection2radec">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormdirection2radec">[docs]</a>
     <span class="k">def</span> <span class="nf">renormdirection2radec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>
@@ -5398,7 +5408,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormWeather">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormWeather">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormWeather">[docs]</a>
     <span class="k">def</span> <span class="nf">renormWeather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">        Purpose:</span>
@@ -5535,7 +5545,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormMedianPWV">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormMedianPWV">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormMedianPWV">[docs]</a>
     <span class="k">def</span> <span class="nf">renormMedianPWV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">myTimes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">99999999999</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extracts the PWV measurements from the WVR on all antennas all times.  </span>
@@ -5628,7 +5638,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormPWVFromASDM_CALATMOSPHERE">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormPWVFromASDM_CALATMOSPHERE">[docs]</a>
     <span class="k">def</span> <span class="nf">renormPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads the PWV via the water column of the ASDM_CALATMOSPHERE table in MS.</span>
@@ -5650,7 +5660,7 @@
 
 
 <div class="viewcode-block" id="ACreNorm.renormWeatherStationNames">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.renormWeatherStationNames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.renormWeatherStationNames">[docs]</a>
     <span class="k">def</span> <span class="nf">renormWeatherStationNames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary keyed by ALMA weather station ID, with the value</span>
@@ -5681,7 +5691,7 @@
 
         
 <div class="viewcode-block" id="ACreNorm.findNearest">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.findNearest">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.findNearest">[docs]</a>
     <span class="k">def</span> <span class="nf">findNearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose: </span>
@@ -5719,7 +5729,7 @@
 
     <span class="c1"># AL added - PIPE 1168 (2)</span>
 <div class="viewcode-block" id="ACreNorm.convertPlotsToPDF">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.convertPlotsToPDF">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.convertPlotsToPDF">[docs]</a>
     <span class="k">def</span> <span class="nf">convertPlotsToPDF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">include_summary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_heuristics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Super hacky way to create PDFs of created plots so that we can display them in the weblog.</span>
@@ -5823,7 +5833,7 @@
 
     <span class="c1"># AL added - PIPE-1188</span>
 <div class="viewcode-block" id="ACreNorm.getImageSBFreqs">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.extern.almarenorm.ACreNorm.getImageSBFreqs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almarenorm.ACreNorm.html#pipeline.hifa.tasks.renorm.renorm.ACreNorm.getImageSBFreqs">[docs]</a>
     <span class="k">def</span> <span class="nf">getImageSBFreqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spwin</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Purpose:</span>

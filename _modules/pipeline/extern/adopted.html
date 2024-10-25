@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -143,7 +153,7 @@
 
 
 <div class="viewcode-block" id="getMedianPWV">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMedianPWV.html#pipeline.extern.adopted.getMedianPWV">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV.html#pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV">[docs]</a>
 <span class="k">def</span> <span class="nf">getMedianPWV</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">myTimes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999999999999</span><span class="p">],</span> <span class="n">asdm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the PWV measurements from the WVR on all antennas for the</span>
@@ -281,7 +291,7 @@
 
 
 <div class="viewcode-block" id="readPWVFromASDM_CALATMOSPHERE">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE.html#pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE.html#pipeline.hifa.tasks.flagging.flagdeteralma.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
 <span class="k">def</span> <span class="nf">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.</span>
@@ -310,7 +320,7 @@
 
 
 <div class="viewcode-block" id="readpwv">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readpwv.html#pipeline.extern.adopted.readpwv">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readpwv.html#pipeline.hifa.tasks.flagging.flagdeteralma.readpwv">[docs]</a>
 <span class="k">def</span> <span class="nf">readpwv</span><span class="p">(</span><span class="n">asdm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function assembles the dictionary returned by readwvr() into arrays</span>
@@ -336,7 +346,7 @@
 
 
 <div class="viewcode-block" id="readwvr">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readwvr.html#pipeline.extern.adopted.readwvr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readwvr.html#pipeline.hifa.tasks.flagging.flagdeteralma.readwvr">[docs]</a>
 <span class="k">def</span> <span class="nf">readwvr</span><span class="p">(</span><span class="n">sdmfile</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function reads the CalWVR.xml table from the ASDM and returns a</span>
@@ -396,7 +406,7 @@
 
 
 <div class="viewcode-block" id="call_qa_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.call_qa_time.html#pipeline.extern.adopted.call_qa_time">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.call_qa_time.html#pipeline.hifa.tasks.flagging.flagdeteralma.call_qa_time">[docs]</a>
 <span class="k">def</span> <span class="nf">call_qa_time</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">showform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a wrapper for qa.time(), which in casa 4.0.0 returns a list</span>
@@ -417,7 +427,7 @@
 
 
 <div class="viewcode-block" id="MAD">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.MAD.html#pipeline.extern.adopted.MAD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.MAD.html#pipeline.hifa.tasks.flagging.flagdeteralma.MAD">[docs]</a>
 <span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Median Absolute Deviation along given axis of an array:</span>
@@ -447,7 +457,7 @@
 
 
 <div class="viewcode-block" id="getMJD">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMJD.html#pipeline.extern.adopted.getMJD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMJD.html#pipeline.hifa.tasks.flagging.flagdeteralma.getMJD">[docs]</a>
 <span class="k">def</span> <span class="nf">getMJD</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the current MJD.  See also getCurrentMJDSec().</span>

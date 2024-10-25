@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -143,7 +153,7 @@
 
 
 <div class="viewcode-block" id="BoxResult">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.basecleansequence.BoxResult">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.resultobjects.BoxResult">[docs]</a>
 <span class="k">class</span> <span class="nc">BoxResult</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BoxResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -152,7 +162,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanmask</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BoxResult.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.basecleansequence.BoxResult.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.resultobjects.BoxResult.html#pipeline.hif.tasks.tclean.resultobjects.BoxResult.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
@@ -164,7 +174,7 @@
 
 
 <div class="viewcode-block" id="TcleanResult">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult">[docs]</a>
 <span class="k">class</span> <span class="nc">TcleanResult</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">sourcename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -241,7 +251,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">im_names</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="TcleanResult.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Calculated beams for later stages</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -331,7 +341,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cube_sigma_fc_chans&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_cube_sigma_fc_chans">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_cube_sigma_fc_chans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_cube_sigma_fc_chans">[docs]</a>
     <span class="k">def</span> <span class="nf">set_cube_sigma_fc_chans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">cube_sigma_fc_chans</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets sigma of cube computed from line-free channels of non-primary beam corrected cube</span>
@@ -346,7 +356,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cube_scaledMAD_fc_chans&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_cube_scaledMAD_fc_chans">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_cube_scaledMAD_fc_chans">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_cube_scaledMAD_fc_chans">[docs]</a>
     <span class="k">def</span> <span class="nf">set_cube_scaledMAD_fc_chans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">cube_scaledMAD_fc_chans</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets channel scaled MAD of cube computed from line-free channels of non-primary beam corrected cube</span>
@@ -361,7 +371,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom0_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom0_fc">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom0_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom0_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom0_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 0 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -376,7 +386,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -391,7 +401,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_min&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_min">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_min">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_image_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_min</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image minimum of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -406,7 +416,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_max&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_max">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_max">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_image_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_max</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image maximum of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -421,7 +431,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_median_all&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_median_all">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_median_all">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_image_median_all">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_median_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_all</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image median of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -436,7 +446,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_median_annulus&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_median_annulus">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_median_annulus">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_image_median_annulus">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_median_annulus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_annulus</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image annulus median of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -451,7 +461,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_image_mad&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_image_mad">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_image_mad">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_image_mad">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_image_mad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_mad</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -466,7 +476,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_peak_snr&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_peak_snr">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_peak_snr">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_peak_snr">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_peak_snr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">mom8_fc_peak_snr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets peak SNR of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -481,7 +491,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_n_pixels&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_n_pixels">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_n_pixels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_n_pixels">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_n_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">n_pixels</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets number of unmasked pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -496,7 +506,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_frac_max_segment&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_frac_max_segment">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_frac_max_segment">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_frac_max_segment">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_frac_max_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">frac_max_segment</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets fraction of maximum moment 8 image segment compared to overall size.</span>
@@ -510,7 +520,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_fc_max_segment_beams&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_fc_max_segment_beams">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_fc_max_segment_beams">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_fc_max_segment_beams">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_fc_max_segment_beams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">max_segment_beams</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets size of maximum moment 8 image segment in beams.</span>
@@ -524,7 +534,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -539,7 +549,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_min&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_min">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_min">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_image_min">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_min</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image minimum of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -554,7 +564,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_max&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_max">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_max">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_image_max">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_max</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image maximum of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -569,7 +579,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_median_all&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_median_all">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_median_all">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_image_median_all">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_median_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_all</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image median of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -584,7 +594,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_median_annulus&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_median_annulus">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_median_annulus">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_image_median_annulus">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_median_annulus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_median_annulus</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image annulus median of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -599,7 +609,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_image_mad&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_image_mad">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_image_mad">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_image_mad">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_image_mad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image_mad</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets image MAD of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -614,7 +624,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom10_fc_n_pixels&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom10_fc_n_pixels">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom10_fc_n_pixels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom10_fc_n_pixels">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom10_fc_n_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">n_pixels</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets number of unmasked pixels of moment 10 image computed from line-free channels of non-primary beam corrected cube</span>
@@ -629,7 +639,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8_10_fc_histogram_asymmetry&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8_10_fc_histogram_asymmetry">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8_10_fc_histogram_asymmetry">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8_10_fc_histogram_asymmetry">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8_10_fc_histogram_asymmetry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">histogram_asymmetry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets histogram asymmetry value.</span>
@@ -643,7 +653,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom0&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom0">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom0">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom0">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 0 image computed from all channels of non-primary beam corrected cube</span>
@@ -658,7 +668,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="n">iters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mom8&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TcleanResult.set_mom8">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.basecleansequence.TcleanResult.set_mom8">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.tclean.tclean.TcleanResult.html#pipeline.hif.tasks.tclean.resultobjects.TcleanResult.set_mom8">[docs]</a>
     <span class="k">def</span> <span class="nf">set_mom8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sets name of moment 8 image computed from all channels of non-primary beam corrected cube</span>

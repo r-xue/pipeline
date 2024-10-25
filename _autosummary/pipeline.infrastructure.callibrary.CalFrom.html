@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
 
   
@@ -82,10 +83,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -96,6 +101,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -165,7 +175,7 @@ that table type</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_caltype_for_viscal</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.get_caltype_for_viscal" title="pipeline.infrastructure.callibrary.CalFrom.get_caltype_for_viscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_caltype_for_viscal</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -182,22 +192,22 @@ that table type</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalFrom.VISCAL" title="pipeline.infrastructure.callibrary.CalFrom.VISCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VISCAL</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">caltype</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.caltype" title="pipeline.infrastructure.callibrary.CalFrom.caltype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">caltype</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calwt</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.calwt" title="pipeline.infrastructure.callibrary.CalFrom.calwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calwt</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">gainfield</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.gainfield" title="pipeline.infrastructure.callibrary.CalFrom.gainfield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gainfield</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaintable</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.gaintable" title="pipeline.infrastructure.callibrary.CalFrom.gaintable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gaintable</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">interp</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.interp" title="pipeline.infrastructure.callibrary.CalFrom.interp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interp</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwmap</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.spwmap" title="pipeline.infrastructure.callibrary.CalFrom.spwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwmap</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

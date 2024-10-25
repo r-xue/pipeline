@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
 
   
@@ -83,10 +84,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -97,6 +102,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -161,7 +171,22 @@
 <section id="citations-from-bib">
 <h2>Citations (from .bib)<a class="headerlink" href="#citations-from-bib" title="Link to this heading"></a></h2>
 <p>References relevant to CASA and Pipeline:
-<a href="#id1"><span class="problematic" id="id2">:cite:`Raba:2019aa`</span></a> and <a href="#id3"><span class="problematic" id="id4">:cite:`Emonts:2019ab`</span></a></p>
+<a class="reference internal" href="#id16" id="id1">Raba et al. (2020)</a>, <a class="reference internal" href="#id15" id="id2">Emonts et al. (2020)</a>, <a class="reference internal" href="#id5" id="id3">Hunter et al. (2023)</a></p>
+<p id="id4"><div role="list" class="citation-list">
+<div class="citation" id="id15" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Emonts et al. 2020</a><span class="fn-bracket">]</span></span>
+<p>Emonts B., Raba R., Moellenbrock G., Castro S., Garc\'\ia -Dabó C., et al. The CASA Software for Radio Astronomy: Status Update from ADASS 2019. In Pizzo R., Deul E., Mol J., de Plaa J., &amp; Verkouter H., editors, <a class="reference external" href="https://doi.org/10.48550/arXiv.1912.09437"><em>Astronomical Data Analysis Software and Systems XXIX</em></a>, <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2020ASPC..527..267E">Astronomical Society of the Pacific Conference Series <strong>527</strong></a>, <a class="reference external" href="https://arxiv.org/abs/1912.09437">267</a> (2020).</p>
+</div>
+<div class="citation" id="id5" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Hunter et al. 2023</a><span class="fn-bracket">]</span></span>
+<p>Hunter T., Indebetouw R., Brogan C., Berry K., Chang C., et al. The ALMA Interferometric Pipeline Heuristics. <em><a class="reference external" href="https://doi.org/10.1088/1538-3873/ace216">Pub. Astron. Soc. Pac.</a></em> <strong><a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2023PASP..135g4501H">135</a></strong>, <a class="reference external" href="https://arxiv.org/abs/2306.07420">074501</a> (2023).</p>
+</div>
+<div class="citation" id="id16" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Raba et al. 2020</a><span class="fn-bracket">]</span></span>
+<p>Raba R., Schiebel D., Emonts B., Garwood R., Montesino Pouzols F., et al. CASA 6: Modular Integration in Python. In Pizzo R., Deul E., Mol J., de Plaa J., &amp; Verkouter H., editors, <a class="reference external" href="https://doi.org/10.48550/arXiv.1912.09439"><em>Astronomical Data Analysis Software and Systems XXIX</em></a>, <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2020ASPC..527..271R">Astronomical Society of the Pacific Conference Series <strong>527</strong></a>, <a class="reference external" href="https://arxiv.org/abs/1912.09439">271</a> (2020).</p>
+</div>
+</div>
+</p>
 </section>
 </section>
 

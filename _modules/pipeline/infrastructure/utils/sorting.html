@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -144,7 +154,7 @@
 
 
 <div class="viewcode-block" id="natural_sort_key">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.natural_sort_key.html#pipeline.infrastructure.utils.sorting.natural_sort_key">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.natural_sort_key.html#pipeline.infrastructure.utils.natural_sort_key">[docs]</a>
 <span class="k">def</span> <span class="nf">natural_sort_key</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_nsre</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([0-9]+)&quot;</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Key to order in natural order with the sort function&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span>
@@ -154,7 +164,7 @@
 
 
 <div class="viewcode-block" id="natural_sort">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.natural_sort.html#pipeline.infrastructure.utils.sorting.natural_sort">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.natural_sort.html#pipeline.infrastructure.utils.natural_sort">[docs]</a>
 <span class="k">def</span> <span class="nf">natural_sort</span><span class="p">(</span><span class="n">input_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sort a list in natural order, eg.</span>
@@ -167,7 +177,7 @@
 
 
 <div class="viewcode-block" id="numeric_sort_key">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.numeric_sort_key.html#pipeline.infrastructure.utils.sorting.numeric_sort_key">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.numeric_sort_key.html#pipeline.infrastructure.utils.numeric_sort_key">[docs]</a>
 <span class="k">def</span> <span class="nf">numeric_sort_key</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">_nsre</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;([0-9]+)&quot;</span><span class="p">)):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Key to order in numeric order with the sort function.</span>
 <span class="sd">    Split a string by numbers.</span>
@@ -177,7 +187,7 @@
 
 
 <div class="viewcode-block" id="numeric_sort">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.numeric_sort.html#pipeline.infrastructure.utils.sorting.numeric_sort">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.sorting.numeric_sort.html#pipeline.infrastructure.utils.numeric_sort">[docs]</a>
 <span class="k">def</span> <span class="nf">numeric_sort</span><span class="p">(</span><span class="n">input_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sort a list numerically, eg.</span>

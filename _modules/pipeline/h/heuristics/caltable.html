@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -157,7 +167,7 @@
 
 
 <div class="viewcode-block" id="CaltableNamer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.caltable.CaltableNamer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.CaltableNamer">[docs]</a>
 <span class="k">class</span> <span class="nc">CaltableNamer</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CaltableNamer is the base class for heuristics that name calibration</span>
@@ -168,7 +178,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CaltableNamer.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.caltable.CaltableNamer.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.CaltableNamer.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_namer</span><span class="p">()</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">output_dir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
@@ -183,7 +193,7 @@
 
 
 <div class="viewcode-block" id="CaltableNamer.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.caltable.CaltableNamer.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.CaltableNamer.get_namer">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -197,7 +207,7 @@
 
 
 <div class="viewcode-block" id="CaltableNamer.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.caltable.CaltableNamer.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.CaltableNamer.html#pipeline.h.heuristics.CaltableNamer.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set any class-specific filenaming attributes on the given file namer.</span>
@@ -215,10 +225,10 @@
 
 
 <div class="viewcode-block" id="AmpCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AmpCaltable.html#pipeline.h.heuristics.caltable.AmpCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AmpCaltable.html#pipeline.h.heuristics.AmpCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="AmpCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AmpCaltable.html#pipeline.h.heuristics.caltable.AmpCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AmpCaltable.html#pipeline.h.heuristics.AmpCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">AmplitudeCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -226,10 +236,10 @@
 
 
 <div class="viewcode-block" id="AntposCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AntposCaltable.html#pipeline.h.heuristics.caltable.AntposCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AntposCaltable.html#pipeline.h.heuristics.AntposCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">AntposCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="AntposCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AntposCaltable.html#pipeline.h.heuristics.caltable.AntposCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.AntposCaltable.html#pipeline.h.heuristics.AntposCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">AntposCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -237,16 +247,16 @@
 
 
 <div class="viewcode-block" id="UVcontCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.caltable.UVcontCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.UVcontCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">UVcontCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="UVcontCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.caltable.UVcontCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.UVcontCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">UVcontCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="UVcontCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.caltable.UVcontCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.UVcontCaltable.html#pipeline.h.heuristics.UVcontCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">source</span><span class="p">(</span><span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div>
 </div>
@@ -254,16 +264,16 @@
 
 
 <div class="viewcode-block" id="BandpassCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.caltable.BandpassCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.BandpassCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">BandpassCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="BandpassCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.caltable.BandpassCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.BandpassCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">BandpassCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BandpassCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.caltable.BandpassCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.BandpassCaltable.html#pipeline.h.heuristics.BandpassCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">spectral_window</span><span class="p">(</span><span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="n">solint</span> <span class="o">=</span> <span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;solint&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -282,10 +292,10 @@
 
 
 <div class="viewcode-block" id="DelayCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.DelayCaltable.html#pipeline.h.heuristics.caltable.DelayCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.DelayCaltable.html#pipeline.h.heuristics.DelayCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">DelayCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="DelayCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.DelayCaltable.html#pipeline.h.heuristics.caltable.DelayCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.DelayCaltable.html#pipeline.h.heuristics.DelayCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">DelayCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -293,16 +303,16 @@
 
 
 <div class="viewcode-block" id="PolcalCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.caltable.PolcalCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.PolcalCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="PolcalCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.caltable.PolcalCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.PolcalCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">PolCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="PolcalCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.caltable.PolcalCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.PolcalCaltable.html#pipeline.h.heuristics.PolcalCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">spectral_window_nochan</span><span class="p">(</span><span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
@@ -315,10 +325,10 @@
 
 
 <div class="viewcode-block" id="FluxCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.FluxCaltable.html#pipeline.h.heuristics.caltable.FluxCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.FluxCaltable.html#pipeline.h.heuristics.FluxCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">FluxCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="FluxCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.FluxCaltable.html#pipeline.h.heuristics.caltable.FluxCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.FluxCaltable.html#pipeline.h.heuristics.FluxCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">FluxCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -326,16 +336,16 @@
 
 
 <div class="viewcode-block" id="GaincalCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.caltable.GaincalCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.GaincalCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="GaincalCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.caltable.GaincalCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.GaincalCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">GainCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="GaincalCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.caltable.GaincalCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GaincalCaltable.html#pipeline.h.heuristics.GaincalCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">spectral_window_nochan</span><span class="p">(</span><span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spw&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">if</span> <span class="s1">&#39;solint&#39;</span> <span class="ow">in</span> <span class="n">task_args</span><span class="p">:</span>
@@ -360,10 +370,10 @@
 
 
 <div class="viewcode-block" id="GainCurvestable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GainCurvestable.html#pipeline.h.heuristics.caltable.GainCurvestable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GainCurvestable.html#pipeline.h.heuristics.GainCurvestable">[docs]</a>
 <span class="k">class</span> <span class="nc">GainCurvestable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="GainCurvestable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GainCurvestable.html#pipeline.h.heuristics.caltable.GainCurvestable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.GainCurvestable.html#pipeline.h.heuristics.GainCurvestable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">GainCurvesCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -371,10 +381,10 @@
 
 
 <div class="viewcode-block" id="OpCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.OpCaltable.html#pipeline.h.heuristics.caltable.OpCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.OpCaltable.html#pipeline.h.heuristics.OpCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">OpCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="OpCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.OpCaltable.html#pipeline.h.heuristics.caltable.OpCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.OpCaltable.html#pipeline.h.heuristics.OpCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">OpCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -382,10 +392,10 @@
 
 
 <div class="viewcode-block" id="RqCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.RqCaltable.html#pipeline.h.heuristics.caltable.RqCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.RqCaltable.html#pipeline.h.heuristics.RqCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">RqCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="RqCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.RqCaltable.html#pipeline.h.heuristics.caltable.RqCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.RqCaltable.html#pipeline.h.heuristics.RqCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">RqCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -393,10 +403,10 @@
 
 
 <div class="viewcode-block" id="SwpowCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SwpowCaltable.html#pipeline.h.heuristics.caltable.SwpowCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SwpowCaltable.html#pipeline.h.heuristics.SwpowCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">SwpowCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="SwpowCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SwpowCaltable.html#pipeline.h.heuristics.caltable.SwpowCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SwpowCaltable.html#pipeline.h.heuristics.SwpowCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">SwpowCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -404,10 +414,10 @@
 
 
 <div class="viewcode-block" id="TecMapstable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TecMapstable.html#pipeline.h.heuristics.caltable.TecMapstable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TecMapstable.html#pipeline.h.heuristics.TecMapstable">[docs]</a>
 <span class="k">class</span> <span class="nc">TecMapstable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="TecMapstable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TecMapstable.html#pipeline.h.heuristics.caltable.TecMapstable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TecMapstable.html#pipeline.h.heuristics.TecMapstable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">TecMapsCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -415,10 +425,10 @@
 
 
 <div class="viewcode-block" id="TsysCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TsysCaltable.html#pipeline.h.heuristics.caltable.TsysCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TsysCaltable.html#pipeline.h.heuristics.TsysCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="TsysCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TsysCaltable.html#pipeline.h.heuristics.caltable.TsysCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.TsysCaltable.html#pipeline.h.heuristics.TsysCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">TsysCalibrationTable</span><span class="p">()</span></div>
 </div>
@@ -426,16 +436,16 @@
 
 
 <div class="viewcode-block" id="WvrgCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.caltable.WvrgCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.WvrgCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="WvrgCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.caltable.WvrgCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.WvrgCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">WvrgCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WvrgCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.caltable.WvrgCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.WvrgCaltable.html#pipeline.h.heuristics.WvrgCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="n">namer</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">task_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;smooth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div>
 </div>
@@ -443,26 +453,26 @@
 
 
 <div class="viewcode-block" id="XYf0Caltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.XYf0Caltable.html#pipeline.h.heuristics.caltable.XYf0Caltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.XYf0Caltable.html#pipeline.h.heuristics.XYf0Caltable">[docs]</a>
 <span class="k">class</span> <span class="nc">XYf0Caltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="XYf0Caltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.XYf0Caltable.html#pipeline.h.heuristics.caltable.XYf0Caltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.XYf0Caltable.html#pipeline.h.heuristics.XYf0Caltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">XYf0CalibrationTable</span><span class="p">()</span></div>
 </div>
 
 
 <div class="viewcode-block" id="SDSkyCaltable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.caltable.SDSkyCaltable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.SDSkyCaltable">[docs]</a>
 <span class="k">class</span> <span class="nc">SDSkyCaltable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="SDSkyCaltable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.caltable.SDSkyCaltable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.SDSkyCaltable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">SDSkyCalibrationTable</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SDSkyCaltable.customise">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.caltable.SDSkyCaltable.customise">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDSkyCaltable.html#pipeline.h.heuristics.SDSkyCaltable.customise">[docs]</a>
     <span class="k">def</span> <span class="nf">customise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">namer</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;field&#39;</span> <span class="ow">in</span> <span class="n">task_args</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Set FIELD </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]))</span>
@@ -471,10 +481,10 @@
 
 
 <div class="viewcode-block" id="SDBaselinetable">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDBaselinetable.html#pipeline.h.heuristics.caltable.SDBaselinetable">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDBaselinetable.html#pipeline.h.heuristics.SDBaselinetable">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBaselinetable</span><span class="p">(</span><span class="n">CaltableNamer</span><span class="p">):</span>
 <div class="viewcode-block" id="SDBaselinetable.get_namer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDBaselinetable.html#pipeline.h.heuristics.caltable.SDBaselinetable.get_namer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.caltable.SDBaselinetable.html#pipeline.h.heuristics.SDBaselinetable.get_namer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_namer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">SDBaselineTable</span><span class="p">()</span></div>
 </div>

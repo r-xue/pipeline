@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -159,7 +169,7 @@
 
 
 <div class="viewcode-block" id="CalApplication">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication">[docs]</a>
 <span class="k">class</span> <span class="nc">CalApplication</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalApplication maps calibration tables and their application arguments to</span>
@@ -196,7 +206,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
 
 <div class="viewcode-block" id="CalApplication.from_export">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.from_export">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.from_export">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_export</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -261,7 +271,7 @@
 
 
 <div class="viewcode-block" id="CalApplication.as_applycal">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.as_applycal">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.as_applycal">[docs]</a>
     <span class="k">def</span> <span class="nf">as_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a representation of this object as a CASA applycal call.</span>
@@ -313,7 +323,7 @@
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
 <div class="viewcode-block" id="CalApplication.exists">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.exists">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.exists">[docs]</a>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test whether all calibration tables referred to by this application exist.</span>
@@ -416,7 +426,7 @@
 
 
 <div class="viewcode-block" id="CalTo">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo">[docs]</a>
 <span class="k">class</span> <span class="nc">CalTo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalTo represents a target data selection to which a calibration can be</span>
@@ -431,11 +441,14 @@
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="o">=</span> <span class="n">state</span>
 
+<div class="viewcode-block" id="CalTo.from_caltoargs">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo.from_caltoargs">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_caltoargs</span><span class="p">(</span><span class="n">cta</span><span class="p">:</span> <span class="n">CalToArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CalTo&quot;</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">s</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">field</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="n">antenna</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">antenna</span><span class="p">),</span> <span class="n">intent</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">field</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="n">antenna</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">antenna</span><span class="p">),</span> <span class="n">intent</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -500,7 +513,7 @@
 
 
 <div class="viewcode-block" id="CalFrom">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom">[docs]</a>
 <span class="k">class</span> <span class="nc">CalFrom</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalFrom represents a calibration table and the CASA arguments that should</span>
@@ -699,13 +712,16 @@
     <span class="k">def</span> <span class="nf">gaintable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gaintable</span>
 
+<div class="viewcode-block" id="CalFrom.get_caltype_for_viscal">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.get_caltype_for_viscal">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_caltype_for_viscal</span><span class="p">(</span><span class="n">viscal</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">viscal</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">caltype</span><span class="p">,</span> <span class="n">viscals</span> <span class="ow">in</span> <span class="n">CalFrom</span><span class="o">.</span><span class="n">CALTYPE_TO_VISCAL</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">viscals</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">caltype</span>
-        <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -735,7 +751,7 @@
 
 
 <div class="viewcode-block" id="CalToIdAdapter">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter">[docs]</a>
 <span class="k">class</span> <span class="nc">CalToIdAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
@@ -763,6 +779,8 @@
         <span class="c1"># return the intents present in the CalTo</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">intent</span>
 
+<div class="viewcode-block" id="CalToIdAdapter.get_field_intents">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents">[docs]</a>
     <span class="k">def</span> <span class="nf">get_field_intents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">):</span>
         <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_field</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
         <span class="n">field_intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span>
@@ -774,7 +792,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">user_intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span>
 
-        <span class="k">return</span> <span class="n">user_intents</span> <span class="o">&amp;</span> <span class="n">field_intents</span> <span class="o">&amp;</span> <span class="n">spw_intents</span>
+        <span class="k">return</span> <span class="n">user_intents</span> <span class="o">&amp;</span> <span class="n">field_intents</span> <span class="o">&amp;</span> <span class="n">spw_intents</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -829,7 +848,7 @@
 
 
 <div class="viewcode-block" id="DictCalState">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState">[docs]</a>
 <span class="k">class</span> <span class="nc">DictCalState</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DictCalState is a data structure used to map calibrations for all data</span>
@@ -853,7 +872,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_removed</span> <span class="o">=</span> <span class="n">state</span>
 
 <div class="viewcode-block" id="DictCalState.global_remove">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.global_remove">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.global_remove">[docs]</a>
     <span class="k">def</span> <span class="nf">global_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark a CalFrom as being removed from the calibration state. Rather than</span>
@@ -868,7 +887,7 @@
 
 
 <div class="viewcode-block" id="DictCalState.global_reactivate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.global_reactivate">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.global_reactivate">[docs]</a>
     <span class="k">def</span> <span class="nf">global_reactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reactivate a CalFrom that was marked as ignored through a call to</span>
@@ -891,7 +910,7 @@
 
 
 <div class="viewcode-block" id="DictCalState.get_caltable">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.get_caltable">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.get_caltable">[docs]</a>
     <span class="k">def</span> <span class="nf">get_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the names of all caltables registered with this CalState.</span>
@@ -918,7 +937,7 @@
 
 
 <div class="viewcode-block" id="DictCalState.dictify">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.dictify">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.dictify">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">dictify</span><span class="p">(</span><span class="n">dd</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -928,6 +947,8 @@
                      <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dd</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span></div>
 
 
+<div class="viewcode-block" id="DictCalState.merged">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.merged">[docs]</a>
     <span class="k">def</span> <span class="nf">merged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">hashes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">flattened</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flattened</span><span class="p">(</span><span class="n">hide_empty</span><span class="o">=</span><span class="n">hide_empty</span><span class="p">)</span>
@@ -959,7 +980,8 @@
                               <span class="n">antenna</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_commafy</span><span class="p">(</span><span class="n">calto_args</span><span class="o">.</span><span class="n">antenna</span><span class="p">))</span>
                 <span class="n">result</span><span class="p">[</span><span class="n">calto</span><span class="p">]</span> <span class="o">=</span> <span class="n">calfrom</span>
 
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
 
     <span class="k">def</span> <span class="nf">_commafy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="p">[]):</span>
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span>
@@ -973,10 +995,13 @@
 
         <span class="k">return</span> <span class="n">active</span>
 
+<div class="viewcode-block" id="DictCalState.as_applycal">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalState.html#pipeline.infrastructure.callibrary.DictCalState.as_applycal">[docs]</a>
     <span class="k">def</span> <span class="nf">as_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="p">[</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged</span><span class="p">(</span><span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">])</span></div>
+
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">()</span>
@@ -990,7 +1015,7 @@
 
 
 <div class="viewcode-block" id="DictCalLibrary">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary">[docs]</a>
 <span class="k">class</span> <span class="nc">DictCalLibrary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalLibrary is the root object for the pipeline calibration state.</span>
@@ -1001,9 +1026,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">DictCalState</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span> <span class="o">=</span> <span class="n">DictCalState</span><span class="p">()</span>
 
+<div class="viewcode-block" id="DictCalLibrary.clear">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.clear">[docs]</a>
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">DictCalState</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span> <span class="o">=</span> <span class="n">DictCalState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span> <span class="o">=</span> <span class="n">DictCalState</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">,</span> <span class="n">calstate</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calfroms</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1070,6 +1098,8 @@
         <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Calstate after _remove:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">calstate</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
 
+<div class="viewcode-block" id="DictCalLibrary.add">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">):</span>
         <span class="c1"># If we are adding a previously removed CalFrom back into a</span>
         <span class="c1"># CalState, we assume that the user really want the previous</span>
@@ -1083,7 +1113,8 @@
 
         <span class="n">calfroms_to_add</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">calfroms</span> <span class="k">if</span> <span class="n">cf</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">calfroms_to_reactivate</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">calfroms_to_add</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms_to_add</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms_to_add</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1101,7 +1132,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span>
 
 <div class="viewcode-block" id="DictCalLibrary.export">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.export">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.export">[docs]</a>
     <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export the pre-apply calibration state to disk.</span>
@@ -1115,7 +1146,7 @@
 
 
 <div class="viewcode-block" id="DictCalLibrary.export_applied">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.export_applied">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.export_applied">[docs]</a>
     <span class="k">def</span> <span class="nf">export_applied</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export the applied calibration state to disk.</span>
@@ -1129,7 +1160,7 @@
 
 
 <div class="viewcode-block" id="DictCalLibrary.get_calstate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.get_calstate">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.get_calstate">[docs]</a>
     <span class="k">def</span> <span class="nf">get_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">hide_null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the calibration state for a target data selection.</span>
@@ -1174,6 +1205,8 @@
 
         <span class="k">return</span> <span class="n">CalFrom</span><span class="p">(</span><span class="o">**</span><span class="n">copied</span><span class="p">)</span>
 
+<div class="viewcode-block" id="DictCalLibrary.import_state">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.import_state">[docs]</a>
     <span class="k">def</span> <span class="nf">import_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
@@ -1192,8 +1225,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calibration state after import:</span><span class="se">\n</span><span class="s1">&#39;</span>
-                 <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+                 <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span></div>
 
+
+<div class="viewcode-block" id="DictCalLibrary.mark_as_applied">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.DictCalLibrary.html#pipeline.infrastructure.callibrary.DictCalLibrary.mark_as_applied">[docs]</a>
     <span class="k">def</span> <span class="nf">mark_as_applied</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">calto</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span><span class="p">)</span>
@@ -1202,6 +1238,7 @@
                   <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Applied calibration state:</span><span class="se">\n</span><span class="s1">&#39;</span>
                   <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span></div>
+</div>
 
 
 
@@ -1209,14 +1246,14 @@
 
 
 <div class="viewcode-block" id="unit">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.unit.html#pipeline.infrastructure.callibrary.unit">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.unit.html#pipeline.infrastructure.callibrary.unit">[docs]</a>
 <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span></div>
 
 
 
 <div class="viewcode-block" id="contiguous_sequences">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.contiguous_sequences.html#pipeline.infrastructure.callibrary.contiguous_sequences">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.contiguous_sequences.html#pipeline.infrastructure.callibrary.contiguous_sequences">[docs]</a>
 <span class="k">def</span> <span class="nf">contiguous_sequences</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group a sequence of numbers into contiguous groups</span>
@@ -1237,7 +1274,7 @@
 
 
 <div class="viewcode-block" id="sequence_to_casa_range">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.sequence_to_casa_range.html#pipeline.infrastructure.callibrary.sequence_to_casa_range">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.sequence_to_casa_range.html#pipeline.infrastructure.callibrary.sequence_to_casa_range">[docs]</a>
 <span class="k">def</span> <span class="nf">sequence_to_casa_range</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">as_casa_range</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
@@ -1253,7 +1290,7 @@
 
 
 <div class="viewcode-block" id="CalToIntervalAdapter">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.CalToIntervalAdapter.html#pipeline.infrastructure.callibrary.CalToIntervalAdapter">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalToIntervalAdapter.html#pipeline.infrastructure.callibrary.CalToIntervalAdapter">[docs]</a>
 <span class="k">class</span> <span class="nc">CalToIntervalAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
@@ -1294,7 +1331,7 @@
 
 
 <div class="viewcode-block" id="create_data_reducer">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.create_data_reducer.html#pipeline.infrastructure.callibrary.create_data_reducer">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.create_data_reducer.html#pipeline.infrastructure.callibrary.create_data_reducer">[docs]</a>
 <span class="k">def</span> <span class="nf">create_data_reducer</span><span class="p">(</span><span class="n">join</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that creates a new TimestampedData object containing the</span>
@@ -1321,7 +1358,7 @@
 
 
 <div class="viewcode-block" id="merge_lists">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.merge_lists.html#pipeline.infrastructure.callibrary.merge_lists">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.merge_lists.html#pipeline.infrastructure.callibrary.merge_lists">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_lists</span><span class="p">(</span><span class="n">join_fn</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that merge two lists by calling the input operation</span>
@@ -1339,7 +1376,7 @@
 
 
 <div class="viewcode-block" id="merge_intervaltrees">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.merge_intervaltrees.html#pipeline.infrastructure.callibrary.merge_intervaltrees">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.merge_intervaltrees.html#pipeline.infrastructure.callibrary.merge_intervaltrees">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_intervaltrees</span><span class="p">(</span><span class="n">on_intersect</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that merges two IntervalTrees, executing a function</span>
@@ -1360,7 +1397,7 @@
 
 
 <div class="viewcode-block" id="ranges">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.ranges.html#pipeline.infrastructure.callibrary.ranges">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.ranges.html#pipeline.infrastructure.callibrary.ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">ranges</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span>
     <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1373,14 +1410,14 @@
 
 
 <div class="viewcode-block" id="safe_join">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.safe_join.html#pipeline.infrastructure.callibrary.safe_join">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.safe_join.html#pipeline.infrastructure.callibrary.safe_join">[docs]</a>
 <span class="k">def</span> <span class="nf">safe_join</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="merge_contiguous_intervals">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.merge_contiguous_intervals.html#pipeline.infrastructure.callibrary.merge_contiguous_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.merge_contiguous_intervals.html#pipeline.infrastructure.callibrary.merge_contiguous_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_contiguous_intervals</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge contiguous Intervals with the same value into one Interval.</span>
@@ -1417,7 +1454,7 @@
 
 
 <div class="viewcode-block" id="defrag_interval_tree">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.defrag_interval_tree.html#pipeline.infrastructure.callibrary.defrag_interval_tree">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.defrag_interval_tree.html#pipeline.infrastructure.callibrary.defrag_interval_tree">[docs]</a>
 <span class="k">def</span> <span class="nf">defrag_interval_tree</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Condense an IntervalTree by consolidating fragmented entries with the same</span>
@@ -1461,7 +1498,7 @@
 
 
 <div class="viewcode-block" id="interval_to_set">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.interval_to_set.html#pipeline.infrastructure.callibrary.interval_to_set">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.interval_to_set.html#pipeline.infrastructure.callibrary.interval_to_set">[docs]</a>
 <span class="k">def</span> <span class="nf">interval_to_set</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the all the indexes covered by an Interval.</span>
@@ -1474,7 +1511,7 @@
 
 
 <div class="viewcode-block" id="get_id_to_intent_fn">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_id_to_intent_fn.html#pipeline.infrastructure.callibrary.get_id_to_intent_fn">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_id_to_intent_fn.html#pipeline.infrastructure.callibrary.get_id_to_intent_fn">[docs]</a>
 <span class="k">def</span> <span class="nf">get_id_to_intent_fn</span><span class="p">(</span><span class="n">id_to_intent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that can convert intent IDs to a string intent.</span>
@@ -1505,7 +1542,7 @@
 
 
 <div class="viewcode-block" id="get_id_to_field_fn">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_id_to_field_fn.html#pipeline.infrastructure.callibrary.get_id_to_field_fn">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_id_to_field_fn.html#pipeline.infrastructure.callibrary.get_id_to_field_fn">[docs]</a>
 <span class="k">def</span> <span class="nf">get_id_to_field_fn</span><span class="p">(</span><span class="n">ms_to_id_to_field</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function that can convert field IDs to a field name.</span>
@@ -1545,7 +1582,7 @@
 
 
 <div class="viewcode-block" id="expand_interval">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.expand_interval.html#pipeline.infrastructure.callibrary.expand_interval">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.expand_interval.html#pipeline.infrastructure.callibrary.expand_interval">[docs]</a>
 <span class="k">def</span> <span class="nf">expand_interval</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">calto_args</span><span class="p">,</span> <span class="n">calto_fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an Interval into the equivalent list of (CalTo, [CalFrom..])</span>
@@ -1579,7 +1616,7 @@
 
 
 <div class="viewcode-block" id="expand_intervaltree">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.expand_intervaltree.html#pipeline.infrastructure.callibrary.expand_intervaltree">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.expand_intervaltree.html#pipeline.infrastructure.callibrary.expand_intervaltree">[docs]</a>
 <span class="k">def</span> <span class="nf">expand_intervaltree</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">convert_fns</span><span class="p">,</span> <span class="n">calto_fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an IntervalTree into the equivalent list of (CalTo, [CalFrom..])</span>
@@ -1618,7 +1655,7 @@
 
 
 <div class="viewcode-block" id="expand_calstate_to_calapps">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.expand_calstate_to_calapps.html#pipeline.infrastructure.callibrary.expand_calstate_to_calapps">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.expand_calstate_to_calapps.html#pipeline.infrastructure.callibrary.expand_calstate_to_calapps">[docs]</a>
 <span class="k">def</span> <span class="nf">expand_calstate_to_calapps</span><span class="p">(</span><span class="n">calstate</span><span class="p">:</span> <span class="s2">&quot;IntervalCalState&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CalTo</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an IntervalCalState into a list of (CalTo, [CalFrom..]) tuples.</span>
@@ -1663,7 +1700,7 @@
 
 
 <div class="viewcode-block" id="consolidate_calibrations">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.consolidate_calibrations.html#pipeline.infrastructure.callibrary.consolidate_calibrations">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.consolidate_calibrations.html#pipeline.infrastructure.callibrary.consolidate_calibrations">[docs]</a>
 <span class="k">def</span> <span class="nf">consolidate_calibrations</span><span class="p">(</span><span class="n">all_my_calapps</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Consolidate a list of (CalTo, [CalFrom..]) 2-tuples into a smaller set of</span>
@@ -1772,7 +1809,7 @@
 
 
 <div class="viewcode-block" id="data_selection_contains">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.data_selection_contains.html#pipeline.infrastructure.callibrary.data_selection_contains">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.data_selection_contains.html#pipeline.infrastructure.callibrary.data_selection_contains">[docs]</a>
 <span class="k">def</span> <span class="nf">data_selection_contains</span><span class="p">(</span><span class="n">proposed</span><span class="p">,</span> <span class="n">calto_args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if one data selection is contained within another.</span>
@@ -1792,7 +1829,7 @@
 
 
 <div class="viewcode-block" id="expand_calstate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.expand_calstate.html#pipeline.infrastructure.callibrary.expand_calstate">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.expand_calstate.html#pipeline.infrastructure.callibrary.expand_calstate">[docs]</a>
 <span class="k">def</span> <span class="nf">expand_calstate</span><span class="p">(</span><span class="n">calstate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an IntervalCalState into the equivalent consolidated list of</span>
@@ -1834,7 +1871,7 @@
 
 
 <div class="viewcode-block" id="get_min_max">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_min_max.html#pipeline.infrastructure.callibrary.get_min_max">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_min_max.html#pipeline.infrastructure.callibrary.get_min_max">[docs]</a>
 <span class="k">def</span> <span class="nf">get_min_max</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">keyfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">keyfunc</span><span class="p">:</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">keyfunc</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
@@ -1845,7 +1882,7 @@
 
 
 <div class="viewcode-block" id="create_interval_tree">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.create_interval_tree.html#pipeline.infrastructure.callibrary.create_interval_tree">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.create_interval_tree.html#pipeline.infrastructure.callibrary.create_interval_tree">[docs]</a>
 <span class="k">def</span> <span class="nf">create_interval_tree</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an IntervalTree containing a set of Intervals.</span>
@@ -1865,7 +1902,7 @@
 
 
 <div class="viewcode-block" id="create_interval_tree_nd">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.create_interval_tree_nd.html#pipeline.infrastructure.callibrary.create_interval_tree_nd">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.create_interval_tree_nd.html#pipeline.infrastructure.callibrary.create_interval_tree_nd">[docs]</a>
 <span class="k">def</span> <span class="nf">create_interval_tree_nd</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">value_fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a multidimensional IntervalTree. Each Interval within the</span>
@@ -1898,7 +1935,7 @@
 
 
 <div class="viewcode-block" id="create_interval_tree_for_ms">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.create_interval_tree_for_ms.html#pipeline.infrastructure.callibrary.create_interval_tree_for_ms">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.create_interval_tree_for_ms.html#pipeline.infrastructure.callibrary.create_interval_tree_for_ms">[docs]</a>
 <span class="k">def</span> <span class="nf">create_interval_tree_for_ms</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a new IntervalTree fitted to the dimensions of a measurement set.</span>
@@ -1923,7 +1960,7 @@
 
 
 <div class="viewcode-block" id="trim">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.trim.html#pipeline.infrastructure.callibrary.trim">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.trim.html#pipeline.infrastructure.callibrary.trim">[docs]</a>
 <span class="k">def</span> <span class="nf">trim</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">ranges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return an IntervalTree trimmed to the specified ranges.</span>
@@ -1953,7 +1990,7 @@
 
 
 <div class="viewcode-block" id="trim_nd">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.trim_nd.html#pipeline.infrastructure.callibrary.trim_nd">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.trim_nd.html#pipeline.infrastructure.callibrary.trim_nd">[docs]</a>
 <span class="k">def</span> <span class="nf">trim_nd</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return an IntervalTree with each dimension trimmed to the specified</span>
@@ -1998,7 +2035,7 @@
 
 
 <div class="viewcode-block" id="get_intent_id_map">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_intent_id_map.html#pipeline.infrastructure.callibrary.get_intent_id_map">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_intent_id_map.html#pipeline.infrastructure.callibrary.get_intent_id_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_intent_id_map</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the mapping of intent ID to string intent for a measurement set.</span>
@@ -2012,7 +2049,7 @@
 
 
 <div class="viewcode-block" id="IntervalCalState">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState">[docs]</a>
 <span class="k">class</span> <span class="nc">IntervalCalState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalState is a data structure used to map calibrations for all data</span>
@@ -2030,6 +2067,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">id_to_field</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">{}</span>
 
+<div class="viewcode-block" id="IntervalCalState.from_calapplication">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.from_calapplication">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_calapplication</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calfroms</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -2051,8 +2090,11 @@
 
         <span class="n">calstate</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">trim_to_valid_data_selection</span><span class="p">(</span><span class="n">calstate</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">calstate</span>
+        <span class="k">return</span> <span class="n">calstate</span></div>
 
+
+<div class="viewcode-block" id="IntervalCalState.create_from_context">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.create_from_context">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_from_context</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span><span class="p">):</span>
@@ -2080,18 +2122,22 @@
 
         <span class="n">calstate</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trim_to_valid_data_selection</span><span class="p">(</span><span class="n">calstate</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">calstate</span>
+        <span class="k">return</span> <span class="n">calstate</span></div>
 
+
+<div class="viewcode-block" id="IntervalCalState.clear">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.clear">[docs]</a>
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">calstate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">calstate</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">calstate</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
         <span class="c1"># do NOT clear the id mapping dicts as without access to the context</span>
         <span class="c1"># we have no way to repopulate them.</span>
         <span class="c1"># self.id_to_intent.clear()</span>
         <span class="c1"># self.id_to_field.clear()</span>
 
 <div class="viewcode-block" id="IntervalCalState.trimmed">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.trimmed">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.trimmed">[docs]</a>
     <span class="k">def</span> <span class="nf">trimmed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a copy of this IntervalCalState trimmed to the specified CalTo data selection.</span>
@@ -2137,7 +2183,7 @@
 
 
 <div class="viewcode-block" id="IntervalCalState.get_caltable">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.get_caltable">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.get_caltable">[docs]</a>
     <span class="k">def</span> <span class="nf">get_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the names of all caltables registered with this CalState.</span>
@@ -2164,6 +2210,8 @@
                 <span class="k">if</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span> <span class="ow">in</span> <span class="n">caltypes</span><span class="p">}</span></div>
 
 
+<div class="viewcode-block" id="IntervalCalState.merged">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.merged">[docs]</a>
     <span class="k">def</span> <span class="nf">merged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="n">expand_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -2172,8 +2220,11 @@
 
         <span class="c1"># TODO dict is unnecessary. refactor all usages of this class to use</span>
         <span class="c1"># the tuple</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">calapps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">calapps</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="IntervalCalState.export_to_casa_callibrary">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.export_to_casa_callibrary">[docs]</a>
     <span class="k">def</span> <span class="nf">export_to_casa_callibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">callibfile</span><span class="p">):</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="p">(</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
                    <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged</span><span class="p">(</span><span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
@@ -2183,13 +2234,17 @@
             <span class="n">applycaltocallib</span><span class="p">(</span><span class="n">callibfile</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">casa_intents</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
                              <span class="n">gaintable</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">gainfield</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">gainfield</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">interp</span><span class="p">,</span>
                              <span class="n">spwmap</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="n">calapp</span><span class="o">.</span><span class="n">calwt</span><span class="p">)</span>
-            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span></div>
 
+
+<div class="viewcode-block" id="IntervalCalState.as_applycal">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.as_applycal">[docs]</a>
     <span class="k">def</span> <span class="nf">as_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="p">(</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
                    <span class="k">for</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged</span><span class="p">(</span><span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">])</span></div>
+
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">()</span>
@@ -2287,7 +2342,7 @@
 
 
 <div class="viewcode-block" id="fix_cycle0_data_selection">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.fix_cycle0_data_selection.html#pipeline.infrastructure.callibrary.fix_cycle0_data_selection">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.fix_cycle0_data_selection.html#pipeline.infrastructure.callibrary.fix_cycle0_data_selection">[docs]</a>
 <span class="k">def</span> <span class="nf">fix_cycle0_data_selection</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calstate</span><span class="p">):</span>
     <span class="c1"># shortcut to minimise processing for data from Cycle 1 onwards.</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">CYCLE_0_END_DATE</span>
@@ -2329,7 +2384,7 @@
 
 
 <div class="viewcode-block" id="IntervalCalLibrary">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary">[docs]</a>
 <span class="k">class</span> <span class="nc">IntervalCalLibrary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalLibrary is the root object for the pipeline calibration state.</span>
@@ -2340,9 +2395,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">IntervalCalState</span><span class="o">.</span><span class="n">create_from_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span> <span class="o">=</span> <span class="n">IntervalCalState</span><span class="o">.</span><span class="n">create_from_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
+<div class="viewcode-block" id="IntervalCalLibrary.clear">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.clear">[docs]</a>
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="nf">_calc_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
@@ -2360,12 +2418,15 @@
                 <span class="n">export_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
                 <span class="n">export_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="IntervalCalLibrary.add">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">):</span>
         <span class="n">to_add</span> <span class="o">=</span> <span class="n">IntervalCalState</span><span class="o">.</span><span class="n">from_calapplication</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfroms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">+=</span> <span class="n">to_add</span>
 
         <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span><span class="p">):</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Calstate after _add:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Calstate after _add:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2383,7 +2444,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_applied</span>
 
 <div class="viewcode-block" id="IntervalCalLibrary.export">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export">[docs]</a>
     <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export the pre-apply calibration state to disk.</span>
@@ -2397,7 +2458,7 @@
 
 
 <div class="viewcode-block" id="IntervalCalLibrary.export_applied">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied">[docs]</a>
     <span class="k">def</span> <span class="nf">export_applied</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export the applied calibration state to disk.</span>
@@ -2411,7 +2472,7 @@
 
 
 <div class="viewcode-block" id="IntervalCalLibrary.get_calstate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.get_calstate">[docs]</a>
     <span class="k">def</span> <span class="nf">get_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the active calibration state for a target data selection.</span>
@@ -2453,6 +2514,8 @@
 
         <span class="k">return</span> <span class="n">CalFrom</span><span class="p">(</span><span class="o">**</span><span class="n">copied</span><span class="p">)</span>
 
+<div class="viewcode-block" id="IntervalCalLibrary.import_state">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state">[docs]</a>
     <span class="k">def</span> <span class="nf">import_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
@@ -2471,8 +2534,11 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">calapp</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calibration state after import:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calibration state after import:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span></div>
 
+
+<div class="viewcode-block" id="IntervalCalLibrary.mark_as_applied">
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.mark_as_applied">[docs]</a>
     <span class="k">def</span> <span class="nf">mark_as_applied</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">):</span>
         <span class="n">application</span> <span class="o">=</span> <span class="n">IntervalCalState</span><span class="o">.</span><span class="n">from_calapplication</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">-=</span> <span class="n">application</span>
@@ -2480,10 +2546,11 @@
 
         <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;New calibration state:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Applied calibration state:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Applied calibration state:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">())</span></div>
+
 
 <div class="viewcode-block" id="IntervalCalLibrary.unregister_calibrations">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.unregister_calibrations">[docs]</a>
     <span class="k">def</span> <span class="nf">unregister_calibrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">CalFrom</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete active calibrations that match the input predicate function.</span>
@@ -2538,7 +2605,7 @@
 
 
 <div class="viewcode-block" id="TimestampedData">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData">[docs]</a>
 <span class="k">class</span> <span class="nc">TimestampedData</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TimestampedDataBase&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;marker&#39;</span><span class="p">])):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>  <span class="c1"># Saves memory, avoiding the need to create __dict__ for each interval</span>
 
@@ -2546,7 +2613,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">TimestampedData</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">marker</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimestampedData.cmp">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData.cmp">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData.cmp">[docs]</a>
     <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tells whether other sorts before, after or equal to this</span>
@@ -2627,7 +2694,7 @@
 
 
 <div class="viewcode-block" id="trim_to_valid_data_selection">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.trim_to_valid_data_selection.html#pipeline.infrastructure.callibrary.trim_to_valid_data_selection">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.trim_to_valid_data_selection.html#pipeline.infrastructure.callibrary.trim_to_valid_data_selection">[docs]</a>
 <span class="k">def</span> <span class="nf">trim_to_valid_data_selection</span><span class="p">(</span><span class="n">calstate</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trim an IntervalCalState to the shape of valid (present) data selections.</span>
@@ -2713,7 +2780,7 @@
 
 
 <div class="viewcode-block" id="get_calto_from_inputs">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_calto_from_inputs.html#pipeline.infrastructure.callibrary.get_calto_from_inputs">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_calto_from_inputs.html#pipeline.infrastructure.callibrary.get_calto_from_inputs">[docs]</a>
 <span class="k">def</span> <span class="nf">get_calto_from_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a CalTo data selection object based on the state of an Inputs object</span>
@@ -2723,7 +2790,7 @@
 
 
 <div class="viewcode-block" id="set_calstate_marker">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.set_calstate_marker.html#pipeline.infrastructure.callibrary.set_calstate_marker">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.set_calstate_marker.html#pipeline.infrastructure.callibrary.set_calstate_marker">[docs]</a>
 <span class="k">def</span> <span class="nf">set_calstate_marker</span><span class="p">(</span><span class="n">calstate</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a copy of a calstate, modified so that TimeStampedData objects in</span>
@@ -2811,7 +2878,7 @@
 
 
 <div class="viewcode-block" id="copy_calapplication">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.copy_calapplication.html#pipeline.infrastructure.callibrary.copy_calapplication">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.copy_calapplication.html#pipeline.infrastructure.callibrary.copy_calapplication">[docs]</a>
 <span class="k">def</span> <span class="nf">copy_calapplication</span><span class="p">(</span><span class="n">calapp</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copy a CalApplication, overwriting any CalTo or CalFrom values with the</span>
@@ -2924,7 +2991,7 @@
 
 
 <div class="viewcode-block" id="get_calstate_shape">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_calstate_shape.html#pipeline.infrastructure.callibrary.get_calstate_shape">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_calstate_shape.html#pipeline.infrastructure.callibrary.get_calstate_shape">[docs]</a>
 <span class="nd">@cachetools</span><span class="o">.</span><span class="n">cached</span><span class="p">(</span><span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
 <span class="k">def</span> <span class="nf">get_calstate_shape</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3002,7 +3069,7 @@
 
 
 <div class="viewcode-block" id="get_matching_calstate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.callibrary.get_matching_calstate.html#pipeline.infrastructure.callibrary.get_matching_calstate">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.get_matching_calstate.html#pipeline.infrastructure.callibrary.get_matching_calstate">[docs]</a>
 <span class="k">def</span> <span class="nf">get_matching_calstate</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
                            <span class="n">calstate</span><span class="p">:</span> <span class="n">IntervalCalState</span><span class="p">,</span>
                            <span class="n">predicate_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">CalFrom</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">IntervalCalState</span><span class="p">:</span>

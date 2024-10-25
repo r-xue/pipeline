@@ -61,6 +61,7 @@ pipeline.infrastructure
    casa_tools
    contfilehandler
    contfilehandler_test
+   daskhelpers
    displays
    docutils
    eventbus

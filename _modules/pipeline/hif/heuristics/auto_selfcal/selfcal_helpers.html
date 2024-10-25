@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -79,10 +80,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (automodapi)</span></p>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
 <ul>
@@ -93,6 +98,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
 <ul>
@@ -373,7 +383,7 @@
 
 <span class="c1"># actual routine used for getting solints</span>
 <div class="viewcode-block" id="get_solints_simple">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_solints_simple.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_solints_simple">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_solints_simple.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_solints_simple">[docs]</a>
 <span class="k">def</span> <span class="nf">get_solints_simple</span><span class="p">(</span>
         <span class="n">vislist</span><span class="p">,</span> <span class="n">scantimesdict</span><span class="p">,</span> <span class="n">scanstartsdict</span><span class="p">,</span> <span class="n">scanendsdict</span><span class="p">,</span> <span class="n">integrationtimes</span><span class="p">,</span> <span class="n">inf_EB_gaincal_combine</span><span class="p">,</span> <span class="n">spwcombine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">solint_decrement</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span> <span class="n">solint_divider</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">n_solints</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">do_amp_selfcal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mosaic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -757,7 +767,7 @@
 
 
 <div class="viewcode-block" id="get_intflux">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_intflux.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_intflux">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_intflux.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_intflux">[docs]</a>
 <span class="k">def</span> <span class="nf">get_intflux</span><span class="p">(</span><span class="n">imagename</span><span class="p">,</span> <span class="n">rms</span><span class="p">,</span> <span class="n">maskname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="n">cqa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
@@ -796,7 +806,7 @@
 
 
 <div class="viewcode-block" id="get_n_ants">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_n_ants.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_n_ants">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_n_ants.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_n_ants">[docs]</a>
 <span class="k">def</span> <span class="nf">get_n_ants</span><span class="p">(</span><span class="n">vislist</span><span class="p">):</span>
     <span class="c1"># Examines number of antennas in each ms file and returns the minimum number of antennas</span>
     <span class="n">msmd</span> <span class="o">=</span> <span class="n">casatools</span><span class="o">.</span><span class="n">msmetadata</span><span class="p">()</span>
@@ -826,7 +836,7 @@
 
 
 <div class="viewcode-block" id="rank_refants">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.rank_refants.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.rank_refants">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.rank_refants.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.rank_refants">[docs]</a>
 <span class="k">def</span> <span class="nf">rank_refants</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rank the reference antenna for a measurement set.&quot;&quot;&quot;</span>
 
@@ -1047,7 +1057,7 @@
 
 
 <div class="viewcode-block" id="get_spw_bandwidth">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_bandwidth.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_bandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_bandwidth.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_bandwidth">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spw_bandwidth</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwsarray_dict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
     <span class="n">spwbws</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spwsarray_dict</span><span class="p">[</span><span class="n">vis</span><span class="p">]:</span>
@@ -1114,7 +1124,7 @@
 
 
 <div class="viewcode-block" id="get_spw_map">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_map.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_map">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_spw_map.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_spw_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spw_map</span><span class="p">(</span><span class="n">selfcal_library</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">telescope</span><span class="p">):</span>
     <span class="c1"># Get the list of EBs from the selfcal_library</span>
     <span class="n">vislist</span> <span class="o">=</span> <span class="n">selfcal_library</span><span class="p">[</span><span class="n">target</span><span class="p">][</span><span class="n">band</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1220,7 +1230,7 @@
 
 
 <div class="viewcode-block" id="get_nterms">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_nterms.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_nterms">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_nterms.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_nterms">[docs]</a>
 <span class="k">def</span> <span class="nf">get_nterms</span><span class="p">(</span><span class="n">fracbw</span><span class="p">,</span> <span class="n">nt1snr</span><span class="o">=</span><span class="mf">3.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get nterm based on fracbw and nt1snr.</span>
 
@@ -1437,7 +1447,7 @@
 
 
 <div class="viewcode-block" id="get_dr_correction">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_dr_correction.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_dr_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_dr_correction.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_dr_correction">[docs]</a>
 <span class="k">def</span> <span class="nf">get_dr_correction</span><span class="p">(</span><span class="n">telescope</span><span class="p">,</span> <span class="n">dirty_peak</span><span class="p">,</span> <span class="n">theoretical_sens</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
     <span class="n">dirty_dynamic_range</span> <span class="o">=</span> <span class="n">dirty_peak</span><span class="o">/</span><span class="n">theoretical_sens</span>
     <span class="n">n_dr_max</span> <span class="o">=</span> <span class="mf">2.5</span>
@@ -1542,7 +1552,7 @@
 
 
 <div class="viewcode-block" id="get_uv_range">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_uv_range.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_uv_range">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.get_uv_range.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.get_uv_range">[docs]</a>
 <span class="k">def</span> <span class="nf">get_uv_range</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">band_properties</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">band</span> <span class="o">==</span> <span class="s1">&#39;EVLA_C&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">band</span> <span class="o">==</span> <span class="s1">&#39;EVLA_X&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">band</span> <span class="o">==</span> <span class="s1">&#39;EVLA_S&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">band</span> <span class="o">==</span> <span class="s1">&#39;EVLA_L&#39;</span><span class="p">):</span>
         <span class="n">n_vis</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vislist</span><span class="p">)</span>
@@ -1590,7 +1600,7 @@
 
 
 <div class="viewcode-block" id="importdata">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.auto_selfcal.importdata.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.importdata">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.heuristics.auto_selfcal.selfcal_helpers.importdata.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.importdata">[docs]</a>
 <span class="k">def</span> <span class="nf">importdata</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="n">all_targets</span><span class="p">,</span> <span class="n">telescope</span><span class="p">):</span>
     <span class="n">spectral_scan</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">scantimesdict</span><span class="p">,</span> <span class="n">integrationsdict</span><span class="p">,</span> <span class="n">integrationtimesdict</span><span class="p">,</span> <span class="n">integrationtimes</span><span class="p">,</span> <span class="n">n_spws</span><span class="p">,</span> <span class="n">minspw</span><span class="p">,</span> <span class="n">spwsarray_dict</span><span class="p">,</span> <span class="n">spws_set</span> <span class="o">=</span> <span class="n">fetch_scan_times</span><span class="p">(</span>
