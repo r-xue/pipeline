@@ -55,22 +55,22 @@ def create_slurm_job(session_profile, filename='session.job'):
     #   None    : skip
     directives = [('no-requeue', 'Do not requeue jobs after a node failure', 'none-requeue', ''),
                   ('export', 'Export all environment variables to job', 'export', 'ALL'),
-                  ('job-name', 'Job name', 'name', None),
+                  ('job-name', 'Job name', 'job-name', None),
                   ('nodelist', 'Node list', 'nodelist', None),
-                  ('chdir', 'Working directory', 'path', './'),
-                  ('output', "the batch script's standard output", 'output', None),
-                  ('error', "the batch script's standard error", 'error', None),
+                  ('chdir', 'Working directory', 'chdir', './'),
+                  ('output', "the batch script's standard output", 'output', 'slurm-%j.out'),
+                  ('error', "the batch script's standard error", 'error', 'slurm-%j.out'),
                   ('partition', 'Request a specific partition', 'partition', 'batch'),
                   ('mail-type', 'Send email on begin, end, and fail of job',
                    'mail-type', 'BEGIN,END,FAIL'),
                   ('nodes', 'Request exactly 1 node', 'nodes', None),
                   ('ntasks', 'Request n_lprocs cores on the same node.', 'ntasks', None),
-                  ('mail-user', 'Default is submitter', 'email', None),
+                  ('mail-user', 'Default is submitter', 'mail-user', None),
                   ('time', 'request days/hrs', 'time', None),
                   ('cpus-per-task', 'Advise the Slurm controller that ensuing job steps will require ncpus number of processors per task', 'cpus-per-task', None),
                   ('mem-per-cpu', 'Minimum memory required per usable allocated CPU',
-                   'mem_per_cpu', None),  # 2G
-                  ('mem-bind', 'Bind tasks to memory', 'mem_bind', None),
+                   'mem-per-cpu', None),  # 2G
+                  ('mem-bind', 'Bind tasks to memory', 'mem-bind', None),
                   ('mem', 'Amount of memory needed by the whole job. 0 is all mem on the node', 'mem', None)]  # 16G
 
     # jobrequest_content = ['#!/bin/bash -e', '']
@@ -228,7 +228,7 @@ def cli_interface():
     pipe_opt.extend(sys.argv[1:])
     pipe_opt.append('--local')
 
-    # assemble the final cmd call
+    # assemble the final pipe-run call
 
     cmd = env_vars
     # cmd.extend(conda_opt)
@@ -237,12 +237,28 @@ def cli_interface():
     cmd.extend(pipe_opt)
     cmd = ' '.join(cmd)
 
+    # setup the working dir
+
+    chdir = './'
+    if session_config['pipeconfig'].get('chdir', None) is not None:
+        chdir = session_config['pipeconfig'].get('chdir', None)
+
+    chdir = os.path.abspath(os.path.expanduser(chdir))
+    # create the working directory from the parent process
+    logger.info(f'create/check-in: {chdir}')
+    os.makedirs(chdir, exist_ok=True)
+
+    # future proofing in the console process
+    chdir_update = ['mkdir -p {} && cd {} || exit -1'.format(chdir, chdir)]
+
     slurm_config['cmds'] = conda_activate+slurm_config['cmds']
+    slurm_config['cmds'] = chdir_update+slurm_config['cmds']
     slurm_config['cmds'].append(cmd)
+    slurm_config['chdir'] = chdir
 
     if not args.local:
 
-        job_filename = 'session.job'
+        job_filename = os.path.join(chdir, 'session.job')
         create_slurm_job(slurm_config, filename=job_filename)
         # import pprint
         # pprint.pprint(slurm_config)
