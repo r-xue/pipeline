@@ -18,7 +18,7 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang
     Users can interact with the pipeline calibration state using the tasks
     h_export_calstate and h_import_calstate.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
             example: ['X227.ms']
 

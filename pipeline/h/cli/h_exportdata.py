@@ -26,7 +26,9 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
 
     Returns
 
-    The results object for the pipeline task is returned.Parameters:
+    The results object for the pipeline task is returned.
+    
+    Args:
         vis: List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
             pipeline context.
             example: vis=['X227.ms', 'X228.ms']

@@ -16,7 +16,9 @@ def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datac
     MeasurementSet is not re-indexed to the selected data in the new MS will have the
     same source, field, and spw names and ids as it does in the parent MS.
 
-    The results object for the pipeline task is returned.Parameters:
+    The results object for the pipeline task is returned.
+    
+    Args:
         vis: The list of input MeasurementSets to be transformed. Defaults to the list of MeasurementSets specified in the pipeline import data task.
             default '': Split all MeasurementSets in the context.
             example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

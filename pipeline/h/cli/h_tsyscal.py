@@ -10,7 +10,7 @@ def h_tsyscal(vis=None, caltable=None, chantol=None):
 
     Derive the Tsys calibration for list of ALMA MeasurementSets.
 
-    Parameters:
+    Args:
         vis: List of input visibility files. example: vis=['ngc5921.ms']
 
         caltable: Name of output gain calibration tables. example: caltable='ngc5921.gcal'

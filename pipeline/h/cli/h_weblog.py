@@ -4,7 +4,9 @@ from pipeline import show_weblog
 def h_weblog(relpath=None):
     """Open the pipeline weblog in a browser
 
-    h_weblog opens the weblog in a new browser tab or window.Parameters:
+    h_weblog opens the weblog in a new browser tab or window.
+
+    Args:
         relpath: Relative path to the weblog index file. This file must be located
             in a child directory of the CASA working directory. If relpath
             is left unspecified, the most recent weblog will be located and

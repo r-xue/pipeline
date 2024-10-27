@@ -7,7 +7,9 @@ def h_resume(filename=None):
     """Restore a save pipeline state
 
     h_resume restores a name pipeline state from disk, allowing a
-    suspended pipeline reduction session to be resumed.Parameters:
+    suspended pipeline reduction session to be resumed.
+
+    Args:
         filename: Name of the saved pipeline state. Setting filename to 'last' restores the most recently saved pipeline state whose name
             begins with 'context*'.
 

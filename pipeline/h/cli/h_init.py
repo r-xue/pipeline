@@ -18,7 +18,9 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
     h_init creates an empty pipeline context but does not load visibility data
     into the context. hif_importdata or hsd_importdata can be used to load data.
 
-    The pipeline context is returned.Parameters:
+    The pipeline context is returned.
+    
+    Args:
         loglevel: Log level for pipeline messages. Log messages below this threshold will not be displayed.
 
         plotlevel: Toggle generation of detail plots in the web log. A level of 'all' generates all plots; 'summary' omits detail plots; 'default' generates all plots
