@@ -89,6 +89,10 @@ def _parse_description(description_section: str) -> Tuple[str, str]:
     long_split_stripped = [line[4:] for line in long_split]
     long_description = "\n".join(long_split_stripped).strip("\n")
 
+    # split off "output if it's in there. We can throw away the result because it's the same for everything.
+    if "Output:" in long_description:
+        long_description = long_description.split("Output:")[0]
+
     return short_description, long_description
 
 
@@ -310,34 +314,16 @@ Parameters:\n""".format(task.short.strip(), description)
 #                new += "{}\n".format(desc)  # if multiple lines, it needs the tab or consistent number of spaces each line
 
             new += "Examples:\n {}".format(task.examples)
-
-            print(new)
+            new += "Returns:\n    The results object for the pipeline task is returned."
+#            print(new)
 
             input_dct[task.name] = new
 
         later_possibly = """
-        table_handle:
-            An open smalltable.Table instance.
-        keys:
-            A sequence of strings representing the key of each table row to
-            fetch.  String keys will be UTF-8 encoded.
-        require_all_keys:
-            If True only rows with values set for all keys will be returned.
-
         Returns:
         A dict mapping keys to the corresponding table row data
         fetched. Each row is represented as a tuple of strings. For
         example:(example redacted due to formatting issues)
-
-        Returned keys are always bytes.  If a key from the keys argument is
-        missing from the dictionary, then that row was not found in the
-        table (and require_all_keys must have been False).
-
-        Raises:
-        ErrorType: Error description
-
-        Examples:
-        {2}
         """
 
     if missing_report and False:
