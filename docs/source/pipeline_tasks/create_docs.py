@@ -2,6 +2,7 @@
 # Modified by kberry to work post-removal of the task interface.
 
 import argparse
+import glob
 import inspect
 import os
 import sys
@@ -233,20 +234,21 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
         # Tasks to exclude from the reference manual
         # hifv tasks confirmed by John Tobin via email 20230911
         # h tasks requested by Remy via email 20230921
-        tasks_to_exclude = ['h_applycal',
-                            'h_export_calstate',
-                            'h_exportdata',
-                            'h_import_calstate',
-                            'h_importdata',
-                            'h_mssplit',
-                            'h_restoredata',
-                            'h_show_calstate',
-                            'hifv_targetflag',
-                            'hifv_gaincurves',
-                            'hifv_opcal',
-                            'hifv_rqcal',
-                            'hifv_swpowcal',
-                            'hifv_tecmaps']
+        tasks_to_exclude = []
+        # tasks_to_exclude = ['h_applycal',
+        #                     'h_export_calstate',
+        #                     'h_exportdata',
+        #                     'h_import_calstate',
+        #                     'h_importdata',
+        #                     'h_mssplit',
+        #                     'h_restoredata',
+        #                     'h_show_calstate',
+        #                     'hifv_targetflag',
+        #                     'hifv_gaincurves',
+        #                     'hifv_opcal',
+        #                     'hifv_rqcal',
+        #                     'hifv_swpowcal',
+        #                     'hifv_tecmaps']
 
     # Lists of cli PL tasks that are missing various pieces:
     missing_example = []
@@ -277,7 +279,68 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
                             else:
                                 print("Excluding task: {}".format(task_name))
 
-    if missing_report:
+    # convert task to a google docstring format, first pass/rough draft
+    input_dct = {}
+    for group in tasks_by_group:
+        for task in tasks_by_group[group]:
+            print("Name: ", task.name)
+            description = task.description.strip('\t')
+            parameters = task.parameters
+
+            parm_dict = {}
+            for parameter, desc in parameters.items():
+                parameter_name = parameter.strip()
+                lines = desc.strip().split("\n")
+                parameter_description = ""
+                for i, line in enumerate(lines):
+                    if i == 0:
+                        parameter_description += line.strip()
+                    else:
+                        parameter_description += "        " + line.strip()
+                    parameter_description += "\n"
+                parm_dict[parameter_name] = parameter_description
+
+            new = """{0}
+
+{1}
+Parameters:\n""".format(task.short.strip(), description)
+
+            for parm, desc in parm_dict.items():
+                new += "    {}: {}\n".format(parm.strip(), desc)
+#                new += "{}\n".format(desc)  # if multiple lines, it needs the tab or consistent number of spaces each line
+
+            new += "Examples:\n {}".format(task.examples)
+
+            print(new)
+
+            input_dct[task.name] = new
+
+        later_possibly = """
+        table_handle:
+            An open smalltable.Table instance.
+        keys:
+            A sequence of strings representing the key of each table row to
+            fetch.  String keys will be UTF-8 encoded.
+        require_all_keys:
+            If True only rows with values set for all keys will be returned.
+
+        Returns:
+        A dict mapping keys to the corresponding table row data
+        fetched. Each row is represented as a tuple of strings. For
+        example:(example redacted due to formatting issues)
+
+        Returned keys are always bytes.  If a key from the keys argument is
+        missing from the dictionary, then that row was not found in the
+        table (and require_all_keys must have been False).
+
+        Raises:
+        ErrorType: Error description
+
+        Examples:
+        {2}
+        """
+
+    if missing_report and False:
         print("The following tasks are missing examples:")
         for name in missing_example:
             print(name)
@@ -293,12 +356,46 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
             print(name)
         print("\n")
 
+    update_docs_to_new_format(input_dct)
+    # comment these out -- we're not writing out the task manual or old docs format right now. 
     # Write out "landing page"
-    write_landing_page(tasks_by_group, outdir=outdir)
+    #write_landing_page(tasks_by_group, outdir=outdir)
 
     # Write individual task pages
-    write_task_pages(tasks_by_group, outdir=outdir)
+    #write_task_pages(tasks_by_group, outdir=outdir)
 
+
+def update_docs_to_new_format(input_dct=None):
+    """
+    Updates the documentation for the pipeline tasks.
+    """
+    print("Updating docs to new format")
+    # List of cli PL tasks that exist so they need their docs updated
+    for f in glob.glob('./../../../pipeline/h*/cli/h*.py'):
+        task_name = os.path.basename(f.strip(".py"))
+        print(task_name)
+        with open(f, 'r+') as f_new:
+            lines = f_new.readlines()
+            temp_lines = [elt.strip() for elt in lines]
+#            print(lines)
+            start, end = [i for i, e in enumerate(temp_lines) if e == '"""']
+#            print(start, end)
+            prefix = lines[0:start+1] # rn includes starting """
+            docstring = lines[start+1:end]
+            suffix = lines[end:len(lines)] #  rn includes ending """
+#            print("\n".join(prefix))
+
+            try:
+                new_docstring = [input_dct[task_name]]
+            except:
+                print("Task {} not found in input_dct".format(task_name))
+                new_docstring = [""]
+
+            new_file = prefix + new_docstring + suffix
+#            f_new.writelines(new_file)
+            f_new.seek(0)
+            f_new.writelines(new_file)  #"%s\n" % l for l in new_file)
+            f_new.truncate()
 
 def cli_command():
     """CLI interface of create_docs.py.
@@ -328,4 +425,5 @@ def cli_command():
 
 
 if __name__ == "__main__":
-    cli_command()
+    create_docs()
+#    cli_command()
