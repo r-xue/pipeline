@@ -30,9 +30,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     By default, science target images are cubes and calibrator target images
     are mfs. Science target images may be mosaics or single fields.
 
-    Output
-
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             "": use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

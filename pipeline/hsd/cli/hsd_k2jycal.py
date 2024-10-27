@@ -11,7 +11,7 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
 
     Derive the Kelvin to Jy calibration for list of MeasurementSets.
 
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         dbservice: Whether or not accessing Jy/K DB to retrieve conversion factors.
 
         endpoint: Which endpoints to use for query options: 'asdm', 'model-fit', 'interpolation'

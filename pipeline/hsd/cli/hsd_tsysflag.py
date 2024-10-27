@@ -42,10 +42,7 @@ def hsd_tsysflag(vis=None, caltable=None,
         in a spw, if proportion of antennas that are already entirely flagged
         in all timestamps exceeds a threshold.
 
-
-    Output
-
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         vis: List of input MeasurementSets (Not used)
 
         caltable: List of input Tsys calibration tables.

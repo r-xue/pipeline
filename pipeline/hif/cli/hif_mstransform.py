@@ -14,9 +14,7 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
     new MeasurementSet is not re-indexed to the selected data and the new MS will
     have the same source, field, and spw names and ids as it does in the parent MS.
 
-    Output
-
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

@@ -22,10 +22,7 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     The hif_refant task may be used to precompute a prioritized list of
     reference antennas.
 
-
-    Output
-
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

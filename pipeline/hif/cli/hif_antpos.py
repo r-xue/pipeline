@@ -31,10 +31,7 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     generate other calibration tables, or permanently to generate calibrated
     visibilities for imaging.
 
-
-    Output
-
-    results -- The results object for the pipeline task is returned.Parameters:
+    Parameters:
         vis: List of input visibility files. example: ['ngc5921.ms']
 
         caltable: Name of output gain calibration tables. example: ['ngc5921.gcal']
