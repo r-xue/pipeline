@@ -17,7 +17,7 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
     robust parameter to achieve the PI's desired angular resolution is chosen
     automatically. See the User's guide for further details.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

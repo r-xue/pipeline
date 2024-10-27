@@ -43,7 +43,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     Note that the flux corrected calibration table computed internally is
     not currently used in later pipeline apply calibration steps.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: ['M32A.ms', 'M32B.ms']

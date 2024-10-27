@@ -73,7 +73,7 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
       order to preserve enough frequency intervals to capture the atmospheric
       line.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             example: vis=['M82A.ms', 'M82B.ms']

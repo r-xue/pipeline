@@ -10,7 +10,7 @@ def hifv_finalcals(vis=None, weakbp=None, refantignore=None, refant=None):
 
     Compute final gain calibration tables
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         weakbp: Activate weak bandpass heuristics

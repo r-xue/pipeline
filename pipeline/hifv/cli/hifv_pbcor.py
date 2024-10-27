@@ -11,7 +11,7 @@ def hifv_pbcor(vis=None):
     Apply primary beam correction to VLA and VLASS images
 
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
     Returns:

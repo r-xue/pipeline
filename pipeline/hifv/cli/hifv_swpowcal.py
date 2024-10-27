@@ -10,7 +10,7 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None):
 
     Runs gencal in swpow mode
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         caltable: String name of caltable

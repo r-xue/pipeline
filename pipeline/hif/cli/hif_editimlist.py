@@ -50,7 +50,9 @@ def hif_editimlist(imagename=None,
     Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.
     Many of the hif_editimlist() inputs map directly to tclean parameters.
 
-    The results object for the pipeline task is returned.Parameters:
+    The results object for the pipeline task is returned.
+
+    Args:
         imagename: Prefix for output image names.
 
         search_radius_arcsec: Size of the field finding beam search radius in arcsec.

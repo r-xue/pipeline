@@ -12,7 +12,7 @@ def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None
 
     - applying a flagging template
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list
             of MeasurementSets defined in the pipeline context.
 

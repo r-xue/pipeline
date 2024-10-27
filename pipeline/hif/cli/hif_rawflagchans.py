@@ -46,7 +46,7 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
     Suspect points are not flagged unless as part of a bad antenna or
     baseline quadrant.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline
             context.
 

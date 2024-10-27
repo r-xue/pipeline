@@ -11,7 +11,7 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, appl
 
     Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
             converted  to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']

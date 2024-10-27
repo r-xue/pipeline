@@ -29,7 +29,7 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
     normal and update the file. In either case, the cont.dat file is used by the subsequent
     hif_uvcontsub and hif_makeimages stages.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

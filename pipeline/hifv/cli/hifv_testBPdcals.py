@@ -10,7 +10,7 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
 
     Runs initial delay and bandpass calibration to setup for RFI flagging
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         weakbp: Activate weak bandpass heuristics

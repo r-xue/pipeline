@@ -25,7 +25,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
     run and applied. If no points were flagged, the 'after' plots are not generated
     or displayed.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['ngc5921.ms']

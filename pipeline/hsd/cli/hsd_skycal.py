@@ -15,7 +15,7 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
     reference spectra, which is to be subtracted from on-source spectra to filter
     out non-source contribution.
 
-    Parameters:
+    Args:
         calmode: Calibration mode. Available options are 'auto' (default), 'ps', 'otf', and 'otfraster'. When 'auto' is set, the task will
             use preset calibration mode that is determined by inspecting data.
             'ps' mode is simple position switching using explicit reference

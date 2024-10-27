@@ -51,7 +51,7 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and the existing MS will be imported instead.
 
-    Parameters:
+    Args:
         vis: List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
             example: vis=['uid___A002_X30a93d_X43e']
 

@@ -11,7 +11,7 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
 
     The hifv_vlasetjy task does an initial run of setjy on the vis
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         field: List of field names or ids.

@@ -19,7 +19,7 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
     ``accept_threshold`` then the wvr gain table is not accepted into the
     context for subsequent use.
 
-    Parameters:
+    Args:
         vis: List of input visibility files.
             Default: none, in which case the vis files to be used
             will be read from the context.

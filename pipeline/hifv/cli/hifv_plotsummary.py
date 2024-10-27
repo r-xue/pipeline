@@ -10,7 +10,7 @@ def hifv_plotsummary(vis=None):
 
     Create pipeline summary plots
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
     Returns:

@@ -17,7 +17,7 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
     exists in the output directory, the importasdm conversion step is skipped,
     and the existing MS will be imported instead.
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar
             files of ASDMs, MSes, or tar files of MSes. If ASDM files
             are specified, they will be converted to MS format.

@@ -10,7 +10,7 @@ def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalo
 
     Create clean masks for VLASS SE images
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         vlass_ql_database: vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits

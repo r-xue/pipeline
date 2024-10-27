@@ -17,7 +17,7 @@ def hifa_diffgaincal(vis=None):
     occurring during the middle. Scan groups are combined while solving for SpW
     offsets between "reference" and "on-source" spectral setups.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: ['M32A.ms', 'M32B.ms']

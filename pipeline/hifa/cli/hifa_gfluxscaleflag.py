@@ -31,7 +31,7 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
     is the standard data flagging score, which depends on the fraction of data
     flagged.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['M51.ms']

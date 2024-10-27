@@ -48,7 +48,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     >>> hsd_blflag(spw='1')
     >>> hsd_imaging(spw='1')
 
-    Parameters:
+    Args:
         fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline ('spline' or 'cspline') or polynomial
             ('poly' or 'polynomial'). Default is 'cspline'.
 

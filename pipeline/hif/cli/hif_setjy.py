@@ -12,7 +12,7 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
 
     Fills the model column with the model visibilities.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
 
         field: The list of field names or field ids for which the models are to be set. Defaults to all fields with intent '`*AMPLITUDE*`'.

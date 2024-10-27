@@ -42,7 +42,7 @@ def hifa_tsysflag(vis=None, caltable=None,
        in a spw, if proportion of antennas that are already entirely flagged
        in all timestamps exceeds a threshold.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets (Not used).
 
         caltable: List of input Tsys calibration tables.

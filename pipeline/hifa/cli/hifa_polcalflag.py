@@ -10,7 +10,7 @@ def hifa_polcalflag(vis=None):
     This task flags corrected visibility outliers in the polarization calibrator
     data using the hif_correctedampflag heuristics.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context

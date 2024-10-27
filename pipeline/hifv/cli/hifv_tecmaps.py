@@ -8,7 +8,7 @@ def hifv_tecmaps(vis=None):
 
     """Base tecmaps task
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
     Returns:

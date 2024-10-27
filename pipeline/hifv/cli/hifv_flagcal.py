@@ -10,7 +10,7 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
 
     Flagcal task
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         caltable: String name of the caltable

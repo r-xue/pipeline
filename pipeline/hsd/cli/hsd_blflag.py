@@ -29,7 +29,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
     In addition, the heuristics script creates many plots for each stage.
     Those plots are included in the weblog.
 
-    Parameters:
+    Args:
         iteration: Number of iterations to perform sigma clipping to calculate threshold value of flagging.
 
         edge: Number of channels to be dropped from the edge. The value must be a list of integer with length of one or

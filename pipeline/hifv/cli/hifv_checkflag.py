@@ -10,7 +10,7 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
 
     Run RFI flagging using flagdata in various modes
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         checkflagmode: -- Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla' -- blank string default use of rflag on bandpass and delay calibrators

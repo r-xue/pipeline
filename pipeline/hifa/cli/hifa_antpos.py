@@ -37,7 +37,7 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     Note: the ``hm_antpos`` 'online' option will be implemented when the
     observing system provides an antenna position determination service.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['ngc5921.ms']

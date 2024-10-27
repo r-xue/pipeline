@@ -11,7 +11,7 @@ def hifa_session_refant(vis=None, phase_threshold=None):
     within a session and combines these to select a single common reference
     antenna (per session) that is to be used by any subsequent pipeline stages.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['ngc5921.ms']

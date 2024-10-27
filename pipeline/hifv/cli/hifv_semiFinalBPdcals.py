@@ -10,7 +10,7 @@ def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None)
 
     Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         weakbp: Activate weak bandpass heuristics

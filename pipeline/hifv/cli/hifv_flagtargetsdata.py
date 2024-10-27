@@ -10,7 +10,7 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
 
     Apply a flagtemplate to target data prior to running imaging pipeline tasks
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
 
         template: Apply flagging templates.

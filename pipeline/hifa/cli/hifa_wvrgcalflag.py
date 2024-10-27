@@ -47,7 +47,7 @@ def hifa_wvrgcalflag(vis=None, caltable=None, offsetstable=None, hm_toffset=None
     wvr calibration file for merging into the context and use in the
     subsequent reduction.
 
-    Parameters:
+    Args:
         vis: List of input visibility files.
             Default: none, in which case the vis files to be used
             will be read from the context.

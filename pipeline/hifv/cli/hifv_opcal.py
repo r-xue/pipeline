@@ -10,7 +10,7 @@ def hifv_opcal(vis=None, caltable=None):
 
     Runs gencal in opac mode
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
     Returns:

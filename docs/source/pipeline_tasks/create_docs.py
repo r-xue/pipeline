@@ -304,7 +304,7 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
                     parameter_description += "\n"
                 parm_dict[parameter_name] = parameter_description
 
-            new = '"""{0}\n\n{1}Parameters:\n'.format(task.short.strip(), description)
+            new = '"""{0}\n\n{1}Args:\n'.format(task.short.strip(), description)
 
             for parm, desc in parm_dict.items():
                 new += "    {}: {}\n".format(parm.strip(), desc)

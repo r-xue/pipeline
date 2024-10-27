@@ -10,7 +10,7 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
 
     Determine amount of gain compression affecting VLA data below Ku-band
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged

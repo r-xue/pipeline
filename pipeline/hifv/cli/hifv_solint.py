@@ -12,7 +12,7 @@ def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=Non
     the minimum solution interval corresponds to one integration.
 
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         limit_short_solint: Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of '0.45' or 0.45.

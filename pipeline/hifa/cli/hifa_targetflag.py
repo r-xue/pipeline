@@ -25,7 +25,7 @@ def hifa_targetflag(vis=None):
     Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
     plots only show field IDs with new flags.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context

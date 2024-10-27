@@ -18,7 +18,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
     (atmtype = 'auto'). You may specify desired atmospheric model by giving
     either single integer (apply to all EBs) or a list of integers (models
     per EB) to atmtype parameter. Please see parameter description for the
-    meanings of integer values.Parameters:
+    meanings of integer values.Args:
         atmtype: Type of atmospheric transmission model represented as an integer. Available options are as follows. Integer values can be given as
             either integer or string, i.e. both 1 and '1' are acceptable.
             'auto': perform heuristics to choose best model (default)

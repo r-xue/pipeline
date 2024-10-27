@@ -47,7 +47,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     - restores the final calibration tables for each MS
     - applies the calibration tables to each MS
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
             converted  to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']

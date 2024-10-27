@@ -19,7 +19,7 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
     spectral line spws in the input MeasurementSet, an MS for science target line imaging
     will also be produced, which will end in _targets.ms.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

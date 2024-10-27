@@ -15,7 +15,7 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
     For a full description of the effects of bright emission lines and the
     correction heuristics used in this task, please see the Pipeline User Guide.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['ngc5921.ms']

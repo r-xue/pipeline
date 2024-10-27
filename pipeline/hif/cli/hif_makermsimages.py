@@ -10,7 +10,7 @@ def hif_makermsimages(vis=None):
 
     Create RMS images for VLASS data.
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
             converted  to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']

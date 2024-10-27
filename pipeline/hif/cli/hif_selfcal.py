@@ -13,7 +13,9 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 parallel=None):
     """Determine and apply self-calibration with the science target data
 
-    Determine and apply self-calibration with the science target dataParameters:
+    Determine and apply self-calibration with the science target data
+
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             default = "": use all MeasurementSets in the context
 

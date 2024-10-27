@@ -22,7 +22,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     - scan-based flagging by intent or scan number
     - edge channel flagging
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
 
         autocorr: Flag autocorrelation data.

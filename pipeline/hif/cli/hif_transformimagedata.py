@@ -11,7 +11,7 @@ def hif_transformimagedata(vis=None, outputvis=None, field=None, intent=None, sp
 
     Extract fields for the desired VLASS image to a new MS and reset weights if desired
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
             converted  to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']

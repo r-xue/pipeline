@@ -10,7 +10,7 @@ def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None):
 
     Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs,
             or tar files of MSs.
             If ASDM files are specified, they will be converted to

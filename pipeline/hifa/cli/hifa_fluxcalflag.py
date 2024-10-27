@@ -12,7 +12,7 @@ def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None
     the science spectral windows. Generate a list of line overlap regions and
     flagging commands.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets defined in the pipeline context.
 

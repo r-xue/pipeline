@@ -21,7 +21,7 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
     applied on the fly. Users can interact with these calibrations via the
     h_export_calstate and h_import_calstate tasks.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

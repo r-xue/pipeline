@@ -10,7 +10,7 @@ def hifv_rqcal(vis=None, caltable=None):
 
     Runs gencal in rq mode
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         caltable: String name of caltable

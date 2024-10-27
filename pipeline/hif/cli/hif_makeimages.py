@@ -17,7 +17,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
 
     Compute clean results from a list of specified targets.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
             '': use all MeasurementSets in the context
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']

@@ -10,7 +10,7 @@ def hifv_exportvlassdata(vis=None):
 
     Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
     Returns:

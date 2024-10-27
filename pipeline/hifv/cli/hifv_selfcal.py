@@ -11,7 +11,7 @@ def hifv_selfcal(vis=None, refantignore=None,
 
     Perform phase-only self-calibration, per scan row, on VLASS SE images
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         refantignore: String list of antennas to ignore

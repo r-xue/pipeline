@@ -52,7 +52,7 @@ def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, 
     - The QA score is based on how many signal-to-noise estimates greater than
       the requested signal-to-noise ratio can be computed.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['M82A.ms', 'M82B.ms']

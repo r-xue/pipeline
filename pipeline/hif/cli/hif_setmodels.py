@@ -26,7 +26,7 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
     vis,fieldid,spwid,I,Q,U,V,pix,comment
 
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.
             example: ['M32A.ms', 'M32B.ms']
 

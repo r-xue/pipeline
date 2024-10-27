@@ -12,7 +12,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
     The hifv_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
             converted  to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']

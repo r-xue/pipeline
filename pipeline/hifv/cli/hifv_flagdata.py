@@ -25,7 +25,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     - quack, shadow, and basebands
     - Antenna not-on-source (ANOS)
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         autocorr: Flag autocorrelation data

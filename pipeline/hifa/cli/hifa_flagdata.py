@@ -41,7 +41,7 @@ def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=Non
       in order to achieve 1875 MHz bandwidth (in effect, they are flagged by
       62.5 MHz on each side), and thus no warning is generated.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets defined in the pipeline context.
 

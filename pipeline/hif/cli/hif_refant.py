@@ -17,7 +17,7 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
     by the antenna selection heuristics. In manual mode the reference antennas
     can be set by hand.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
             example: ['M31.ms']
 

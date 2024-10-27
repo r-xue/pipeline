@@ -26,7 +26,7 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     - a text file containing the final list of CASA commands
 
 
-    Parameters:
+    Args:
         vis: List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
             pipeline context.
             example: vis=['X227.ms', 'X228.ms']

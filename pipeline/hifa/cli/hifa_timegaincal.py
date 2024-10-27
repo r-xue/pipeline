@@ -29,7 +29,7 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
     applied on the fly. Users can interact with these calibrations via the
     h_export_calstate and h_import_calstate tasks.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['M82A.ms', 'M82B.ms']

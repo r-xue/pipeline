@@ -16,7 +16,7 @@ def hifa_unlock_refant(vis=None):
 
     The refant list can be locked with the hifa_lock_refant task.
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: vis=['ngc5921.ms']

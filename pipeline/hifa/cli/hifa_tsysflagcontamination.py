@@ -26,7 +26,7 @@ def hifa_tsysflagcontamination(
     astrophysical line features.
 
 
-    Parameters:
+    Args:
         vis: List of input MeasurementSets (Not used).
 
         caltable: List of input Tsys calibration tables.

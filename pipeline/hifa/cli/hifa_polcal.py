@@ -9,7 +9,7 @@ def hifa_polcal(vis=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_th
     Derive the instrumental polarization calibrations for ALMA using the
     polarization calibrators.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
             Example: ['M32A.ms', 'M32B.ms']

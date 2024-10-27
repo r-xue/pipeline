@@ -18,7 +18,7 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None):
     - a tar file per ASDM containing the final flags version and blparam
     - a tar file containing the file web log
 
-    Parameters:
+    Args:
         pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template 'PPR_*.xml'.
             example: pprfile=['PPR_GRB021004.xml']
 

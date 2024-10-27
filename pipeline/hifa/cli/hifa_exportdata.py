@@ -28,7 +28,7 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     - an XML "aquareport" file listing the QA scores and sub-scores,
       image sensitivities, and other numerical information
 
-    Parameters:
+    Args:
         vis: List of visibility data files for which flagging and calibration
             information will be exported. Defaults to the list maintained in the
             pipeline context.

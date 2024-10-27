@@ -49,7 +49,7 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and instead the existing MS will be imported.
 
-    Parameters:
+    Args:
         vis: List of raw visibility data files to be restored.
             Assumed to be in the directory specified by rawdata_dir.
             Example: vis=['uid___A002_X30a93d_X43e']

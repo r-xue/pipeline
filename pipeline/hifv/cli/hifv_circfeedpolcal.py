@@ -15,7 +15,7 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
     or 3C286 as polarization angle. Requires that all polarization intents are
     properly set during observation.
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         Dterm_solint: D-terms spectral averaging.  Example:  refantignore='ea02,ea03'

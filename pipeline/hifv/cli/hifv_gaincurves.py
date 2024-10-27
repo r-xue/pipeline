@@ -10,7 +10,7 @@ def hifv_gaincurves(vis=None, caltable=None):
 
     Runs gencal in gc mode
 
-    Parameters:
+    Args:
         vis: List of input visibility data
 
         caltable: String name of caltable

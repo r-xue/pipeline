@@ -10,7 +10,7 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, ref
 
     Determine flux density bootstrapping for gain calibrators relative to flux calibrator.
 
-    Parameters:
+    Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
         caltable: String name of the flagged caltable

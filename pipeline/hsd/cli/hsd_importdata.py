@@ -17,7 +17,7 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
     the output directory, the importasdm conversion step is skipped, and the
     existing MS will be imported instead.
 
-    Parameters:
+    Args:
         vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
             converted to MS format.
             example: vis=['X227.ms', 'asdms.tar.gz']
