@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, minphaseupints=None, evenbpints=None,
                   bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
-    """
-    hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals
+    """Compute optimal bandpass calibration solution intervals
 
     The optimal bandpass phaseup time and frequency solution intervals required
     to achieve the required signal-to-noise ratio is estimated based on nominal
@@ -74,85 +73,70 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
       order to preserve enough frequency intervals to capture the atmospheric
       line.
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+            example: vis=['M82A.ms', 'M82B.ms']
 
-        results -- The results object for the pipeline task is returned.
+        field: The list of field names of sources to be used for
+            signal-to-noise estimation. Defaults to all fields with the
+            standard intent.
+            example: field='3C279'
 
-    --------- parameter descriptions ---------------------------------------------
+        intent: A string containing a comma delimited list of intents against
+            which the selected fields are matched. Defaults to
+            'BANDPASS'.
+            example: intent='PHASE'
 
-    vis
-                   The list of input MeasurementSets. Defaults to the list of
-                   MeasurementSets specified in the pipeline context.
+        spw: The list of spectral windows and channels for which gain
+            solutions are computed. Defaults to all the science spectral
+            windows for which there are both 'intent' and TARGET intents.
+            example: spw='13,15'
 
-                   example: vis=['M82A.ms', 'M82B.ms']
-    field
-                   The list of field names of sources to be used for
-                   signal-to-noise estimation. Defaults to all fields with the
-                   standard intent.
+        phaseupsnr: The required phase-up gain time interval solution
+            signal-to-noise.
+            example: phaseupsnr=10.0
 
-                   example: field='3C279'
-    intent
-                   A string containing a comma delimited list of intents against
-                   which the selected fields are matched. Defaults to
-                   'BANDPASS'.
+        minphaseupints: The minimum number of time intervals in the phase-up gain
+            solution.
+            example: minphaseupints=4
 
-                   example: intent='PHASE'
-    spw
-                   The list of spectral windows and channels for which gain
-                   solutions are computed. Defaults to all the science spectral
-                   windows for which there are both 'intent' and TARGET intents.
+        evenbpints: Use a bandpass frequency solint that is an integer divisor of
+            the spw bandwidth, to prevent the occurrence of one narrower
+            fractional frequency interval.
 
-                   example: spw='13,15'
-    phaseupsnr
-                   The required phase-up gain time interval solution
-                   signal-to-noise.
+        bpsnr: The required bandpass frequency interval solution
+            signal-to-noise.
+            example: bpsnr=30.0
 
-                   example: phaseupsnr=10.0
-    minphaseupints
-                   The minimum number of time intervals in the phase-up gain
-                   solution.
+        minbpsnr: The minimum required bandpass frequency interval solution
+            signal-to-noise when strong atmospheric lines exist in Tsys
+            spectra.
+            example: minbpsnr=10.0
 
-                   example: minphaseupints=4
-    evenbpints
-                   Use a bandpass frequency solint that is an integer divisor of
-                   the spw bandwidth, to prevent the occurrence of one narrower
-                   fractional frequency interval.
-    bpsnr
-                   The required bandpass frequency interval solution
-                   signal-to-noise.
+        minbpnchan: The minimum number of frequency intervals in the bandpass
+            solution.
+            example: minbpnchan=16
 
-                   example: bpsnr=30.0
-    minbpsnr
-                   The minimum required bandpass frequency interval solution
-                   signal-to-noise when strong atmospheric lines exist in Tsys
-                   spectra.
+        hm_nantennas: The heuristics for determines the number of antennas to use
+            in the signal-to-noise estimate. The options are 'all' and
+            'unflagged'. The 'unflagged' options is not currently
+            supported.
+            example: hm_nantennas='unflagged'
 
-                   example: minbpsnr=10.0
-    minbpnchan
-                   The minimum number of frequency intervals in the bandpass
-                   solution.
+        maxfracflagged: The maximum fraction of an antenna that can be flagged before
+            it is excluded from the signal-to-noise estimate.
+            example: maxfracflagged=0.80
 
-                   example: minbpnchan=16
-    hm_nantennas
-                   The heuristics for determines the number of antennas to use
-                   in the signal-to-noise estimate. The options are 'all' and
-                   'unflagged'. The 'unflagged' options is not currently
-                   supported.
+    Returns:
+        The results object for the pipeline task is returned.
 
-                   example: hm_nantennas='unflagged'
-    maxfracflagged
-                   The maximum fraction of an antenna that can be flagged before
-                   it is excluded from the signal-to-noise estimate.
+    Examples:
+        1. Estimate the phaseup gain time interval and the bandpass frequency
+        interval required to match the desired signal-to-noise for bandpass
+        solutions:
 
-                   example: maxfracflagged=0.80
-
-    --------- examples -----------------------------------------------------------
-
-    1. Estimate the phaseup gain time interval and the bandpass frequency
-    interval required to match the desired signal-to-noise for bandpass
-    solutions:
-
-    >>> hifa_bpsolint()
+        >>> hifa_bpsolint()
 
     """
     ##########################################################################

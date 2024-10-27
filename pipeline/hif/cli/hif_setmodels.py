@@ -7,9 +7,7 @@ import pipeline.h.cli.utils as utils
 def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, transintent=None, reffile=None,
                   normfluxes=None, scalebychan=None):
 
-    """
-    hif_setmodels ---- Set calibrator source models
-
+    """Set calibrator source models
 
     Set model fluxes values for calibrator reference and transfer sources using lookup
     values. By default the reference sources are the flux calibrators and the transfer
@@ -28,49 +26,40 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
     vis,fieldid,spwid,I,Q,U,V,pix,comment
 
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.
+            example: ['M32A.ms', 'M32B.ms']
 
-    results -- The results object for the pipeline task is returned
+        reference: A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with
+            intent 'AMPLITUDE'.
+            example: 'M82,3C273'
 
-    --------- parameter descriptions ---------------------------------------------
+        refintent: A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to 'AMPLITUDE'.
+            example: 'BANDPASS'
 
-    vis           The list of input MeasurementSets. Defaults to the list of
-                  MeasurementSets specified in the pipeline context.
+        transfer: A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with
+            intent ''.
+            example: 'J1328+041,J1206+30'
 
-                  example: ['M32A.ms', 'M32B.ms']
-    reference     A string containing a comma delimited list of  field names
-                  defining the reference calibrators. Defaults to field names with
-                  intent 'AMPLITUDE'.
+        transintent: A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to 'BANDPASS,PHASE,CHECK'.
+            '' stands for no transfer sources.
+            example: 'PHASE'
 
-                  example: 'M82,3C273'
-    refintent     A string containing a comma delimited list of intents
-                  used to select the reference calibrators. Defaults to 'AMPLITUDE'.
+        reffile: The reference file containing a lookup table of point source models This file currently defaults to 'flux.csv' in the working directory. This
+            file must conform to the standard pipeline 'flux.csv' format
+            example: 'myfluxes.csv'
 
-                  example: 'BANDPASS'
-    transfer      A string containing a comma delimited list of  field names
-                  defining the transfer calibrators. Defaults to field names with
-                  intent ''.
+        normfluxes: Normalize the transfer source flux densities.
 
-                  example: 'J1328+041,J1206+30'
-    transintent   A string containing a comma delimited list of intents
-                  defining the transfer calibrators. Defaults to 'BANDPASS,PHASE,CHECK'.
-                  '' stands for no transfer sources.
+        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis
 
-                  example: 'PHASE'
-    reffile       The reference file containing a lookup table of point source models
-                  This file currently defaults to 'flux.csv' in the working directory. This
-                  file must conform to the standard pipeline 'flux.csv' format
-                  example: 'myfluxes.csv'
-    normfluxes    Normalize the transfer source flux densities.
-    scalebychan   Scale the flux density on a per channel basis or else on a per spw basis
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Set model fluxes for the flux, bandpass, phase, and check sources.
 
-
-    1. Set model fluxes for the flux, bandpass, phase, and check sources.
-
-    >>> hif_setmodels()
-
+        >>> hif_setmodels()
 
     """
 

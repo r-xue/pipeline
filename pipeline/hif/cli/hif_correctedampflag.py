@@ -10,9 +10,7 @@ def hif_correctedampflag(
         tmint=None, tmbl=None, antblnegsig=None,
         antblpossig=None, relaxed_factor=None, niter=None):
 
-    """
-    hif_correctedampflag ---- Flag corrected - model amplitudes based on calibrators.
-
+    """Flag corrected - model amplitudes based on calibrators.
 
     Flag corrected - model amplitudes based on calibrators.
 
@@ -27,48 +25,48 @@ def hif_correctedampflag(
 
     Output
 
-    results -- The results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            '': use all MeasurementSets in the context
+            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-    --------- parameter descriptions ---------------------------------------------
+        intent: A string containing a comma delimited list of intents against which the selected fields are matched. If undefined (default),
+            it will select all data with the BANDPASS intent.
+            Example: intent='`*PHASE*`'
 
-    vis            The list of input MeasurementSets. Defaults to the list of
-                   MeasurementSets specified in the h_init or hif_importdata task.
-                   '': use all MeasurementSets in the context
+        field: The list of field names or field ids for which bandpasses are computed. If undefined (default), it will select all fields.
+            Examples: field='3C279', '3C279, M82'
 
-                   Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    intent         A string containing a comma delimited list of intents against
-                   which the selected fields are matched. If undefined (default),
-                   it will select all data with the BANDPASS intent.
+        spw: The list of spectral windows and channels for which bandpasses are computed. If undefined (default), it will select all
+            science spectral windows.
+            Example: spw='11,13,15,17'
 
-                   Example: intent='`*PHASE*`'
-    field          The list of field names or field ids for which bandpasses are
-                   computed. If undefined (default), it will select all fields.
+        antnegsig: Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
 
-                   Examples: field='3C279', '3C279, M82'
-    spw            The list of spectral windows and channels for which bandpasses
-                   are computed. If undefined (default), it will select all
-                   science spectral windows.
+        antpossig: Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
 
-                   Example: spw='11,13,15,17'
-    antnegsig      Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
-    antpossig      Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
-    tmantint       Threshold for maximum fraction of timestamps that are allowed to contain outliers
-    tmint          Initial threshold for maximum fraction of "outlier timestamps" over "total timestamps" that a baseline may be a part of
-    tmbl           Initial threshold for maximum fraction of "bad baselines" over "all timestamps" that an antenna may be a part of
-    antblnegsig    Lower sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)
-    antblpossig    Upper sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)
-    relaxed_factor Relaxed value to set the threshold scaling factor to under certain conditions (see task description)
-    niter          Maximum number of times to iterate on evaluation of flagging
-                   heuristics. If an iteration results in no new flags, then
-                   subsequent iterations are skipped.
+        tmantint: Threshold for maximum fraction of timestamps that are allowed to contain outliers
 
-    --------- examples -----------------------------------------------------------
+        tmint: Initial threshold for maximum fraction of "outlier timestamps" over "total timestamps" that a baseline may be a part of
 
+        tmbl: Initial threshold for maximum fraction of "bad baselines" over "all timestamps" that an antenna may be a part of
 
-    Run default flagging on bandpass calibrator with recommended settings:
+        antblnegsig: Lower sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)
 
-    >>> hif_correctedampflag()
+        antblpossig: Upper sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)
 
+        relaxed_factor: Relaxed value to set the threshold scaling factor to under certain conditions (see task description)
+
+        niter: Maximum number of times to iterate on evaluation of flagging heuristics. If an iteration results in no new flags, then
+            subsequent iterations are skipped.
+
+    Returns:
+        The results object for the pipeline task is returned.
+
+    Examples:
+        Run default flagging on bandpass calibrator with recommended settings:
+
+        >>> hif_correctedampflag()
 
     """
 

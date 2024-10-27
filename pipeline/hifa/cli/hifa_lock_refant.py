@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_lock_refant(vis=None):
-    """
-    hifa_lock_refant ---- Lock reference antenna list
+    """Lock reference antenna list
 
     hifa_lock_refant marks the reference antenna list as "locked" for specified
     measurement sets, preventing modification of the refant list by subsequent
@@ -17,23 +16,18 @@ def hifa_lock_refant(vis=None):
 
     The refant list can be unlocked with the hifa_unlock_refant task.
 
-    Output:
+    Parameters:
+        vis: List of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+            Example: vis=['ngc5921.ms']
 
-        results -- The results object for the pipeline task is returned.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- parameter descriptions ---------------------------------------------
+    Examples:
+        1. Lock the refant list for all MSes in pipeline context:
 
-    vis
-                  List of input MeasurementSets. Defaults to the list of
-                  MeasurementSets specified in the pipeline context.
-
-                  Example: vis=['ngc5921.ms']
-
-    --------- examples -----------------------------------------------------------
-
-    1. Lock the refant list for all MSes in pipeline context:
-
-    >>> hifa_lock_refant()
+        >>> hifa_lock_refant()
 
     """
     ##########################################################################

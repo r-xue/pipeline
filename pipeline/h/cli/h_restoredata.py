@@ -7,9 +7,7 @@ from . import utils
 def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None, bdfflags=None,
                   ocorr_mode=None, asis=None):
 
-    """
-    h_restoredata ---- Restore flags and calibration state from a pipeline run
-
+    """Restore flags and calibration state from a pipeline run
 
     The h_restoredata restores flagged and calibrated data from archived ASDMs and
     pipeline flagging and calibration data products. Pending archive retrieval
@@ -43,61 +41,38 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and the existing MS will be imported instead.
 
-    Output:
+    Parameters:
+        vis: List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
+            example: vis=['uid___A002_X30a93d_X43e']
 
-    results -- The results object for the pipeline task is returned.
+        session: List of sessions, one per visibility file. example: session=['session_3']
 
-    --------- parameter descriptions ---------------------------------------------
+        products_dir: Path to the data products directory, used to copy calibration products from. The parameter is effective only when
+            copytoraw=True. When copytoraw=False, calibration products in
+            rawdata_dir will be used.
+            example: products_dir='/path/to/my/products'
 
-    vis           List of raw visibility data files to be restored. Assumed to
-                  be in the directory specified by rawdata_dir.
+        copytoraw: Copy calibration and flagging tables from products_dir to rawdata_dir directory.
+            example: copytoraw=False
 
-                  example: vis=['uid___A002_X30a93d_X43e']
+        rawdata_dir: Path to the rawdata subdirectory. example: rawdata_dir='/path/to/my/rawdata'
 
-    session       List of sessions, one per visibility file.
+        lazy: Use the lazy filler option example: lazy=True
 
-                  example: session=['session_3']
+        bdfflags: Set the BDF flags example: bdfflags=False
 
-    products_dir  Path to the data products directory, used to copy calibration
-                  products from. The parameter is effective only when
-                  copytoraw=True. When copytoraw=False, calibration products in
-                  rawdata_dir will be used.
+        ocorr_mode: Set correlation import mode example: ocorr_mode='ca'
 
-                  example: products_dir='/path/to/my/products'
+        asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
+            example: ocorr_mode='Source Receiver'
 
-    copytoraw     Copy calibration and flagging tables from products_dir to
-                  rawdata_dir directory.
+    Returns:
+        The results object for the pipeline task is returned.
 
-                  example: copytoraw=False
+    Examples:
+        1. Restore the pipeline results for a single ASDM in a single session
 
-    rawdata_dir   Path to the rawdata subdirectory.
-
-                  example: rawdata_dir='/path/to/my/rawdata'
-
-    lazy          Use the lazy filler option
-
-                  example: lazy=True
-
-    bdfflags      Set the BDF flags
-
-                  example: bdfflags=False
-
-    ocorr_mode    Set correlation import mode
-
-                  example: ocorr_mode='ca'
-
-    asis          Creates verbatim copies of the ASDM tables in the output MS.
-                  The value given to this option must be a list of table names separated by space characters.
-
-                  example: ocorr_mode='Source Receiver'
-
-    --------- examples -----------------------------------------------------------
-
-
-    1. Restore the pipeline results for a single ASDM in a single session
-
-    >>> h_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
-
+        >>> h_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
 
     """
 

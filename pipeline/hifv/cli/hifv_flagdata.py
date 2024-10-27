@@ -11,8 +11,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   filetemplate=None, hm_tbuff=None, tbuff=None,
                   flagbackup=None):
 
-    """
-    hifv_flagdata ---- Do basic deterministic flagging of a list of MeasurementSets
+    """Do basic deterministic flagging of a list of MeasurementSets
 
     The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:
 
@@ -26,51 +25,58 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     - quack, shadow, and basebands
     - Antenna not-on-source (ANOS)
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    results -- The results object for the pipeline task is returned.
+        autocorr: Flag autocorrelation data
 
-    --------- parameter descriptions ---------------------------------------------
+        shadow: Flag shadowed antennas
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    autocorr      Flag autocorrelation data
-    shadow        Flag shadowed antennas
-    scan          Flag specified scans
-    scannumber    A string containing a  comma delimited list of scans to be flagged.
-                  example: '3,5,6'
-    quack         Quack scans
-    clip          Clip mode
-    baseband      Flag 20MHz of each edge of basebands
-    intents       A string containing a comma delimited list of intents against
-                  which the scans to be flagged are matched.
-                  example: `'*BANDPASS*'`
-    edgespw       Fraction of the baseline correlator TDM edge channels to be flagged.
-    fracspw       Fraction of baseline correlator edge channels to be flagged
-    online        Apply the online flags
-    fileonline    File containing the online flags. These are computed by the
-                  h_init or hif_importdata data tasks. If the online flags files
-                  are undefined a name of the form 'msname.flagonline.txt' is assumed.
-    template      Apply a flagging template
-    filetemplate  The name of a text file that contains the flagging template
-                  for RFI, birdies, telluric lines, etc.  If the template flags files
-                  is undefined a name of the form 'msname.flagtemplate.txt' is assumed.
-    hm_tbuff      The time buffer computation heuristic
-    tbuff         List of time buffers (sec) to pad timerange in flag commands
-    flagbackup    Backup pre-existing flags before applying new ones.
+        scan: Flag specified scans
 
-    --------- examples -----------------------------------------------------------
+        scannumber: A string containing a  comma delimited list of scans to be flagged. example: '3,5,6'
 
+        quack: Quack scans
 
-    1. Do basic flagging on a MeasurementSet
+        clip: Clip mode
 
-    >>> hifv_flagdata()
+        baseband: Flag 20MHz of each edge of basebands
 
-    2. Do basic flagging on a MeasurementSet as well as flag pointing and
-    atmosphere data
+        intents: A string containing a comma delimited list of intents against which the scans to be flagged are matched.
+            example: `'*BANDPASS*'`
 
-    >>> hifv_flagdata(scan=True intent='*BANDPASS*')
+        edgespw: Fraction of the baseline correlator TDM edge channels to be flagged.
 
+        fracspw: Fraction of baseline correlator edge channels to be flagged
+
+        online: Apply the online flags
+
+        fileonline: File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files
+            are undefined a name of the form 'msname.flagonline.txt' is assumed.
+
+        template: Apply a flagging template
+
+        filetemplate: The name of a text file that contains the flagging template for RFI, birdies, telluric lines, etc.  If the template flags files
+            is undefined a name of the form 'msname.flagtemplate.txt' is assumed.
+
+        hm_tbuff: The time buffer computation heuristic
+
+        tbuff: List of time buffers (sec) to pad timerange in flag commands
+
+        flagbackup: Backup pre-existing flags before applying new ones.
+
+    Returns:
+        The results object for the pipeline task is returned.
+
+    Examples:
+        1. Do basic flagging on a MeasurementSet
+
+        >>> hifv_flagdata()
+
+        2. Do basic flagging on a MeasurementSet as well as flag pointing and
+        atmosphere data
+
+        >>> hifv_flagdata(scan=True intent='*BANDPASS*')
 
     """
 

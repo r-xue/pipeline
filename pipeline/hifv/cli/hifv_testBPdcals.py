@@ -6,32 +6,28 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, refant=None):
 
-    """
-    hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
+    """Runs initial delay and bandpass calibration to setup for RFI flagging
 
     Runs initial delay and bandpass calibration to setup for RFI flagging
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    results -- The results object for the pipeline task is returned.
-    --------- parameter descriptions ---------------------------------------------
+        weakbp: Activate weak bandpass heuristics
 
-    vis                  The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                         specified in the h_init or hifv_importdata task.
-    weakbp               Activate weak bandpass heuristics
-    refantignore         String list of antennas to ignore
-                         Example:  refantignore='ea02,ea03'
-    doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
-    refant               A csv string of reference antenna(s). When used, disables ``refantignore``.
-                         Example: refant = 'ea01, ea02'
+        refantignore: String list of antennas to ignore Example:  refantignore='ea02,ea03'
 
-    --------- examples -----------------------------------------------------------
+        doflagundernspwlimit: If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
 
+        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
 
-    1. Initial delay calibration to set up heuristic flagging.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    >>> hifv_testBPdcals()
+    Examples:
+        1. Initial delay calibration to set up heuristic flagging.
 
+        >>> hifv_testBPdcals()
 
     """
 

@@ -6,9 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
                 threshold=None):
-    """
-    hifa_antpos ---- Derive an antenna position calibration table
-
+    """Derive an antenna position calibration table
 
     The hifa_antpos task corrects the antenna positions recorded in the ASDMs using
     updated antenna position calibration information determined after the
@@ -39,61 +37,51 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     Note: the ``hm_antpos`` 'online' option will be implemented when the
     observing system provides an antenna position determination service.
 
-    Output:
+    Parameters:
+        vis: List of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+            Example: vis=['ngc5921.ms']
 
-        results -- The results object for the pipeline task is returned.
+        caltable: List of names for the output calibration tables. Defaults
+            to the standard pipeline naming convention.
+            Example: caltable=['ngc5921.gcal']
 
-    --------- parameter descriptions ---------------------------------------------
+        hm_antpos: Heuristics method for retrieving the antenna position
+            corrections. The options are 'online' (not yet implemented),
+            'manual', and 'file'.
+            Example: hm_antpos='manual'
 
-    vis
-                  List of input MeasurementSets. Defaults to the list of
-                  MeasurementSets specified in the pipeline context.
+        antenna: The list of antennas for which the positions are to be corrected
+            if ``hm_antpos`` is 'manual'.
+            Example: antenna='DV05,DV07'
 
-                  Example: vis=['ngc5921.ms']
-    caltable
-                  List of names for the output calibration tables. Defaults
-                  to the standard pipeline naming convention.
+        offsets: The list of antenna offsets for each antenna in 'antennas'.
+            Each offset is a set of 3 floating point numbers separated by
+            commas, specified in the ITRF frame.
+            Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
 
-                  Example: caltable=['ngc5921.gcal']
-    hm_antpos
-                  Heuristics method for retrieving the antenna position
-                  corrections. The options are 'online' (not yet implemented),
-                  'manual', and 'file'.
+        antposfile: The file(s) containing the antenna offsets. Used if
+            ``hm_antpos`` is 'file'.
 
-                  Example: hm_antpos='manual'
-    antenna
-                  The list of antennas for which the positions are to be corrected
-                  if ``hm_antpos`` is 'manual'.
+        threshold: Highlight antenna position offsets greater than this value in
+            the weblog. Units are wavelengths and the default is 1.0.
+            Example: threshold=1.0
 
-                  Example: antenna='DV05,DV07'
-    offsets
-                  The list of antenna offsets for each antenna in 'antennas'.
-                  Each offset is a set of 3 floating point numbers separated by
-                  commas, specified in the ITRF frame.
+    Returns:
+        The results object for the pipeline task is returned.
 
-                  Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
-    antposfile
-                  The file(s) containing the antenna offsets. Used if
-                  ``hm_antpos`` is 'file'.
-    threshold
-                  Highlight antenna position offsets greater than this value in
-                  the weblog. Units are wavelengths and the default is 1.0.
+    Examples:
+        1. Correct the position of antenna 'DV05' for all the visibility files in a
+        single pipeline run:
 
-                  Example: threshold=1.0
+        >>> hifa_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
 
-    --------- examples -----------------------------------------------------------
+        2. Correct the position of antennas for all the visibility files in a single
+        pipeline run using antenna positions files on disk. These files are assumed
+        to conform to a default naming scheme if ``antposfile`` is unspecified by the
+        user:
 
-    1. Correct the position of antenna 'DV05' for all the visibility files in a
-    single pipeline run:
-
-    >>> hifa_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
-
-    2. Correct the position of antennas for all the visibility files in a single
-    pipeline run using antenna positions files on disk. These files are assumed
-    to conform to a default naming scheme if ``antposfile`` is unspecified by the
-    user:
-
-    >>> hifa_antpos(hm_antpos='file', antposfile='myantposfile.csv')
+        >>> hifa_antpos(hm_antpos='file', antposfile='myantposfile.csv')
 
     """
     ##########################################################################

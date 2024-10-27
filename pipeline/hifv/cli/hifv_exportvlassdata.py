@@ -6,26 +6,20 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_exportvlassdata(vis=None):
 
-    """
-    hifv_exportvlassdata ---- Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey
+    """Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey
 
     Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey
 
-    Output:
-    results -- The results object for the pipeline task is returned.
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    --------- parameter descriptions ---------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
+    Examples:
+        1. Basic exportvlassdata task
 
-    --------- examples -----------------------------------------------------------
-
-
-    1. Basic exportvlassdata task
-
-    >>> hifv_exportvlassdata()
-
+        >>> hifv_exportvlassdata()
 
     """
 

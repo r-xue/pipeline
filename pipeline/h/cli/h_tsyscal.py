@@ -6,31 +6,25 @@ from . import utils
 @utils.cli_wrapper
 def h_tsyscal(vis=None, caltable=None, chantol=None):
 
-    """
-    h_tsyscal ---- Derive a Tsys calibration table
-
+    """Derive a Tsys calibration table
 
     Derive the Tsys calibration for list of ALMA MeasurementSets.
 
-    Output:
+    Parameters:
+        vis: List of input visibility files. example: vis=['ngc5921.ms']
 
-    results -- The results object for the pipeline task is returned.
+        caltable: Name of output gain calibration tables. example: caltable='ngc5921.gcal'
 
-    --------- parameter descriptions ---------------------------------------------
+        chantol: The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).
+            example: chantol=5
 
-    vis           List of input visibility files.
-                  example: vis=['ngc5921.ms']
-    caltable      Name of output gain calibration tables.
-                  example: caltable='ngc5921.gcal'
-    chantol       The tolerance in channels for mapping atmospheric calibration
-                  windows (TDM) to science windows (FDM or TDM).
-                  example: chantol=5
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Standard call
 
-    1. Standard call
-
-    >>> h_tsyscal()
+        >>> h_tsyscal()
 
     """
 

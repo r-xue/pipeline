@@ -6,9 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None, omit_contline_ms=None):
 
-    """
-    hifv_mstransform ---- Create new MeasurementSets for science target imaging
-
+    """Create new MeasurementSets for science target imaging
 
     Create new MeasurementSets for imaging from the corrected column of the input
     MeasurementSet via calling mstransform with all data selection parameters.
@@ -23,64 +21,55 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
 
     Output
 
-    results -- The results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            '': use all MeasurementSets in the context
+            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-    --------- parameter descriptions ---------------------------------------------
+        outputvis: The list of output transformed MeasurementSets to be used for continuum imaging. The output list must be the same length as the input
+            list. The default output name defaults to
+            <msrootname>_targets_cont.ms
+            Examples: 'ngc5921.ms',
+            ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-    vis                 The list of input MeasurementSets. Defaults to the list of
-                        MeasurementSets specified in the h_init or hif_importdata task.
-                        '': use all MeasurementSets in the context
+        outputvis_for_line: The list of output transformed MeasurementSets to be used for line imaging. The output list must be the same length as the input
+            list. The default output name defaults to
+            <msrootname>_targets.ms
+            Examples: 'ngc5921.ms',
+            ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-                        Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    outputvis           The list of output transformed MeasurementSets to be used for
-                        continuum imaging. The output list must be the same length as the input
-                        list. The default output name defaults to
-                        <msrootname>_targets_cont.ms
+        field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
+            Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
 
-                        Examples: 'ngc5921.ms',
-                            ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    outputvis_for_line  The list of output transformed MeasurementSets to be used for
-                        line imaging. The output list must be the same length as the input
-                        list. The default output name defaults to
-                        <msrootname>_targets.ms
+        intent: Select intents for which associated fields will be imaged. By default only TARGET data is selected.
+            Examples: 'PHASE,BANDPASS'
 
-                        Examples: 'ngc5921.ms',
-                                    ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    field               Select fields name(s) or id(s) to transform. Only fields with
-                        data matching the intent will be selected.
+        spw: Select spectral window/channels to include for continuum imaging. By default all science spws for which the specified intent is valid are
+            selected.
 
-                        Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
-    intent              Select intents for which associated fields will be imaged.
-                        By default only TARGET data is selected.
+        spw_line: Select spectral window/channels to include for line imaging. If specified, these will override the default, which
+            is to use the spws identified as specline_windows in hifv_importdata
+            or hifv_restoredata.
 
-                        Examples: 'PHASE,BANDPASS'
-    spw                 Select spectral window/channels to include for continuum imaging. By default all
-                        science spws for which the specified intent is valid are
-                        selected.
-    spw_line            Select spectral window/channels to include for line imaging.
-                        If specified, these will override the default, which
-                        is to use the spws identified as specline_windows in hifv_importdata
-                        or hifv_restoredata.
-    chanbin             Width (bin) of input channels to average to form an output
-                        channel. If chanbin > 1 then chanaverage is automatically
-                        switched to True.
-    timebin             Bin width for time averaging. If timebin > 0s then
-                        timeaverage is automatically switched to True.
-    omit_contline_ms    If True, don't make the contline ms (_targets.ms). Only make
-                        cont MS (_targets_cont.ms). Default is False.
-                        
-    --------- examples -----------------------------------------------------------
+        chanbin: Width (bin) of input channels to average to form an output channel. If chanbin > 1 then chanaverage is automatically
+            switched to True.
 
+        timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
-    1. Create a science target MS from the corrected column in the input MS.
+        omit_contline_ms: If True, don't make the contline ms (_targets.ms). Only make cont MS (_targets_cont.ms). Default is False.
 
-    >>> hifv_mstransform()
+    Returns:
+        The results object for the pipeline task is returned.
 
-    2. Make a phase and bandpass calibrator targets MS from the corrected
-    column in the input MS.
+    Examples:
+        1. Create a science target MS from the corrected column in the input MS.
 
-    >>> hifv_mstransform(intent='PHASE,BANDPASS')
+        >>> hifv_mstransform()
 
+        2. Make a phase and bandpass calibrator targets MS from the corrected
+        column in the input MS.
+
+        >>> hifv_mstransform(intent='PHASE,BANDPASS')
 
     """
 

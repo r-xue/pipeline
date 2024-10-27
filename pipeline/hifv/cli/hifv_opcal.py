@@ -6,26 +6,20 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_opcal(vis=None, caltable=None):
 
-    """
-    hifv_opcal ---- Runs gencal in opac mode
+    """Runs gencal in opac mode
 
     Runs gencal in opac mode
 
-    Output:
+    Parameters:
+        vis: List of input visibility data
 
-    results -- The results object for the pipeline task is returned.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- parameter descriptions ---------------------------------------------
+    Examples:
+        1. Load an ASDM list in the ../rawdata subdirectory into the context.
 
-    vis           List of input visibility data
-
-    --------- examples -----------------------------------------------------------
-
-
-    1. Load an ASDM list in the ../rawdata subdirectory into the context.
-
-    >>> hifv_opcal()
-
+        >>> hifv_opcal()
 
     """
 

@@ -6,28 +6,24 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_swpowcal(vis=None, caltable=None, spw=None):
 
-    """
-    hifv_swpowcal ---- Runs gencal in swpow mode
+    """Runs gencal in swpow mode
 
     Runs gencal in swpow mode
 
-    Output:
+    Parameters:
+        vis: List of input visibility data
 
-    results -- The results object for the pipeline task is returned.
+        caltable: String name of caltable
 
-    --------- parameter descriptions ---------------------------------------------
+        spw: Spectral-window/frequency/channel: '' ==> all, spw="0:17~19"
 
-    vis           List of input visibility data
-    caltable      String name of caltable
-    spw           Spectral-window/frequency/channel: '' ==> all, spw="0:17~19"
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Load an ASDM list in the ../rawdata subdirectory into the context.
 
-
-    1. Load an ASDM list in the ../rawdata subdirectory into the context.
-
-    >>> hifv_swpowcal()
-
+        >>> hifv_swpowcal()
 
     """
 

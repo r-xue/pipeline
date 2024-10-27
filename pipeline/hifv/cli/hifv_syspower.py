@@ -6,35 +6,32 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, do_not_apply=None):
 
-    """
-    hifv_syspower ---- Determine amount of gain compression affecting VLA data below Ku-band
+    """Determine amount of gain compression affecting VLA data below Ku-band
 
     Determine amount of gain compression affecting VLA data below Ku-band
 
-    Output:
+    Parameters:
+        vis: List of input visibility data
 
-    results -- The results object for the pipeline task is returned.
+        clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged
 
-    --------- parameter descriptions ---------------------------------------------
+        antexclude: dictionary in the format of: {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+            'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+            'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+            If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
+            If 'usemedian': True, the template values are replaced with the median of the good antennas.
 
-    vis              List of input visibility data
-    clip_sp_template Acceptable range for Pdiff data; data are clipped outside this range and flagged
-    antexclude       dictionary in the format of:
-                     {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
-                      'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
-                      'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
-                     If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
-                     If 'usemedian': True, the template values are replaced with the median of the good antennas.
-    apply            Apply task results to RQ table
-    do_not_apply     csv string of band names to not apply. Example: 'L,X,S'
+        apply: Apply task results to RQ table
 
-    --------- examples -----------------------------------------------------------
+        do_not_apply: csv string of band names to not apply. Example: 'L,X,S'
 
+    Returns:
+        The results object for the pipeline task is returned.
 
-    1. Basic syspower task
+    Examples:
+        1. Basic syspower task
 
-    >>> hifv_syspower()
-
+        >>> hifv_syspower()
 
     """
 

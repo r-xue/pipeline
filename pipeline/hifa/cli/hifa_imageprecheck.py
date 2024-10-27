@@ -5,9 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
-    """
-    hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
-
+    """Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
 
     In this task, the representative source and the spw containing the representative
     frequency selected by the PI in the OT are used to calculate the synthesized beam
@@ -19,33 +17,31 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
     robust parameter to achieve the PI's desired angular resolution is chosen
     automatically. See the User's guide for further details.
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            '': use all MeasurementSets in the context
+            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-        results -- The results object for the pipeline task is returned.
+        desired_angular_resolution: User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
+            '': automatic from performance parameters (default)
+            Example: '1.0arcsec'
 
-    --------- parameter descriptions ---------------------------------------------
+        calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
 
-    vis                              The list of input MeasurementSets. Defaults to the list of
-                                     MeasurementSets specified in the h_init or hif_importdata task.
-                                     '': use all MeasurementSets in the context
-                                     Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    desired_angular_resolution       User specified angular resolution goal string. When this
-                                     parameter is set, uvtapering may be performed.
-                                     '': automatic from performance parameters (default)
-                                     Example: '1.0arcsec'
-    calcsb                           Force (re-)calculation of sensitivities and beams; defaults to False
-    parallel                         Use MPI cluster where possible
+        parallel: Use MPI cluster where possible
 
-    --------- examples -----------------------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    1. run with recommended settings to perform checks prior to imaging:
+    Examples:
+        1. run with recommended settings to perform checks prior to imaging:
 
-    >>> hifa_imageprecheck()
+        >>> hifa_imageprecheck()
 
-    2. run to perform checks prior to imaging and force the re-calculation of
-    sensitivities and beams:
+        2. run to perform checks prior to imaging and force the re-calculation of
+        sensitivities and beams:
 
-    >>> hifa_imageprecheck(calcsb=True)
+        >>> hifa_imageprecheck(calcsb=True)
 
     """
     ##########################################################################

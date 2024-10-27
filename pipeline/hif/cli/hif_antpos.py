@@ -6,9 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None):
 
-    """
-    hif_antpos ---- Derive an antenna position calibration table
-
+    """Derive an antenna position calibration table
 
     Derive the antenna position calibration for list of MeasurementSets.
 
@@ -36,48 +34,39 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
 
     Output
 
-    results -- The results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.Parameters:
+        vis: List of input visibility files. example: ['ngc5921.ms']
 
-    --------- parameter descriptions ---------------------------------------------
+        caltable: Name of output gain calibration tables. example: ['ngc5921.gcal']
 
-    vis           List of input visibility files.
-                  example: ['ngc5921.ms']
-    caltable      Name of output gain calibration tables.
-                  example: ['ngc5921.gcal']
-    hm_antpos     Heuristics method for retrieving the antenna position
-                  corrections. The options are 'online' (not yet implemented), 'manual',
-                  and 'file'.
-    antenna       The list of antennas for which the positions are to be corrected.
-                  Available when hm_antpos='manual'.
-                  example: antenna='DV05,DV07'
-    offsets       The list of antenna offsets for each antenna in 'antennas'. Each
-                  offset is a set of 3 floating point numbers separated by commas, specified
-                  in the ITRF frame. Available when hm_antpos='manual'.
-                  example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
-    antposfile    The file(s) containing the antenna offsets. Used if hm_antpos
-                  is 'file'.
-                  example: 'antennapos.csv'
+        hm_antpos: Heuristics method for retrieving the antenna position corrections. The options are 'online' (not yet implemented), 'manual',
+            and 'file'.
 
-    --------- examples -----------------------------------------------------------
+        antenna: The list of antennas for which the positions are to be corrected. Available when hm_antpos='manual'.
+            example: antenna='DV05,DV07'
 
+        offsets: The list of antenna offsets for each antenna in 'antennas'. Each offset is a set of 3 floating point numbers separated by commas, specified
+            in the ITRF frame. Available when hm_antpos='manual'.
+            example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
 
+        antposfile: The file(s) containing the antenna offsets. Used if hm_antpos is 'file'.
+            example: 'antennapos.csv'
 
-    1. Correct the position of antenna 5 for all the visibility files in a single
-    pipeline run:
+    Returns:
+        The results object for the pipeline task is returned.
 
-    >>> hif_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
+    Examples:
+        1. Correct the position of antenna 5 for all the visibility files in a single
+        pipeline run:
 
-    2. Correct the position of antennas for all the visibility files in a single
-    pipeline run using antenna positions files on disk. These files are assumed
-    to conform to a default naming scheme if ``antposfile`` is unspecified by the
-    user:
+        >>> hif_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
 
-    >>> hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
+        2. Correct the position of antennas for all the visibility files in a single
+        pipeline run using antenna positions files on disk. These files are assumed
+        to conform to a default naming scheme if ``antposfile`` is unspecified by the
+        user:
 
-    --------- issues -----------------------------------------------------------
-
-    The hm_antpos 'online' option will be implemented when the observing system
-    provides an antenna position determination service.
+        >>> hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
 
     """
 

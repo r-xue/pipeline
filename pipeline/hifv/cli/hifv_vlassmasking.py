@@ -6,31 +6,26 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalog_search_size=None):
 
-    """
-    hifv_vlassmasking ---- Create clean masks for VLASS Single Epoch (SE) images
+    """Create clean masks for VLASS Single Epoch (SE) images
 
     Create clean masks for VLASS SE images
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    results -- The results object for the pipeline task is returned.
+        vlass_ql_database: vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits
 
+        maskingmode: maskingmode options are vlass-se-tier-1 or vlass-se-tier-2
 
-    --------- parameter descriptions ---------------------------------------------
+        catalog_search_size: catalog_search_size in units of degrees
 
-    vis                 The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                        specified in the h_init or hifv_importdata task.
-    vlass_ql_database   vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits
-    maskingmode         maskingmode options are vlass-se-tier-1 or vlass-se-tier-2
-    catalog_search_size catalog_search_size in units of degrees
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Basic vlassmasking task
 
-
-    1. Basic vlassmasking task
-
-    >>> hifv_vlassmasking()
-
+        >>> hifv_vlassmasking()
 
     """
 

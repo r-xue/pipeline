@@ -7,9 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, transintent=None, refspwmap=None,
                     reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvecals=None,
                     antenna=None, peak_fraction=None, amp_outlier_sigma=None):
-    """
-    hifa_gfluxscale ---- Derive flux density scales from standard calibrators
-
+    """Derive flux density scales from standard calibrators
 
     Derive flux densities for point source transfer calibrators using flux models
     for reference calibrators.
@@ -45,102 +43,85 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     Note that the flux corrected calibration table computed internally is
     not currently used in later pipeline apply calibration steps.
 
-    Output:
+    Parameters:
+        vis: The list of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+            Example: ['M32A.ms', 'M32B.ms']
 
-        results -- The results object for the pipeline task is returned.
+        reference: A string containing a comma delimited list of field names
+            defining the reference calibrators. Defaults to field names with
+            intent '`*AMP*`'.
+            Example: reference='M82,3C273'
 
-    --------- parameter descriptions ---------------------------------------------
+        transfer: A string containing a comma delimited list of field names
+            defining the transfer calibrators. Defaults to field names with
+            intent '`*PHASE*`'.
+            Example: transfer='J1328+041,J1206+30'
 
-    vis
-                    The list of input MeasurementSets. Defaults to the list of
-                    MeasurementSets specified in the pipeline context.
+        refintent: A string containing a comma delimited list of intents
+            used to select the reference calibrators. Defaults to 'AMPLITUDE'.
+            Example: refintent='', refintent='AMPLITUDE'
 
-                    Example: ['M32A.ms', 'M32B.ms']
-    reference
-                    A string containing a comma delimited list of field names
-                    defining the reference calibrators. Defaults to field names with
-                    intent '`*AMP*`'.
+        transintent: A string containing a comma delimited list of intents
+            defining the transfer calibrators. Defaults to
+            'PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE'.
+            Example: transintent='', transintent='PHASE,BANDPASS'
 
-                    Example: reference='M82,3C273'
-    transfer
-                    A string containing a comma delimited list of field names
-                    defining the transfer calibrators. Defaults to field names with
-                    intent '`*PHASE*`'.
+        refspwmap: Vector of spectral window ids enabling scaling across
+            spectral windows. Defaults to no scaling.
+            Example: refspwmap=[1,1,3,3] - (4 spws, reference fields in 1 and 3, transfer
+            fields in 0,1,2,3
 
-                    Example: transfer='J1328+041,J1206+30'
-    refintent
-                    A string containing a comma delimited list of intents
-                    used to select the reference calibrators. Defaults to 'AMPLITUDE'.
+        reffile: Path to a file containing flux densities for calibrators.
+            Setjy will be run for any that have both reference and transfer intents.
+            Values given in this file will take precedence over MODEL column values
+            set by previous tasks. By default, the path is set to the CSV file created
+            by hifa_importdata, consisting of catalogue fluxes extracted from the ASDM
+            and / or edited by the user.
+            example: reffile='', reffile='working/flux.csv'
 
-                    Example: refintent='', refintent='AMPLITUDE'
-    transintent
-                    A string containing a comma delimited list of intents
-                    defining the transfer calibrators. Defaults to
-                    'PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE'.
+        phaseupsolint: Time solution intervals in CASA syntax for the phase solution.
+            example: phaseupsolint='inf', phaseupsolint='int', phaseupsolint='100sec'
 
-                    Example: transintent='', transintent='PHASE,BANDPASS'
-    refspwmap
-                    Vector of spectral window ids enabling scaling across
-                    spectral windows. Defaults to no scaling.
+        solint: Time solution intervals in CASA syntax for the amplitude solution.
+            example: solint='inf', solint='int', solint='100sec'
 
-                    Example: refspwmap=[1,1,3,3] - (4 spws, reference fields in 1 and 3, transfer
-                    fields in 0,1,2,3
-    reffile
-                    Path to a file containing flux densities for calibrators.
-                    Setjy will be run for any that have both reference and transfer intents.
-                    Values given in this file will take precedence over MODEL column values
-                    set by previous tasks. By default, the path is set to the CSV file created
-                    by hifa_importdata, consisting of catalogue fluxes extracted from the ASDM
-                    and / or edited by the user.
+        minsnr: Minimum signal-to-noise ratio for gain calibration solutions.
+            example: minsnr=1.5, minsnr=0.0
 
-                    example: reffile='', reffile='working/flux.csv'
-    phaseupsolint
-                    Time solution intervals in CASA syntax for the phase solution.
+        refant: A string specifying the reference antenna(s). By default,
+            this is read from the context.
+            Example: refant='DV05'
 
-                    example: phaseupsolint='inf', phaseupsolint='int', phaseupsolint='100sec'
-    solint
-                    Time solution intervals in CASA syntax for the amplitude solution.
+        hm_resolvedcals: Heuristics method for handling resolved calibrators. The
+            options are 'automatic' and 'manual'. In automatic mode,
+            antennas closer to the reference antenna than the uv
+            distance where visibilities fall to ``peak_fraction`` of the
+            peak are used. In manual mode, the antennas specified in
+            ``antenna`` are used.
 
-                    example: solint='inf', solint='int', solint='100sec'
-    minsnr
-                    Minimum signal-to-noise ratio for gain calibration solutions.
+        antenna: A comma delimited string specifying the antenna names or ids
+            to be used for the fluxscale determination. Used in
+            ``hm_resolvedcals`` = 'manual' mode.
+            Example: antenna='DV16,DV07,DA12,DA08'
 
-                    example: minsnr=1.5, minsnr=0.0
-    refant
-                    A string specifying the reference antenna(s). By default,
-                    this is read from the context.
+        peak_fraction: The limiting UV distance from the reference antenna for
+            antennas to be included in the flux calibration. Defined as
+            the point where the calibrator visibilities have fallen to
+            ``peak_fraction`` of the peak value.
 
-                    Example: refant='DV05'
-    hm_resolvedcals
-                    Heuristics method for handling resolved calibrators. The
-                    options are 'automatic' and 'manual'. In automatic mode,
-                    antennas closer to the reference antenna than the uv
-                    distance where visibilities fall to ``peak_fraction`` of the
-                    peak are used. In manual mode, the antennas specified in
-                    ``antenna`` are used.
-    antenna
-                    A comma delimited string specifying the antenna names or ids
-                    to be used for the fluxscale determination. Used in
-                    ``hm_resolvedcals`` = 'manual' mode.
+        amp_outlier_sigma: Sigma threshold used to identify outliers in the amplitude
+            caltable. Default: 50.0
+            Example: amp_outlier_sigma=30.0
 
-                    Example: antenna='DV16,DV07,DA12,DA08'
-    peak_fraction
-                    The limiting UV distance from the reference antenna for
-                    antennas to be included in the flux calibration. Defined as
-                    the point where the calibrator visibilities have fallen to
-                    ``peak_fraction`` of the peak value.
-    amp_outlier_sigma
-                    Sigma threshold used to identify outliers in the amplitude
-                    caltable. Default: 50.0
+    Returns:
+        The results object for the pipeline task is returned.
 
-                    Example: amp_outlier_sigma=30.0
+    Examples:
+        1. Compute flux values for the phase calibrator using model data from
+        the amplitude calibrator:
 
-    --------- examples -----------------------------------------------------------
-
-    1. Compute flux values for the phase calibrator using model data from
-    the amplitude calibrator:
-
-    >>> hifa_gfluxscale()
+        >>> hifa_gfluxscale()
 
     """
     ##########################################################################
