@@ -313,14 +313,17 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
             new_example = ""
             for example_line in task.examples.split("\n"):
                 new_example += "    {}\n".format(example_line)
-            new += "Examples:\n{}".format(task.examples)
-            new += "\n\nReturns:\n    The results object for the pipeline task is returned.\n"
+            new += "Examples:\n{}".format(new_example)
+            new += "\nReturns:\n    The results object for the pipeline task is returned.\n"
 #            new += '    """'
 #            print(new)
 
             new_new = ""
             for line in new.split('\n'):
-                new_new += "    {}\n".format(line)
+                if line.strip():
+                    new_new += "    {}\n".format(line)
+                else:
+                    new_new += "\n"
 
             input_dct[task.name] = new_new
 
@@ -356,7 +359,7 @@ def update_docs_to_new_format(input_dct=None):
     print("Updating docs to new format")
     # List of cli PL tasks that exist so they need their docs updated
     for f in glob.glob('./../../../pipeline/h*/cli/h*.py'):
-        task_name = os.path.basename(f.strip(".py"))
+        task_name = os.path.basename(f[:-3])
 #        print(task_name)
         with open(f, 'r+') as f_new:
             lines = f_new.readlines()
