@@ -31,7 +31,7 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
             pipeline context.
             example: vis=['X227.ms', 'X228.ms']
 
-        session: session -- List of sessions one per visibility file. Defaults to a single virtual session containing all the visibility files in vis.
+        session: List of sessions one per visibility file. Defaults to a single virtual session containing all the visibility files in vis.
             example: session=['session1', 'session2']
 
         imaging_products_only: Export the science target image products only
@@ -42,7 +42,7 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
         pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template 'PPR_*.xml'.
             example: pprfile=['PPR_GRB021004.xml']
 
-        calintents: calintents -- List of calibrator image types to be exported. Defaults to all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'
+        calintents: List of calibrator image types to be exported. Defaults to all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'
             example: calintents='PHASE'
 
         calimages: List of calibrator images to be exported. Defaults to all calibrator images recorded in the pipeline context.
