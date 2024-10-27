@@ -313,8 +313,8 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
             new_example = ""
             for example_line in task.examples.split("\n"):
                 new_example += "    {}\n".format(example_line)
+            new += "Returns:\n    The results object for the pipeline task is returned.\n\n"
             new += "Examples:\n{}".format(new_example)
-            new += "\nReturns:\n    The results object for the pipeline task is returned.\n"
 #            new += '    """'
 #            print(new)
 
