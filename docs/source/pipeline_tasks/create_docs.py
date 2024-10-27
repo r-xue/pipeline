@@ -304,27 +304,25 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
                     parameter_description += "\n"
                 parm_dict[parameter_name] = parameter_description
 
-            new = """{0}
-
-{1}
-Parameters:\n""".format(task.short.strip(), description)
+            new = '"""{0}\n\n{1}Parameters:\n'.format(task.short.strip(), description)
 
             for parm, desc in parm_dict.items():
                 new += "    {}: {}\n".format(parm.strip(), desc)
 #                new += "{}\n".format(desc)  # if multiple lines, it needs the tab or consistent number of spaces each line
 
-            new += "Examples:\n {}".format(task.examples)
-            new += "Returns:\n    The results object for the pipeline task is returned."
+            new_example = ""
+            for example_line in task.examples.split("\n"):
+                new_example += "    {}\n".format(example_line)
+            new += "Examples:\n{}".format(task.examples)
+            new += "\n\nReturns:\n    The results object for the pipeline task is returned.\n"
+#            new += '    """'
 #            print(new)
 
-            input_dct[task.name] = new
+            new_new = ""
+            for line in new.split('\n'):
+                new_new += "    {}\n".format(line)
 
-        later_possibly = """
-        Returns:
-        A dict mapping keys to the corresponding table row data
-        fetched. Each row is represented as a tuple of strings. For
-        example:(example redacted due to formatting issues)
-        """
+            input_dct[task.name] = new_new
 
     if missing_report and False:
         print("The following tasks are missing examples:")
@@ -359,14 +357,14 @@ def update_docs_to_new_format(input_dct=None):
     # List of cli PL tasks that exist so they need their docs updated
     for f in glob.glob('./../../../pipeline/h*/cli/h*.py'):
         task_name = os.path.basename(f.strip(".py"))
-        print(task_name)
+#        print(task_name)
         with open(f, 'r+') as f_new:
             lines = f_new.readlines()
             temp_lines = [elt.strip() for elt in lines]
 #            print(lines)
             start, end = [i for i, e in enumerate(temp_lines) if e == '"""']
 #            print(start, end)
-            prefix = lines[0:start+1] # rn includes starting """
+            prefix = lines[0:start] # rn includes starting """
             docstring = lines[start+1:end]
             suffix = lines[end:len(lines)] #  rn includes ending """
 #            print("\n".join(prefix))
