@@ -143,13 +143,14 @@ def cli_interface():
     # pprint(session_config)
 
     # optionally switch on xvfb
-    if session_config['pipeconfig']['xvfb']:
+    if session_config['pipeconfig'].get('xvfb', False):
         from pyvirtualdisplay import Display
         disp = Display(visible=0, size=(2048, 2048))
         disp.start()
 
     # session intialization
     loglevel = session_config['pipeconfig']['loglevel']
+    session_config['casaconfig'] = session_config.get('casaconfig', {})
     casalogfile, _ = session_startup(session_config['casaconfig'], loglevel=loglevel)
 
     import casatasks
@@ -192,7 +193,7 @@ def cli_interface():
 
     # xvfb-run + cli-opts
     xvfb_run_opt = []
-    if session_config['pipeconfig']['xvfb']:
+    if session_config['pipeconfig'].get('xvfb', False):
         xvfb_run_opt.append('xvfb-run -a')
 
     # conda + cli-opts
@@ -287,10 +288,10 @@ def cli_interface():
 
     # start the dask cluster if requested
 
-    if __name__ in ['pipeline.__main__','__main__']  and args.session is not None and session_config.get('dask', None):
+    if __name__ in ['pipeline.__main__', '__main__'] and args.session is not None and session_config.get('dask', None):
 
         # Load custom configuration file
-        dask_config=session_config['dask']
+        dask_config = session_config['dask']
         dask.config.update_defaults(dask_config)
 
         # Optionally, print the config to see what is loaded
@@ -319,7 +320,7 @@ def cli_interface():
         # sideload the daskclient to the new `daskhelpers` module
         daskhelpers.daskclient = daskclient
         logger.info('%s', daskclient)
-        daskhelpers.tier0future = bool(dask_config.get('tier0futures',None))
+        daskhelpers.tier0future = bool(dask_config.get('tier0futures', None))
 
         # Properly initailize the worker process state
         session_config['casaconfig']['logfile'] = casalogfile
