@@ -3,7 +3,7 @@ import os
 import pickle
 import tempfile
 from inspect import signature
-import pprint 
+import pprint
 
 from pipeline.domain.unitformat import file_size
 from . import daskhelpers
@@ -295,7 +295,7 @@ class Tier0FunctionCall(Executable):
         super().__init__()
         self.__fn = fn
         if use_pickle:
-            # pass function arguments via local pickle I/O to workround the casampi bsend buffer 
+            # pass function arguments via local pickle I/O to workround the casampi bsend buffer
             # size restriction (CAS-13656).
             tmpfile = tempfile.NamedTemporaryFile(suffix='.func_args', dir='', delete=True)
             tmpfile.close()
@@ -420,14 +420,14 @@ def parse_mpi_input_parameter(input_arg):
 def parse_parallel_input_parameter(input_arg):
     lowercase = str(input_arg).lower()
     if lowercase == 'automatic':
-        return is_mpi_ready() or bool(daskhelpers.daskclient)
+        return is_mpi_ready() or daskhelpers.is_dask_ready()
     elif lowercase == 'true':
         return True
     elif lowercase == 'false':
         return False
     else:
         raise ValueError('Arg must be one of true, false or automatic. Got %s' % input_arg)
-    
+
 
 mpiclient = None
 mpi_server_list = None
@@ -498,10 +498,14 @@ class TaskQueue:
         self.__running = True
         self.__executor = executor
         self.__mpi_server_list = mpi_server_list
-        self.__is_cluster_ready = is_mpi_ready() or bool(daskhelpers.daskclient)
-        self.__async = parallel and self.__is_cluster_ready
+        self.__is_async_ready = daskhelpers.is_dask_ready() or is_mpi_ready()
+        self.__parallel_wanted = parallel
+        self.__async = self.__parallel_wanted and self.__is_async_ready
 
-        LOG.info('TaskQueue initialized: MPI server list: %s; Dask client: %s', self.__mpi_server_list, daskhelpers.daskclient)
+        LOG.info('TaskQueue initialized: ')
+        LOG.info('    MPI server list: %s', self.__mpi_server_list)
+        LOG.info('    Dask client:     %s', daskhelpers.daskclient)
+        LOG.info('    is_async  :      %s', self.__async)
 
     def __enter__(self):
         return self
@@ -558,26 +562,33 @@ class TaskQueue:
         """
         if executor is None:
             executor = self.__executor
-        if self.__async:
-            if is_mpi_ready():
-                executable = Tier0JobRequest(fn, job_args, executor=executor)
-                task = AsyncTask(executable)
-            else:  # dask enabled
-                task = daskhelpers.FutureTask(fn(**job_args), executor)
+
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial
+
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            task = daskhelpers.FutureTask(fn(**job_args), executor)
+        elif self.__parallel_wanted and is_mpi_ready():
+            executable = Tier0JobRequest(fn, job_args, executor=executor)
+            task = AsyncTask(executable)
         else:
             task = SyncTask(fn(**job_args), executor)
+
         self.__queue.append(task)
 
     def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
 
-        if self.__async:
-            if is_mpi_ready():
-                executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
-                task = AsyncTask(executable)
-            else:  # dask enabled
-                task = daskhelpers.FutureTask(lambda: fn(*args, **kwargs))
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial
+
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            task = daskhelpers.FutureTask(lambda: fn(*args, **kwargs))
+        elif self.__parallel_wanted and is_mpi_ready():
+            executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
+            task = AsyncTask(executable)
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
+
         self.__queue.append(task)
 
     def add_pipelinetask(self, task_cls, task_args, context, executor=None):
@@ -585,22 +596,25 @@ class TaskQueue:
         if executor is None:
             executor = self.__executor
 
-        if self.__async:
-            if is_mpi_ready():
-                tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
-                                                      dir=context.output_dir,
-                                                      delete=True)
-                tmpfile.close()
-                context_path = tmpfile.name
-                context.save(context_path)
-                executable = Tier0PipelineTask(task_cls, task_args, context_path)
-                task = AsyncTask(executable)
-            else:  # dask enabled
-                inputs = task_cls.Inputs(context, **task_args)
-                task = task_cls(inputs)
-                task = daskhelpers.FutureTask(task, executor)
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial
+
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            inputs = task_cls.Inputs(context, **task_args)
+            task = task_cls(inputs)
+            task = daskhelpers.FutureTask(task, executor)
+        elif self.__parallel_wanted and is_mpi_ready():
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                                  dir=context.output_dir,
+                                                  delete=True)
+            tmpfile.close()
+            context_path = tmpfile.name
+            context.save(context_path)
+            executable = Tier0PipelineTask(task_cls, task_args, context_path)
+            task = AsyncTask(executable)
         else:
             inputs = task_cls.Inputs(context, **task_args)
             task = task_cls(inputs)
             task = SyncTask(task, executor)
+
         self.__queue.append(task)

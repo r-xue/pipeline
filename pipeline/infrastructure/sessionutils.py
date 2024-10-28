@@ -229,9 +229,6 @@ class VDPTaskFactory(object):
             task_inputs_cls = self.__task.Inputs
         valid_args = validate_args(task_inputs_cls, task_args)
 
-        is_mpi_ready = mpihelpers.is_mpi_ready()
-        is_tier0_job = is_mpi_ready
-
         parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
         # PIPE-2114: always execute per-EB "SerialTasks" from the MPI client process in a single-EB
@@ -241,13 +238,13 @@ class VDPTaskFactory(object):
                       'to execute the task on the MPIclient.')
             parallel_wanted = False
 
-        if is_tier0_job and parallel_wanted:
-            executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
-            return valid_args, mpihelpers.AsyncTask(executable)
-        elif bool(daskhelpers.daskclient) and parallel_wanted:
+        if parallel_wanted and daskhelpers.is_dask_ready():
             inputs = vdp.InputsContainer(self.__task, self.__context, **valid_args)
             task = self.__task(inputs)
             return valid_args, daskhelpers.FutureTask(task, self.__executor)
+        elif parallel_wanted and mpihelpers.is_mpi_ready():
+            executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
+            return valid_args, mpihelpers.AsyncTask(executable)
         else:
             inputs = vdp.InputsContainer(self.__task, self.__context, **valid_args)
             task = self.__task(inputs)

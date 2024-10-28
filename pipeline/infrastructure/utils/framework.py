@@ -420,11 +420,12 @@ def plotms_iterate(
             # Cycle 6 fallback: revert to serial plotting until CAS-11660,
             # CAS-11578, etc. are fixed.
             tier0_plots_enabled = 'ENABLE_TIER0_PLOTMS' in os.environ or mpihelpers.ENABLE_TIER0_PLOTMS
-            if tier0_plots_enabled and mpihelpers.is_mpi_ready():
+
+            if tier0_plots_enabled and daskhelpers.is_dask_ready():
+                queued_job = daskhelpers.FutureTask(job_to_execute)
+            elif tier0_plots_enabled and mpihelpers.is_mpi_ready():
                 executable = mpihelpers.Tier0JobRequest(casa_tasks.plotms, job_to_execute.kw)
                 queued_job = mpihelpers.AsyncTask(executable)
-            elif tier0_plots_enabled and bool(daskhelpers.daskclient):
-                queued_job = daskhelpers.FutureTask(job_to_execute)
             else:
                 queued_job = mpihelpers.SyncTask(job_to_execute)
 

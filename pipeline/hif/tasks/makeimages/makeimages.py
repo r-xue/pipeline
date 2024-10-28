@@ -441,28 +441,25 @@ class CleanTaskFactory(object):
         """
         task_args = self.__get_task_args(target)
 
-        is_cluster_ready = mpihelpers.is_mpi_ready() or bool(daskhelpers.daskclient)
-        is_cal_image = 'TARGET' not in target['intent']
+        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
-        is_tier0_job = is_cluster_ready and is_cal_image
+        # exclude target imaging from tier0 in general
+        parallel_wanted = parallel_wanted and 'TARGET' not in target['intent']
+
         # PIPE-1923 asks to temporarily turn off Tier-0 mode for
         # POLARIZATION intent when imaging IQUV because of a
         # potential CASA bug. This should be undone when this
         # bug is fixed.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
-            is_tier0_job = False
-            if is_cluster_ready:
-                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
-
-        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
+            parallel_wanted = False
+            LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
 
         # PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
         # Also see the disscussions in PIPE-1357
         vlass_se_cube_tier0_wanted = True
         is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
-        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_cluster_ready]):
-            is_tier0_job = True
-            task_args['parallel'] = False
+        if vlass_se_cube_tier0_wanted and is_vlass_se_cube:
+            parallel_wanted = True
 
         # we check/remove the task_arg dictionary keys that are not required by Tclean.Inputs
         # then clean_targets objects would be free to carry extra metedata without causing problems during
@@ -471,21 +468,21 @@ class CleanTaskFactory(object):
         task_args = {k: v for k, v in task_args.items() if k in task_inputs_args}
 
         LOG.debug('MakeImages Parallelization Config:')
-        LOG.debug('is_tier0_job:              %s', is_tier0_job)
-        LOG.debug('parallel_wanted:           %s', parallel_wanted)
-        LOG.debug('daskhelpers.daskclient:    %s', daskhelpers.daskclient)
-        LOG.debug('mpihelpers.is_mpi_ready()  %s', mpihelpers.is_mpi_ready())
+        LOG.debug('parallel_wanted:             %s', parallel_wanted)
+        LOG.debug('daskhelpers.is_dask_ready(): %s', daskhelpers.is_dask_ready())
+        LOG.debug('mpihelpers.is_mpi_ready()    %s', mpihelpers.is_mpi_ready())
 
-        if is_tier0_job and parallel_wanted:
-            if mpihelpers.is_mpi_ready():
-                executable = mpihelpers.Tier0PipelineTask(Tclean,
-                                                          task_args,
-                                                          self.__context_path)
-                return mpihelpers.AsyncTask(executable)
-            else:
-                inputs = Tclean.Inputs(self.__context, **task_args)
-                task = Tclean(inputs)
-                return daskhelpers.FutureTask(task, self.__executor)
+        if parallel_wanted and daskhelpers.is_dask_ready():
+            task_args['parallel'] = False
+            inputs = Tclean.Inputs(self.__context, **task_args)
+            task = Tclean(inputs)
+            return daskhelpers.FutureTask(task, self.__executor)
+        elif parallel_wanted and mpihelpers.is_mpi_ready():
+            task_args['parallel'] = False
+            executable = mpihelpers.Tier0PipelineTask(Tclean,
+                                                      task_args,
+                                                      self.__context_path)
+            return mpihelpers.AsyncTask(executable)
         else:
             inputs = Tclean.Inputs(self.__context, **task_args)
             task = Tclean(inputs)
