@@ -265,20 +265,20 @@ def cli_interface():
 
         if 'slurm' in session_config and 'SLURM_JOB_ID' not in env:
             jobrequest_cmd = f"sbatch {job_filename}"
-            logger.info(f'Execute the session:  {jobrequest_cmd}\n')
+            logger.info(f'Execute the session:  {jobrequest_cmd}')
             if not args.dry_run:
                 cp = subprocess.run(jobrequest_cmd, shell=True,
                                     check=False, env=env, capture_output=True)
-                logger.info(cp.stdout.decode())
+                logger.info(cp.stdout.decode().strip())
                 time.sleep(1.0)
                 cp = subprocess.run(
                     f'squeue --format="%7i %13P %9u %7T %11M %11l %5D %2C %2c/%7m %16R %50j %50Z" -u {username}',
                     shell=True, check=True,
                     capture_output=True)
-                logger.info(cp.stdout.decode())
+                logger.info(cp.stdout.decode().strip())
         else:
             jobrequest_cmd = f'bash -i {job_filename}'
-            logger.info(f'Execute the session:  {jobrequest_cmd}\n')
+            logger.info(f'Execute the session:  {jobrequest_cmd}')
             if not args.dry_run:
                 cp = subprocess.run(jobrequest_cmd, shell=True,
                                     check=False, env=env, capture_output=False)
@@ -287,13 +287,14 @@ def cli_interface():
 
     # start the dask cluster if requested
 
-    if __name__ == "__main__" and args.session is not None:
+    if __name__ in ['pipeline.__main__','__main__']  and args.session is not None and session_config.get('dask', None):
 
         # Load custom configuration file
-        dask.config.update_defaults(session_config['dask'])
+        dask_config=session_config['dask']
+        dask.config.update_defaults(dask_config)
 
         # Optionally, print the config to see what is loaded
-        logger.debug(dask.config.config)
+        # logger.info(dask.config.config)
 
         # Retrieve settings from the config
         n_workers = dask.config.get('distributed.worker.n_workers')
@@ -318,6 +319,9 @@ def cli_interface():
         # sideload the daskclient to the new `daskhelpers` module
         daskhelpers.daskclient = daskclient
         logger.info('%s', daskclient)
+        daskhelpers.tier0future = bool(dask_config.get('tier0futures',None))
+
+        # Properly initailize the worker process state
         session_config['casaconfig']['logfile'] = casalogfile
         daskclient.run(session_startup, session_config['casaconfig'], loglevel)
 
@@ -329,7 +333,7 @@ def cli_interface():
     if args.session is not None:
 
         pipeconfig = session_config['pipeconfig']
-        logger.info('pipeconfig args: %s', pipeconfig)
+        # logger.info('pipeconfig args: %s', pipeconfig)
 
         if args.vlappr is not None:
             pipeconfig['vlappr'] = args.vlappr

@@ -4,6 +4,7 @@ from pipeline.infrastructure import logging
 from pipeline.infrastructure.utils import get_obj_size
 
 daskclient = None
+tier0futures = True
 
 LOG = logging.get_logger(__name__)
 
@@ -32,3 +33,7 @@ class FutureTask(object):
 
         task_result = self.future.result()
         return task_result
+
+def is_dask_ready():
+    """Return the availability of dask-base tier0 queue"""
+    return bool(daskclient) and tier0futures
