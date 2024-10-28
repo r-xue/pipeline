@@ -145,7 +145,7 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
-<span class="kn">import</span> <span class="nn">pprint</span> 
+<span class="kn">import</span> <span class="nn">pprint</span>
 
 <span class="kn">from</span> <span class="nn">pipeline.domain.unitformat</span> <span class="kn">import</span> <span class="n">file_size</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">daskhelpers</span>
@@ -469,7 +469,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__fn</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="k">if</span> <span class="n">use_pickle</span><span class="p">:</span>
-            <span class="c1"># pass function arguments via local pickle I/O to workround the casampi bsend buffer </span>
+            <span class="c1"># pass function arguments via local pickle I/O to workround the casampi bsend buffer</span>
             <span class="c1"># size restriction (CAS-13656).</span>
             <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.func_args&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -609,7 +609,7 @@
 <span class="k">def</span> <span class="nf">parse_parallel_input_parameter</span><span class="p">(</span><span class="n">input_arg</span><span class="p">):</span>
     <span class="n">lowercase</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">input_arg</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">is_mpi_ready</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">is_mpi_ready</span><span class="p">()</span> <span class="ow">or</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">elif</span> <span class="n">lowercase</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
@@ -617,7 +617,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Arg must be one of true, false or automatic. Got </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">input_arg</span><span class="p">)</span></div>
 
-    
+
 
 <span class="n">mpiclient</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">mpi_server_list</span> <span class="o">=</span> <span class="kc">None</span>
@@ -690,10 +690,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mpi_server_list</span> <span class="o">=</span> <span class="n">mpi_server_list</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__is_cluster_ready</span> <span class="o">=</span> <span class="n">is_mpi_ready</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__async</span> <span class="o">=</span> <span class="n">parallel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_cluster_ready</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_async_ready</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">()</span> <span class="ow">or</span> <span class="n">is_mpi_ready</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="o">=</span> <span class="n">parallel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__async</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_async_ready</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;TaskQueue initialized: MPI server list: </span><span class="si">%s</span><span class="s1">; Dask client: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mpi_server_list</span><span class="p">,</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;TaskQueue initialized: &#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    MPI server list: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mpi_server_list</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    Dask client:     </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    is_async  :      </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
@@ -758,27 +762,34 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
-                <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0JobRequest</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">job_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executor</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># dask enabled</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="n">job_args</span><span class="p">),</span> <span class="n">executor</span><span class="p">)</span>
+
+        <span class="c1"># try different parallelization arrangement:</span>
+        <span class="c1">#   dask/futures -&gt; casampi -&gt; serial</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">():</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="n">job_args</span><span class="p">),</span> <span class="n">executor</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0JobRequest</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">job_args</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="n">executor</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="n">job_args</span><span class="p">),</span> <span class="n">executor</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">add_functioncall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
-                <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0FunctionCall</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="n">use_pickle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># dask enabled</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="c1"># try different parallelization arrangement:</span>
+        <span class="c1">#   dask/futures -&gt; casampi -&gt; serial</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">():</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0FunctionCall</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">use_pickle</span><span class="o">=</span><span class="n">use_pickle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">add_pipelinetask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -786,24 +797,27 @@
         <span class="k">if</span> <span class="n">executor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
-                <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.context&#39;</span><span class="p">,</span>
-                                                      <span class="nb">dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
-                                                      <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="n">context_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
-                <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">context_path</span><span class="p">)</span>
-                <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context_path</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># dask enabled</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="n">task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">task_cls</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="p">)</span>
+        <span class="c1"># try different parallelization arrangement:</span>
+        <span class="c1">#   dask/futures -&gt; casampi -&gt; serial</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">():</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">task_cls</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parallel_wanted</span> <span class="ow">and</span> <span class="n">is_mpi_ready</span><span class="p">():</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.context&#39;</span><span class="p">,</span>
+                                                  <span class="nb">dir</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                                  <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">context_path</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">context_path</span><span class="p">)</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="n">task_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">,</span> <span class="n">context_path</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">task_cls</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">__queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
 
 </pre></div>

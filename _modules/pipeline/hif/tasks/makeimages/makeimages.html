@@ -598,28 +598,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">task_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_task_args</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
-        <span class="n">is_cluster_ready</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
-        <span class="n">is_cal_image</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span>
+        <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_parallel_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
 
-        <span class="n">is_tier0_job</span> <span class="o">=</span> <span class="n">is_cluster_ready</span> <span class="ow">and</span> <span class="n">is_cal_image</span>
+        <span class="c1"># exclude target imaging from tier0 in general</span>
+        <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="n">parallel_wanted</span> <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span>
+
         <span class="c1"># PIPE-1923 asks to temporarily turn off Tier-0 mode for</span>
         <span class="c1"># POLARIZATION intent when imaging IQUV because of a</span>
         <span class="c1"># potential CASA bug. This should be undone when this</span>
         <span class="c1"># bug is fixed.</span>
         <span class="k">if</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">and</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
-            <span class="n">is_tier0_job</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">is_cluster_ready</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).&#39;</span><span class="p">)</span>
-
-        <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_parallel_input_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+            <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).&#39;</span><span class="p">)</span>
 
         <span class="c1"># PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging</span>
         <span class="c1"># Also see the disscussions in PIPE-1357</span>
         <span class="n">vlass_se_cube_tier0_wanted</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">is_vlass_se_cube</span> <span class="o">=</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">vlass_se_cube_tier0_wanted</span><span class="p">,</span> <span class="n">is_vlass_se_cube</span><span class="p">,</span> <span class="n">is_cluster_ready</span><span class="p">]):</span>
-            <span class="n">is_tier0_job</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">vlass_se_cube_tier0_wanted</span> <span class="ow">and</span> <span class="n">is_vlass_se_cube</span><span class="p">:</span>
+            <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># we check/remove the task_arg dictionary keys that are not required by Tclean.Inputs</span>
         <span class="c1"># then clean_targets objects would be free to carry extra metedata without causing problems during</span>
@@ -628,21 +625,21 @@
         <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">task_args</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">task_inputs_args</span><span class="p">}</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MakeImages Parallelization Config:&#39;</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;is_tier0_job:              </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">is_tier0_job</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel_wanted:           </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">parallel_wanted</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;daskhelpers.daskclient:    </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;mpihelpers.is_mpi_ready()  </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">())</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;parallel_wanted:             </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">parallel_wanted</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;daskhelpers.is_dask_ready(): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">())</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;mpihelpers.is_mpi_ready()    </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">())</span>
 
-        <span class="k">if</span> <span class="n">is_tier0_job</span> <span class="ow">and</span> <span class="n">parallel_wanted</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">():</span>
-                <span class="n">executable</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="n">Tclean</span><span class="p">,</span>
-                                                          <span class="n">task_args</span><span class="p">,</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="n">Tclean</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
-                <span class="n">task</span> <span class="o">=</span> <span class="n">Tclean</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parallel_wanted</span> <span class="ow">and</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_ready</span><span class="p">():</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">Tclean</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">Tclean</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">FutureTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">parallel_wanted</span> <span class="ow">and</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">():</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">Tier0PipelineTask</span><span class="p">(</span><span class="n">Tclean</span><span class="p">,</span>
+                                                      <span class="n">task_args</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">Tclean</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">Tclean</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
