@@ -193,8 +193,14 @@ def cli_interface():
 
     # xvfb-run + cli-opts
     xvfb_run_opt = []
-    if session_config['pipeconfig'].get('xvfb', False):
-        xvfb_run_opt.append('xvfb-run -a')
+    
+    # disable the CLI wrapper appending:
+    #   for dask-based x11 applications: pyvirtualdisplay will do the work.
+    #   for mpicasa sessions: casampi takes care of x11 for mpiservers; 
+    #       pyvirtualdisplay takes care of the client process.
+    #
+    # if session_config['pipeconfig'].get('xvfb', False):
+    #     xvfb_run_opt.append('xvfb-run -a')
 
     # conda + cli-opts
     conda_opt = []
