@@ -1,6 +1,6 @@
 import collections
 from operator import itemgetter, attrgetter
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -142,13 +142,13 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[Gainfield
     :return: list of GainfieldMappings
     """
     # define function to get Tsys fields for intent
-    def f(intent):
+    def f(intent, exclude: Optional[str] = None):
         if ',' in intent:
             head, tail = intent.split(',', 1)
             # the 'if o' test filters out results for intents that do not have
             # fields, e.g., PHASE for SD data
-            return ','.join(o for o in (f(head), f(tail)) if o)
-        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
+            return ','.join(o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)
+        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent, exclude=exclude))
 
     # return different gainfield maps for single dish and interferometric
     if is_single_dish:
@@ -175,9 +175,15 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[Gainfield
             GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
             GainfieldMapping(intent='DIFFGAINREF', preferred=f('DIFFGAINREF'), fallback=f('BANDPASS')),
             GainfieldMapping(intent='DIFFGAINSRC', preferred=f('DIFFGAINSRC'), fallback=f('BANDPASS')),
-            GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
-            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
-            GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
+            GainfieldMapping(intent='PHASE',
+                             preferred=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE,TARGET'),
+                             fallback=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE')),
+            GainfieldMapping(intent='TARGET',
+                             preferred=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE,PHASE'),
+                             fallback=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE')),
+            GainfieldMapping(intent='CHECK',
+                             preferred=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE,PHASE'),
+                             fallback=f('ATMOSPHERE', exclude='AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE')),
         ]
 
 
@@ -213,7 +219,7 @@ def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> Dict:
     return converted
 
 
-def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
+def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str, exclude: Optional[str] = None) -> Set[str]:
     """
     Returns the identity of the Tsys field(s) for an intent.
 
@@ -230,6 +236,8 @@ def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
     # us handle single field, single pointing science targets alongside mosaic
     # targets mixed together in the same EB. Theoretically, at least...
     intent_fields = ms.get_fields(intent=intent)
+    if exclude is not None:
+        intent_fields = [f for f in intent_fields if f.intents.isdisjoint(set(exclude.split(',')))]
 
     # contains fields of this intent that also have a companion Tsys scan
     intent_fields_with_tsys = [f for f in intent_fields if 'ATMOSPHERE' in f.intents]
