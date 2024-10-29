@@ -46,11 +46,13 @@ from casashell.private.stack_manip import find_frame
 # by default, modify filter to get INFO1 message which the pipeline
 # treats as ATTENTION level.
 casaloglevel = 'INFO1'
-loglevel = session_config.get('pipeconfig', {}).get('loglevel', 'info')
+if 'pipeconfig' not in session_config:
+    session_config['pipeconfig'] = {}
+loglevel = session_config['pipeconfig'].get('loglevel', 'info')
 if loglevel is not None:
     casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
 casalog.filter(casaloglevel)
-
+session_config['pipeconfig']['logfile']=casalog.logfile()
 
 
 __version__ = revision = environment.pipeline_revision

@@ -1,4 +1,3 @@
-import argparse
 import getpass
 import os
 import socket
@@ -7,7 +6,20 @@ import sys
 import textwrap
 import time
 
-import yaml
+import casatasks
+import casatools
+import dask
+import pipeline
+import pipeline.infrastructure.executeppr as eppr
+import pipeline.infrastructure.executeppr as vlaeppr
+import pipeline.recipereducer
+
+try:
+    from dask.distributed import Client, LocalCluster #, SubprocessCluster
+except ImportError:
+    pass
+from pipeline.infrastructure import daskhelpers
+from pipeline import cli_args, session_config
 
 # unbuffered stdout/stderr/stdin
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
@@ -19,10 +31,14 @@ def session_startup(casa_config, loglevel=None):
 
     # update the casaconfig attributes before importing the casatasks module
 
+    import casatasks
     from casaconfig import config
     for key, value in casa_config.items():
         if hasattr(config, key) and value is not None:
+            print(key,value)
             setattr(config, key, value)
+            if key=='logfile':
+                casatasks.casalog.setlogfile(value)
 
     # initialize casatasks with the custom configurations
 
@@ -104,65 +120,22 @@ def create_slurm_job(session_profile, filename='session.job'):
     return
 
 
-def cli_interface():
+def main():
     """Run a Pipeline data processing session from the console."""
-
-    description = r"""
- The Pipeline CLI interface ("python -m pipeline" or "paris") creates customized Pipeline workflow sessions from different user/developer interfaces:
-            * a Pipeline data processing session (pps) using recipereducer or ppr
-            * or, a Pipeline testing session using recipereducer
- """
-
-    parser = argparse.ArgumentParser(prog='python -m pipeline | paris', description=textwrap.dedent(description),
-                                     formatter_class=argparse.RawTextHelpFormatter)
-
-    parser.add_argument('--vlappr', type=str, dest='vlappr', help='execute a VLA ppr')
-    parser.add_argument('--ppr', type=str, dest='ppr', help='execute a ALMA ppr')
-    parser.add_argument('--session-config', type=str, dest='session', help='run a custom pipeline data processing session using .yaml')
-
-    parser.add_argument(
-        '--dask-config', type=str, dest='dask_config',
-        help='start a Dask cluster for dask-assisted tier0 parallelization specified by a configuration file')
-    parser.add_argument('--logfile',
-                        type=str, dest='logfile',
-                        help="redirect stdout/stderr/casalog to the same log file")
-    parser.add_argument('--dryrun',
-                        dest="dry_run", action="store_true",
-                        help="run a dry-run test; not really trigger the requested workflow")
-    parser.add_argument(
-        '--local', dest="local", action="store_true",
-        help="execute a session/workflow from the initial parent process rather than in a subprocess or as a slurm job")
-    args = parser.parse_args()
-
-    session_config = {}
-    if args.session is not None:
-        with open(args.session) as f:
-            session_config = yaml.safe_load(f)
 
     # from pprint import pprint
     # pprint(session_config)
 
     # optionally switch on xvfb
-    if session_config['pipeconfig'].get('xvfb', False):
-        from pyvirtualdisplay import Display
-        disp = Display(visible=0, size=(2048, 2048))
-        disp.start()
+    # if session_config['pipeconfig'].get('xvfb', False):
+    #    from pyvirtualdisplay import Display
+    #    disp = Display(visible=0, size=(2048, 2048))
+    #    disp.start()
 
     # session intialization
     loglevel = session_config['pipeconfig']['loglevel']
     session_config['casaconfig'] = session_config.get('casaconfig', {})
-    casalogfile, _ = session_startup(session_config['casaconfig'], loglevel=loglevel)
-
-    import casatasks
-    import casatools
-    import dask
-    from dask.distributed import Client, LocalCluster
-
-    import pipeline
-    import pipeline.infrastructure.executeppr as eppr
-    import pipeline.infrastructure.executeppr as vlaeppr
-    import pipeline.recipereducer
-    from pipeline.infrastructure import daskhelpers
+    # casalogfile, _ = session_startup(session_config['casaconfig'], loglevel=loglevel)
 
     logger = pipeline.infrastructure.get_logger('main')
 
@@ -193,14 +166,14 @@ def cli_interface():
 
     # xvfb-run + cli-opts
     xvfb_run_opt = []
-    
-    # disable the CLI wrapper appending:
+
+    # the CLI wrapper appending; may be unnesscary
     #   for dask-based x11 applications: pyvirtualdisplay will do the work.
-    #   for mpicasa sessions: casampi takes care of x11 for mpiservers; 
+    #   for mpicasa sessions: casampi takes care of x11 for mpiservers;
     #       pyvirtualdisplay takes care of the client process.
     #
-    # if session_config['pipeconfig'].get('xvfb', False):
-    #     xvfb_run_opt.append('xvfb-run -a')
+    if session_config['pipeconfig'].get('xvfb', False):
+        xvfb_run_opt.append('xvfb-run -a')
 
     # conda + cli-opts
     conda_opt = []
@@ -227,7 +200,7 @@ def cli_interface():
     #   * need to start mpiclient/server initialization outside of this module to avoid curcular import for a casampi session.
     #   * this is functionally eqauivelent to `>python -m pipeline` or `>pairs`
     #   * try `>python -m pipeline --help`
-    pipe_opt = ['python -c "import casampi.private.start_mpi; from pipeline.__main__ import cli_interface; cli_interface()"']
+    pipe_opt = ['python -c "import casampi.private.start_mpi; from pipeline.__main__ import main; main()"']
 
     # print('-->', sys.orig_argv)
     # print('-->', sys.argv)
@@ -263,17 +236,15 @@ def cli_interface():
     slurm_config['cmds'].append(cmd)
     slurm_config['chdir'] = chdir
 
-    if not args.local:
+    if not cli_args.local:
 
         job_filename = os.path.join(chdir, 'session.job')
         create_slurm_job(slurm_config, filename=job_filename)
-        # import pprint
-        # pprint.pprint(slurm_config)
 
         if 'slurm' in session_config and 'SLURM_JOB_ID' not in env:
             jobrequest_cmd = f"sbatch {job_filename}"
             logger.info(f'Execute the session:  {jobrequest_cmd}')
-            if not args.dry_run:
+            if not cli_args.dry_run:
                 cp = subprocess.run(jobrequest_cmd, shell=True,
                                     check=False, env=env, capture_output=True)
                 logger.info(cp.stdout.decode().strip())
@@ -286,66 +257,79 @@ def cli_interface():
         else:
             jobrequest_cmd = f'bash -i {job_filename}'
             logger.info(f'Execute the session:  {jobrequest_cmd}')
-            if not args.dry_run:
+            if not cli_args.dry_run:
                 cp = subprocess.run(jobrequest_cmd, shell=True,
                                     check=False, env=env, capture_output=False)
 
         return
 
-    # start the dask cluster if requested
-
-    if __name__ in ['pipeline.__main__', '__main__'] and args.session is not None and session_config.get('dask', None):
-
+    # start a Dask cluster for dask-assisted tier0 parallelization specified by a configuration file
+    if __name__ in ['pipeline.__main__', '__main__'] and cli_args.session is not None and session_config.get('dask', None):
         # Load custom configuration file
         dask_config = session_config['dask']
         dask.config.update_defaults(dask_config)
 
         # Optionally, print the config to see what is loaded
-        # logger.info(dask.config.config)
+        logger.info(dask.config.config)
 
         # Retrieve settings from the config
-        n_workers = dask.config.get('distributed.worker.n_workers')
-        threads_per_worker = dask.config.get('distributed.worker.nthreads')
-        scheduler_port = dask.config.get('distributed.scheduler.port')
-        dashboard_port = dask.config.get('distributed.scheduler.dashboard.port')
+        n_workers = dask.config.get('distributed.worker.n_workers', default=None)
+        threads_per_worker = dask.config.get('distributed.worker.nthreads', default=None)
+        scheduler_port = dask.config.get('distributed.scheduler.port', default=None)
+        dashboard_port = dask.config.get('distributed.scheduler.dashboard.port', default=None)
 
+        from distributed import Nanny
         # Set up the cluster based on the config
         cluster = LocalCluster(
             n_workers=n_workers,
+            worker_class=Nanny,
+            processes=True,  # explicitly True to avoid GIL
             threads_per_worker=threads_per_worker,
             scheduler_port=scheduler_port,
-            dashboard_address=f":{dashboard_port}"  # Set the dashboard port
+
+            dashboard_address=f":{dashboard_port}" if dashboard_port else None,  # Set the dashboard port
         )
+
+        # from dask_jobqueue import SLURMCluster
+        # cluster = SLURMCluster(
+        #     n_workers=2,
+        #     queue='queue',
+        #     cores=2,
+        #     memory='123GB',interface='eno1')
+
+        # cluster=SubprocessCluster(n_workers=4, threads_per_worker=1)
+        # print(cluster)
 
         # Connect the client to the cluster
         daskclient = Client(cluster)
-
         logger.info("Cluster dashboard: %s", daskclient.dashboard_link)
-        daskclient = Client(cluster)
 
         # sideload the daskclient to the new `daskhelpers` module
         daskhelpers.daskclient = daskclient
         logger.info('%s', daskclient)
-        daskhelpers.tier0future = bool(dask_config.get('tier0futures', None))
+        print(dask_config.get('tier0futures', None))
+        daskhelpers.tier0futures = bool(dask_config.get('tier0futures', None))
 
         # Properly initailize the worker process state
+        casalogfile = casatasks.casalog.logfile()
         session_config['casaconfig']['logfile'] = casalogfile
+        print('run:', session_config['casaconfig'])
         daskclient.run(session_startup, session_config['casaconfig'], loglevel)
 
-    if args.dry_run:
+    if cli_args.dry_run:
         if daskhelpers.daskclient is not None:
             daskhelpers.daskclient.close()
         return
 
-    if args.session is not None:
+    if cli_args.session is not None:
 
         pipeconfig = session_config['pipeconfig']
-        # logger.info('pipeconfig args: %s', pipeconfig)
+        # logger.info('pipeconfig cli_args: %s', pipeconfig)
 
-        if args.vlappr is not None:
-            pipeconfig['vlappr'] = args.vlappr
-        if args.ppr is not None:
-            pipeconfig['ppr'] = args.ppr
+        if cli_args.vlappr is not None:
+            pipeconfig['vlappr'] = cli_args.vlappr
+        if cli_args.ppr is not None:
+            pipeconfig['ppr'] = cli_args.ppr
 
         if pipeconfig['procedure'] is not None:
             pipeline.recipereducer.reduce(
@@ -365,5 +349,4 @@ def cli_interface():
 
 
 if __name__ == "__main__":
-
-    cli_interface()
+    main()
