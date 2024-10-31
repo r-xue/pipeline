@@ -11,7 +11,7 @@ def cli_interface():
  """
 
     parser = argparse.ArgumentParser(prog='python -m pipeline | paris', description=textwrap.dedent(description),
-                                     formatter_class=argparse.RawTextHelpFormatter)
+                                     formatter_class=argparse.RawTextHelpFormatter, exit_on_error=False)
 
     parser.add_argument('--vlappr', type=str, dest='vlappr', help='execute a VLA ppr')
     parser.add_argument('--ppr', type=str, dest='ppr', help='execute a ALMA ppr')
@@ -26,10 +26,15 @@ def cli_interface():
     parser.add_argument(
         '--local', dest="local", action="store_true",
         help="execute a session/workflow from the main process rather than in a subprocess or as a slurm job")
-    args = parser.parse_args()
 
     session_config = {}
-    if args.session is not None:
+    args = None
+
+    try:
+        args = parser.parse_args()
+    except SystemExit:
+        print('CLI option(s) is not recognizable by the Pipeline package; try "--help"')
+    if args is not None and args.session is not None:
         with open(args.session) as f:
             session_config = yaml.safe_load(f)
 
