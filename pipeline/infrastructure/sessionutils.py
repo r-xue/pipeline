@@ -181,7 +181,7 @@ class VDPTaskFactory(object):
     def __enter__(self):
         # If there's a possibility that we'll submit MPI jobs, save the context
         # to disk ready for import by the MPI servers.
-        if mpihelpers.mpiclient:
+        if mpihelpers.mpiclient or daskhelpers.daskclient:
             # Use the tempfile module to generate a unique temporary filename,
             # which we use as the output path for our pickled context
             tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
@@ -239,9 +239,8 @@ class VDPTaskFactory(object):
             parallel_wanted = False
 
         if parallel_wanted and daskhelpers.is_dask_ready():
-            inputs = vdp.InputsContainer(self.__task, self.__context, **valid_args)
-            task = self.__task(inputs)
-            return valid_args, daskhelpers.FutureTask(task, self.__executor)
+            executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
+            return valid_args, daskhelpers.FutureTask(executable)
         elif parallel_wanted and mpihelpers.is_mpi_ready():
             executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
             return valid_args, mpihelpers.AsyncTask(executable)

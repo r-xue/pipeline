@@ -45,7 +45,7 @@ class AsyncTask(object):
 
         Note that tier0_executable must be picklable.
         """
-        LOG.debug('pushing tier0executable {} from the client: {}'.format(
+        LOG.debug('pushing tier0executable {} from the MPI client: {}'.format(
             executable, file_size.format(get_obj_size(executable))))
         self.__pid = mpiclient.push_command_request(
             'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
@@ -567,7 +567,8 @@ class TaskQueue:
         #   dask/futures -> casampi -> serial
 
         if self.__parallel_wanted and daskhelpers.is_dask_ready():
-            task = daskhelpers.FutureTask(fn(**job_args), executor)
+            executable = Tier0JobRequest(fn, job_args, executor=executor)
+            task = daskhelpers.FutureTask(executable)
         elif self.__parallel_wanted and is_mpi_ready():
             executable = Tier0JobRequest(fn, job_args, executor=executor)
             task = AsyncTask(executable)
@@ -582,7 +583,8 @@ class TaskQueue:
         #   dask/futures -> casampi -> serial
 
         if self.__parallel_wanted and daskhelpers.is_dask_ready():
-            task = daskhelpers.FutureTask(lambda: fn(*args, **kwargs))
+            executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
+            task = daskhelpers.FutureTask(executable)
         elif self.__parallel_wanted and is_mpi_ready():
             executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
             task = AsyncTask(executable)
@@ -600,9 +602,15 @@ class TaskQueue:
         #   dask/futures -> casampi -> serial
 
         if self.__parallel_wanted and daskhelpers.is_dask_ready():
-            inputs = task_cls.Inputs(context, **task_args)
-            task = task_cls(inputs)
-            task = daskhelpers.FutureTask(task, executor)
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                                  dir=context.output_dir,
+                                                  delete=True)
+            tmpfile.close()
+            context_path = tmpfile.name
+            context.save(context_path)
+            executable = Tier0PipelineTask(task_cls, task_args, context_path)
+            task = daskhelpers.FutureTask(executable)
+
         elif self.__parallel_wanted and is_mpi_ready():
             tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
                                                   dir=context.output_dir,
