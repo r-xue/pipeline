@@ -9,13 +9,11 @@ import threading
 import webbrowser
 
 from astropy.utils.iers import conf as iers_conf
-
 import pkg_resources
 
-
-# customize casaconfig.config if pipeline/config.yaml is available
+# customize casaconfig/pipeconfig etc, if valid pipeline CLI opts are specified.
 from .config import cli_interface
-cli_args, session_config = cli_interface()
+_, session_config = cli_interface()
 
 try:
     # update the casaconfig attributes before importing the casatasks module
@@ -26,7 +24,7 @@ try:
                 value = os.path.expanduser(value)
             print(key, value)
             setattr(casa_config, key, value)
-except:
+except ImportError:
     pass
 
 from . import domain, environment, infrastructure
