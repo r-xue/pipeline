@@ -141,6 +141,9 @@
              
   <h1>Source code for pipeline.infrastructure.daskhelpers</h1><div class="highlight"><pre>
 <span></span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
 <span class="kn">from</span> <span class="nn">pipeline.domain.unitformat</span> <span class="kn">import</span> <span class="n">file_size</span>
 <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">get_obj_size</span>
@@ -155,28 +158,59 @@
 <a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.daskhelpers.FutureTask.html#pipeline.infrastructure.daskhelpers.FutureTask">[docs]</a>
 <span class="k">class</span> <span class="nc">FutureTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable</span><span class="p">):</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;submitting a FutureTask to the dask client: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">task</span><span class="p">,</span> <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">task</span><span class="p">))))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">__task</span> <span class="o">=</span> <span class="n">task</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">daskclient</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">):</span>
-                <span class="c1"># for JobRequest or PipelineTask</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">daskclient</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># for FunctionCall</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">daskclient</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__task</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;submitting a FutureTask </span><span class="si">%s</span><span class="s1"> from the dask client: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">executable</span><span class="p">,</span> <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">executable</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">daskclient</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">future_exec</span><span class="p">,</span> <span class="n">executable</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">task_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">task_result</span></div>
+        <span class="n">task_result</span><span class="p">,</span> <span class="n">tier0_executable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Received the task executation result (</span><span class="si">%s</span><span class="s1">) from a worker for executing </span><span class="si">%s</span><span class="s1">; content:&#39;</span><span class="p">,</span>
+                  <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">task_result</span><span class="p">)),</span> <span class="n">tier0_executable</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">task_result</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_merge_casa_commands</span><span class="p">(</span><span class="n">tier0_executable</span><span class="o">.</span><span class="n">logs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">task_result</span>
+
+    <span class="k">def</span> <span class="nf">_merge_casa_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logs</span><span class="p">):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;return request logs: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logs</span><span class="p">))</span>
+
+        <span class="n">response_logs</span> <span class="o">=</span> <span class="n">logs</span>
+        <span class="n">client_cmdfile</span> <span class="o">=</span> <span class="n">response_logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;casa_commands&#39;</span><span class="p">)</span>
+        <span class="n">tier0_cmdfile</span> <span class="o">=</span> <span class="n">response_logs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;casa_commands_tier0&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cmdfile</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cmdfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">cmdfile</span> <span class="ow">in</span> <span class="p">[</span><span class="n">client_cmdfile</span><span class="p">,</span> <span class="n">tier0_cmdfile</span><span class="p">]):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Merge </span><span class="si">{</span><span class="n">tier0_cmdfile</span><span class="si">}</span><span class="s1"> into </span><span class="si">{</span><span class="n">client_cmdfile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">client_cmdfile</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tier0_cmdfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tier0</span><span class="p">:</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tier0</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tier0_cmdfile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Cannot find Tier0 casa_commands.log; no merge needed&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="future_exec">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.daskhelpers.future_exec.html#pipeline.infrastructure.daskhelpers.future_exec">[docs]</a>
+<span class="k">def</span> <span class="nf">future_exec</span><span class="p">(</span><span class="n">tier0_executable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute a pipeline task.</span>
+
+<span class="sd">    This function is used to recreate and execute tasks/jobrequests on cluster nodes.</span>
+
+<span class="sd">    :param tier0_executable: the Tier0Executable task to execute</span>
+<span class="sd">    :return: the Result returned by executing the task</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">executable</span> <span class="o">=</span> <span class="n">tier0_executable</span><span class="o">.</span><span class="n">get_executable</span><span class="p">()</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">executable</span><span class="p">()</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Buffering the execution return (</span><span class="si">%s</span><span class="s1">) of </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">get_obj_size</span><span class="p">(</span><span class="n">ret</span><span class="p">)),</span> <span class="n">tier0_executable</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">tier0_executable</span></div>
+
 
 
 <div class="viewcode-block" id="is_dask_ready">

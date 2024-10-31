@@ -15,6 +15,7 @@ pipeline.infrastructure.daskhelpers
       :toctree:
       :nosignatures:
    
+      future_exec
       get_obj_size
       is_dask_ready
    

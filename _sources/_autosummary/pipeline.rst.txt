@@ -15,6 +15,7 @@
       :toctree:
       :nosignatures:
    
+      cli_interface
       find_frame
       initcli
       log_host_environment
@@ -49,6 +50,7 @@
    :recursive:
 
    cli
+   config
    domain
    environment
    extern

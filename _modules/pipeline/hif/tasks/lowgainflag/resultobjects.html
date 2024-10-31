@@ -149,7 +149,7 @@
 
 
 <div class="viewcode-block" id="LowgainflagResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagResults">[docs]</a>
 <span class="k">class</span> <span class="nc">LowgainflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">,</span>
                          <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -170,7 +170,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fully_flagged_antenna_notifications</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FullyFlaggedAntennasNotification</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="LowgainflagResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Update reference antennas for MS.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -185,7 +185,7 @@
 
 
 <div class="viewcode-block" id="LowgainflagDataResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">LowgainflagDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -194,7 +194,7 @@
         <span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LowgainflagDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagDataResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># do nothing, none of the gain cals used for the flagging</span>
         <span class="c1"># views should be used elsewhere</span>
@@ -208,7 +208,7 @@
 
 
 <div class="viewcode-block" id="LowgainflagViewResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagViewResults">[docs]</a>
 <span class="k">class</span> <span class="nc">LowgainflagViewResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">,</span>
                              <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -219,7 +219,7 @@
         <span class="n">flaggableviewresults</span><span class="o">.</span><span class="n">FlaggableViewResults</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LowgainflagViewResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults.html#pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.lowgainflag.resultobjects.LowgainflagViewResults.html#pipeline.hif.tasks.lowgainflag.qa.LowgainflagViewResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
