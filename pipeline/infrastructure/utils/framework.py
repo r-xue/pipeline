@@ -59,6 +59,15 @@ def is_top_level_task():
             not mpihelpers.MPIEnvironment.is_mpi_client)):  # running as MPI server
         return False
 
+    try:
+        from distributed import get_worker
+        worker_id = get_worker().id
+        dask_worker = True
+    except:
+        dask_worker = False
+    if dask_worker:
+        return False
+
     return task_depth() == 1
 
 
@@ -422,7 +431,8 @@ def plotms_iterate(
             tier0_plots_enabled = 'ENABLE_TIER0_PLOTMS' in os.environ or mpihelpers.ENABLE_TIER0_PLOTMS
 
             if tier0_plots_enabled and daskhelpers.is_dask_ready():
-                queued_job = daskhelpers.FutureTask(job_to_execute)
+                executable = mpihelpers.Tier0JobRequest(casa_tasks.plotms, job_to_execute.kw)
+                queued_job = daskhelpers.FutureTask(executable)
             elif tier0_plots_enabled and mpihelpers.is_mpi_ready():
                 executable = mpihelpers.Tier0JobRequest(casa_tasks.plotms, job_to_execute.kw)
                 queued_job = mpihelpers.AsyncTask(executable)

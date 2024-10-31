@@ -35,7 +35,7 @@ def session_startup(casa_config, loglevel=None):
     from casaconfig import config
     for key, value in casa_config.items():
         if hasattr(config, key) and value is not None:
-            print(key,value)
+            # print(key,value)
             setattr(config, key, value)
             if key=='logfile':
                 casatasks.casalog.setlogfile(value)
@@ -46,11 +46,12 @@ def session_startup(casa_config, loglevel=None):
     casalogfile = casatasks.casalog.logfile()
 
     # adjust the log filtering level for casalogsink
-    import pipeline.infrastructure.logging as logging
+
     casaloglevel = 'INFO1'
-    if loglevel is not None:
-        casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
-        casatasks.casalog.filter(casaloglevel)
+    # import pipeline.infrastructure.logging as logging
+    # if loglevel is not None:
+    #     casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
+    casatasks.casalog.filter(casaloglevel)
 
     return casalogfile, casaloglevel
 
@@ -180,7 +181,7 @@ def main():
     conda_activate = []
     if session_config['pipeconfig']['conda_env']:
         conda_opt.append('conda run -n {} --live-stream'.format(session_config['pipeconfig']['conda_env']))
-        conda_activate.append('conda activate {}'.format(session_config['pipeconfig']['conda_env']))
+        # conda_activate.append('conda activate {}'.format(session_config['pipeconfig']['conda_env']))
 
     # any env variables
     env_vars = []
@@ -211,7 +212,7 @@ def main():
     # assemble the final pipe-run call
 
     cmd = env_vars
-    # cmd.extend(conda_opt)
+    cmd.extend(conda_opt)
     cmd.extend(xvfb_run_opt)
     cmd.extend(mpirun_opt)
     cmd.extend(pipe_opt)
@@ -285,9 +286,9 @@ def main():
             worker_class=Nanny,
             processes=True,  # explicitly True to avoid GIL
             threads_per_worker=threads_per_worker,
-            scheduler_port=scheduler_port,
-
-            dashboard_address=f":{dashboard_port}" if dashboard_port else None,  # Set the dashboard port
+            scheduler_port=0, # scheduler_port,
+            # dashboard_address=f":{dashboard_port}" if dashboard_port else None,  # Set the dashboard port
+            dashboard_address=f":0" if dashboard_port else None,  # Set the dashboard port
         )
 
         # from dask_jobqueue import SLURMCluster
@@ -313,8 +314,14 @@ def main():
         # Properly initailize the worker process state
         casalogfile = casatasks.casalog.logfile()
         session_config['casaconfig']['logfile'] = casalogfile
-        print('run:', session_config['casaconfig'])
+        logger.info('run: %s', session_config['casaconfig'])
         daskclient.run(session_startup, session_config['casaconfig'], loglevel)
+        daskclient.run(os.getpid)
+        def get_status(dask_worker):
+            return dask_worker.status, dask_worker.id
+        status=daskclient.run(get_status)
+        from pprint import pformat
+        logger.info('worker status: %s', pformat(status))
 
     if cli_args.dry_run:
         if daskhelpers.daskclient is not None:

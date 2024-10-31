@@ -89,7 +89,9 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 job_to_execute = casa_tasks.imdev(**self._get_imdev_args(imagename))
 
                 if tier0_imdev_enabled and daskhelpers.is_dask_ready():
-                    queued_job = daskhelpers.FutureTask(job_to_execute, self._executor)
+                    executable = mpihelpers.Tier0JobRequest(
+                        casa_tasks.imdev, job_to_execute.kw, executor=self._executor)
+                    queued_job = daskhelpers.FutureTask(executable)
                 elif tier0_imdev_enabled and mpihelpers.is_mpi_ready():
                     executable = mpihelpers.Tier0JobRequest(
                         casa_tasks.imdev, job_to_execute.kw, executor=self._executor)

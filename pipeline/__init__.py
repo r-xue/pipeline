@@ -22,6 +22,8 @@ try:
     from casaconfig import config as casa_config
     for key, value in session_config.get('casaconfig', {}).items():
         if hasattr(casa_config, key) and value is not None:
+            if 'path' in key:
+                value = os.path.expanduser(value)
             print(key, value)
             setattr(casa_config, key, value)
 except:
@@ -49,8 +51,8 @@ casaloglevel = 'INFO1'
 if 'pipeconfig' not in session_config:
     session_config['pipeconfig'] = {}
 loglevel = session_config['pipeconfig'].get('loglevel', 'info')
-if loglevel is not None:
-    casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
+# if loglevel is not None:
+#    casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
 casalog.filter(casaloglevel)
 session_config['pipeconfig']['logfile']=casalog.logfile()
 
