@@ -10,6 +10,7 @@ import pickle
 import re
 import textwrap
 import traceback
+from typing import Generic, TypeVar
 import uuid
 
 from . import api
@@ -475,7 +476,10 @@ class ResultsProxy(object):
         delattr(result, 'casalog')
 
 
-class ResultsList(Results):
+T = TypeVar('T')
+
+
+class ResultsList(Results, Generic[T]):
     def __init__(self, results=None):
         super(ResultsList, self).__init__()
         self.__results = []
