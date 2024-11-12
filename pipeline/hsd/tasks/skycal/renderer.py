@@ -300,7 +300,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         state_ids = [state.id for state in reference_states]
         field_id = field.id
         with casa_tools.TableReader(ms.name) as tb:
-            t = tb.query(f'ANTENNA1==ANTENNA2 && FIELD_ID=={field_id} && DATA_DESC_ID IN {data_desc_ids} && STATE_ID IN {state_ids}')
+            t = tb.query(f'ANTENNA1==ANTENNA2 && FIELD_ID=={field_id} && DATA_DESC_ID IN {utils.list_to_str(data_desc_ids)} && STATE_ID IN {utils.list_to_str(state_ids)}')
             if t.nrows() == 0:
                 t.close()
                 raise RuntimeError(f'No OFF source data for field "{field.name}" (id {field_id}) in {ms.basename}')

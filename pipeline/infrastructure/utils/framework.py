@@ -265,7 +265,7 @@ def flatten_dict(d, join=operator.add, lift=lambda x: (x,)):
     def visit(subdict, results, partial_key):
         for k, v in subdict.items():
             new_key = lift(k) if partial_key is flag_first else join(partial_key, lift(k))
-            if isinstance(v, collections.Mapping):
+            if isinstance(v, collections.abc.Mapping):
                 visit(v, results, new_key)
             else:
                 results.append((new_key, v))

@@ -44,7 +44,7 @@ class DiffgaincalListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing DiffgaincalResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = diffgaincal.DiffGaincalResults
     generating_task = diffgaincal.DiffGaincal
 

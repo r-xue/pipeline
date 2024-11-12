@@ -12,6 +12,8 @@ As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
 Code changes for Pipeline2025 (as of July 24, 2024)
 0) Fix crash in recalcMomDiffSNR (not used by pipeline)
+1) Prevent crash due to no pyfits module available in CASA 6.6.6.
+2) Change np.string_ to np.bytes_
 
 Code changes for Pipeline2024 (as of July 30, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
@@ -226,12 +228,13 @@ if (casaVersion >= '5.9.9'):
     try:
         import astropy.io.fits as pyfits
     except:
-        with warnings.catch_warnings():
-            # ignore pyfits deprecation message, maybe casa will include astropy.io.fits soon
-            # Note: you cannot set category=DeprecationWarning in the call to filterwarnings() because the actual 
-            #       warning is PyFITSDeprecationWarning, which of course is not defined until you import pyfits!
-            warnings.filterwarnings("ignore") #, category=DeprecationWarning)  
-            import pyfits 
+        if casaVersion < '6.6.6':
+            with warnings.catch_warnings():
+                # ignore pyfits deprecation message, maybe casa will include astropy.io.fits soon
+                # Note: you cannot set category=DeprecationWarning in the call to filterwarnings() because the actual 
+                #       warning is PyFITSDeprecationWarning, which of course is not defined until you import pyfits!
+                warnings.filterwarnings("ignore") #, category=DeprecationWarning)  
+                import pyfits 
 else:
     try:
         import pyfits
@@ -305,7 +308,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle11.py,v 7.22 2024/07/30 15:22:26 we Exp $" 
+    myversion = "$Id: findContinuumCycle12.py,v 8.2 2024/09/26 19:51:04 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -868,19 +871,19 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         if mask != '':
             print("The mask parameter is not relevant for meanSpectrumMethod='mom0mom8jointMask'.  Use the userJointMask parameter instead.")
             return
-        if type(trimChannels) in [str, np.string_]:
+        if isinstance(trimChannels, (str, np.bytes_)):
             trimChannelsString = "'" + trimChannels + "'"
         else:
             trimChannelsString = str(trimChannels)
-        if type(spectralDynamicRangeBandWidth) in [str, np.string_]:
+        if isinstance(spectralDynamicRangeBandWidth, (str, np.bytes_)):
             spectralDynamicRangeString = "'" + spectralDynamicRangeBandWidth + "'"
         else:
             spectralDynamicRangeString = str(spectralDynamicRangeBandWidth)
-        if type(narrow) in [str, np.string_]:
+        if isinstance(narrow, (str, np.bytes_)):
             narrowString = "'" + narrow + "'"
         else:
             narrowString = str(narrow)
-        if type(amendMaskIterations) in [str, np.string_]:
+        if isinstance(amendMaskIterations, (str, np.bytes_)):
             amendMaskIterationsString = "'" + amendMaskIterations + "'"
         else:
             amendMaskIterationsString = str(amendMaskIterations)
@@ -892,7 +895,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     if (len(vis) > 0):
         # convert vis to a list (if it is a string)
         # vis is a non-blank list or non-blank string
-        if (type(vis) in [str,np.string_]):
+        if isinstance(vis, (str,np.bytes_)):
             vis = vis.split(',')
         # vis is now assured to be a non-blank list
         for v in vis:
@@ -7043,7 +7046,7 @@ def splitListIntoContiguousListsAndTrim(totalChannels, channels, trimChannels=0.
     maxTrim and maxTrimChannels: used in 'auto' mode
     Returns: a new single list
     """
-    if type(trimChannels) not in [str, np.string_]:
+    if not isinstance(trimChannels, (str, np.bytes_)):
         if (trimChannels <= 0):
             return(np.array(channels))
     length = len(channels)
@@ -8560,7 +8563,7 @@ def widenSelections(datfiles, eachside=1, minwidth=0, verbose=True, nchan=None):
        multiple files are passed, then return the bandwidth increase factor
     """
     newBW = 0; oldBW = 0
-    if type(datfiles) in [str, np.string_]:
+    if isinstance(datfiles, (str, np.bytes_)):
         if datfiles.find('*') >= 0:
             datfiles = sorted(glob.glob(datfiles))
         else:
@@ -10212,9 +10215,9 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
         return
     chanInfo = numberOfChannelsInCube(cube, returnChannelWidth=True, returnFreqs=True) 
     nchan, firstFreq, lastFreq, channelWidth = chanInfo
-    if type(intersectRanges) in [str, np.string_]:
+    if isinstance(intersectRanges, (str, np.bytes_)):
         selection = intersectRanges
-    elif type(intersectRanges) in [list, np.ndarray]:
+    elif isinstance(intersectRanges, (list, np.ndarray)):
         selection = intersectRanges[0]
         if len(intersectRanges) > 1:
             for r in intersectRanges[1:]:
@@ -11380,7 +11383,7 @@ def transitions(vis, spw, source='', intent='OBSERVE_TARGET',
             source = mymsmd.namesforfields(fields[0])[0]
             if verbose:
                 print("For spw %d, picked source: " % (spw), source)
-    if (type(source) == str or type(source) == np.string_):
+    if isinstance(source, (str, np.bytes_)):
         sourcerows = np.where(names==source)[0]
         if (len(sourcerows) == 0):
             # look for characters ()/ and replace with underscore
