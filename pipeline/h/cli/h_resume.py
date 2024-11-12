@@ -4,7 +4,7 @@ import pipeline.infrastructure.launcher as launcher
 
 def h_resume(filename=None):
 
-    """Restore a saved pipeline state
+    """Restore a save pipeline state
 
     h_resume restores a name pipeline state from disk, allowing a
     suspended pipeline reduction session to be resumed.
