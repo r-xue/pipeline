@@ -133,17 +133,17 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     """Computes the wide field position correction.
 
     Args:
-        ra: Uncorrected Right Ascension.
-        dec: Uncorrected Declination.
-        obs_long: Geographic longitude of observatory.
-        obs_lat: Geographic latitude of observatory.
-        date_time: Date and time of observation.
-        zenith_angle: Zenith angle in radians
-        offset_pa: Return the angular offset and parallactic angle instead of offset along RA and Dec.
+        ra(Dict): Uncorrected Right Ascension.
+        dec(Dict): Uncorrected Declination.
+        obs_long(Dict): Geographic longitude of observatory.
+        obs_lat(Dict): Geographic latitude of observatory.
+        date_time(Dict): Date and time of observation.
+        zenith_angle(float): Zenith angle (angle between 90 degrees and the target) in radians
+        offset_pa(bool): Return the angular offset and parallactic angle instead of offset along RA and Dec.
 
-    The arguments are all in casa_tools.quanta format (dictionary containing
-    value (float) and unit (str)). The function internally uses radian units for
-    computation. The arguments may have any convertible units.
+    All arguments except zenith_angle and offset_pa are in casa_tools.quanta format (dictionary containing
+    value (float) and unit (str)). The function internally uses radian units for computation. The arguments
+    may have any convertible units.
 
     Returns:
         A tuple containing RA and Dec offsets with units (in radians).
@@ -215,7 +215,7 @@ def calc_zenith_angle(imageheader):
     Args:
         imageheader: image header containing necessary image metadata
     Returns:
-        The zenith angle of the image in radians.
+        The zenith angle (angle between 90 degrees and the target) of the image in radians.
     """
 
     imageheader = {key.upper():value for key, value in imageheader.items()}
