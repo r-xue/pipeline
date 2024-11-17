@@ -17,3 +17,4 @@ convention = "google"
 preview = true
 exclude = ["*.pyi"]
 docstring-code-format = true
+quote-style = "single"
