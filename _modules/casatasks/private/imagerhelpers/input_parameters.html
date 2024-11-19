@@ -9,7 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -176,7 +176,7 @@
 <span class="c1">######################################################</span>
 
 <div class="viewcode-block" id="ImagerParameters">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters">[docs]</a>
 <span class="k">class</span> <span class="nc">ImagerParameters</span><span class="p">():</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
             <span class="c1"># Input Data: what gets in</span>
@@ -508,7 +508,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">printParameters</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ImagerParameters.resetParameters">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.resetParameters">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.resetParameters">[docs]</a>
     <span class="k">def</span> <span class="nf">resetParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;reset parameters to the original settting for interactive, nsigma, auto-multithresh when savemodel!=&#39;none&#39;&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inpars</span><span class="p">[</span><span class="s2">&quot;savemodel&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span> <span class="ow">and</span> <span class="p">(</span>
@@ -531,7 +531,7 @@
 
 
 <div class="viewcode-block" id="ImagerParameters.getAllPars">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.getAllPars">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.getAllPars">[docs]</a>
     <span class="k">def</span> <span class="nf">getAllPars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the state of all parameters&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">allparameters</span></div>
@@ -1168,7 +1168,7 @@
         <span class="k">return</span> <span class="n">errs</span>
 
 <div class="viewcode-block" id="ImagerParameters.checkmsforwtspec">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.checkmsforwtspec">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.checkmsforwtspec">[docs]</a>
     <span class="k">def</span> <span class="nf">checkmsforwtspec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; check if WEIGHT_SPECTRUM column exist when </span>
 <span class="sd">            a list of vis is given. Add the column for an MS</span>
@@ -1205,7 +1205,7 @@
         <span class="c1"># noOp for nms==1 </span>
 
 <div class="viewcode-block" id="ImagerParameters.mslist_timesorting">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.mslist_timesorting">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.mslist_timesorting">[docs]</a>
     <span class="k">def</span> <span class="nf">mslist_timesorting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mslist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">            wrapper for mslisthelper.sort_mslist to get a sorting order w.r.t the original</span>
@@ -1220,7 +1220,7 @@
 
  
 <div class="viewcode-block" id="ImagerParameters.addwtspec">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImagerParameters.html#pipeline.hif.heuristics.imageparams_base.ImagerParameters.addwtspec">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_continuum.ImagerParameters.addwtspec">[docs]</a>
     <span class="k">def</span> <span class="nf">addwtspec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mslist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">            Add the column for an MS which does not have one if other MSs have the column.</span>

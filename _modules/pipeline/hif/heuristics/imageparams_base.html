@@ -9,7 +9,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=f03c384a" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=678032d9" />
 
   
@@ -174,7 +174,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageParamsHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Image parameters heuristics base class. One instance is made per make/editimlist</span>
@@ -238,7 +238,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">spwidsclean</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_ref_msname">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_ref_msname">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_ref_msname">[docs]</a>
     <span class="k">def</span> <span class="nf">get_ref_msname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the first MS name that contains data for the given spw ID.</span>
@@ -251,7 +251,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.primary_beam_size">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.primary_beam_size">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.primary_beam_size">[docs]</a>
     <span class="k">def</span> <span class="nf">primary_beam_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;Calculate primary beam size in arcsec.&#39;&#39;&#39;</span>
@@ -291,7 +291,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.cont_ranges_spwsel">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.cont_ranges_spwsel">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.cont_ranges_spwsel">[docs]</a>
     <span class="k">def</span> <span class="nf">cont_ranges_spwsel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine spw selection parameters to exclude lines for mfs and cont images.&quot;&quot;&quot;</span>
 
@@ -486,7 +486,7 @@
         <span class="k">return</span> <span class="n">largest_primary_beam_size</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.synthesized_beam">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.synthesized_beam">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.synthesized_beam">[docs]</a>
     <span class="k">def</span> <span class="nf">synthesized_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_intent_list</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="p">[],</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">known_beams</span><span class="o">=</span><span class="p">{},</span>
                          <span class="n">force_calc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate synthesized beam for a given field / spw selection.&quot;&quot;&quot;</span>
@@ -741,7 +741,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.cell">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.cell">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.cell">[docs]</a>
     <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="p">,</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate cell size.&quot;&quot;&quot;</span>
@@ -846,7 +846,7 @@
         <span class="k">return</span> <span class="n">valid_data</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.gridder">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.gridder">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.gridder">[docs]</a>
     <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the gridder to use for the given intent and field.&quot;&quot;&quot;</span>
 
@@ -1070,7 +1070,7 @@
         <span class="k">return</span> <span class="n">field_str_list</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.select_fields">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.select_fields">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.select_fields">[docs]</a>
     <span class="k">def</span> <span class="nf">select_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Select fields id based on intent, field name, or separation constrains from the phasecenter</span>
 
@@ -1143,7 +1143,7 @@
         <span class="k">return</span> <span class="n">is_mosaic</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.is_mosaic">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.is_mosaic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.is_mosaic">[docs]</a>
     <span class="k">def</span> <span class="nf">is_mosaic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines if the given field/intent from a MS list is considered as a mosaic or not.&quot;&quot;&quot;</span>
 
@@ -1315,7 +1315,7 @@
         <span class="k">return</span> <span class="n">repr_target</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">virtual_repr_spw</span><span class="p">,</span> <span class="n">repr_freq</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> <span class="n">minAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAllowedBeamAxialRatio</span><span class="p">,</span> <span class="n">sensitivityGoal</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.imsize">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.imsize">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.imsize">[docs]</a>
     <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">primary_beam</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">centreonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1545,7 +1545,7 @@
             <span class="k">return</span> <span class="s1">&#39;hogbom&#39;</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_min_max_freq">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_min_max_freq">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_min_max_freq">[docs]</a>
     <span class="k">def</span> <span class="nf">get_min_max_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given a comma separated string list of spectral windows, determines the minimum and maximum</span>
@@ -1580,7 +1580,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_fractional_bandwidth">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_fractional_bandwidth">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_fractional_bandwidth">[docs]</a>
     <span class="k">def</span> <span class="nf">get_fractional_bandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns fractional bandwidth for selected spectral windows&quot;&quot;&quot;</span>
@@ -1591,7 +1591,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.robust">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.robust">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.robust">[docs]</a>
     <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Default robust value.&quot;&quot;&quot;</span>
 
@@ -1599,7 +1599,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.center_field_ids">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.center_field_ids">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.center_field_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">center_field_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msnames</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">phasecenter</span><span class="p">,</span> <span class="n">exclude_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get per-MS IDs of field closest to the phase center.&quot;&quot;&quot;</span>
@@ -1627,7 +1627,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.calc_topo_ranges">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.calc_topo_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.calc_topo_ranges">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_topo_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate TOPO ranges for hif_tclean inputs.</span>
 
@@ -1746,7 +1746,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_channel_flags">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_channel_flags">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_channel_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">get_channel_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msname</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine channel flags for a given field and spw selection in one MS.</span>
@@ -1811,7 +1811,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_first_unflagged_channel_from_center">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_first_unflagged_channel_from_center">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_first_unflagged_channel_from_center">[docs]</a>
     <span class="k">def</span> <span class="nf">get_first_unflagged_channel_from_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_flags</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find first unflagged channel from center channel.</span>
@@ -1844,7 +1844,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.freq_intersection">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.freq_intersection">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.freq_intersection">[docs]</a>
     <span class="k">def</span> <span class="nf">freq_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;LSRK&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate LSRK frequency intersection of a list of MSs for a</span>
@@ -1951,7 +1951,7 @@
         <span class="k">return</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_bw_corr_factor">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_bw_corr_factor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_bw_corr_factor">[docs]</a>
     <span class="k">def</span> <span class="nf">get_bw_corr_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">nchan</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate effective bandwidth correction factor.</span>
@@ -1993,7 +1993,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.calc_sensitivities">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.calc_sensitivities">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.calc_sensitivities">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_sensitivities</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">nbin</span><span class="p">,</span> <span class="n">spw_topo_chan_param_dict</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">gridder</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">,</span>
             <span class="n">center_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">known_sensitivities</span><span class="o">=</span><span class="p">{},</span>
@@ -2214,7 +2214,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_sensitivity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_sensitivity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_sensitivity">[docs]</a>
     <span class="k">def</span> <span class="nf">get_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chansel</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get sensitivity for a field / spw / chansel combination from CASA&#39;s</span>
@@ -2304,7 +2304,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.dr_correction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.dr_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.dr_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">dr_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">tlimit</span><span class="p">,</span> <span class="n">drcorrect</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of cleaning threshold due to dynamic range limitations.&quot;&quot;&quot;</span>
 
@@ -2315,7 +2315,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.niter_correction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.niter_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.niter_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of number of cleaning iterations due to mask size.</span>
 
@@ -2372,7 +2372,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.calc_percentile_baseline_length">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.calc_percentile_baseline_length">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.calc_percentile_baseline_length">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_percentile_baseline_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percentile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate percentile baseline length for the vis list used in this heuristics instance.&quot;&quot;&quot;</span>
 
@@ -2389,7 +2389,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.niter_by_iteration">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.niter_by_iteration">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.niter_by_iteration">[docs]</a>
     <span class="k">def</span> <span class="nf">niter_by_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">niter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean niter heuristic at each iteration.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">niter</span></div>
@@ -2399,7 +2399,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_autobox_params">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_autobox_params">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_autobox_params">[docs]</a>
     <span class="k">def</span> <span class="nf">get_autobox_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">robust</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Default auto-boxing parameters.&quot;&quot;&quot;</span>
@@ -2457,7 +2457,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.antenna_diameters">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.antenna_diameters">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.antenna_diameters">[docs]</a>
     <span class="k">def</span> <span class="nf">antenna_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Count the antennas of given diameters per MS.&quot;&quot;&quot;</span>
@@ -2478,7 +2478,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.majority_antenna_ids">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.majority_antenna_ids">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.majority_antenna_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">majority_antenna_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the IDs of the majority (by diameter) antennas per MS.&quot;&quot;&quot;</span>
@@ -2502,7 +2502,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.arrays">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.arrays">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.arrays">[docs]</a>
     <span class="k">def</span> <span class="nf">arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the array descriptions.&quot;&quot;&quot;</span>
@@ -2511,7 +2511,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.antenna_ids">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.antenna_ids">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.antenna_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">antenna_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the antenna IDs to be used for imaging.&quot;&quot;&quot;</span>
@@ -2533,7 +2533,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.check_psf">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.check_psf">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.check_psf">[docs]</a>
     <span class="k">def</span> <span class="nf">check_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_name</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check for bad psf fits.&quot;&quot;&quot;</span>
@@ -2563,7 +2563,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.usepointing">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.usepointing">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.usepointing">[docs]</a>
     <span class="k">def</span> <span class="nf">usepointing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean flag to use pointing table.&quot;&quot;&quot;</span>
@@ -2573,7 +2573,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.mosweight">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.mosweight">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.mosweight">[docs]</a>
     <span class="k">def</span> <span class="nf">mosweight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean flag to use mosaic weighting.&quot;&quot;&quot;</span>
@@ -2584,14 +2584,14 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.tclean_stopcode_ignore">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.tclean_stopcode_ignore">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.tclean_stopcode_ignore">[docs]</a>
     <span class="k">def</span> <span class="nf">tclean_stopcode_ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteraton</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean stop code(s) to be ignored for warning messages.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.keep_iterating">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.keep_iterating">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.keep_iterating">[docs]</a>
     <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if another tclean iteration is necessary.&quot;&quot;&quot;</span>
@@ -2610,7 +2610,7 @@
             <span class="k">return</span> <span class="n">threshold</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.nsigma">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.nsigma">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.nsigma">[docs]</a>
     <span class="k">def</span> <span class="nf">nsigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nsigma parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">hm_nsigma</span></div>
@@ -2642,7 +2642,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristics.find_good_commonbeam">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.find_good_commonbeam">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.find_good_commonbeam">[docs]</a>
     <span class="k">def</span> <span class="nf">find_good_commonbeam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find and replace outlier beams to calculate a good common beam.</span>
@@ -2711,7 +2711,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_cfcaches">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_cfcaches">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_cfcaches">[docs]</a>
     <span class="k">def</span> <span class="nf">get_cfcaches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfcache</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses comma separated cfcache string</span>
 
@@ -2722,35 +2722,35 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.smallscalebias">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.smallscalebias">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.smallscalebias">[docs]</a>
     <span class="k">def</span> <span class="nf">smallscalebias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A numerical control to bias the scales when using multi-scale or mtmfs algorithms&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.restoringbeam">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.restoringbeam">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.restoringbeam">[docs]</a>
     <span class="k">def</span> <span class="nf">restoringbeam</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean parameter&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.pointingoffsetsigdev">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.pointingoffsetsigdev">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.pointingoffsetsigdev">[docs]</a>
     <span class="k">def</span> <span class="nf">pointingoffsetsigdev</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean parameter&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.pbmask">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.pbmask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.pbmask">[docs]</a>
     <span class="k">def</span> <span class="nf">pbmask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean pbmask parameter heuristics&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.get_outmaskratio">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.get_outmaskratio">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.get_outmaskratio">[docs]</a>
     <span class="k">def</span> <span class="nf">get_outmaskratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>  <span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pbimage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cleanmask</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                          <span class="n">pblimit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">frac_lim</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine fractional flux in final image outside cleanmask&quot;&quot;&quot;</span>
@@ -2758,7 +2758,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.weighting">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.weighting">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.weighting">[docs]</a>
     <span class="k">def</span> <span class="nf">weighting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the weighting scheme.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span>
@@ -2768,7 +2768,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.perchanweightdensity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.perchanweightdensity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.perchanweightdensity">[docs]</a>
     <span class="k">def</span> <span class="nf">perchanweightdensity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the perchanweightdensity parameter.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span>
@@ -2778,7 +2778,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristics.psfcutoff">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristics.psfcutoff">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristics.psfcutoff">[docs]</a>
     <span class="k">def</span> <span class="nf">psfcutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean psfcutoff parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span></div>
