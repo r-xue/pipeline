@@ -143,7 +143,7 @@ class modelfitSummaryChart(object):
 
         mysize = 'small'
         # creates a range of colors evenly spaced along the color spectrum based on the number of sources to be plotted
-        n = len(webdicts)
+        n = max(len(webdicts), 2)
         cmap = plt.colormaps["plasma"]
         colors = [cmap(i / (n - 1)) for i in range(n)]
         colorcount = 0
@@ -301,7 +301,7 @@ class residualsSummaryChart(object):
 
         mysize = 'small'
         # creates a range of colors evenly spaced along the color spectrum based on the number of sources to be plotted
-        n = len(webdicts)
+        n = max(len(webdicts), 2)
         cmap = plt.colormaps["plasma"]
         colors = [cmap(i / (n - 1)) for i in range(n)]
         colorcount = 0
