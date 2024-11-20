@@ -20,7 +20,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  infiles=None, antenna=None,
                  field=None, spw=None, pol=None):
 
-    """Flag spectra based on predefined criteria of single dish pipeline
+    """Flag spectra based on predefined criteria of single dish pipeline.
 
     Data are flagged based on several flagging rules. Available rules are:
     expected rms, calculated rms, and running mean of both pre-fit and
@@ -71,24 +71,24 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
 
         plotflag: True to plot result of data flagging.
 
-        parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
-            default: None (equivalent to 'automatic')
+        parallel: Execute using CASA HPC functionality, if available. Options: 'automatic', 'true', 'false', True, False.
+            Default: None (equivalent to 'automatic')
 
         infiles: ASDM or MS files to be processed. This parameter behaves as data selection parameter. The name specified by
             infiles must be registered to context before you run
             hsd_blflag.
 
-        antenna: Data selection by antenna names or ids. example: 'PM03,PM04'
-            '' (all antennas)
+        antenna: Data selection by antenna names or ids. example: 'PM03,PM04',
+            '' (all antennas).
 
-        field: Data selection by field names or ids. example: '`*Sgr*,M100`'
-            '' (all fields)
+        field: Data selection by field names or ids. example: '`*Sgr*,M100`',
+            '' (all fields).
 
-        spw: Data selection by spw ids. example: '3,4' (spw 3 and 4)
-            '' (all spws)
+        spw: Data selection by spw ids. example: '3,4' (spw 3 and 4),
+            '' (all spws).
 
-        pol: Data selection by polarizations. example: 'XX,YY' (correlation XX and YY)
-            '' (all polarizations)
+        pol: Data selection by polarizations. example: 'XX,YY' (correlation XX and YY),
+            '' (all polarizations).
 
     Returns:
         The results object for the pipeline task is returned.

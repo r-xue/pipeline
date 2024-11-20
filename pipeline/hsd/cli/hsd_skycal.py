@@ -9,7 +9,7 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
                  infiles=None, field=None,
                  spw=None, scan=None):
 
-    """Calibrate data
+    """Calibrate data.
 
     The hsd_skycal generates a caltable for sky calibration that stores
     reference spectra, which is to be subtracted from on-source spectra to filter
@@ -44,7 +44,7 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
         elongated: Sub-parameter for calmode. Edge marking parameter for 'otf' mode. Please set True only if observed area is elongated
             in one direction.
 
-        parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
+        parallel: Execute using CASA HPC functionality, if available. Options: 'automatic', 'true', 'false', True, False.
             default: None (equivalent to 'automatic')
 
         infiles: List of data files. These must be a name of MeasurementSets that are registered to context via hsd_importdata task.
@@ -52,10 +52,10 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
 
         field: Data selection by field name.
 
-        spw: Data selection by spw. (defalut all spws) example: '3,4' (generate caltable for spw 3 and 4)
+        spw: Data selection by spw. (defalut all spws) example: '3,4' (generate caltable for spw 3 and 4),
             ['0','2'] (spw 0 for first data, 2 for second)
 
-        scan: Data selection by scan number. (default all scans) example: '22,23' (use scan 22 and 23 for calibration)
+        scan: Data selection by scan number. (default all scans) example: '22,23' (use scan 22 and 23 for calibration),
             ['22','24'] (scan 22 for first data, 24 for second)
 
     Returns:

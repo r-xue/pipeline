@@ -7,14 +7,14 @@ import pipeline.h.cli.utils as utils
 def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
                 infiles=None, caltable=None):
 
-    """Derive Kelvin to Jy calibration tables
+    """Derive Kelvin to Jy calibration tables.
 
     Derive the Kelvin to Jy calibration for list of MeasurementSets.
 
     Args:
         dbservice: Whether or not accessing Jy/K DB to retrieve conversion factors.
 
-        endpoint: Which endpoints to use for query options: 'asdm', 'model-fit', 'interpolation'
+        endpoint: Which endpoints to use for query. Options: 'asdm', 'model-fit', 'interpolation'.
 
         reffile: Path to a file containing Jy/K factors for science data, which must be provided by associating calibrator reduction or the observatory
             measurements. Jy/K factor must take into account all efficiencies, i.e.,

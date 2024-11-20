@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                     bdfflags=None, ocorr_mode=None, asis=None, hm_rasterscan=None):
 
-    """Restore flagged and calibration single dish data from a pipeline run
+    """Restore flagged and calibration single dish data from a pipeline run.
 
     The hsd_restoredata task restores flagged and calibrated MeasurementSets
     from archived ASDMs and pipeline flagging and calibration data products.
@@ -68,7 +68,7 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
             example: products_dir='myproductspath'
 
         copytoraw: Copy calibration and flagging tables from ``products_dir`` to ``rawdata_dir`` directory.
-            Default: True
+            Default: True.
 
             example: copytoraw=False
 
@@ -76,20 +76,20 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
 
             example: rawdata_dir='myrawdatapath'
 
-        lazy: Use the lazy filler option Default: False
+        lazy: Use the lazy filler option Default: False.
 
             example: lazy=True
 
-        bdfflags: Set the BDF flags Default: True
+        bdfflags: Set the BDF flags Default: True.
 
             example: bdfflags=False
 
-        ocorr_mode: Set ocorr_mode Default: 'ao'
+        ocorr_mode: Set ocorr_mode. Default: 'ao'.
 
             example: ocorr_mode='ca'
 
         asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
-            Default: 'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR'
+            Default: 'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR'.
 
             example: asis='Source Receiver'
 

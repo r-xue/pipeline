@@ -18,18 +18,23 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
     (atmtype = 'auto'). You may specify desired atmospheric model by giving
     either single integer (apply to all EBs) or a list of integers (models
     per EB) to atmtype parameter. Please see parameter description for the
-    meanings of integer values.Args:
+    meanings of integer values.
+
+    Args:
         atmtype: Type of atmospheric transmission model represented as an integer. Available options are as follows. Integer values can be given as
             either integer or string, i.e. both 1 and '1' are acceptable.
-            'auto': perform heuristics to choose best model (default)
-            1: tropical
-            2: mid latitude summer
-            3: mid latitude winter
-            4: subarctic summer
-            5: subarctic winter
+            
+            - 'auto': perform heuristics to choose best model (default).
+            - 1: tropical.
+            - 2: mid latitude summer.
+            - 3: mid latitude winter.
+            - 4: subarctic summer.
+            - 5: subarctic winter.
+
             If list of integer is given, it also performs heuristics using the
             provided values instead of default, [1, 2, 3, 4], which is used
             when 'auto' is provided. List input should not contain 'auto'.
+
             Default: 'auto'
 
         dtem_dh: Temperature gradient [K/km], e.g. -5.6. ("" = Tool default) The value is directly passed to initialization method for ATM model.
@@ -51,16 +56,16 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
             infiles must be registered to context before you run
             hsd_atmcor.
 
-        antenna: Data selection by antenna names or ids. example: 'PM03,PM04'
+        antenna: Data selection by antenna names or ids. example: 'PM03,PM04',
             '' (all antennas)
 
-        field: Data selection by field names or ids. example: '`*Sgr*,M100`'
+        field: Data selection by field names or ids. example: '`*Sgr*,M100`',
             '' (all fields)
 
-        spw: Data selection by spw ids. example: '3,4' (spw 3 and 4)
+        spw: Data selection by spw ids. example: '3,4' (spw 3 and 4),
             '' (all spws)
 
-        pol: Data selection by polarizations. example: 'XX,YY' (correlation XX and YY)
+        pol: Data selection by polarizations. example: 'XX,YY' (correlation XX and YY),
             '' (all polarizations)
 
     Returns:

@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, asis=None, process_caldevice=None, overwrite=None,
                    nocopy=None, bdfflags=None, datacolumns=None, lazy=None, with_pointing_correction=None, createmms=None):
 
-    """Imports data into the single dish pipeline
+    """Imports data into the single dish pipeline.
 
     The hsd_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
@@ -29,8 +29,8 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
         hm_rasterscan: Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis ('time') and direction analysis ('direction'), are available.
             Default is 'time'.
 
-        parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
-            default: None (equivalent to 'automatic')
+        parallel: Execute using CASA HPC functionality, if available. Options: 'automatic', 'true', 'false', True, False.
+            Default: None (equivalent to 'automatic').
 
         asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names
             separated by space characters.
@@ -49,7 +49,7 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
         datacolumns: Dictionary defining the data types of existing columns. The format is:
             {'data': 'data type 1'}
             or
-            {'data': 'data type 1', 'corrected': 'data type 2'}
+            {'data': 'data type 1', 'corrected': 'data type 2'}.
             For ASDMs the data type can only be RAW and one
             can only specify it for the data column.
             For MSes one can define two different data types

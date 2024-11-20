@@ -11,7 +11,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, parallel=None,
                  flagbackup=None):
 
-    """Do basic flagging of a list of MeasurementSets
+    """Do basic flagging of a list of MeasurementSets.
 
     The hsd_flagdata data performs basic flagging operations on a list of
     MeasurementSets including:
@@ -34,7 +34,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
         scannumber: A string containing a comma delimited list of scans to be flagged.
 
         intents: A string containing a comma delimited list of intents against which the scans to be flagged are matched.
-            example: `'*BANDPASS*'`
+            Example: `'*BANDPASS*'`.
 
         edgespw: Flag the edge spectral window channels.
 
@@ -70,8 +70,8 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
 
         qa2: QA2 flags
 
-        parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
-            default: None (equivalent to 'automatic')
+        parallel: Execute using CASA HPC functionality, if available. Options: 'automatic', 'true', 'false', True, False.
+            Default: None (equivalent to 'automatic').
 
         flagbackup: Back up any pre-existing flags before applying new ones.
 

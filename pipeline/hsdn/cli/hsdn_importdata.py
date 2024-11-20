@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None,
                     overwrite=None, nocopy=None, createmms=None):
 
-    """Imports Nobeyama data into the single dish pipeline
+    """Imports Nobeyama data into the single dish pipeline.
 
     Imports Nobeyama data into the single dish pipeline.
     The hsdn_importdata task loads the specified visibility data into the pipeline
@@ -33,7 +33,7 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
         datacolumns: Dictionary defining the data types of existing columns. The format is:
             {'data': 'data type 1'}
             or
-            {'data': 'data type 1', 'corrected': 'data type 2'}
+            {'data': 'data type 1', 'corrected': 'data type 2'}.
             For ASDMs the data type can only be RAW and one
             can only specify it for the data column.
             For MSes one can define two different data types

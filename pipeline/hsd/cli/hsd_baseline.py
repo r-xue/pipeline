@@ -9,7 +9,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  clusteringalgorithm=None, deviationmask=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None):
 
-    """Detect and validate spectral lines, subtract baseline by masking detected lines
+    """Detect and validate spectral lines, subtract baseline by masking detected lines.
 
     The hsd_baseline task subtracts baseline from calibrated spectra.
     By default, the task tries to find spectral line feature using
@@ -147,34 +147,34 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
         broadline: Try to detect broad component of spectral line if True.
 
         clusteringalgorithm: Selection of the algorithm used in the clustering analysis to check the validity of detected line features.
-            'kmean' algorithm and hierarchical clustering algorithm
+            The 'kmean' algorithm, hierarchical clustering algorithm,
             'hierarchy', and their combination ('both') are so far
             implemented.
 
         deviationmask: Apply deviation mask in addition to masks determined by the automatic line detection.
 
-        parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
-            default: None (equivalent to 'automatic')
+        parallel: Execute using CASA HPC functionality, if available. Options: 'automatic', 'true', 'false', True, False.
+            default: None (equivalent to 'automatic').
 
         infiles: List of data files. These must be a name of MeasurementSets that are registered to context via
             hsd_importdata task.
             example: vis=['X227.ms', 'X228.ms']
 
-        field: Data selection by field. example: '1' (select by FIELD_ID)
-            'M100*' (select by field name)
-            '' (all fields)
+        field: Data selection by field. example: '1' (select by FIELD_ID),
+            'M100*' (select by field name),
+            '' (all fields).
 
-        antenna: Data selection by antenna. example: '1' (select by ANTENNA_ID)
-            'PM03' (select by antenna name)
-            '' (all antennas)
+        antenna: Data selection by antenna. example: '1' (select by ANTENNA_ID),
+            'PM03' (select by antenna name),
+            '' (all antennas).
 
-        spw: Data selection by spw. example: '3,4' (generate caltable for spw 3 and 4)
-            ['0','2'] (spw 0 for first data, 2 for second)
-            '' (all spws)
+        spw: Data selection by spw. example: '3,4' (generate caltable for spw 3 and 4),
+            ['0','2'] (spw 0 for first data, 2 for second),
+            '' (all spws).
 
-        pol: Data selection by polarizations. example: '0' (generate caltable for pol 0)
-            ['0~1','0'] (pol 0 and 1 for first data, only 0 for second)
-            '' (all polarizations)
+        pol: Data selection by polarizations. example: '0' (generate caltable for pol 0),
+            ['0~1','0'] (pol 0 and 1 for first data, only 0 for second),
+            '' (all polarizations).
 
     Returns:
         The results object for the pipeline task is returned.

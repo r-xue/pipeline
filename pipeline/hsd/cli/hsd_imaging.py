@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
-    """Generate single dish images
+    """Generate single dish images.
 
     The hsd_imaging task generates single dish images per antenna as
     well as combined image over whole antennas for each field and
@@ -18,7 +18,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
     Args:
         mode: Imaging mode controls imaging parameters in the task. Accepts either "line" (spectral line imaging) or "ampcal"
-            (image settings for amplitude calibrator)
+            (image settings for amplitude calibrator).
 
         restfreq: Rest frequency
 

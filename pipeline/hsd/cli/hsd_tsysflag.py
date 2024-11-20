@@ -13,7 +13,7 @@ def hsd_tsysflag(vis=None, caltable=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
                  metric_order=None, normalize_tsys=None, filetemplate=None):
 
-    """Flag deviant system temperature measurements
+    """Flag deviant system temperature measurements.
 
     Flag deviant system temperature measurements for single dish measurements. This is done by running a
     sequence of flagging sub-tasks (tests), each looking for a different type of possible error.

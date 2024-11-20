@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hsdn_restoredata(vis=None, caltable=None, reffile=None,
                      products_dir=None, copytoraw=None, rawdata_dir=None, hm_rasterscan=None):
 
-    """Restore flagged and calibration single dish data from a pipeline run
+    """Restore flagged and calibration single dish data from a pipeline run.
 
     The hsdn_restoredata task restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products.
@@ -82,13 +82,13 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
             all the factors are set to 1.0.
             example: reffile='', reffile='nroscalefactor.csv'
 
-        products_dir: Name of the data products directory. Default: '../products'
+        products_dir: Name of the data products directory. Default: '../products'.
             example: products_dir='myproductspath'
 
-        copytoraw: Copy calibration and flagging tables to raw data directory. Default: True
+        copytoraw: Copy calibration and flagging tables to raw data directory. Default: True.
             example: copytoraw=False
 
-        rawdata_dir: Name of the raw data directory. Default: '../rawdata'
+        rawdata_dir: Name of the raw data directory. Default: '../rawdata'.
             example: rawdata_dir='myrawdatapath'
 
         hm_rasterscan: Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis ('time') and direction analysis ('direction'), are available.

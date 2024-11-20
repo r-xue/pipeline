@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None):
 
-    """Prepare single dish data for export
+    """Prepare single dish data for export.
 
     The hsd_exportdata task exports the data defined in the pipeline context
     and exports it to the data products directory, converting and or packing
@@ -25,7 +25,7 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None):
         targetimages: List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
             example: targetimages=['r_aqr.CM02.spw5.line0.XXYY.sd.im', 'r_aqr.CM02.spw5.XXYY.sd.cont.im']
 
-        products_dir: Name of the data products subdirectory. Defaults to './' example: products_dir='../products'
+        products_dir: Name of the data products subdirectory. Defaults to './'. Example: products_dir='../products'.
 
     Returns:
         The results object for the pipeline task is returned.
