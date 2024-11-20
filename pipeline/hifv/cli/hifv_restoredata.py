@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                      bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
 
-    """Restore flagged and calibration interferometry data from a pipeline run
+    """Restore flagged and calibration interferometry data from a pipeline run.
 
     The hifv_restoredata restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products.
@@ -83,7 +83,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Restore the pipeline results for a single ASDM in a single session
+        1. Restore the pipeline results for a single ASDM in a single session:
 
         >>> hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
 

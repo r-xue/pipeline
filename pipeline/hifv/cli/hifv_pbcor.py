@@ -6,19 +6,16 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_pbcor(vis=None):
 
-    """Apply primary beam correction to VLA and VLASS images
-
-    Apply primary beam correction to VLA and VLASS images
-
+    """Apply primary beam correction to VLA and VLASS images.
 
     Args:
-        vis: List of input visibility data
+        vis: List of input visibility data.
 
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic pbcor task
+        1. Basic pbcor task:
 
         >>> hifv_pbcor()
 

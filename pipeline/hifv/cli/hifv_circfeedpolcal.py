@@ -9,22 +9,20 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
 
     """Perform polarization calibration for VLA circular feeds.
 
-    Perform polarization calibration for VLA circular feeds.
-
     Only validated for VLA sky survey data in S-band continuum mode with 3C138
     or 3C286 as polarization angle. Requires that all polarization intents are
     properly set during observation.
 
     Args:
-        vis: List of input visibility data
+        vis: List of input visibility data.
 
-        Dterm_solint: D-terms spectral averaging.  Example:  refantignore='ea02,ea03'
+        Dterm_solint: D-terms spectral averaging.  Example:  refantignore='ea02,ea03'.
 
-        refantignore: String list of antennas to ignore
+        refantignore: String list of antennas to ignore.
 
-        leakage_poltype: poltype to use in first polcal execution - blank string means use default heuristics
+        leakage_poltype: poltype to use in first polcal execution - blank string means use default heuristics.
 
-        mbdkcross: Run gaincal KCROSS grouped by baseband
+        mbdkcross: Run gaincal KCROSS grouped by baseband.
 
         clipminmax: Acceptable range for leakage amplitudes, values outside will be flagged.
 
@@ -36,7 +34,7 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic circfeedpolcal task
+        1. Basic circfeedpolcal task:
 
         >>> hifv_circfeedpolcal()
 

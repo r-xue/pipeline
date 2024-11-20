@@ -40,7 +40,7 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
             Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
 
         intent: Select intents for which associated fields will be imaged. By default only TARGET data is selected.
-            Examples: 'PHASE,BANDPASS'
+            Examples: 'PHASE, BANDPASS'
 
         spw: Select spectral window/channels to include for continuum imaging. By default all science spws for which the specified intent is valid are
             selected.
@@ -60,12 +60,12 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Create a science target MS from the corrected column in the input MS.
+        1. Create a science target MS from the corrected column in the input MS:
 
         >>> hifv_mstransform()
 
         2. Make a phase and bandpass calibrator targets MS from the corrected
-        column in the input MS.
+        column in the input MS:
 
         >>> hifv_mstransform(intent='PHASE,BANDPASS')
 

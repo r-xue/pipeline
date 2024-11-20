@@ -8,7 +8,7 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
     gainmap=None):
 
-    """Prepare and export interferometry and imaging data
+    """Prepare and export interferometry and imaging data.
 
     The hifv_exportdata task for the VLA CASA pipeline exports the data defined
     in the pipeline context and exports it to the data products directory,
@@ -65,13 +65,13 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
 
     Examples:
         1. Export the pipeline results for a single session to the data products
-        directory
+        directory:
 
         >>> !mkdir ../products
         >>> hifv_exportdata (products_dir='../products')
 
         2. Export the pipeline results to the data products directory specify that
-        only the gain calibrator images be saved.
+        only the gain calibrator images be saved:
 
         >>> !mkdir ../products
         >>> hifv_exportdata (products_dir='../products', calintents='*PHASE*')

@@ -7,9 +7,9 @@ import pipeline.h.cli.utils as utils
 def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffile=None, fluxdensity=None, spix=None,
                   reffreq=None, scalebychan=None, standard=None):
 
-    """Sets flux density scale and fills calibrator model to measurement set
+    """Sets flux density scale and fills calibrator model to measurement set.
 
-    The hifv_vlasetjy task does an initial run of setjy on the vis
+    The hifv_vlasetjy task does an initial run of setjy on the vis.
 
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
@@ -24,15 +24,15 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
 
         reffile: Path to file with fluxes for non-solar system calibrators.
 
-        fluxdensity: Specified flux density [I,Q,U,V]; -1 will lookup values
+        fluxdensity: Specified flux density [I,Q,U,V]; -1 will lookup values.
 
-        spix: Spectral index of fluxdensity.  Can be set when fluxdensity is not -1
+        spix: Spectral index of fluxdensity.  Can be set when fluxdensity is not -1.
 
-        reffreq: Reference frequency for spix.  Can be set when fluxdensity is not -1
+        reffreq: Reference frequency for spix.  Can be set when fluxdensity is not -1.
 
-        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis
+        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis.
 
-        standard: Flux density standard
+        standard: Flux density standard.
 
     Returns:
         The results object for the pipeline task is returned.

@@ -15,7 +15,7 @@ def hifv_tecmaps(vis=None):
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic tecmaps task
+        1. Basic tecmaps task:
 
         >>> hifv_tecmaps()
 

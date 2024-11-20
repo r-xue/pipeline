@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
                     ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
 
-    """Imports data into the VLA pipeline
+    """Imports data into the VLA pipeline.
 
     The hifv_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
@@ -36,9 +36,13 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
         ocorr_mode: Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).
 
         datacolumns: Dictionary defining the data types of existing columns. The format is:
+
             {'data': 'data type 1'}
+        
             or
+        
             {'data': 'data type 1', 'corrected': 'data type 2'}
+        
             For ASDMs the data type can only be RAW and one
             can only specify it for the data column.
             For MSes one can define two different data types
@@ -63,8 +67,8 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
         specline_spws: String indicating how the pipeline should determine whether a spw should be processed as a spectral line window or continuum. The default setting of
             'auto' will use defined heuristics to determine this definition. Accepted
             values are 'auto', 'none' (no spws will be defined as spectral line), or
-            a string of spw definitions in the CASA format
-            example: specline_spws='2,3,4~9,23'
+            a string of spw definitions in the CASA format.
+            example: specline_spws='2, 3, 4~9, 23'
 
         parallel: Execute using CASA HPC functionality, if available.
 
@@ -72,19 +76,19 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Load an ASDM list in the ../rawdata subdirectory into the context.
+        1. Load an ASDM list in the ../rawdata subdirectory into the context:
 
         >>> hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e', '../rawdata/uid_A002_x30a93d_X44e'])
 
-        2. Load an MS in the current directory into the context.
+        2. Load an MS in the current directory into the context:
 
         >>> hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'])
 
-        3. Load a tarred ASDM in ../rawdata into the context.
+        3. Load a tarred ASDM in ../rawdata into the context:
 
         >>> hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
 
-        4. Check the hifv_importdata inputs, then import the data
+        4. Check the hifv_importdata inputs, then import the data:
 
         >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
         >>> hifv_importdata(vis=myvislist)

@@ -8,8 +8,6 @@ def hifv_fixpointing(vis=None):
 
     """Base fixpointing task
 
-    The hifv_fixpointing task
-
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
@@ -17,7 +15,7 @@ def hifv_fixpointing(vis=None):
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic fixpointing task
+        1. Basic fixpointing task:
 
         >>> hifv_fixpointing()
 

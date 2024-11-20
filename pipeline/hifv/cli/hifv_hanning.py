@@ -6,11 +6,9 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_hanning(vis=None, maser_detection=None):
 
-    """Hanning smoothing on a dataset
+    """Hanning smoothing on a dataset.
 
-    The hifv_hanning task will hanning smooth a VLA dataset
-
-
+    The hifv_hanning task will hanning smooth a VLA dataset.
 
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
@@ -21,7 +19,7 @@ def hifv_hanning(vis=None, maser_detection=None):
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
+        1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet:
 
         >>> hifv_hanning()
 

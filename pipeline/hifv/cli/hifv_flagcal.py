@@ -6,22 +6,20 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
 
-    """Flagcal task
-
-    Flagcal task
+    """Flagcal task.
 
     Args:
-        vis: List of input visibility data
+        vis: List of input visibility data.
 
-        caltable: String name of the caltable
+        caltable: String name of the caltable.
 
-        clipminmax: Range to use for clipping
+        clipminmax: Range to use for clipping.
 
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Flag existing caltable
+        1. Flag existing caltable:
 
         >>> hifv_flagcal()
 

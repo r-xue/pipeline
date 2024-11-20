@@ -6,22 +6,23 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, do_not_apply=None):
 
-    """Determine amount of gain compression affecting VLA data below Ku-band
-
-    Determine amount of gain compression affecting VLA data below Ku-band
+    """Determine amount of gain compression affecting VLA data below Ku-band.
 
     Args:
-        vis: List of input visibility data
+        vis: List of input visibility data.
 
-        clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged
+        clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged.
 
-        antexclude: dictionary in the format of: {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+        antexclude: dictionary in the format of: 
+            
+            {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
             'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
             'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+
             If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
             If 'usemedian': True, the template values are replaced with the median of the good antennas.
 
-        apply: Apply task results to RQ table
+        apply: Apply task results to RQ table.
 
         do_not_apply: csv string of band names to not apply. Example: 'L,X,S'
 
@@ -29,7 +30,7 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic syspower task
+        1. Basic syspower task:
 
         >>> hifv_syspower()
 

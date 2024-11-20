@@ -6,9 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=None):
 
-    """Apply a flagtemplate to target data prior to running imaging pipeline tasks
-
-    Apply a flagtemplate to target data prior to running imaging pipeline tasks
+    """Apply a flagtemplate to target data prior to running imaging pipeline tasks.
 
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
@@ -25,7 +23,7 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic flagtargetsdata task
+        1. Basic flagtargetsdata task:
 
         >>> hifv_flagtargetsdata()
 

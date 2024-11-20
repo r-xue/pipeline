@@ -13,7 +13,7 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, ref
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-        caltable: String name of the flagged caltable
+        caltable: String name of the flagged caltable.
 
         fitorder: Polynomial order of the spectral fitting for valid flux densities with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
             fractional bandwidth and receiver bands present in the observation.
@@ -21,15 +21,16 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, ref
             Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
             If no determination can be made by the heuristics, a fitorder of 1 will be used.
 
-        refantignore: String list of antennas to ignore Example:  refantignore='ea02,ea03'
+        refantignore: String list of antennas to ignore Example:  refantignore='ea02, ea03'
 
-        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
+        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. 
+            Example: refant = 'ea01, ea02'
 
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
-        1. VLA CASA pipeline flux density bootstrapping.
+        1. VLA CASA pipeline flux density bootstrapping:
 
         >>> hifv_fluxboot()
 

@@ -6,9 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_analyzestokescubes(vis=None):
 
-    """Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images
-
-    Characterize stokes IQUV flux densities as a function of frequency for VLASS Coarse Cube (CC) images
+    """Characterize stokes IQUV flux densities as a function of frequency for VLASS Coarse Cube (CC) images.
 
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.

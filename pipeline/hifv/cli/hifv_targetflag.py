@@ -8,12 +8,10 @@ def hifv_targetflag(vis=None, intents=None):
 
     """Targetflag
 
-    Targetflag
-
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-        intents: List of intents of scans to be flagged
+        intents: List of intents of scans to be flagged.
 
     Returns:
         The results object for the pipeline task is returned.

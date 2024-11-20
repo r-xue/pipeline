@@ -8,18 +8,16 @@ def hifv_restorepims(vis=None, reimaging_resources=None):
 
     """Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.
 
-    Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.
-
     Args:
-        vis: List of input visibility data
+        vis: List of input visibility data.
 
-        reimaging_resources: file path of reimaging_resources.tgz from the SE imaging product
+        reimaging_resources: file path of reimaging_resources.tgz from the SE imaging product.
 
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Basic restorepims task
+        1. Basic restorepims task:
 
         >>> hifv_restorepims()
 

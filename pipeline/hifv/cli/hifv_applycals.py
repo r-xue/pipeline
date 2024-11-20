@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None,
                    flagsum=None, flagdetailedsum=None, gainmap=None):
 
-    """Apply calibration tables to measurement set
+    """Apply calibration tables to input MeasurementSets.
 
     hifv_applycals applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
@@ -32,21 +32,23 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
 
         antenna: The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.
 
-        applymode: Calibration apply mode 'calflag': calibrate data and apply flags from solutions
-            'calflagstrict': same as above except flag spws for which calibration is
-            unavailable in one or more tables (instead of allowing them to pass
-            uncalibrated and unflagged)
-            'trial': report on flags from solutions, dataset entirely unchanged
-            'flagonly': apply flags from solutions only, data not calibrated
-            'flagonlystrict': same as above except flag spws for which calibration is
-            unavailable in one or more tables
-            'calonly': calibrate data only, flags from solutions NOT applied
+        applymode: Calibration apply mode. 
+
+            - 'calflag': calibrate data and apply flags from solutions
+            - 'calflagstrict': same as above except flag spws for which calibration is
+              unavailable in one or more tables (instead of allowing them to pass
+              uncalibrated and unflagged)
+            - 'trial': report on flags from solutions, dataset entirely unchanged
+            - 'flagonly': apply flags from solutions only, data not calibrated
+            - 'flagonlystrict': same as above except flag spws for which calibration is
+              unavailable in one or more tables
+            - 'calonly': calibrate data only, flags from solutions NOT applied
 
         flagbackup: Backup the flags before the apply.
 
-        flagsum: Compute before and after flagging summary statistics
+        flagsum: Compute before and after flagging summary statistics.
 
-        flagdetailedsum: Compute detailed flagging statistics
+        flagdetailedsum: Compute detailed flagging statistics.
 
         gainmap: Mode to map gainfields to scans.
 
@@ -54,7 +56,7 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Run the final applycals stage of the VLA CASA pipeline.
+        1. Run the final applycals stage of the VLA CASA pipeline:
 
         >>> hifv_applycals()
 

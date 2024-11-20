@@ -6,10 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=None):
 
-    """Compute statistical weights and write them to measurement set
-
-    Compute statistical weights and write them to measurement set
-
+    """Compute statistical weights and write them to measurement set.
 
     Args:
         vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
@@ -17,7 +14,7 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=N
         datacolumn: Data column used to compute weights. Supported values are "data", "corrected", "residual", and "residual_data"
             (case insensitive, minimum match supported).
 
-        overwrite_modelcol: Always write the model column, even if it already exists
+        overwrite_modelcol: Always write the model column, even if it already exists.
 
         statwtmode: Sets the weighting parameters for general VLA ('VLA') or VLASS Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
             mode is meant to be used with datacolumn='residual_data'.
