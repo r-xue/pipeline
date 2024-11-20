@@ -111,7 +111,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
             ``peak_fraction`` of the peak value.
 
         amp_outlier_sigma: Sigma threshold used to identify outliers in the amplitude
-            caltable. Default: 50.0
+            caltable. Default: 50.0.
             Example: amp_outlier_sigma=30.0
 
     Returns:

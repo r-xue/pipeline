@@ -47,9 +47,11 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
 
         hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The
             options are:
-            'snr': compute solution required to achieve the specified SNR
-            'manual': use manual solution parameters
-            '': skip phaseup
+
+            - 'snr': compute solution required to achieve the specified SNR
+            - 'manual': use manual solution parameters
+            - '': skip phaseup
+
             Example: hm_phaseup='manual'
 
         phaseupsolint: The phase correction solution interval in CASA syntax.
@@ -59,9 +61,11 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
 
         phaseupbw: Bandwidth to be used for phaseup. Used when
             ``hm_phaseup`` = 'manual'.
+
             Example:
-            phaseupbw='' to use entire bandpass
-            phaseupbw='500MHz' to use central 500MHz
+
+            - phaseupbw='' to use entire bandpass
+            - phaseupbw='500MHz' to use central 500MHz
 
         phaseupsnr: The required SNR for the phaseup solution. Used to calculate
             the phaseup time solint, and only if

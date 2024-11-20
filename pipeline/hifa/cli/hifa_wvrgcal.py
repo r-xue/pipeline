@@ -37,8 +37,8 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
 
         hm_toffset: If 'manual', set the ``toffset`` parameter to the user-specified value.
             If 'automatic', set the ``toffset`` parameter according to the
-            date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00
-            toffset=0 otherwise.
+            date of the MeasurementSet; ``toffset`` = -1 if before 2013-01-21T00:00:00
+            ``toffset`` = 0 otherwise.
 
         toffset: Time offset (sec) between interferometric and WVR data.
 
@@ -65,9 +65,9 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
 
         nsol: Number of solutions for phase correction coefficients during this
             observation, evenly distributed in time throughout the observation. It
-            is used only if segsource=False because if segsource=True then the
+            is used only if ``segsource`` = False because if ``segsource`` = True then the
             coefficients are recomputed whenever the telescope moves to a new
-            source (within the limits imposed by 'tie').
+            source (within the limits imposed by ``tie``).
 
         disperse: Apply correction for dispersion. (Deprecated; will be removed)
 

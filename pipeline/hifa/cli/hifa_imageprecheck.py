@@ -23,7 +23,7 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
         desired_angular_resolution: User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
-            '': automatic from performance parameters (default)
+            '': automatic from performance parameters (default).
             Example: '1.0arcsec'
 
         calcsb: Force (re-)calculation of sensitivities and beams; defaults to False

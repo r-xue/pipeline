@@ -36,9 +36,11 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
             Note that for data with multiple MSs, a list with the
             correct spectral window selection for each MS can be
             provided.
+
             Examples:
-            spw="11,13,15,17"
-            spw=["11,13,15,17", "5,7,11,13"]
+
+            - spw="11,13,15,17"
+            - spw=["11,13,15,17", "5,7,11,13"]
 
         excludechan: Channels to exclude in either channel or frequency space
             (TOPO, GHz), specifying the real (not virtual) spectral

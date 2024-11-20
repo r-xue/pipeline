@@ -67,29 +67,29 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
 
         copytoraw: Copy calibration and flagging tables from ``products_dir`` to
             ``rawdata_dir`` directory.
-            Default: True
+            Default: True. 
             Example: copytoraw=False
 
         rawdata_dir: Name of the raw data directory.
-            Default: '../rawdata'
+            Default: '../rawdata'.
             Example: rawdata_dir='myrawdatapath'
 
         lazy: Use the lazy filler option.
-            Default: False
+            Default: False.
             Example: lazy=True
 
         bdfflags: Set the BDF flags.
-            Default: True
+            Default: True.
             Example: bdfflags=False
 
         ocorr_mode: Set ocorr_mode.
-            Default: 'ca'
+            Default: 'ca'.
             Example: ocorr_mode='ca'
 
         asis: Creates verbatim copies of the ASDM tables in the output MS.
             The value given to this option must be a string containing a
             list of table names separated by whitespace characters.
-            Default: 'SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing'
+            Default: 'SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing'.
             Example: asis='Source Receiver'
 
     Returns:

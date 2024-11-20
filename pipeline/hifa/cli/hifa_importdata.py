@@ -49,7 +49,7 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
             The format is:
             {'data': 'data type 1'}
             or
-            {'data': 'data type 1', 'corrected': 'data type 2'}
+            {'data': 'data type 1', 'corrected': 'data type 2'}.
             For ASDMs the data type can only be RAW and one
             can only specify it for the data column.
             For MSes one can define two different data types
