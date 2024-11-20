@@ -38,17 +38,17 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
 
         hm_growiterations: Number of binary dilation iterations for growing the mask
 
-        hm_dogrowprune: Do pruning on the grow mask Defaults to '' to enable the automatic heuristics calculation.
+        hm_dogrowprune: Do pruning on the grow mask. Defaults to '' to enable the automatic heuristics calculation.
             Can be set to True or False manually.
 
         hm_minpercentchange: Mask size change threshold
 
-        hm_fastnoise: Faster noise calculation for automask or nsigma stopping Defaults to '' to enable the automatic heuristics calculation.
+        hm_fastnoise: Faster noise calculation for automask or nsigma stopping. Defaults to '' to enable the automatic heuristics calculation.
             Can be set to True or False manually.
 
         hm_nsigma: Multiplicative factor for rms-based threshold stopping
 
-        hm_perchanweightdensity: Calculate the weight density for each channel independently Defaults to '' to enable the automatic heuristics calculation.
+        hm_perchanweightdensity: Calculate the weight density for each channel independently. Defaults to '' to enable the automatic heuristics calculation.
             Can be set to True or False manually.
 
         hm_npixels: Number of pixels to determine uv-cell size for super-uniform weighting
@@ -86,16 +86,22 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
             product retains the same name.  Additional products start
             counting with 'v2', 'v3', etc.
 
-        vlass_plane_reject_im: Only used for the 'VLASS-SE-CUBE' imaging mode. default: True If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
+        vlass_plane_reject_im: Only used for the 'VLASS-SE-CUBE' imaging mode. 
+
+            Default: True 
+
+            If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
+
             If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
             If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
             The optional keys could be:
+
             - exclude_spw, default: ''
-            Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.
+              Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.
             - flagpct_thresh, default: 0.8
-            The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.
+              The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.
             - beamdev_thresh: default: 0.2
-            Threshold for the fractional beam deviation from the expected value required for the plane rejection.
+              Threshold for the fractional beam deviation from the expected value required for the plane rejection.
 
         parallel: Clean images using MPI cluster
 

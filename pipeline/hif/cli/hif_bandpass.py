@@ -51,7 +51,7 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
             Examples: phaseupbw='' to use entire bandpass
             phaseupbw='500MHz' to use central 500MHz
 
-        solint: Time and channel solution intervals in CASA syntax. Examples: solint='inf,10ch', 'inf'
+        solint: Time and channel solution intervals in CASA syntax. Examples: solint='inf,10ch', solint='inf'
 
         combine: Data axes to combine for solving. Axes are '', 'scan', 'spw', 'field' or any comma-separated combination.
             Example: combine='scan,field'
