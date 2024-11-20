@@ -151,7 +151,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
     # Names of import tasks that need special treatment:
     import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata')
     restore_tasks = ('h_restoredata', 'hifv_restoredata')
-
+    breakpoint_tasks = ('breakpoint')
     # Loop over the commands
     for command in commandsList:
 
@@ -161,56 +161,58 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         casa_tools.set_log_origin(fromwhere=pipeline_task_name)
 
         # Execute the command
-        casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
-        try:
-            pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
+        if pipeline_task_name not in breakpoint_tasks:
+            casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            try:
+                pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
-            # List parameters
-            for keyword, value in task_args.items():
-                casa_tools.post_to_log("    Parameter: " + keyword + " = " + repr(value), echo_to_screen=echo_to_screen)
+                # List parameters
+                for keyword, value in task_args.items():
+                    casa_tools.post_to_log("    Parameter: " + keyword + " = " + repr(value), echo_to_screen=echo_to_screen)
 
-            # For import/restore tasks, set vis and session explicitly (not inferred from context).
-            if pipeline_task_name in import_tasks or pipeline_task_name in restore_tasks:
-                task_args['vis'] = files
-                task_args['session'] = sessions
+                # For import/restore tasks, set vis and session explicitly (not inferred from context).
+                if pipeline_task_name in import_tasks or pipeline_task_name in restore_tasks:
+                    task_args['vis'] = files
+                    task_args['session'] = sessions
 
-            # If spectral mode is set to True, skip the Hanning task.
-            spectral_mode = intentsDict.get('SPECTRAL_MODE', False)
-            if spectral_mode and pipeline_task_name == 'hifv_hanning':
-                casa_tools.post_to_log("SPECTRAL_MODE=True.  Hanning smoothing will not be executed.")
-                continue
+                # If spectral mode is set to True, skip the Hanning task.
+                spectral_mode = intentsDict.get('SPECTRAL_MODE', False)
+                if spectral_mode and pipeline_task_name == 'hifv_hanning':
+                    casa_tools.post_to_log("SPECTRAL_MODE=True.  Hanning smoothing will not be executed.")
+                    continue
 
-            results = pipeline_task(**task_args)
-            casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
+                results = pipeline_task(**task_args)
+                casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
 
-            if importonly and pipeline_task_name in import_tasks:
-                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
+                if importonly and pipeline_task_name in import_tasks:
+                    casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                        echo_to_screen=echo_to_screen)
+                    break
+
+            except Exception:
+                # Log message if an exception occurred that was not handled by
+                # standardtask template (not turned into failed task result).
+                casa_tools.post_to_log("Unhandled error in executevlappr while running pipeline task {}"
+                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+                errstr = traceback.format_exc()
+                casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+                errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
                 break
 
-        except Exception:
-            # Log message if an exception occurred that was not handled by
-            # standardtask template (not turned into failed task result).
-            casa_tools.post_to_log("Unhandled error in executevlappr while running pipeline task {}"
-                                   "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
-            errstr = traceback.format_exc()
-            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
-            break
+            # Stop execution if result is a failed task result or a list
+            # containing a failed task result.
+            tracebacks = utils.get_tracebacks(results)
+            if len(tracebacks) > 0:
+                # Save the context
+                cli.h_save()
 
-        # Stop execution if result is a failed task result or a list
-        # containing a failed task result.
-        tracebacks = utils.get_tracebacks(results)
-        if len(tracebacks) > 0:
-            # Save the context
-            cli.h_save()
+                casa_tools.set_log_origin(fromwhere='')
 
-            casa_tools.set_log_origin(fromwhere='')
-
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
-            previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
-            raise exceptions.PipelineException(previous_tracebacks_as_string)
-
+                errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
+                previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
+                raise exceptions.PipelineException(previous_tracebacks_as_string)
+        else:
+            casa_tools.post_to_log("Found {}, not performing any action.".format(pipeline_task_name), echo_to_screen=echo_to_screen)
     # Save the context
     cli.h_save()
 
