@@ -947,53 +947,43 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
+        def _digitize(num):
+            if isinstance(num, float):
+                return self.nchan - 1 - floor(num + 0.5) if is_freq_chan_reversed_image else floor(num + 0.5)
+            elif isinstance(num, list):
+                if is_freq_chan_reversed_image:
+                    return sorted([self.nchan - 1 - floor(f + 0.5) for f in num])
+                return sorted([floor(f + 0.5) for f in num])
+            else:
+                raise ValueError
+                
         for line_window in line_list:
             (line_center, line_width) = (line_window[0] - self.edge[0], line_window[1])
 
-            # shift channel according to the edge parameter
-            idx_line_center = int(line_center + 0.5)
-            indices_slice_width = max(floor(line_width / self.NUM_CHANNELMAP + 0.5), 1)
-            
-            # adjust index of both side within channel
-            _max_left_edge = floor(line_center - line_width / 2 + 0.5)
-            _max_right_edge = floor(line_center + line_width / 2 + 0.5)
-            if _max_left_edge < 0:
-                indices_slice_width = abs(int(line_center * 2.0 / self.NUM_CHANNELMAP))
-                if indices_slice_width == 0:
-                    continue
-            elif _max_right_edge > self.nchan:
-                indices_slice_width = abs(int((self.nchan - 1 - idx_line_center) * 2.0 / self.NUM_CHANNELMAP))
-                if indices_slice_width == 0:
-                    continue
+            # calculate slice width (float)
+            slice_width = self._calc_slice_width(line_width, line_center)
+            if slice_width == .0:
+                continue
 
-            # make the both side position of red lines
-            idx_left_end = idx_line_center - ceil(self.NUM_CHANNELMAP / 2.0 * indices_slice_width - 0.5)
-            idx_right_end = idx_left_end + indices_slice_width * self.NUM_CHANNELMAP - 1
-            
             # eliminate indice of out of channel range
-            # this logic should be merged with the two lines above, but at this moment it must remain to understand the flow easily
-            if idx_left_end < 0 or idx_right_end > self.nchan - 1:
-                _indice = [j for j in [idx_left_end + i * indices_slice_width for i in range(self.NUM_CHANNELMAP)] if 0 <= j < self.nchan]
-                if len(_indice) < 2:
-                    continue
-                idx_left_end = _indice[0]
-                idx_right_end = _indice[-1] - 1
+            half_line_width = slice_width * self.NUM_CHANNELMAP / 2.0
+            _vertline_indice = [j for j in [line_center - half_line_width + i * slice_width for i in range(self.NUM_CHANNELMAP)] if .5 <= j < self.nchan - 1.5]
+            if len(_vertline_indice) < 2:
+                continue
 
-            # invert the line if the line is LSB
-            if is_freq_chan_reversed_image:
-                idx_line_center, line_center, idx_left_end, idx_right_end = \
-                    map(lambda x: self.nchan-1-x, [idx_line_center, line_center, idx_right_end, idx_left_end])
+            # put a side line; from left side if reversed image, or right side
+            _vertline_indice.append(_vertline_indice[0] - slice_width
+                                   if is_freq_chan_reversed_image
+                                   else _vertline_indice[-1] + slice_width)
+            # digitize, and invert if needed
+            idx_line_center, vertline_indice = list(map(lambda x: _digitize(x), [line_center, _vertline_indice]))
             
-            if float(idx_line_center) == line_center:
-                velocity_line_center = self.velocity[idx_line_center]
-            else:
-                if is_freq_chan_reversed_image:
-                    velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
-                                                  self.velocity[idx_line_center])
-                else:
-                    velocity_line_center = 0.5 * (self.velocity[idx_line_center] +
-                                                  self.velocity[idx_line_center - 1])
+            # calculate the velicity value at the line center
+            velocity_line_center = self._calc_velocity_line_center(self.nchan - 1 - line_center
+                                                                   if is_freq_chan_reversed_image
+                                                                   else line_center)
             LOG.debug(f'center velocity[{idx_line_center}]: {velocity_line_center}')
+
             if idx_line_center > 0:
                 ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center - 1])
             else:
@@ -1001,8 +991,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
 
-            chan0 = max(idx_left_end - 1, 0)
-            chan1 = min(idx_left_end + self.NUM_CHANNELMAP * indices_slice_width, self.nchan - 1)
+            chan0 = max(vertline_indice[0] - 1, 0)
+            chan1 = min(vertline_indice[-1], self.nchan - 1)
             V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
@@ -1012,21 +1002,22 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #1
             vertical_lines.append(
-                axes_integsp1.axvline(x=self.frequency[chan0], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[vertline_indice[0]], linewidth=0.3, color='r')
             )
             vertical_lines.append(
-                axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[vertline_indice[-1]], linewidth=0.3, color='r')
             )
 
             # Drawing red vertical lines for integrated spectrum #2
             # For detail, see the MEMO below.
-            _y_vel = self.velocity[idx_left_end:idx_left_end + indices_slice_width * self.NUM_CHANNELMAP]
-            _x_chan = numpy.arange(idx_left_end, idx_left_end + len(_y_vel))
-            chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
+            _y_vel = self.velocity[vertline_indice]
+            chan2vel = interpolate.interp1d(vertline_indice, _y_vel, bounds_error=False, fill_value='extrapolate')
 
             # calculate relative velocities for red vertical lines
-            _chans = [idx_left_end + i * indices_slice_width - 0.5 for i in range(self.NUM_CHANNELMAP + 1)]
-            vertlines = chan2vel(_chans) - velocity_line_center
+            _diff_len = self.NUM_CHANNELMAP + 1 - len(vertline_indice)
+            _diff_arr = [vertline_indice[-1] + (i + 1) * floor(slice_width + 0.5) for i in range(_diff_len)]
+            vertline_indice.extend(_diff_arr)
+            vertlines = chan2vel(numpy.array(vertline_indice)-0.5) - velocity_line_center
             
             vertical_lines.extend(
                 (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
@@ -1125,18 +1116,17 @@ class SDChannelMapDisplay(SDImageDisplay):
                 NMap = 0
                 Vmax0 = Vmin0 = 0
                 Title = []
-                for i in range(self.NUM_CHANNELMAP):
-                    ii = self.NUM_CHANNELMAP - i - 1
-                    C0 = idx_left_end + indices_slice_width * ii
-                    C1 = C0 + indices_slice_width
-                    if C0 < 0 or C1 >= self.nchan - 1:
+                for i in range(self.NUM_CHANNELMAP-1, -1, -1):
+                    if len(vertline_indice) - 2 < i:
                         continue
+                    C0 = vertline_indice[i]
+                    C1 = vertline_indice[i+1]
                     velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
                     _mask = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
-                    Map[i] = numpy.flipud(_mask.transpose())
+                    Map[self.NUM_CHANNELMAP-1-i] = numpy.flipud(_mask.transpose())
                 del masked_data
                 Vmax0 = Map.max()
                 Vmin0 = Map.min()
@@ -1207,6 +1197,29 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
+    def _calc_slice_width(self, line_width, line_center):
+        
+        slice_width = max(line_width / self.NUM_CHANNELMAP, 1.0)
+        
+        # adjust index of both side within channel
+        if line_center - line_width / 2 - .5 < 0:
+            slice_width = abs(line_center * 2.0 / self.NUM_CHANNELMAP)
+            if slice_width < .5:
+                return .0
+        elif line_center + line_width / 2 > self.nchan - 1.5:
+            slice_width = abs((self.nchan - 1 - line_center) * 2.0 / self.NUM_CHANNELMAP)
+            if slice_width < .5:
+                return .0
+
+        return slice_width
+    
+    def _calc_velocity_line_center(self, line_center):
+        num = floor(line_center+0.5)
+        if float(num) == line_center:
+            return self.velocity[num]
+        else:
+            return 0.5 * (self.velocity[num] + self.velocity[num - 1])
+        
 
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
