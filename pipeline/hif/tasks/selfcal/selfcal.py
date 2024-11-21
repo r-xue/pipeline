@@ -810,5 +810,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
             for field, lines_sel in lines_sel_dict.items():
                 LOG.info("Flagging lines in field {} with the spw selection {}".format(field, lines_sel))
-                self._executable.flagdata(vis=vis, field=field, mode='manual',
+                # lines_sel_dict is keyed with original field names, which might not be safe for CASA/field 
+                # selections.
+                self._executable.flagdata(vis=vis, field=utils.fieldname_for_casa(field), mode='manual',
                                           spw=lines_sel, flagbackup=False, action='apply')

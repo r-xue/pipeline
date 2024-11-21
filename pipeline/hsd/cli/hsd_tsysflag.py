@@ -52,8 +52,8 @@ def hsd_tsysflag(vis=None, caltable=None,
     --------- parameter descriptions ---------------------------------------------
 
     vis             List of input MeasurementSets (Not used)
-    caltable        List of input Tsys calibration tables
-
+    caltable        List of input Tsys calibration tables.
+                    
                     default: [] - Use the table currently stored in the pipeline context.
                     example: caltable=['X132.ms.tsys.s2.tbl']
     flag_nmedian    True to flag Tsys spectra with high median value.

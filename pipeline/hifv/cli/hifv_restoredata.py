@@ -5,22 +5,29 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
-                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None, specline_spws=None):
+                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
 
     """
     hifv_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
 
+
     The hifv_restoredata restores flagged and calibrated data from archived
-    ASDMs and pipeline flagging and calibration data products. Pending archive
-    retrieval support hifv_restoredata assumes that the required products
-    are available in the rawdata_dir in the format produced by the
-    hifv_exportdata task.
+    ASDMs and pipeline flagging and calibration data products.
 
-    hifv_restoredata assumes that the following entities are available in the raw
-    data directory
+    hifv_restoredata assumes that the ASDMs to be restored are present in the
+    directory specified by the ``rawdata_dir`` (default: '../rawdata').
 
-    - the ASDMs to be restored
-    - for each ASDM in the input list:
+    By default (``copytoraw`` = True), hifv_restoredata assumes that for each
+    ASDM in the input list, the corresponding pipeline flagging and calibration
+    data products (in the format produced by the hifv_exportdata task) are
+    present in the directory specified by ``products_dir`` (default: '../products').
+    At the start of the task, these products are copied from the ``products_dir``
+    to the ``rawdata_dir``.
+
+    If ``copytoraw`` = False, hifv_restoredata assumes that these products are
+    to be found in ``rawdata_dir`` along with the ASDMs.
+
+    The expected flagging and calibration products (for each ASDM) include:
 
         - a compressed tar file of the final flagversions file, e.g.
           uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
@@ -31,9 +38,10 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
         - a compressed tar file containing the caltables for the parent session,
           e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
 
-    hifv_restoredata performs the following operations
+    hifv_restoredata performs the following operations:
 
-    - imports the ASDM(s))
+    - imports the ASDM(s)
+    - runs the hanning smoothing task
     - removes the default MS.flagversions directory created by the filler
     - restores the final MS.flagversions directory stored by the pipeline
     - restores the final set of pipeline flags to the MS
@@ -54,26 +62,30 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     session       List of sessions one per visibility file.
                   Example: session=['session_3']
     products_dir  Name of the data products directory to copy calibration
-                  products from. The parameter is effective only when copytoraw = True
-                  When copytoraw = False, calibration products in rawdata_dir will be used.
+                  products from.
+                  Default: '../products'
+                  The parameter is effective only when ``copytoraw`` = True.
+                  When ``copytoraw`` = False, calibration products in
+                  ``rawdata_dir`` will be used.
                   example: products_dir='myproductspath'
-    copytoraw     Copy calibration and flagging tables from products_dir to
-                  rawdata_dir directory.
+    copytoraw     Copy calibration and flagging tables from ``products_dir`` to
+                  ``rawdata_dir`` directory.
+                  Default: True
                   Example: copytoraw=False.
-    rawdata_dir   The rawdata directory.
+    rawdata_dir   Name of the raw data directory.
+                  Default: '../rawdata'
                   Example: rawdata_dir='myrawdatapath'
     lazy          Use the lazy filler option.
+                  Default: False
     bdfflags      Set the BDF flags.
-    ocorr_mode    Correlation import mode
+                  Default: False
+    ocorr_mode    Correlation import mode.
+                  Default: 'co'
     gainmap       If True, map gainfields to a particular list of scans when
                   applying calibration tables.
+                  Default: False
     asis          List of tables to import asis.
-    specline_spws String indicating how the pipeline should determine whether a spw should
-                  be processed as a spectral line window or continuum. The default setting of 
-                  'auto' will use defined heuristics to determine this definition. Accepted
-                  values are 'auto', 'none' (no spws will be defined as spectral line), or 
-                  a string of spw definitions in the CASA format
-                  example: specline_spws='2,3,4~9,23'
+                  Default: 'Receiver CalAtmosphere'
 
     --------- examples -----------------------------------------------------------
 

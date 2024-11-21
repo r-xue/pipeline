@@ -69,10 +69,10 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
 
                   example: reffile='', reffile='working/jyperk.csv'
     infiles       List of input MeasurementSets.
-
+                  
                   example: vis='ngc5921.ms'
     caltable      Name of output gain calibration tables.
-
+                  
                   example: caltable='ngc5921.gcal'
 
     --------- examples -----------------------------------------------------------

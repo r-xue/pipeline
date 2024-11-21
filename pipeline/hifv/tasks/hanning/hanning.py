@@ -4,6 +4,7 @@ from typing import Type, Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import conversion
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -21,8 +22,9 @@ class HanningInputs(vdp.StandardInputs):
 
     """
     maser_detection = vdp.VisDependentProperty(default=True)
+    spws_to_smooth = vdp.VisDependentProperty(default=None)
 
-    def __init__(self, context, vis=None, maser_detection=None):
+    def __init__(self, context, vis=None, maser_detection=None, spws_to_smooth=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -33,6 +35,10 @@ class HanningInputs(vdp.StandardInputs):
         self.context = context
         self.vis = vis
         self.maser_detection = maser_detection
+        self.spws_to_smooth = spws_to_smooth
+
+        if self.spws_to_smooth is not None:
+            self.spws_to_smooth = conversion.range_to_list(self.spws_to_smooth)
 
 
 class HanningResults(basetask.Results):
@@ -103,28 +109,40 @@ class Hanning(basetask.StandardTaskTemplate):
                 LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
                 return HanningResults()
 
-        # Retrieve SPWs information and determine which to smooth
-        if not self.inputs.maser_detection:
-            LOG.info("Maser detection turned off.")
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
-
         smoothing_dict = {}
 
-        for spw in spws:
-            smoothing_dict[spw.id] = (False, "")
-            if spw.sdm_num_bin > 1:
-                smoothing_dict[spw.id] = (False, "online smoothing applied")
-            elif spw.specline_window:
-                if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
-                    smoothing_dict[spw.id] = (True, "spectral line, maser line")
+        # Smooth input spws only if applicable. Overrides everything else
+        # At this time, only used by hifv_restoredata and not exposed to the user
+        if self.inputs.spws_to_smooth is not None:
+            for spw in spws:
+                if spw.id in self.inputs.spws_to_smooth:
+                    smoothing_dict[spw.id] = (True, "restored smoothing")
                 else:
-                    smoothing_dict[spw.id] = (False, "spectral line")
-            else:
-                smoothing_dict[spw.id] = (True, "continuum")
+                    smoothing_dict[spw.id] = (False, "")
+        else:
+            # Retrieve SPWs information and determine which to smooth
+            if not self.inputs.maser_detection:
+                LOG.info("Maser detection turned off.")
 
-            hs_dict = {}
-            for key, val in smoothing_dict.items():
-                hs_dict[key] = val[0]
+            # If any spws had online smoothing applied, do not smooth any spws
+            if any([spw.sdm_num_bin > 1 for spw in spws]):
+                for spw in spws:
+                    smoothing_dict[spw.id] = (False, "online smoothing applied")
+            else:
+                for spw in spws:
+                    smoothing_dict[spw.id] = (False, "")
+                    if spw.specline_window:
+                        if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
+                            smoothing_dict[spw.id] = (True, "spectral line, maser line")
+                        else:
+                            smoothing_dict[spw.id] = (False, "spectral line")
+                    else:
+                        smoothing_dict[spw.id] = (True, "continuum")
+
+        hs_dict = {}
+        for key, val in smoothing_dict.items():
+            hs_dict[key] = val[0]
 
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
