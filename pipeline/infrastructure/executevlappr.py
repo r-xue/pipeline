@@ -190,14 +190,14 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
 
             if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                    echo_to_screen=echo_to_screen)
+                                        echo_to_screen=echo_to_screen)
                 break
 
         except Exception:
             # Log message if an exception occurred that was not handled by
             # standardtask template (not turned into failed task result).
             casa_tools.post_to_log("Unhandled error in executevlappr while running pipeline task {}"
-                                "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
