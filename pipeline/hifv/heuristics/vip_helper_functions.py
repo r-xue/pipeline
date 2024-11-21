@@ -17,6 +17,8 @@ import astropy.units as u
 from astropy.coordinates import ICRS, Angle, SkyCoord
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils.conversion as conversion
+
 from pipeline.infrastructure import casa_tools
 from scipy.stats import linregress
 
@@ -360,21 +362,8 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
 
-    rahrstr = phasecenter.split()[1] + ' hours'
-    declist = phasecenter.split()[2].split('.')
-    decstr = ''
-    if len(declist) <= 4:
-        for i, dec in enumerate(declist):
-            decstr += dec
-            if i < 2 and i != len(declist) - 1:
-                decstr += ":"
-            elif i == 2:
-                decstr += "."
-    else:
-        LOG.warning("Inappropriate declination for phase center is provided.")
 
-    decdegstr = decstr + ' degrees'
-    phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
+    phasecentcoord = conversion.phasecenter_to_skycoord(phasecenter)
     racat = catalog_dat['RA']   # degrees from FITS file column
     deccat = catalog_dat['DEC']  # degrees from FITS file column
     catalog = SkyCoord(ra=racat, dec=deccat, unit=(u.deg, u.deg), frame=ICRS)
