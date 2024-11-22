@@ -1,4 +1,5 @@
 import os
+import re
 import ssl
 import urllib
 
@@ -13,6 +14,7 @@ from pipeline.infrastructure import task_registry
 
 from . import dbfluxes
 
+
 __all__ = [
     'ALMAImportData',
     'SerialALMAImportData',
@@ -22,17 +24,41 @@ __all__ = [
 
 LOG = infrastructure.get_logger(__name__)
 
+def validate_url(url):
+    # Define a regular expression for URL format validation
+    url_regex = re.compile(
+        r'^(https?:\/\/)?'  # HTTP or HTTPS
+        r'([\w.-]+)'        # Domain name or IP address
+        r'(:\d+)?'          # Optional port
+        r'(\/[^\s]*)?$',    # Optional path
+        re.IGNORECASE
+    )
+
+    # First, check basic structure with regex
+    if not url_regex.match(url):
+        return False
+
+    # Use urlparse to further validate the components
+    parsed = urllib.parse.urlparse(url)
+    return all([parsed.scheme, parsed.netloc])
+
 try:
     FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
+    if not validate_url(FLUX_SERVICE_URL):
+        LOG.error(f"FLUX_SERVICE_URL {FLUX_SERVICE_URL} misconfigured.")
+        raise Exception
 except Exception as e:
-    FLUX_SERVICE_URL = ''
-    # FLUX_SERVICE_URL = 'https://2019jul.asa-test.alma.cl/sc/flux'
+    FLUX_SERVICE_URL = "https://almascience.org/sc/flux"
+    LOG.info(f"Defaulting to {FLUX_SERVICE_URL} for flux query.")
 
 try:
     FLUX_SERVICE_URL_BACKUP = os.environ['FLUX_SERVICE_URL_BACKUP']
-    # 'https://2019jul.asa-test.alma.cl/sc/flux'
+    if not validate_url(FLUX_SERVICE_URL_BACKUP):
+        LOG.error(f"FLUX_SERVICE_URL_BACKUP {FLUX_SERVICE_URL_BACKUP} misconfigured.")
+        raise Exception
 except Exception as e:
-    FLUX_SERVICE_URL_BACKUP = ''
+    FLUX_SERVICE_URL_BACKUP = "https://asa.alma.cl/sc/flux"
+    LOG.info(f"Defaulting to {FLUX_SERVICE_URL_BACKUP} for flux query backup.")
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
