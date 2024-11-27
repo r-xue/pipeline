@@ -161,7 +161,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         casa_tools.set_log_origin(fromwhere=pipeline_task_name)
 
         # PIPE-2388: Skipping breakpoint command
-        if pipeline_task_name in breakpoint_task:
+        if pipeline_task_name == breakpoint_task:
             casa_tools.post_to_log("Found {}, not performing any action.".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             continue
 
