@@ -1,10 +1,8 @@
-
-import copy
+import collections
 import functools
 import operator
 import warnings
-import collections
-import os
+
 import numpy as np
 import scipy.optimize
 
