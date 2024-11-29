@@ -1,8 +1,8 @@
-import casatools
-import numpy as np
 import os
 import pickle
-import datetime
+
+import casatools
+import numpy as np
 
 #This file contains functions that applycalqa used to borrow from AnalysisUtils, but given how  unreliable that one huge file is,
 #the very few functions we are actually using were moved here
