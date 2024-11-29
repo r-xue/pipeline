@@ -8,8 +8,8 @@ import time as systime
 import numpy as np
 import argparse
 import pickle
-import qa
-import qa_utils as qau
+from . import qa
+from . import qa_utils as qau
 
 #def_input_path = "/mnt/jaosco/data/hfrancke/QAscores"
 #def_input_path = "/jaopost_spool/QAscoresMOUSs"
