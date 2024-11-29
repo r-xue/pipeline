@@ -1,7 +1,8 @@
 import pickle as pkl
 
-import casatools
 import numpy as np
+
+from pipeline.infrastructure import casa_tools
 
 
 def average_visibility_dtype(npol,nchan,f_avg_max_length):
@@ -74,157 +75,153 @@ class MSWrapper(object):
         excluded_columns = ['antenna1', 'antenna2', 'flag']
 
         # commented out from copied PL code
-        # with casa_tools.MSReader(filename) as openms:
-        openms = casatools.ms()
-        openms.open(filename)
+        with casa_tools.MSReader(filename) as openms:
 
-        # select data for this scan
-        data_selection = {"scan": str(scan), "spw": str(spw)}
-        openms.msselect(data_selection)
-        nant = len(antennaids)
-        nbl = nant * (nant - 1) / 2 + nant
-        nrows = openms.nrow(selected=True)
-        ntstamps = nrows / nbl
+            # select data for this scan
+            data_selection = {"scan": str(scan), "spw": str(spw)}
+            openms.msselect(data_selection)
+            nant = len(antennaids)
+            nbl = nant * (nant - 1) / 2 + nant
+            nrows = openms.nrow(selected=True)
+            ntstamps = nrows / nbl
 
-        axis_info = openms.getdata(['axis_info'])
-        # Create frequency axes to be introduced in output V
-        corr_axis = axis_info['axis_info']['corr_axis']
-        freq_axis = axis_info['axis_info']['freq_axis']
-        # get 1D array of channel frequencies and include its definition in the dtype
-        chan_freq = freq_axis['chan_freq']
-        chan_freq = chan_freq.swapaxes(0, 1)[0]
-        # get 1D array of channel widths and include the column in the dtype
-        resolution = freq_axis['resolution']
-        resolution = resolution.swapaxes(0, 1)[0]
+            axis_info = openms.getdata(['axis_info'])
+            # Create frequency axes to be introduced in output V
+            corr_axis = axis_info['axis_info']['corr_axis']
+            freq_axis = axis_info['axis_info']['freq_axis']
+            # get 1D array of channel frequencies and include its definition in the dtype
+            chan_freq = freq_axis['chan_freq']
+            chan_freq = chan_freq.swapaxes(0, 1)[0]
+            # get 1D array of channel widths and include the column in the dtype
+            resolution = freq_axis['resolution']
+            resolution = resolution.swapaxes(0, 1)[0]
 
-        #npol = len(corr_axis)
-        #nchan = len(freq_axis['chan_freq'])
+            #npol = len(corr_axis)
+            #nchan = len(freq_axis['chan_freq'])
 
-        # Data size per row and for the whole scan
-        rowdatasize = np.sum(col_dsizes * (npol * poldim + 1) * (nchan * freqdim + 1))
-        scandatasize = nrows * rowdatasize
-        # Calculate the number of iteration that need to be done to go over
-        # the entire piece of data for this scan,spw
-        niter = int(np.ceil(1.0 * scandatasize / memlim))
-        nrowsbuffer = int(np.floor(1.0 * memlim / rowdatasize))
-        print('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(scan, nrows, 1.0*scandatasize/(1024.0**3), 1.0*memlim/(1024.0**3)))
-        print('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
+            # Data size per row and for the whole scan
+            rowdatasize = np.sum(col_dsizes * (npol * poldim + 1) * (nchan * freqdim + 1))
+            scandatasize = nrows * rowdatasize
+            # Calculate the number of iteration that need to be done to go over
+            # the entire piece of data for this scan,spw
+            niter = int(np.ceil(1.0 * scandatasize / memlim))
+            nrowsbuffer = int(np.floor(1.0 * memlim / rowdatasize))
+            print('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(scan, nrows, 1.0*scandatasize/(1024.0**3), 1.0*memlim/(1024.0**3)))
+            print('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
 
-        norm_sigma_tavg = np.sqrt(ntstamps * (nant - 1.0))
-        norm_sigma_favg = np.sqrt(nchan)
+            norm_sigma_tavg = np.sqrt(ntstamps * (nant - 1.0))
+            norm_sigma_favg = np.sqrt(nchan)
 
-        #arrays to sum over so we can average later
-        t_real_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-        t_imag_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-        t_real_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-        t_imag_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-        n_t_points = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            #arrays to sum over so we can average later
+            t_real_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_imag_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_real_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_imag_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            n_t_points = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
 
-        f_avg = {ant: None for ant in antennaids}
-        f_sigma = {ant: None for ant in antennaids}
+            f_avg = {ant: None for ant in antennaids}
+            f_sigma = {ant: None for ant in antennaids}
 
-        #Variable to store starting time
-        tstart = 1.e12
+            #Variable to store starting time
+            tstart = 1.e12
 
-        openms.iterinit(maxrows=nrowsbuffer)
-        do_next = openms.iterorigin()
+            openms.iterinit(maxrows=nrowsbuffer)
+            do_next = openms.iterorigin()
 
-        while do_next:
-            raw_data = openms.getdata(col_names)
-            # Create maked array of corrected and masked data
-            # data has axis order pol->channel->time. Swap order to a more natural time->pol->channel
-            data = np.ma.MaskedArray(
-                data=raw_data['corrected_data'].swapaxes(0, 2).swapaxes(1, 2),
-                dtype=np.dtype('complex128'),
-                mask=raw_data['flag'].swapaxes(0, 2).swapaxes(1, 2)
-            )
-            tstart = min(tstart, np.min(raw_data['time']))
-            # Iterate over antennas, selecting rows of data for averaging
+            while do_next:
+                raw_data = openms.getdata(col_names)
+                # Create maked array of corrected and masked data
+                # data has axis order pol->channel->time. Swap order to a more natural time->pol->channel
+                data = np.ma.MaskedArray(
+                    data=raw_data['corrected_data'].swapaxes(0, 2).swapaxes(1, 2),
+                    dtype=np.dtype('complex128'),
+                    mask=raw_data['flag'].swapaxes(0, 2).swapaxes(1, 2)
+                )
+                tstart = min(tstart, np.min(raw_data['time']))
+                # Iterate over antennas, selecting rows of data for averaging
+                for antenna in antennaids:
+                    sel = np.logical_xor(raw_data['antenna1'] == antenna, raw_data['antenna2'] == antenna)
+                    seldatareal = data[sel].real
+                    seldataimag = data[sel].imag
+                    # If the per antenna adjustment is selected, invert the sign of the imaginary part when the
+                    # antenna is in position 2
+                    if perantave:
+                        ant2sel = raw_data['antenna2'][sel]
+                        sel2 = np.where(ant2sel == antenna)[0]
+                        for j in sel2:
+                            seldataimag[j, :, :] *= -1.0
+                    # Accumulate the sum of data averaged over time and baselines (MS rows)
+                    t_r_sum = seldatareal.sum(axis=0)
+                    t_i_sum = seldataimag.sum(axis=0)
+                    t_r_sq_sum = np.square(seldatareal).sum(axis=0)
+                    t_i_sq_sum = np.square(seldataimag).sum(axis=0)
+
+                    #No need to accumulate the sum of data averaged over frequency
+                    f_r_avg = seldatareal.mean(axis=2)
+                    f_i_avg = seldataimag.mean(axis=2)
+                    f_ant_avg = (f_r_avg + 1j*f_i_avg).swapaxes(0,1)
+
+                    f_r_sq_sum=np.square(np.ma.array([seldatareal[:,:,i]-f_r_avg for i in np.arange(seldatareal.shape[-1])])).sum(axis=0)
+                    f_r_sigma = np.sqrt(f_r_sq_sum/nchan).swapaxes(0,1)
+
+                    f_i_sq_sum=np.square(np.ma.array([seldataimag[:,:,i]-f_i_avg for i in np.arange(seldataimag.shape[-1])])).sum(axis=0)
+                    f_i_sigma = np.sqrt(f_i_sq_sum/nchan).swapaxes(0,1)#(s,pol)->(pol,s)
+                    f_ant_sigma = (f_r_sigma + 1j* f_i_sigma)/norm_sigma_favg
+
+                    # Perform the the stacking to existing sums with np.ma.sum() to avoid
+                    # propagating masking over the cumulative sum
+                    t_real_sum[antenna] = np.ma.MaskedArray([t_real_sum[antenna], t_r_sum]).sum(axis=0)
+                    t_imag_sum[antenna] = np.ma.MaskedArray([t_imag_sum[antenna], t_i_sum]).sum(axis=0)
+                    t_real_sq_sum[antenna] = np.ma.MaskedArray([t_real_sq_sum[antenna], t_r_sq_sum]).sum(axis=0)
+                    t_imag_sq_sum[antenna] = np.ma.MaskedArray([t_imag_sq_sum[antenna], t_i_sq_sum]).sum(axis=0)
+                    # Perform the the stacking to existing sums with np.ma.sum() to avoid
+                    # propagating masking over the cumulative sum
+                    if f_avg[antenna] is not None:
+                        f_avg[antenna] = np.ma.append(f_avg[antenna],f_ant_avg,axis=1)
+                    else:
+                        f_avg[antenna] = f_ant_avg
+                    if f_sigma[antenna] is not None:
+                        f_sigma[antenna] = np.ma.append(f_sigma[antenna],f_ant_sigma,axis=1)
+                    else:
+                        f_sigma[antenna] = f_ant_sigma
+                    n_t_points[antenna] = np.ma.MaskedArray([n_t_points[antenna], data[sel].count(axis=0)]).sum(axis=0)
+                # Jump to next chunk of data
+                do_next = openms.iternext()
+
+            # For pixels with no unmasked data accumulated, make sure those
+            # pixels are filled with some epsilon dummy value
+            #On the same iteration, get the maximum length of freq averages and use that length as masked array size
+            f_avg_max_length = 0
+
             for antenna in antennaids:
-                sel = np.logical_xor(raw_data['antenna1'] == antenna, raw_data['antenna2'] == antenna)
-                seldatareal = data[sel].real
-                seldataimag = data[sel].imag
-                # If the per antenna adjustment is selected, invert the sign of the imaginary part when the
-                # antenna is in position 2
-                if perantave:
-                    ant2sel = raw_data['antenna2'][sel]
-                    sel2 = np.where(ant2sel == antenna)[0]
-                    for j in sel2:
-                        seldataimag[j, :, :] *= -1.0
-                # Accumulate the sum of data averaged over time and baselines (MS rows)
-                t_r_sum = seldatareal.sum(axis=0)
-                t_i_sum = seldataimag.sum(axis=0)
-                t_r_sq_sum = np.square(seldatareal).sum(axis=0)
-                t_i_sq_sum = np.square(seldataimag).sum(axis=0)
+                zeroselt = n_t_points[antenna].data < 1.0 #if no t_points were counted, antenna should be flagged.should it not be masked already?
+                n_t_points[antenna].data[zeroselt] = epsilon
+                n_t_points[antenna].mask += zeroselt
 
-                #No need to accumulate the sum of data averaged over frequency
-                f_r_avg = seldatareal.mean(axis=2)
-                f_i_avg = seldataimag.mean(axis=2)
-                f_ant_avg = (f_r_avg + 1j*f_i_avg).swapaxes(0,1)
+                f_avg_l = f_avg[antenna].shape[1]
+                if f_avg_l>f_avg_max_length:
+                    f_avg_max_length = f_avg_l
 
-                f_r_sq_sum=np.square(np.ma.array([seldatareal[:,:,i]-f_r_avg for i in np.arange(seldatareal.shape[-1])])).sum(axis=0)
-                f_r_sigma = np.sqrt(f_r_sq_sum/nchan).swapaxes(0,1)
+            # Iterate over antennas, now calculating the mean and sigma of the data
+            # creating the variable V to be returned as output
+            dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
+            visibilities=np.ma.empty((0,), dtype=dtype)
+            for antenna in antennaids:
+                #compute avgs
+                t_avg = (t_real_sum[antenna] + 1j*t_imag_sum[antenna]) / n_t_points[antenna]
+                t_sigma_real = np.ma.sqrt((t_real_sq_sum[antenna] - np.square(t_real_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
+                t_sigma_imag = np.ma.sqrt((t_imag_sq_sum[antenna] - np.square(t_imag_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
+                # apply final formula from sigma values
+                t_sigma = (t_sigma_real + 1j * t_sigma_imag) / norm_sigma_tavg
 
-                f_i_sq_sum=np.square(np.ma.array([seldataimag[:,:,i]-f_i_avg for i in np.arange(seldataimag.shape[-1])])).sum(axis=0)
-                f_i_sigma = np.sqrt(f_i_sq_sum/nchan).swapaxes(0,1)#(s,pol)->(pol,s)
-                f_ant_sigma = (f_r_sigma + 1j* f_i_sigma)/norm_sigma_favg
-
-                # Perform the the stacking to existing sums with np.ma.sum() to avoid
-                # propagating masking over the cumulative sum
-                t_real_sum[antenna] = np.ma.MaskedArray([t_real_sum[antenna], t_r_sum]).sum(axis=0)
-                t_imag_sum[antenna] = np.ma.MaskedArray([t_imag_sum[antenna], t_i_sum]).sum(axis=0)
-                t_real_sq_sum[antenna] = np.ma.MaskedArray([t_real_sq_sum[antenna], t_r_sq_sum]).sum(axis=0)
-                t_imag_sq_sum[antenna] = np.ma.MaskedArray([t_imag_sq_sum[antenna], t_i_sq_sum]).sum(axis=0)
-                # Perform the the stacking to existing sums with np.ma.sum() to avoid
-                # propagating masking over the cumulative sum
-                if f_avg[antenna] is not None:
-                    f_avg[antenna] = np.ma.append(f_avg[antenna],f_ant_avg,axis=1)
-                else:
-                    f_avg[antenna] = f_ant_avg   
-                if f_sigma[antenna] is not None:
-                    f_sigma[antenna] = np.ma.append(f_sigma[antenna],f_ant_sigma,axis=1)
-                else:
-                    f_sigma[antenna] = f_ant_sigma
-                n_t_points[antenna] = np.ma.MaskedArray([n_t_points[antenna], data[sel].count(axis=0)]).sum(axis=0)
-            # Jump to next chunk of data
-            do_next = openms.iternext()
-
-        # For pixels with no unmasked data accumulated, make sure those
-        # pixels are filled with some epsilon dummy value
-        #On the same iteration, get the maximum length of freq averages and use that length as masked array size
-        f_avg_max_length = 0
-
-        for antenna in antennaids:
-            zeroselt = n_t_points[antenna].data < 1.0 #if no t_points were counted, antenna should be flagged.should it not be masked already?
-            n_t_points[antenna].data[zeroselt] = epsilon
-            n_t_points[antenna].mask += zeroselt
-
-            f_avg_l = f_avg[antenna].shape[1]
-            if f_avg_l>f_avg_max_length:
-                f_avg_max_length = f_avg_l
-            
-        # Iterate over antennas, now calculating the mean and sigma of the data
-        # creating the variable V to be returned as output
-        dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
-        visibilities=np.ma.empty((0,), dtype=dtype)
-        for antenna in antennaids:
-            #compute avgs
-            t_avg = (t_real_sum[antenna] + 1j*t_imag_sum[antenna]) / n_t_points[antenna]
-            t_sigma_real = np.ma.sqrt((t_real_sq_sum[antenna] - np.square(t_real_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
-            t_sigma_imag = np.ma.sqrt((t_imag_sq_sum[antenna] - np.square(t_imag_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
-            # apply final formula from sigma values
-            t_sigma = (t_sigma_real + 1j * t_sigma_imag) / norm_sigma_tavg
-
-            v=np.ma.empty((1,), dtype=dtype)
-            v['antenna'] = antenna
-            v['t_avg'] = t_avg
-            v['t_sigma'] = t_sigma
-            v['f_avg'] = f_avg[antenna]
-            v['f_sigma'] = f_sigma[antenna]
-            v['flagged'] = n_t_points[antenna].mask.all() #flagg antenna if all points were flagged.
-            visibilities = np.ma.concatenate((visibilities,v),axis=0)
-
-        openms.close()
+                v=np.ma.empty((1,), dtype=dtype)
+                v['antenna'] = antenna
+                v['t_avg'] = t_avg
+                v['t_sigma'] = t_sigma
+                v['f_avg'] = f_avg[antenna]
+                v['f_sigma'] = f_sigma[antenna]
+                v['flagged'] = n_t_points[antenna].mask.all() #flagg antenna if all points were flagged.
+                visibilities = np.ma.concatenate((visibilities,v),axis=0)
 
         #Set up time axis
         int_axis = np.array([i for i in range(int(ntstamps)) for ant in range(nant-1)])
