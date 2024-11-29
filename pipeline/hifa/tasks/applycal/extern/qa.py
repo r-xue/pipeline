@@ -5,10 +5,10 @@ import functools
 # import operator
 import os
 from typing import Dict, Iterable, List, Reversible
-import pipelineqa as pqa
-import ampphase_vs_freq_qa
-import qa_utils as qau
-import mswrapper
+from . import pipelineqa as pqa
+from . import ampphase_vs_freq_qa
+from . import qa_utils as qau
+from . import mswrapper
 import pickle
 import numpy as np
 import math
