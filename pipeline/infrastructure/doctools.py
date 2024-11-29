@@ -11,6 +11,18 @@ from typing import Callable
 def inherit_type_hints(parent_func: Callable, child_func: Callable):
     """Copy type hints from parent_func to child_func.
 
+    Note:
+        This function assumes that parent_func and child_func
+        have similar function signatures. Typical usecase is
+        that one function wraps the other. Function signature
+        is not necessarily be identical. But there must be
+        some overlap of parameter names to make this function
+        work.
+
+        Note that, if parent_func and child_func use the same
+        parameter name but for different purposes, resulting
+        type hint may be wrong.
+
     Args:
         parent_func: Base function from which type hints are copied
         child_func: Function to be annotated
