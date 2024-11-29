@@ -1,15 +1,16 @@
 #!/Applications/CASA.app/Contents/MacOS/python3
 # -*- coding: utf-8 -*-
 
-import os, sys
 import argparse
 import glob
-import time as systime
-import numpy as np
-import argparse
+import os
 import pickle
+import sys
+import time as systime
+
+import numpy as np
+
 from . import qa
-from . import qa_utils as qau
 
 #def_input_path = "/mnt/jaosco/data/hfrancke/QAscores"
 #def_input_path = "/jaopost_spool/QAscoresMOUSs"

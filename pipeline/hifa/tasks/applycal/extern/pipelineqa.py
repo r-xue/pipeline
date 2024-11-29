@@ -1,8 +1,4 @@
-
-import abc
 import collections
-import enum
-import operator
 from typing import Optional, Set
 
 # QAOrigin holds information to help understand how and from where the QA scores are derived

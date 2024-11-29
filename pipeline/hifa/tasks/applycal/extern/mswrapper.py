@@ -1,7 +1,8 @@
-import numpy as np
-import casatools
 import pickle as pkl
-from . import qa_utils as qau
+
+import casatools
+import numpy as np
+
 
 def average_visibility_dtype(npol,nchan,f_avg_max_length):
     dtype = [
