@@ -8,9 +8,9 @@ from typing import Dict, Iterable, List, Reversible
 
 import numpy as np
 
+import pipeline.infrastructure.pipelineqa as pqa
 from . import ampphase_vs_freq_qa
 from . import mswrapper
-from . import pipelineqa as pqa
 from . import qa_utils as qau
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
