@@ -127,7 +127,7 @@ def main():
 
     for idx, ms in enumerate(mslist):
         (all_scores, final_scores, \
-         qaevalf) = qa.get_qa_scores(ms,output_path=output_path,
+         qaevalf) = qa.get_qa_scores(ms, output_path=output_path,
                                      memory_gb=memlim,
                                      applycalQAversion=applycalQAversion,
                                      timestamp=timestamp)
