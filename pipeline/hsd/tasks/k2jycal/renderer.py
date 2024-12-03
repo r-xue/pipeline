@@ -47,26 +47,31 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             context: Pipeline context
             results: ResultsList instance. Should hold a list of SDK2JyCalResults instance.
         """
-        spw_factors = collections.defaultdict(lambda: [])
-        valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
-
+        spw_factors = collections.defaultdict(list)
+        valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(list))
+        spw_frequencies = {}
+        
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         trfunc_r = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTR(_rspwid, _vis, _antenna, _pol, _factor)
         trfunc_v = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTRV(_vspwid, _vis, _rspwid, _antenna, _pol, _factor)
         trfunc = trfunc_v if dovirtual else trfunc_r
         reffile_list = []
+        
         for r in results:
             # rearrange jyperk factors
             ms = context.observing_run.get_ms(name=r.vis)
             vis = ms.basename
+            ms_label = vis
             spw_band = {}
             for spw in ms.get_spectral_windows(science_windows_only=True):
                 spwid = spw.id
+                spwfq = spw.centre_frequency
                 # virtual spw id
                 vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
                 ddid = ms.get_data_description(spw=spwid)
                 if vspwid not in spw_band:
                     spw_band[vspwid] = spw.band
+                    spw_frequencies[vspwid] = spwfq
                 for ant in ms.get_antenna():
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
@@ -75,23 +80,27 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
 #                     corr_collector = collections.defaultdict(lambda: [])
                     for corr in corrs:
                         factor = self.__get_factor(r.factors, vis, spwid, ant_name, corr)
-#                         corr_collector[factor].append(corr)
-#                     for factor, corrlist in corr_collector.items():
+#                       corr_collector[factor].append(corr)
+#                       for factor, corrlist in corr_collector.items():
 #                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
 #                         tr = JyperKTR(vis, spwid, ant_name, corr, jyperk)
                         tr = trfunc(vspwid, vis, spwid, ant_name, corr, jyperk)
                         spw_factors[vspwid].append(tr)
                         if factor is not None:
-                            valid_spw_factors[vspwid][corr].append(factor)
+                            valid_spw_factors[ms_label][vspwid].append(factor)
             reffile_list.append(r.reffile)
+            
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         # histogram plots of Jy/K factors
         hist_plots = []
-        for vspwid, valid_factors in valid_spw_factors.items():
-            if len(valid_factors) > 0:
-                task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
-                hist_plots += task.plot()
+        # for vspwid, valid_factors in valid_spw_factors.items():
+        #     if len(valid_factors) > 0:
+        #         task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
+        #         hist_plots += task.plot()
+        if any(len(spw_data) > 0 for spw_data in valid_spw_factors.values()):
+            task = display.K2JySingleScatterDisplay(stage_dir, valid_spw_factors, spw_frequencies, spw_band)
+            hist_plots += task.plot()
         # input Jy/K files
         reffile_list = list(dict.fromkeys(reffile_list))   # remove duplicated filenames
         reffile_copied_list = []

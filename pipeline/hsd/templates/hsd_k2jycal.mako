@@ -22,48 +22,38 @@ def id2name(spwid):
 
 <h3>Summary of Jy/K Conversion Factor</h3>
 <p>
-Numbers in histograms show that of MS, antenna, spectral window, and polarization
-combination whose conversion factor is in each bin.
+This plot shows the K/Jy factors across SPWs for different measurement sets.
 </p>
-% for plot in jyperk_hist:
-	% if plot is not None:
-    <div class="col-md-3 col-sm-4">
-    	% if os.path.exists(plot.thumbnail):
-    		<%
-            	fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
-                thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)
-            %>
+% if jyperk_hist and len(jyperk_hist) > 0:
+    <% plot = jyperk_hist[0] %>
+    % if plot is not None and os.path.exists(plot.thumbnail):
+        <%
+            fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
+            thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)
+        %>
 
-            <div class="thumbnail">
-            	<a href="${fullsize_relpath}"
-                   data-fancybox
-                   title='<div>Receiver: ${plot.parameters['receiver']}<br>Spw: ${plot.parameters['spw']}<br></div>'>
-                	<img class="lazyload"
-                         data-src="${thumbnail_relpath}"
-                         title="Click to show histrogram of Jy/K factors of spw ${plot.parameters['spw']}">
-                </a>
+        <div class="thumbnail">
+            <a href="${fullsize_relpath}"
+               data-fancybox
+               title='K/Jy Factors across SPWs'>
+                <img class="lazyload"
+                     data-src="${thumbnail_relpath}"
+                     title="Click to show plot of K/Jy factors across SPWs">
+            </a>
 
-                <div class="caption">
-                    <!-- title -->
-                    %if dovirtual:
-                    <h4>Virtual Spectral Window ${plot.parameters['spw']}</h4>
-                    % else:
-                    <h4>Spectral Window ${plot.parameters['spw']}</h4>
-                    % endif
-                    <!-- sub-title -->
-	                <h6>${plot.parameters['receiver']}</h6>
-                    <!-- description -->
-                    % if dovirtual:
-                    <p>Variation of Jy/K factors in virtual spw ${plot.parameters['spw']}<br>name: ${id2name(plot.parameters['spw'])}</p>
-                    % else:
-                    <p>Variation of Jy/K factors in spw ${plot.parameters['spw']}</p>
-                    % endif
-                </div>
+            <div class="caption">
+                % if dovirtual:
+                    <h4>K/Jy Factors across Virtual Spectral Windows</h4>
+                    <p>Virtual SPWs included: ${', '.join(map(str, plot.parameters['spws']))}</p>
+                % else:
+                    <h4>K/Jy Factors across Spectral Windows</h4>
+                    <p>SPWs included: ${', '.join(map(str, plot.parameters['spws']))}</p>
+                % endif
+                <h6>Receivers: ${', '.join(plot.parameters['receivers'])}</h6>
             </div>
-        % endif
-    </div>
+        </div>
     % endif
-% endfor
+% endif
 <div class="clearfix"></div><!--  flush plots, break to next row -->
 
 <h3>Jy/K Conversion Factors</h3>
