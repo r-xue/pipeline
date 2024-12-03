@@ -173,7 +173,6 @@ class K2JySingleScatterDisplay(object):
                             parameters=parameters)
         return plot_obj
     
-    
     def _plot(self) -> Generator[logger.Plot, None, None]:
         """Create scatter plot with Frequencies as the main X-axis."""
 
