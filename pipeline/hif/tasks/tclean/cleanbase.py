@@ -314,8 +314,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
-        parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
-                        'TARGET' in inputs.intent])
+        parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
+
+        # PIPE-1878: calculate iteration/specmode-depdendent theshold scaling factor (only used for VLA-PI)
+        rms_multiplier = inputs.heuristics.get_nfrms_multiplier(iter, inputs.intent, inputs.specmode, image_name)
 
         # Need to translate the virtual spw IDs to real ones
         real_spwsel = context.observing_run.get_real_spwsel(inputs.spwsel, inputs.vis)
@@ -395,9 +397,19 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['usemask'] = 'auto-multithresh'
 
             # get heuristics parameters
-            (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-             dogrowprune, minpercentchange,
-             fastnoise) = inputs.heuristics.get_autobox_params(iter, inputs.intent, inputs.specmode, inputs.robust)
+            (
+                sidelobethreshold,
+                noisethreshold,
+                lownoisethreshold,
+                negativethreshold,
+                minbeamfrac,
+                growiterations,
+                dogrowprune,
+                minpercentchange,
+                fastnoise,
+            ) = inputs.heuristics.get_autobox_params(
+                iter, inputs.intent, inputs.specmode, inputs.robust, rms_multiplier=rms_multiplier
+            )
 
             # Override individually with manual settings
             if inputs.hm_sidelobethreshold != -999.0:
@@ -568,7 +580,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             if mosweight is not None:
                 tclean_job_parameters['mosweight'] = mosweight
 
-        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma, inputs.hm_masking)
+        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(
+            iter, inputs.hm_nsigma, inputs.hm_masking, rms_multiplier=rms_multiplier
+        )
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes(gridder=inputs.gridder, spwspec=inputs.spw)
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()

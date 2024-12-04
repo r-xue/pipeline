@@ -1,3 +1,4 @@
+import os
 import re
 import traceback
 from typing import Optional, Union
@@ -10,6 +11,7 @@ import pipeline.infrastructure.filenamer as filenamer
 from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.tablereader import find_EVLA_band
 
+from .auto_selfcal.selfcal_helpers import estimate_near_field_SNR, estimate_SNR
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -176,7 +178,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
-    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """VLA auto-boxing parameters.
 
         See PIPE-677 for TARGET-specific heuristic
@@ -196,12 +205,33 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             if iteration in [1, 2]:
                 sidelobethreshold = 2.0
                 minbeamfrac = 0.0
-            # iter2, same settings, but pruning is turned back on
+            # PIPE-677: iter2, same settings, but pruning is turned back on
+            # PIPE-1878: explicitly set noisethreshold/lownoisethreshold values for the nfrms/rms-ratio-based scaling
             if iteration == 2:
                 minbeamfrac = 0.3
+                noisethreshold = 5.0
+                lownoisethreshold = 1.5
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-                dogrowprune, minpercentchange, fastnoise)
+        # PIPE-1878: adjust the threshold based on a rms scaling factor, e.g. the ratio of rms values from ROIs vs rms from entire image
+        if rms_multiplier is not None:
+            if noisethreshold is not None:
+                noisethreshold *= rms_multiplier
+            if lownoisethreshold is not None:
+                lownoisethreshold *= rms_multiplier
+            if negativethreshold is not None:
+                negativethreshold *= rms_multiplier
+
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
 
     def nterms(self, spwspec) -> Union[int, None]:
         """Tclean nterms parameter heuristics.
@@ -346,7 +376,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-683 and CASR-543"""
         return 'cont'
 
-    def nsigma(self, iteration, hm_nsigma, hm_masking):
+    def nsigma(self, iteration, hm_nsigma, hm_masking, rms_multiplier=None):
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -354,7 +384,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             # PIPE-678: VLA 'none' set to 5.0
             # PIPE-677: VLA automasking set to 4.0, reduce from 5.0
             if hm_masking == 'auto':
-                return 4.0
+                if rms_multiplier is not None:
+                    return 4.0 * rms_multiplier
+                else:
+                    return 4.0
             else:
                 return 5.0
 
@@ -576,3 +609,45 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 LOG.warning('Cannot derive the heuristics-based rest frequency for VLA cube imaging.')
 
         return rest_freq
+
+    def get_nfrms_multiplier(self, iteration, intent, specmode, imagename):
+        """PIPE-1878: determine the nfrms-based threshold multiplier for TARGET imaging.
+
+        Args:
+            iteration (int): The iteration number.
+            intent (str): the intent
+            specmode (str): The spectral mode.
+            imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
+
+        Returns:
+            float: The multiplier for the nfrms-based threshold.
+        """
+        nfrms_multiplier = None
+
+        if iteration == 2 and specmode in ('cont', 'mfs') and 'TARGET' in intent:
+            image_name = None
+            if os.path.exists(imagename):
+                image_name = imagename
+            if os.path.exists(imagename + '.tt0'):
+                image_name = imagename + '.tt0'
+            if image_name is not None:
+                with casa_tools.ImageReader(image_name) as ia:
+                    qa = casa_tools.quanta
+                    restfreq_hz = qa.convert(ia.coordsys().restfrequency(), 'Hz')['value'][0]
+
+                bl_pt5_m, _ = self.calc_percentile_baseline_length(5.)
+                c_mps = 299792458.
+                lambda_m = c_mps/restfreq_hz
+
+                las_as = 0.6 * (lambda_m/bl_pt5_m) * 180./np.pi * 3600.
+                _, rms = estimate_SNR(image_name)
+                _, nfrms = estimate_near_field_SNR(image_name, las=las_as)
+
+                LOG.info('The ratio of nf_rms and rms before for TARGET imaging (%s): %s.', imagename, nfrms/rms)
+            else:
+                LOG.warning('Failed to calculate the nf_rms/rms ratio for TARGET imaging.')
+
+            nfrms_multiplier = max(nfrms/rms, 1.0)
+            LOG.info('The nfrms multiplier for TARGET imaging (%s): %s.', imagename, nfrms_multiplier)
+
+        return nfrms_multiplier

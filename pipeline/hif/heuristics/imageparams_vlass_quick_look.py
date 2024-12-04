@@ -460,9 +460,15 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean rotatepastep parameter heuristics."""
         return 360.
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
-
-        '''Default auto-boxing parameters.'''
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None
@@ -474,5 +480,14 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
-                growiterations, dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )

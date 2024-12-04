@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -218,7 +218,14 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return None
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
         # Start with generic defaults
