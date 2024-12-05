@@ -21,23 +21,13 @@ test_params_fits = [(casa_tools.utils.resolve('pl-unittest/VLASS1.1.ql.T19t20.J1
                       {'unit': 'deg', 'value': 24.49997953261358})
                      )]  # VLASS 1.2
 
-test_params_func = [({'unit': 'deg', 'value': 239.9618166667},
-                     {'unit': 'deg', 'value': 33.5},
-                     {'unit': 'deg', 'value': -107.61833},
-                     {'unit': 'deg', 'value': 33.90049},
-                     {'m0': {'unit': 'd', 'value': 58089.82306510417},
-                      'refer': 'UTC', 'type': 'epoch'},
-                      0.2981984027696308,
+test_params_func = [(0.2981984027696312,
+                     1.4473222298324353,
                      ({'unit': 'deg', 'value': 2.1182175269636022e-05},
                       {'unit': 'deg', 'value': 2.6288231112869233e-06})
                      ),
-                    ({'unit': 'deg', 'value': 64.45977105549},
-                     {'unit': 'deg', 'value': 24.50000018686},
-                     {'unit': 'deg', 'value': -107.61833},
-                     {'unit': 'deg', 'value': 33.90049},
-                     {'m0': {'unit': 'd', 'value': 58565.8652734375},
-                      'refer': 'UTC', 'type': 'epoch'},
-                      0.6200683050479315,
+                    (0.6200683050479314,
+                     -1.1411500788434417,
                      ({'unit': 'deg', 'value': -4.507762670427747e-05},
                       {'unit': 'deg', 'value': 2.065425008498102e-05})
                      )]
@@ -88,10 +78,8 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     assert abs(delta_ra) < epsilon and abs(delta_dec) < epsilon
 
 
-@pytest.mark.parametrize('ra, dec, obs_long, obs_lat, date_time, zenith_angle, offset_expected', test_params_func)
-def test_calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
-                                 date_time: Dict, zenith_angle: float,
-                                 offset_expected: Tuple[Dict, Dict],
+@pytest.mark.parametrize('zd, pa, offset_expected', test_params_func)
+def test_calc_wide_field_pos_cor(zd: float, pa: float, offset_expected: Tuple[Dict, Dict],
                                  epsilon: float = 1.0e-9):
     """Test calc_wide_field_pos_cor()
 
@@ -100,8 +88,7 @@ def test_calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: D
     offsets.
     """
     # Compute correction
-    offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obs_long, obs_lat=obs_lat,
-                                     date_time=date_time, zenith_angle=zenith_angle)
+    offset = calc_wide_field_pos_cor(zd=zd, pa=pa)
 
     # Compute relative error
     ra_offset = casa_tools.quanta.convert(offset[0], 'deg')['value']

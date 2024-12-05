@@ -1,5 +1,3 @@
-import numpy as np
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -24,8 +22,6 @@ class AnalyzealphaResults(basetask.Results):
         return
 
     def __repr__(self):
-        #return 'AnalyzealphaResults:\n\t{0}'.format(
-        #    '\n\t'.join([ms.name for ms in self.mses]))
         return 'AnalyzealphaResults:'
 
 
@@ -108,7 +104,20 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
-            za_rad = utils.positioncorrection.calc_zenith_angle(header)
+            # retrieve alpha image information
+            ra_head = {'unit': header['CUNIT1'], 'value': header['CRVAL'][0]}
+            dec_head = {'unit': header['CUNIT2'], 'value': header['CRVAL'][1]}
+            # Obtain observatory geographic coordinates
+            observatory = casa_tools.measures.observatory('VLA')
+            obs_long = observatory['m0']
+            obs_lat = observatory['m1']
+            # Mean observing time
+            date_obs = header['DATE-OBS']
+            timesys = header['TIMESYS']
+            date_time = casa_tools.measures.epoch(timesys, date_obs)
+
+            # retrieve zenith angle for reporting to weblog
+            za_rad, _ = utils.positioncorrection.calc_zd_pa(ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=date_time)
             zenith_angle = casa_tools.quanta.convert(za_rad, 'deg')['value']
             LOG.info('|* Zenith angle of alpha image in degrees {}'.format(zenith_angle))
 
