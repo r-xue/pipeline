@@ -464,7 +464,8 @@ class Tclean(cleanbase.CleanBase):
                     self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
-                if abs(channel_width_manual) < channel_width_auto:
+                channel_width_tolerance = 0.05
+                if abs(channel_width_manual) < channel_width_auto*(1-channel_width_tolerance):
                     LOG.error('User supplied channel width (%s GHz) smaller than native '
                               'value (%s GHz) for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
@@ -477,9 +478,15 @@ class Tclean(cleanbase.CleanBase):
                                                                                                     inputs.intent,
                                                                                                     inputs.spw)
                     return error_result
-
-                LOG.info('Using supplied width %s' % inputs.width)
-                channel_width = channel_width_manual
+                else:
+                    if abs(channel_width_manual) < channel_width_auto:
+                        LOG.warning('User supplied channel width (%s GHz) smaller than native '
+                                    'value (%s GHz) for Field %s SPW %s but within the tolerance of %f; '
+                                    'use the native value instead.', channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw, channel_width_tolerance)
+                        channel_width = channel_width_auto
+                    else:
+                        LOG.info('Using supplied width %s' % inputs.width)
+                        channel_width = channel_width_manual
                 if abs(channel_width) > channel_width_auto:
                     inputs.nbin = int(utils.round_half_up(abs(channel_width) / channel_width_auto) + 0.5)
             elif inputs.nbin not in (None, -1):
