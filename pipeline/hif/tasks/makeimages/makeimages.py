@@ -29,6 +29,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
+    hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -80,7 +81,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                 hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
+                 hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                  cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
                  parallel=None,
@@ -106,6 +107,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_npixels = hm_npixels
         self.hm_cleaning = hm_cleaning
         self.hm_cyclefactor = hm_cyclefactor
+        self.hm_nmajor = hm_nmajor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
         self.hm_weighting = hm_weighting
@@ -578,6 +580,9 @@ class CleanTaskFactory(object):
             # keep compatibility with hif_editimlist and cleantarget.py
             # we keep the name now. Could be refactored later.
             task_args['cyclefactor'] = inputs.hm_cyclefactor
+
+        if inputs.hm_nmajor not in (None, -999.0):
+            task_args['nmajor'] = inputs.hm_major        
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction

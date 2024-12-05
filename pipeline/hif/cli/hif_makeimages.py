@@ -8,7 +8,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
                    hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                    hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                   hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
+                   hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_nmajor=None, hm_minpsffraction=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                    cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
                    parallel=None):
@@ -55,6 +55,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                             Can be set to True or False manually.
     hm_npixels              Number of pixels to determine uv-cell size for super-uniform weighting
     hm_cyclefactor          Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold
+    hm_nmajor               Controls the maximum number of major cycles to evaluate.
     hm_minpsffraction       PSF fraction that marks the max depth of cleaning in the minor cycle
     hm_maxpsffraction       PSF fraction that marks the minimum depth of cleaning in the minor cycle
     hm_weighting            Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
