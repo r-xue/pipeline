@@ -527,8 +527,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return imagename
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        """
-        Correct the VLA theoretical sensitivity for the Hanning smoothed SPW.
+        """Correct the VLA theoretical sensitivity for the Hanning smoothed SPW.
 
         PIPE-2131: Hanning smoothing introduces noise correlation between adjacent visibility channels,
         which is not accounted for in the statwt() outcome. Here, we introduce a scaling factor of 1.633 
@@ -550,26 +549,27 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         Returns:
             tuple: Corrected sensitivity values.
         """
-
         ret = super().get_sensitivity(ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper)
         ret = list(ret)
 
-        real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
-        with casa_tools.TableReader(ms_do.name + '/SPECTRAL_WINDOW') as table:
-            if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
-                is_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')[real_spwid]
-                if is_smoothed:
-                    LOG.info(
-                        'EB %s spw %s has been Hanning-smoothed; multiplying apparent sensitivity return by a factor of 1.633.',
-                        ms_do.name, real_spwid)
-                    ret[0] *= 1.633
+        # PIPE-2311: scale continuum theoretical noise for hanning-smoothed spws.
+        if specmode in ('mfs', 'cont'):
+            real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
+            with casa_tools.TableReader(ms_do.name + '/SPECTRAL_WINDOW') as table:
+                if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
+                    is_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')[real_spwid]
+                    if is_smoothed:
+                        LOG.info(
+                            'EB %s spw %s has been Hanning-smoothed; multiplying apparent sensitivity return by a factor of 1.633.',
+                            ms_do.name, real_spwid)
+                        ret[0] *= 1.633
+                    else:
+                        LOG.info('EB %s spw %s has not been Hanning-smoothed; assuming the visibility noise is channel-independent.',
+                                 ms_do.name, real_spwid)
                 else:
-                    LOG.info('EB %s spw %s has not been Hanning-smoothed; assuming the visibility noise is channel-independent.',
-                             ms_do.name, real_spwid)
-            else:
-                LOG.warning(
-                    'No offline Hanning smooth history is detected in EB %s spw %s; no correction for the VLA theoretical sensitivity.',
-                    ms_do.name, real_spwid)
+                    LOG.warning(
+                        'No offline Hanning smooth history is detected in EB %s spw %s; no correction for the VLA theoretical sensitivity.',
+                        ms_do.name, real_spwid)
 
         return tuple(ret)
 
