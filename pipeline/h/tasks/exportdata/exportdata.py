@@ -37,6 +37,8 @@ import sys
 import tarfile
 import uuid
 
+from typing import List, Tuple, Optional, Union
+
 import astropy.io.fits as apfits
 
 from pipeline.infrastructure.launcher import Context
@@ -115,6 +117,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     processing_data_type = [DataType.RAW, DataType.REGCAL_CONTLINE_ALL,
                             DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
+                            DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
                             DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE]
 
     calimages = vdp.VisDependentProperty(default=[])
@@ -293,9 +296,13 @@ class ExportData(basetask.StandardTaskTemplate):
         #    apply instructions
         msvisdict = collections.OrderedDict()
         calvisdict = collections.OrderedDict()
+
+        _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
+            inputs.context, inputs.session, None, imaging_only_mses=None)
+
         if not inputs.imaging_products_only:
             if inputs.exportmses:
-                msvisdict = self._do_ms_products(inputs.context, vislist, inputs.products_dir)
+                msvisdict = self._do_ms_products(inputs.context, exportmses_vislist, inputs.products_dir)
             if inputs.exportcalprods:
                 calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
         result.msvisdict = msvisdict
@@ -310,9 +317,9 @@ class ExportData(basetask.StandardTaskTemplate):
                                                                  inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
-                for i in range(len(session_names)):
-                    sessiondict[session_names[i]] = \
-                    ([os.path.basename(visfile) for visfile in session_vislists[i]], )
+                for i in range(len(exportmses_session_names)):
+                    sessiondict[exportmses_session_names[i]] = \
+                        ([os.path.basename(visfile) for visfile in exportmses_session_vislists[i]], )
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
@@ -366,32 +373,49 @@ class ExportData(basetask.StandardTaskTemplate):
         return recipe_name
 
     def _has_imaging_data(self, context, vis):
-        """
-        Check if the given vis contains any imaging data.
-        """
-
-        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        """Check if the given vis contains any imaging data."""
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
+                             DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
         ms_object = context.observing_run.get_ms(name=vis)
         return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
 
-    def _make_lists(self, context, session, vis, imaging_only_mses=False):
-        """
-        Create the vis and sessions lists
-        """
+    def _make_lists(
+        self,
+        context: Context,
+        session: List[str],
+        vis: Optional[Union[List[str], str]] = None,
+        imaging_only_mses: Optional[bool] = False,
+    ) -> Tuple[List[str], List[str], List[List[str]], List[str]]:
+        """Create the vis and sessions lists.
 
-        # Force inputs.vis to be a list.
+        Args:
+            context (Any): The context object containing observing runs.
+            session (Any): The session object.
+            vis (Optional[Union[List[str], str]]): List of visibility files, single visibility file, or None.
+            imaging_only_mses (Optional[bool]): Flag to filter only imaging measurement sets, can be None (default is False).
+
+        Returns:
+            Tuple[List[Any], List[str], List[List[str]], List[str]]:
+                - session_list: The list of session objects.
+                - session_names: The list of session names.
+                - session_vislists: The list of visibility files associated with each session.
+                - vislist: The list of visibility files.
+        """
         vislist = vis
+
+        if vislist is None:
+            vislist = [ms.name for ms in context.observing_run.measurement_sets]
         if isinstance(vislist, str):
             vislist = [vislist]
-        if imaging_only_mses:
-            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
-        else:
-            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
-        # Get the session list and the visibility files associated with
-        # each session.
-        session_list, session_names, session_vislists= self._get_sessions( \
-            context, session, vislist)
+        if isinstance(imaging_only_mses, bool):
+            if imaging_only_mses:
+                vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
+            else:
+                vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
+
+        # Get the session list and the visibility files associated with each session.
+        session_list, session_names, session_vislists = self._get_sessions(context, session, vislist)
 
         return session_list, session_names, session_vislists, vislist
 

@@ -610,7 +610,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return rest_freq
 
-    def get_nfrms_multiplier(self, iteration: int, intent: str, specmode: str, imagename: str) -> float:
+    def get_nfrms_multiplier(self, iteration: int, intent: str, specmode: str, imagename: str) -> Optional[float]:
         """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
 
         Args:

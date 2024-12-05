@@ -40,10 +40,10 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
                  tarms=None, exportcalprods=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
                  imaging_products_only=None):
-        super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                  exportmses=exportmses, pprfile=pprfile, calintents=calintents,
-                                                  calimages=calimages, targetimages=targetimages,
-                                                  products_dir=products_dir, imaging_products_only=imaging_products_only)
+        super().__init__(context, output_dir=output_dir, session=session, vis=vis,
+                         exportmses=exportmses, pprfile=pprfile, calintents=calintents,
+                         calimages=calimages, targetimages=targetimages,
+                         products_dir=products_dir, imaging_products_only=imaging_products_only)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
         self.tarms = tarms
