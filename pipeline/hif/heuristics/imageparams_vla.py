@@ -610,12 +610,12 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return rest_freq
 
-    def get_nfrms_multiplier(self, iteration, intent, specmode, imagename):
-        """PIPE-1878: determine the nfrms-based threshold multiplier for TARGET imaging.
+    def get_nfrms_multiplier(self, iteration: int, intent: str, specmode: str, imagename: str) -> float:
+        """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
 
         Args:
             iteration (int): The iteration number.
-            intent (str): the intent
+            intent (str): The intent.
             specmode (str): The spectral mode.
             imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
 
@@ -625,29 +625,40 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         nfrms_multiplier = None
 
         if iteration == 2 and specmode in ('cont', 'mfs') and 'TARGET' in intent:
-            image_name = None
-            if os.path.exists(imagename):
-                image_name = imagename
-            if os.path.exists(imagename + '.tt0'):
-                image_name = imagename + '.tt0'
-            if image_name is not None:
-                with casa_tools.ImageReader(image_name) as ia:
-                    qa = casa_tools.quanta
-                    restfreq_hz = qa.convert(ia.coordsys().restfrequency(), 'Hz')['value'][0]
+            image_name = imagename if os.path.exists(imagename) else imagename + \
+                '.tt0' if os.path.exists(imagename + '.tt0') else None
 
-                bl_pt5_m, _ = self.calc_percentile_baseline_length(5.)
-                c_mps = 299792458.
-                lambda_m = c_mps/restfreq_hz
+            if image_name:
+                try:
+                    with casa_tools.ImageReader(image_name) as ia:
+                        qa = casa_tools.quanta
+                        restfreq_hz = qa.convert(ia.coordsys().restfrequency(), 'Hz')['value'][0]
 
-                las_as = 0.6 * (lambda_m/bl_pt5_m) * 180./np.pi * 3600.
-                _, rms = estimate_SNR(image_name)
-                _, nfrms = estimate_near_field_SNR(image_name, las=las_as)
+                    bl_pt5_m, _ = self.calc_percentile_baseline_length(5.)
+                    c_mps = 299792458.
+                    lambda_m = c_mps / restfreq_hz
 
-                LOG.info('The ratio of nf_rms and rms before for TARGET imaging (%s): %s.', imagename, nfrms/rms)
-            else:
-                LOG.warning('Failed to calculate the nf_rms/rms ratio for TARGET imaging.')
+                    las_as = 0.6 * (lambda_m / bl_pt5_m) * 180 / np.pi * 3600
+                    _, rms = estimate_SNR(image_name)
+                    _, nfrms = estimate_near_field_SNR(image_name, las=las_as)
 
-            nfrms_multiplier = max(nfrms/rms, 1.0)
-            LOG.info('The nfrms multiplier for TARGET imaging (%s): %s.', imagename, nfrms_multiplier)
+                    LOG.info('The ratio of nf_rms and rms before TARGET imaging (%s): %s.', imagename, nfrms / rms)
+                    mask_name = imagename.rsplit('.image', 1)[0] + '.mask'
+
+                    nfrms_multiplier = max(nfrms / rms, 1.0)
+                    LOG.info('The nfrms multiplier for TARGET imaging (%s): %s.', imagename, nfrms_multiplier)
+
+                    LOG.info('Remove any clean mask inherited from TARGET .iter1 imaging.')
+                    casa_tasks.rmtree(mask_name, ignore_errors=True).execute()
+
+                except Exception as err:
+                    LOG.info('NF rms threshold scaling heuristics failed: %s', str(err))
+                    LOG.info(traceback.format_exc())
+
+            if nfrms_multiplier is None:
+                LOG.warning(
+                    'Failed to calculate the nf_rms/rms ratio before TARGET imaging (%s); '
+                    'will not assign a scaling factor for nsigma and auto-multithresh threshold values.', imagename
+                )
 
         return nfrms_multiplier
