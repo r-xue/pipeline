@@ -20,7 +20,8 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
 
     """
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     flagbackup = vdp.VisDependentProperty(default=True)
     template = vdp.VisDependentProperty(default=True)
