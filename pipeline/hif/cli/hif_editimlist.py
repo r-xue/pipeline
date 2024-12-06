@@ -149,12 +149,13 @@ def hif_editimlist(imagename=None,
             If False, do not perform flagging-based VLASS Coarse Cube plane rejection.
             If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
             The optional keys are:
+
             - exclude_spw, default: ''
-            Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.
+              Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.
             - flagpct_thresh, default: 0.9
-            Flagging percentage threshold per field for the plane rejection.
+              Flagging percentage threshold per field for the plane rejection.
             - nfield_thresh: default: 12
-            A minimal number of fields above the flagging percentage threshold is required for the plane rejection.
+              A minimal number of fields above the flagging percentage threshold is required for the plane rejection.
 
     Returns:
         The results object for the pipeline task is returned.

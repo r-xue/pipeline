@@ -49,9 +49,10 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
             dictionaries with the correct selection for each MS can be
             provided.
             Examples:
-            excludechan={'22':'100~150;800~850', '24':'100~200'}
-            excludechan={'22':'230.1GHz~230.2GHz'}
-            excludechan=[{'22':'100~150'}, {'15':'100~150'}]
+            
+            - excludechan={'22':'100~150;800~850', '24':'100~200'}
+            - excludechan={'22':'230.1GHz~230.2GHz'}
+            - excludechan=[{'22':'100~150'}, {'15':'100~150'}]
 
         atm_auto_exclude: Automatically find and exclude regions with atmospheric
             features. Default is False

@@ -43,25 +43,25 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
 
     Args:
         vis: List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
-            example: vis=['uid___A002_X30a93d_X43e']
+            Example: vis=['uid___A002_X30a93d_X43e']
 
-        session: List of sessions, one per visibility file. example: session=['session_3']
+        session: List of sessions, one per visibility file. Example: session=['session_3']
 
         products_dir: Path to the data products directory, used to copy calibration products from. The parameter is effective only when
             copytoraw=True. When copytoraw=False, calibration products in
             rawdata_dir will be used.
-            example: products_dir='/path/to/my/products'
+            Example: products_dir='/path/to/my/products'
 
         copytoraw: Copy calibration and flagging tables from products_dir to rawdata_dir directory.
-            example: copytoraw=False
+            Example: copytoraw=False
 
         rawdata_dir: Path to the rawdata subdirectory. example: rawdata_dir='/path/to/my/rawdata'
 
-        lazy: Use the lazy filler option example: lazy=True
+        lazy: Use the lazy filler option. Example: lazy=True
 
-        bdfflags: Set the BDF flags example: bdfflags=False
+        bdfflags: Set the BDF flags. Example: bdfflags=False
 
-        ocorr_mode: Set correlation import mode example: ocorr_mode='ca'
+        ocorr_mode: Set correlation import mode. Example: ocorr_mode='ca'
 
         asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
             example: ocorr_mode='Source Receiver'

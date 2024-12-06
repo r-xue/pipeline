@@ -8,8 +8,6 @@ def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None):
 
     """Extract spectral index from intensity peak in VLA/VLASS images
 
-    Extract spectral index from intensity peak in VLA/VLASS images
-
     The results object for the pipeline task is returned.
 
     Args:

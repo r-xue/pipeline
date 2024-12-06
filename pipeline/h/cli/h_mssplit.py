@@ -9,8 +9,6 @@ def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datac
 
     """Select data from calibrated MS(s) to form new MS(s) for imaging
 
-    Select data from calibrated MS(s) to form new MS(s) for imaging
-
     Create new MeasurementSets for imaging from the corrected column of the input
     MeasurementSet. By default all science target data is copied to the new MS. The new
     MeasurementSet is not re-indexed to the selected data in the new MS will have the

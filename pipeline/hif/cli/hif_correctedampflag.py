@@ -12,8 +12,6 @@ def hif_correctedampflag(
 
     """Flag corrected - model amplitudes based on calibrators.
 
-    Flag corrected - model amplitudes based on calibrators.
-
     This task computes the flagging heuristics on a calibrator by calling hif_correctedampflag
     which looks for outlier visibility points by statistically examining the scalar
     difference of corrected amplitudes minus model amplitudes, and flags those outliers.

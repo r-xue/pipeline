@@ -8,8 +8,6 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
                     calimages=None, targetimages=None, products_dir=None):
     """Prepare interferometry data for export
 
-    Prepare interferometry data for export.
-
     The hifa_exportdata task for ALMA CASA pipeline exports the data defined
     in the pipeline context and exports it to the data products directory,
     converting and or packing it as necessary.
