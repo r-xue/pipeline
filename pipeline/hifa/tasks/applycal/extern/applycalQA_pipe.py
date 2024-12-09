@@ -2,22 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import glob
-import os
 import pickle
-import sys
 import time as systime
+from pathlib import Path
 
 import numpy as np
 
+import pipeline
+from pipeline import Context
+from pipeline.domain import DataType
 from . import qa
 
-#def_input_path = "/mnt/jaosco/data/hfrancke/QAscores"
-#def_input_path = "/jaopost_spool/QAscoresMOUSs"
-def_input_path = "/Users/haroldfrancke/QAscores_tests"
-#def_output_path = "/mnt/jaosco/data/hfrancke/QAscores/test"
-#def_output_path = "/jaopost_spool/QAscoresResults_v31"
-def_output_path = "/Users/haroldfrancke/QAscores_test_results"
+def_output_path = "./pipe-1770"
 
 memlim = 8.0
 applycalQAversion ='32p'
@@ -42,8 +38,10 @@ outlier_score = 0.5
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Calculate QA2 scores for ALMA MOUSS files')
-    parser.add_argument('input', help='Directory to get .m files from',type=str)
+    parser = argparse.ArgumentParser(
+        description='Calculate QA2 scores for ALMA MOUSS files. '
+                    'MUST be run from a directory containing a Pipeline context.'
+    )
     parser.add_argument('-o','--output', metavar="output",help='Directory to store QA2 scores', required=False,
                         default=def_output_path)
     parser.add_argument('-p','--params', metavar="parameters",help='Filename with optional parameters to calculate scores', 
@@ -53,29 +51,12 @@ def parse_arguments():
     
     args = parser.parse_args()
 
-    input_folder_name=args.input
+    output_dir = Path(args.output)
+    print(f"Output directory: {args.output}")
 
-    if os.path.exists(args.input):
-        print("Input directory: "+args.input)
-        input_folder_name=args.input.split("/")[-1]
-    elif os.path.exists(def_input_path+"/"+args.input):
-        args.input = def_input_path+"/"+args.input
-        print("Input directory: "+args.input)
-    else:
-        print('Could not find input folder '+def_input_path+"/"+args.input+". See -h for help")
-        sys.exit()
-
-    if not os.path.exists(args.output):
-        os.system('mkdir '+args.output)
-
-    if not os.path.exists(args.output+'/'+input_folder_name):
-        os.system('mkdir '+args.output+'/'+input_folder_name)
-    
-    if not os.path.exists(args.output+'/'+input_folder_name+'/databuffer'):
-        os.system('mkdir '+args.output+'/'+input_folder_name+'/databuffer')
-        
-    args.output = args.output+'/'+input_folder_name
-    print("Output directory: "+args.output)
+    # create output and databuffer directories if they don't already exist
+    Path(args.output).mkdir(parents=True, exist_ok=True)
+    Path(output_dir / 'databuffer').mkdir(parents=True, exist_ok=True)
 
     if args.params != def_param:
         try:
@@ -94,13 +75,13 @@ def parse_arguments():
 
     return args
 
-def save_txt_pkl(filename, scores):
+def save_txt_pkl(filename: Path, scores):
     #pickle file
-    with open(filename+'.pickle','wb') as f:
+    with open(f'{filename}.pickle','wb') as f:
         pickle.dump(scores,f)
         f.close()
     #plain txt
-    f = open(filename+'.txt', "a")
+    f = open(f'{filename}.txt', "a")
     f.write(str(scores))
     f.close()
 
@@ -110,39 +91,34 @@ def main():
     aux = systime.asctime().split()
     timestamp = (aux[4]+aux[1]+aux[2]+'T'+aux[3]).replace(':','_')
 
-    input_path = args.input
-    output_path = args.output
+    output_path = Path(args.output)
     memlim = float(args.memlim)
 
-    #get list of ms
-    mslist = glob.glob(input_path+'/S*/G*/M*/working/*.ms')
-    excludedstr = ['_targets.ms','_target.ms','_line.ms','_cont.ms']
-    mslist = [ms for ms in mslist if all([not item in ms for item in excludedstr])]
-    justmslist = [ms.split('/')[-1] for ms in mslist]
+    # The Pipeline context stores MS paths relative to the pipeline working
+    # directory, hence we need to always run from that directory. A benefit
+    # of running from the pipeline working directory is that we can simply
+    # call context='last' to get the most recent pipeline context.
+    ctx: Context = pipeline.Pipeline(context='last').context
+    raw_mses = ctx.observing_run.get_measurement_sets_of_type([DataType.RAW])
 
-    #Get an idetifier for the containing folder of the dataset
-    if '/' in input_path:
-        plfolder = [item for item in input_path.split('/') if not item == ''][-1]
-    else:
-        plfolder = input_path
-
-    for idx, ms in enumerate(mslist):
-        (all_scores, final_scores, \
-         qaevalf) = qa.get_qa_scores(ms, output_path=output_path,
-                                     memory_gb=memlim,
-                                     applycalQAversion=applycalQAversion,
-                                     timestamp=timestamp)
+    for ms in raw_mses:
+        (all_scores, final_scores, qaevalf) = qa.get_qa_scores(
+            ms.basename,
+            output_path=output_path,
+            memory_gb=memlim,
+            applycalQAversion=applycalQAversion,
+            timestamp=timestamp
+        )
 
         #Write QA score Eval Function For testing
-        fname_qascoref = output_path+'/'+justmslist[idx]+'.'+timestamp+'.qascoref.pipe'
-        with open(fname_qascoref+'.pickle','wb') as f:
+        fname_qascoref = output_path / f'{ms.basename}.{timestamp}.qascoref.pipe'
+        with open(f'{fname_qascoref}.pickle','wb') as f:
             pickle.dump(qaevalf, f)
-            f.close()
 
-        fname_final_scores = output_path+'/'+justmslist[idx]+'.'+timestamp+'.final_scores.pipe'
+        fname_final_scores = output_path / f'{ms.basename}.{timestamp}.final_scores.pipe'
         save_txt_pkl(fname_final_scores, final_scores)
 
-        fname_all_scores = output_path+'/'+justmslist[idx]+'.'+timestamp+'.all_scores.pipe'
+        fname_all_scores = output_path / f'{ms.basename}.{timestamp}.all_scores.pipe'
         save_txt_pkl(fname_all_scores, all_scores)
 
 
