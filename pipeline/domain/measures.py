@@ -1,9 +1,14 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
+import abc
 import copy
 import datetime
 import decimal
 import math
 import re
 import numbers
+from typing import Any
 
 import pipeline.infrastructure.utils as utils
 
@@ -102,39 +107,40 @@ class FileSizeUnits(object):
     TERABYTES = { 'name' : 'TERABYTES', 'symbol' : 'Tb', 'bytes' : decimal.Decimal('1099511627776') }
 
 
-class ComparableUnit(object):
+class ComparableUnit(abc.ABC):
     __slots__ = ('value', 'units')
 
     def __getstate__(self):
         return self.value, self.units
 
-    def __setstate__(self, state):
+    def __setstate__(self, state) -> None:
         self.value, self.units = state
 
-    def __init__(self):
+    @abc.abstractmethod
+    def __init__(self, value: Any, units: Any) -> None:
         raise Exception('Must override __init__ of ComparableUnit')
 
-    def __eq__(self, other):
+    def __eq__(self, other: ComparableUnit) -> bool:
         if not isinstance(other, self.__class__):
             return False
         return other.to_units(self.units) == self.value
 
-    def __ne__(self, other):
+    def __ne__(self, other: ComparableUnit) -> bool:
         return not self.__eq__(other)
 
-    def __abs__(self):
+    def __abs__(self) -> ComparableUnit:
         if self.value < 0:
             return self.__class__(-self.value, self.units)
         else:
             return self.__class__(self.value, self.units)
 
-    def __add__(self, other):
+    def __add__(self, other: ComparableUnit):
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for +: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.__class__(other.to_units(self.units) + self.value, self.units)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other: ComparableUnit | numbers.Number) -> ComparableUnit:
         if isinstance(other, self.__class__):
             return self.to_units() / other.to_units()
         if not isinstance(other, numbers.Number):
@@ -142,7 +148,7 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.__class__(self.value / decimal.Decimal(str(other)), self.units)
 
-    def __floordiv__(self, other):
+    def __floordiv__(self, other: ComparableUnit | numbers.Number) -> ComparableUnit:
         if isinstance(other, self.__class__):
             return self.to_units() // other.to_units()
         if not isinstance(other, numbers.Number):
@@ -150,45 +156,45 @@ class ComparableUnit(object):
                                                                                    other.__class__.__name__))
         return self.__class__(self.value // decimal.Decimal(str(other)), self.units)
 
-    def __ge__(self, other):
+    def __ge__(self, other: ComparableUnit) -> bool:
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for >=: '%s' and '%s'" % (self.__class__.__name__,
                                                                                    other.__class__.__name__))
         return self.value >= other.to_units(self.units)
 
-    def __gt__(self, other):
+    def __gt__(self, other: ComparableUnit) -> bool:
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for >: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.value > other.to_units(self.units)
 
-    def __itruediv__(self, other):
+    def __itruediv__(self, other: numbers.Number) -> ComparableUnit:
         if not isinstance(other, numbers.Number):
             raise TypeError("unsupported operand type(s) for /=: '%s' and '%s'" % (self.__class__.__name__,
                                                                                    other.__class__.__name__))
         self.value /= other
         return self
 
-    def __ifloordiv__(self, other):
+    def __ifloordiv__(self, other: numbers.Number) -> ComparableUnit:
         if not isinstance(other, numbers.Number):
             raise TypeError("unsupported operand type(s) for //=: '%s' and '%s'" % (self.__class__.__name__,
                                                                                    other.__class__.__name__))
         self.value //= other
         return self
 
-    def __le__(self, other):
+    def __le__(self, other: ComparableUnit) -> bool:
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for <=: '%s' and '%s'" % (self.__class__.__name__,
                                                                                    other.__class__.__name__))
         return self.value <= other.to_units(self.units)
 
-    def __lt__(self, other):
+    def __lt__(self, other: ComparableUnit) -> bool:
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for <: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.value < other.to_units(self.units)
 
-    def __mul__(self, other):
+    def __mul__(self, other: numbers.Number) -> ComparableUnit:
         if not isinstance(other, numbers.Number):
             raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
@@ -200,7 +206,7 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.__class__(self.value * other, self.units)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '%s %s' % (self.value, self.units['symbol'])
 
     def __sub__(self, other):
@@ -209,15 +215,17 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.__class__(self.value - other.to_units(self.units), self.units)
 
-    def convert_to(self, newUnits=None):
+    @abc.abstractmethod
+    def convert_to(self, newUnits: dict):
         raise Exception('Must override convert_to of ComparableUnit')
 
-    def to_units(self, otherUnits=None):
+    @abc.abstractmethod
+    def to_units(self, otherUnits: dict):
         raise Exception('Must override to_units of ComparableUnit')
 
 
 class Distance(ComparableUnit):
-    def __init__(self, value=0, units=DistanceUnits.KILOMETRE):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = DistanceUnits.KILOMETRE) -> None:
         """Creates a new distance with the given magnitude and units.
 
         If no arguments are given, a new distance of 0 km is created. If no
@@ -228,17 +236,17 @@ class Distance(ComparableUnit):
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=DistanceUnits.METRE):
+    def convert_to(self, newUnits: dict = DistanceUnits.METRE) -> Distance:
         """Converts this measure of distance to the new units.
 
         After this method is complete this distance will have units of newUnits
         and its value will have been converted accordingly.
 
-        newUnits
-            the new units for this distance (default: m)
+        Args:
+            newUnits: The new units for this distance (default: m).
 
         Returns:
-            this distance. The reason for this return type is to allow code of
+            This distance. The reason for this return type is to allow code of
             this nature:
 
             kilometers = myDistance.convert_to(DistanceUnits.KILOMETRES).value
@@ -247,52 +255,56 @@ class Distance(ComparableUnit):
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=DistanceUnits.METRE):
+    def to_units(self, otherUnits: dict = DistanceUnits.METRE) -> decimal.Decimal:
         """Returns the magnitude of this distance in otherUnits.
 
         Note that this method does not alter the state of this distance.
         Contrast this with convert_to(DistanceUnits).
 
-        otherUnits
-            the units in which to express this distance's magnitude.
+        Args:
+            otherUnits: The units in which to express this distance's magnitude.
 
         Returns:
-            this distance's value converted to otherUnits.
+            This distance's value converted to otherUnits.
         """
         factor = self.units['metres'] / otherUnits['metres']
         return self.value * factor
 
-    def __str__(self):
+    def __str__(self) -> str:
         return unitformat.distance.format(self.to_units(DistanceUnits.METRE))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Distance(%s, DistanceUnits.%s)' % (self.value,
                                                    self.units['name'])
 
 
 class EquatorialArc(ComparableUnit):
-    def __init__(self, value=0, units=ArcUnits.DEGREE):
-        """Creates a new distance with the given magnitude and units.
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = ArcUnits.DEGREE) -> None:
+        """Creates a new equatorial arc with the given magnitude and units.
 
         If no arguments are given, a new arc of 0 degrees is created. If no
         units are given, degrees are assumed.
+
+        Args:
+            value: The magnitude for this arc.
+            units: The new units for this arc.
         """
         if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=ArcUnits.DEGREE):
+    def convert_to(self, newUnits: dict = ArcUnits.DEGREE) -> EquatorialArc:
         """Converts this arc to the new units.
 
         After this method is complete this arc will have units of units and its
         value will have been converted accordingly.
 
-        newUnits
-            the new units for this arc. default: degrees
+        Args:
+            newUnits: The new units for this arc. Default: degrees.
 
         Returns:
-            this arc. The reason for this return type is to allow code of this
+            This arc. The reason for this return type is to allow code of this
             nature:
 
             radians = myArc.convert_to(ArcUnits.RADIAN).value;
@@ -301,22 +313,23 @@ class EquatorialArc(ComparableUnit):
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=ArcUnits.DEGREE):
+    def to_units(self, otherUnits: dict = ArcUnits.DEGREE) -> decimal.Decimal:
         """Returns the magnitude of this arc in otherUnits.
 
         Note that this method does not alter the state of this arc. Contrast
         this with convert_to(ArcUnits).
 
-        otherUnits
-            the units in which to express this arc's magnitude (default: degrees)
+        Args:
+            otherUnits: The units in which to express this arc's magnitude
+                (default: degrees)
 
         Returns:
-            this arc's value converted to otherUnits.
+            This arc's value converted to otherUnits.
         """
         factor = otherUnits['units per circle'] / self.units['units per circle']
         return self.value * factor
 
-    def toDms(self):
+    def toDms(self) -> tuple[int, int, float]:
         """Returns a representation of this arc in degrees, minutes, and
         seconds.
 
@@ -348,7 +361,7 @@ class EquatorialArc(ComparableUnit):
 
         return dd, mm, ss
 
-    def toHms(self):
+    def toHms(self) -> tuple[int, int, float]:
         """Returns a representation of this arc in hours, minutes, and seconds.
 
         Returns:
@@ -359,39 +372,37 @@ class EquatorialArc(ComparableUnit):
         """
         return (self / 15).toDms()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'EquatorialArc(%s, ArcUnits.%s)' % (self.value,
                                                    self.units['name'])
 
 
 class FluxDensity(ComparableUnit):
-    def __init__(self, value=0, units=FluxDensityUnits.JANSKY):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = FluxDensityUnits.JANSKY) -> None:
         """Create a new flux density with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default frequency of 0 Janskys
 
-        value
-            the magnitude for this flux density
-
-        units
-            the new units for this flux density
+        Args:
+            value: The magnitude for this flux density.
+            units: The new units for this flux density.
         """
         if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=FluxDensityUnits.JANSKY):
+    def convert_to(self, newUnits: dict = FluxDensityUnits.JANSKY) -> FluxDensity:
         """Converts this measure of flux density to the new units.
         After this method is complete this flux density will have units of
         units and its value will have been converted accordingly.
 
-        newUnits
-            the new units for this flux density (default: Jy)
+        Args:
+            newUnits: The new units for this flux density (default: Jy).
 
         Returns:
-            this flux density. The reason for this return type is to allow code
+            This flux density. The reason for this return type is to allow code
             of this nature:
 
             janskies = myFluxDensity.convert_to(FluxDensityUnits.JANSKY)
@@ -400,58 +411,57 @@ class FluxDensity(ComparableUnit):
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=FluxDensityUnits.JANSKY):
+    def to_units(self, otherUnits: dict = FluxDensityUnits.JANSKY) -> decimal.Decimal:
         """Returns the magnitude of this flux density in otherUnits.
 
         Note that this method does not alter the state of this flux density.
         Contrast this with convert_to(FluxDensityUnits).
 
-        otherUnits
-            the units in which to express this flux density's magnitude.
+        Args:
+            otherUnits: The units in which to express this flux density's magnitude.
 
         Returns:
-            this flux density's value converted to otherUnits.
+            This flux density's value converted to otherUnits.
         """
         factor = self.units['Jy'] / otherUnits['Jy']
         return self.value * factor
 
-    def __str__(self):
+    def __str__(self) -> str:
         return unitformat.flux.format(self.to_units(FluxDensityUnits.JANSKY))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'FluxDensity(%s, FluxDensityUnits.%s)' % (self.value,
                                                          self.units['name'])
 
 
 class LinearVelocity(ComparableUnit):
-    def __init__(self, value=0, units=LinearVelocityUnits.KILOMETRES_PER_SECOND):
+    def __init__(self, value: int | float | decimal.Decimal = 0,
+                 units: dict = LinearVelocityUnits.KILOMETRES_PER_SECOND) -> None:
         """Create a new linear velocity with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default linear velocity of 0 kilometres per second.
 
-        value
-            the magnitude for this linear velocity
-
-        units
-            the new units for this linear velocity
+        Args:
+            value: The magnitude for this linear velocity.
+            units: The new units for this linear velocity.
         """
         if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=LinearVelocityUnits.KILOMETRES_PER_SECOND):
+    def convert_to(self, newUnits: dict = LinearVelocityUnits.KILOMETRES_PER_SECOND) -> LinearVelocity:
         """Converts this measure of linear velocity to the new units.
         After this method is complete this linear veloity will have units of
         units and its value will have been converted accordingly.
 
-        newUnits
-            the new units for this linear velocity. If newUnits is None an
-            IllegalArgumentException will be thrown.
+        Args:
+            newUnits: The new units for this linear velocity. If newUnits is
+                None an IllegalArgumentException will be thrown.
 
         Returns:
-            this linear velocity. The reason for this return type is to allow
+            This linear velocity. The reason for this return type is to allow
             code of this nature:
 
             velocity = myLinearVelocity.convert_to(LinearVelocityUnits.Z)
@@ -460,77 +470,76 @@ class LinearVelocity(ComparableUnit):
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=LinearVelocityUnits.KILOMETRES_PER_SECOND):
+    def to_units(self, otherUnits: dict = LinearVelocityUnits.KILOMETRES_PER_SECOND) -> decimal.Decimal:
         """Returns the magnitude of this linear velocity in otherUnits.
 
         Note that this method does not alter the state of this linear velocity.
         Contrast this with convert_to(LinearVelocityUnits).
 
-        otherUnits
-            the units in which to express this linear velocity's magnitude. If
-            otherUnits is None an IllegalArgumentException will be thrown.
+        Args:
+            otherUnits: The units in which to express this linear velocity's
+                magnitude. If otherUnits is None an IllegalArgumentException
+                will be thrown.
 
         Returns:
-            this linear velocity's value converted to otherUnits.
+            This linear velocity's value converted to otherUnits.
         """
         factor = self.units['mps'] / otherUnits['mps']
         return self.value * factor
 
-    def __str__(self):
+    def __str__(self) -> str:
         mps = self.to_units(LinearVelocityUnits.METRES_PER_SECOND)
         return unitformat.velocity.format(mps)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return ('LinearVelocity(%s, '
                 'LinearVelocityUnits.%s)' % (self.value, self.units['name']))
 
 
 class FileSize(ComparableUnit):
-    def __init__(self, value=0, units=FileSizeUnits.MEGABYTES):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = FileSizeUnits.MEGABYTES) -> None:
         """Creates a new file size with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default size of 0 megabytes.
 
-        value
-            the magnitude for this file size
-
-        units
-            the new units for this file size
+        Args:
+            value: The magnitude for this file size.
+            units: The new units for this file size.
         """
         if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=FileSizeUnits.MEGABYTES):
+    def convert_to(self, newUnits: dict = FileSizeUnits.MEGABYTES) -> FileSize:
         """Converts this measure of file size to the new units.
 
         After this method is complete this file size will have units of
         newUnits and its value will have been converted accordingly.
 
-        newUnits
-            the new units for this file size.
+        Args:
+            newUnits: The new units for this file size.
 
         Returns:
             this file size. The reason for this return type is to allow code of
             this nature:
 
-            gigabytes = myFileSize.convert_to(FrequencyUnits.GIGABYTES)
+            gigabytes = myFileSize.convert_to(FileSizeUnits.GIGABYTES)
         """
         self.value = self.to_units(newUnits)
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=FileSizeUnits.GIGABYTES):
+    def to_units(self, otherUnits: dict = FileSizeUnits.GIGABYTES) -> decimal.Decimal:
         """Returns the magnitude of this file size in otherUnits.
 
         Note that this method does not alter the state of this file size.
         Contrast this with convert_to(FileSizeUnits).
 
-        otherUnits
-            the units in which to express this file size's magnitude. If
-            newUnits is None, it will be treated as FileSizeUnits.GIGABYTES.
+        Args:
+            otherUnits: the units in which to express this file size's magnitude.
+                If newUnits is None, it will be treated as FileSizeUnits.GIGABYTES.
 
         Returns:
             this file size's value converted to otherUnits.
@@ -538,40 +547,39 @@ class FileSize(ComparableUnit):
         factor = self.units['bytes'] / otherUnits['bytes']
         return self.value * factor
 
-    def __str__(self):
+    def __str__(self) -> str:
         return unitformat.file_size.format(self.to_units(FileSizeUnits.BYTES))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'FileSize(%s, FileSizeUnits.%s)' % (self.value,
                                                    self.units['name'])
 
 
 class Frequency(ComparableUnit):
-    def __init__(self, value=0, units=FrequencyUnits.GIGAHERTZ):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = FrequencyUnits.GIGAHERTZ) -> None:
         """Creates a new frequency with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default frequency of 0 gigahertz.
 
-        value
-            the magnitude for this frequency
-
-        units
-            the new units for this frequency
+        Args:
+            value: The magnitude for this frequency.
+            units: The new units for this frequency.
         """
         if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
 
-    def convert_to(self, newUnits=FrequencyUnits.GIGAHERTZ):
+    def convert_to(self, newUnits: dict = FrequencyUnits.GIGAHERTZ) -> Frequency:
         """Converts this measure of frequency to the new units.
 
         After this method is complete this frequency will have units of
         newUnits and its value will have been converted accordingly.
 
-        newUnits
-            the new units for this frequency.
+        Args:
+            newUnits: The new units for this frequency; by default, it will
+                convert the frequency to Gigahertz.
 
         Returns:
             this frequency. The reason for this return type is to allow code of
@@ -583,15 +591,16 @@ class Frequency(ComparableUnit):
         self.units = newUnits
         return self
 
-    def to_units(self, otherUnits=FrequencyUnits.GIGAHERTZ):
+    def to_units(self, otherUnits: dict = FrequencyUnits.GIGAHERTZ) -> decimal.Decimal:
         """Returns the magnitude of this frequency in otherUnits.
 
         Note that this method does not alter the state of this frequency.
         Contrast this with convert_to(FrequencyUnits).
 
-        otherUnits
-            the units in which to express this frequency's magnitude. If
-            newUnits is None, it will be treated as FrequencyUnits.GIGAHERTZ.
+        Args:
+            otherUnits: The units in which to express this frequency's
+                magnitude. If newUnits is None, it will be treated as
+                FrequencyUnits.GIGAHERTZ.
 
         Returns:
             this frequency's value converted to otherUnits.
@@ -599,21 +608,25 @@ class Frequency(ComparableUnit):
         factor = self.units['hz'] / otherUnits['hz']
         return self.value * factor
 
-    def str_to_precision(self, precision):
+    def str_to_precision(self, precision: int) -> str:
         """
         Return the string representation of this Frequency to a fixed number
         of decimal places.
 
-        :param precision:
-        :return:
+        Args:
+            precision: Number of decimal places to use.
+
+        Returns:
+            String representation of this Frequency to fixed number of decimal
+            places.
         """
         f = unitformat.get_frequency_format(precision)
         return f.format(self.to_units(FrequencyUnits.HERTZ))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return unitformat.frequency.format(self.to_units(FrequencyUnits.HERTZ))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Frequency(%s, FrequencyUnits.%s)' % (self.value,
                                                      self.units['name'])
 
@@ -621,13 +634,13 @@ class Frequency(ComparableUnit):
 class FrequencyRange(object):
     __slots__ = ('low', 'high')
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[Frequency, Frequency]:
         return self.low, self.high
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[Frequency, Frequency]) -> None:
         self.low, self.high = state
 
-    def __init__(self, frequency1=None, frequency2=None):
+    def __init__(self, frequency1: Frequency | None = None, frequency2: Frequency | None = None) -> None:
         """Creates a new instance with the given endpoints.
 
         This method will set the lower value of its range to the lesser of the
@@ -641,41 +654,40 @@ class FrequencyRange(object):
         maintain the integrity of the relationship between the starting and
         ending points of this interval.
 
-        frequency1
-            one endpoint of this range.
-        frequency2
-            the other endpoint of this range.
+        Args:
+            frequency1: One endpoint of this range.
+            frequency2: The other endpoint of this range.
         """
         if frequency1 == frequency2 is None:
             frequency2 = Frequency(decimal.Decimal('Infinity'))
         self.set(frequency1, frequency2)
 
-    def __composite_values__(self):
+    def __composite_values__(self) -> list[Frequency, Frequency]:
         return [self.low, self.high]
 
-    def __eq__(self, other):
+    def __eq__(self, other: FrequencyRange) -> bool:
         if isinstance(other, FrequencyRange):
             return other.low == self.low and other.high == self.high
         return False
 
-    def __ne__(self, other):
+    def __ne__(self, other: FrequencyRange) -> bool:
         return not self.__eq__(other)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<FrequencyRange(%s, %s)>' % (self.low, self.high)
 
-    def contains(self, frequency=None):
-        """Returns true if this range contains frequency.
+    def contains(self, frequency: Frequency | FrequencyRange = None) -> bool:
+        """Returns true if this range contains given frequency (range).
 
-        The frequency argument be a frequency or a frequency range. If the
+        The frequency argument can be a frequency or a frequency range. If the
         argument given is a Frequency range, then FrequencyRange A is said to
         contain range B if A's low frequency is less than or equal to B's low
         frequency and A's high frequency is greater than or each to B's high
         frequency. Notice that this means that if A equals B, it also contains
         B.
 
-        frequency
-            the frequency or range to test for inclusion in this range.
+        Args:
+            frequency: The frequency or range to test for inclusion in this range.
 
         Returns:
             True if this range contains frequency. If frequency is None, the
@@ -687,15 +699,15 @@ class FrequencyRange(object):
             return frequency.low >= self.low and frequency.high <= self.high
         return False
 
-    def convert_to(self, newUnits=FrequencyUnits.GIGAHERTZ):
+    def convert_to(self, newUnits: dict = FrequencyUnits.GIGAHERTZ) -> FrequencyRange:
         """Converts both endpoints of this range to the given units.
 
         After this method is complete both endpoints of this range will have
         units of units, and their values will have been converted accordingly.
 
-        newUnits
-            the new units for the endpoints of this range. If no units are
-            specified, it will be treated as FrequencyUnits.GIGAHERTZ.
+        Args:
+            newUnits: The new units for the endpoints of this range. If no units
+                are specified, it will be treated as FrequencyUnits.GIGAHERTZ.
 
         Returns:
             this range.
@@ -704,7 +716,7 @@ class FrequencyRange(object):
         self.high.convert_to(newUnits)
         return self
 
-    def getCentreFrequency(self):
+    def getCentreFrequency(self) -> Frequency:
         """Returns the frequency that is midway between the endpoints of this
         range.
 
@@ -712,20 +724,21 @@ class FrequencyRange(object):
         high frequency of this range.
 
         Returns:
-            the center of this range.
+            The center frequency of this range.
         """
         c = (self.low + self.high) / 2
         return c.convert_to(self.high.units)
 
-    def getOverlapWith(self, other):
+    def getOverlapWith(self, other: FrequencyRange) -> FrequencyRange | None:
         """Returns a new range that represents the region of overlap between
         this range and other. If there is no overlap, None is returned.
 
-        other
-            another range that may overlap this one.
+        Args:
+            other: Another range that may overlap this one.
 
         Returns:
-            the overlapping region of this range and other.
+            FrequencyRange object representing the overlapping region of this
+            range and other, or None if there is no overlap.
         """
         if self.overlaps(other):
             if self.low > other.low:
@@ -734,17 +747,18 @@ class FrequencyRange(object):
                 return FrequencyRange(other.low, self.high)
         return None
 
-    def getGapBetween(self, other=None):
+    def getGapBetween(self, other: FrequencyRange | None = None) -> FrequencyRange | None:
         """Returns a new range that represents the region of frequency space
         between this range and other. If the other range is coincident with, or
         overlaps, this range, None is returned. If the other range is None,
         None is returned.
 
-        other
-            another range that might not overlap this one.
+        Args:
+            other: Another range that might not overlap this one.
 
         Returns:
-            the frequency gap between this range and other.
+            FrequencyRange object representing the frequency gap between this
+            range and other, or None if there is no gap.
         """
         if other is None or self.overlaps(other):
             return None
@@ -754,7 +768,7 @@ class FrequencyRange(object):
         else:
             return FrequencyRange(self.high, other.low)
 
-    def getWidth(self):
+    def getWidth(self) -> Frequency:
         """Returns the width of this range.
 
         The units for the returned frequency will be the same as those of the
@@ -765,19 +779,18 @@ class FrequencyRange(object):
         """
         return self.high - self.low
 
-    def overlaps(self, other=None):
-        """Returns true if this frequency range overlaps with other.
+    def overlaps(self, other: FrequencyRange | None = None) -> bool:
+        """Returns whether this frequency range overlaps with ``other`` frequency range.
 
         Remember that this range is a closed interval, that is, one that
         contains both of its endpoints.
 
-        If other is None, the return value is false.
-
-        other
-            another range that may overlap this one.
+        Args:
+            other: another range that may overlap this one.
 
         Returns:
-            true if this range overlaps with other.
+            True if this range overlaps with other. If ``other`` is not a
+            FrequencyRange, the return value is False.
         """
         if isinstance(other, FrequencyRange):
             if self.low < other.low:
@@ -786,7 +799,7 @@ class FrequencyRange(object):
                 return other.high >= self.low
         return False
 
-    def set(self, frequency1=None, frequency2=None):
+    def set(self, frequency1: Frequency | None = None, frequency2: Frequency | None = None) -> None:
         """Sets the frequencies of this range.
 
         This method will set the lower value of its range to the lesser of the
@@ -798,10 +811,9 @@ class FrequencyRange(object):
         maintain the integrity of the relationship between the starting and
         ending points of this interval.
 
-        frequency1
-            one endpoint of this range.
-        frequency2
-            the other endpoint of this range.
+        Args:
+            frequency1: One endpoint of this range.
+            frequency2: The other endpoint of this range.
         """
         if frequency1 is None:
             frequency1 = Frequency()
@@ -825,7 +837,7 @@ class Latitude(EquatorialArc):
                       r'(?P<secs>\d+\.?\d*)' +
                       r'\s*')
 
-    def __init__(self, value=0, units=ArcUnits.DEGREE):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = ArcUnits.DEGREE) -> None:
         """Creates a new latitude with the given magnitude and units.
 
         If no magnitude or units are give, a latitude of 0 degrees will be
@@ -837,10 +849,9 @@ class Latitude(EquatorialArc):
         of a circle and less than or equal to one-quarter of a circle, in the
         given units.
 
-        value
-            the latitude magnitude
-        units
-            the units of the latitude
+        Args:
+            value: The magnitude for this latitude.
+            units: The units for this latitude.
         """
         super(Latitude, self).__init__(value, units)
         perCircle = self.units['units per circle']
@@ -861,7 +872,7 @@ class Latitude(EquatorialArc):
             self.value = -perHalf - self.value
 
     @staticmethod
-    def parse(value):
+    def parse(value: str) -> Latitude:
         """Returns a new Latitude based on the given text.
 
         See the parse method of Angle for information on the format of text.
@@ -881,14 +892,15 @@ class Latitude(EquatorialArc):
         of a circle and less than or equal to one-quarter of a circle, in the
         given units.
 
-        text
-            a string that will be converted into a latitude.
+        Args:
+            value: A string that will be converted into a latitude.
 
         Returns:
-            a new Latitude. If parsing was successful, the value of the
+            A new Latitude. If parsing was successful, the value of the
             latitude will be based on the parameter string. If it was not, the
             returned latitude will be of zero degrees.
-        Throws:
+
+        Raises:
             ValueError - if text is not in the expected form.
         """
         m = Latitude.patt.match(value)
@@ -905,7 +917,7 @@ class Latitude(EquatorialArc):
 
         return Latitude(y, ArcUnits.DEGREE)
 
-    def isNorthOfEquator(self):
+    def isNorthOfEquator(self) -> bool:
         """Returns True if this latitude is north of the equator.
 
         Returns:
@@ -913,7 +925,7 @@ class Latitude(EquatorialArc):
         """
         return self.value > 0
 
-    def isSouthOfEquator(self):
+    def isSouthOfEquator(self) -> bool:
         """Returns True if this latitude is south of the equator.
 
         Returns:
@@ -921,33 +933,33 @@ class Latitude(EquatorialArc):
         """
         return self.value < 0
 
-    def isNorthOf(self, other):
+    def isNorthOf(self, other: Latitude) -> bool:
         """Returns True if this latitude is north of other.
 
-        other
-            the latitude to be tested.
+        Args:
+            other: The latitude to be tested.
 
         Returns:
             True if this latitude is north of other.
         """
         return self > other
 
-    def isSouthOf(self, other):
+    def isSouthOf(self, other: Latitude) -> bool:
         """Returns True if this latitude is south of other.
 
-        other
-            the latitude to be tested.
+        Args:
+            other: The latitude to be tested.
 
         Returns:
             True if this latitude is south of other.
         """
         return self < other
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Latitude(%s, ArcUnits.%s)' % (self.value,
                                               self.units['name'])
 
-    def __str__(self):
+    def __str__(self) -> str:
         (d, m, s) = self.toDms()
         return '%+.2d%s%.2d%s%05.2f%s' % (d, ArcUnits.DEGREE['symbol'],
                                           m, ArcUnits.ARC_MINUTE['symbol'],
@@ -963,7 +975,7 @@ class Longitude(EquatorialArc):
                       r'(?P<secs>\d+\.?\d*)' +
                       r'\s*')
 
-    def __init__(self, value=0, units=ArcUnits.DEGREE):
+    def __init__(self, value: int | float | decimal.Decimal = 0, units: dict = ArcUnits.DEGREE) -> None:
         """Creates a new longitude with the given magnitude and units.
 
         If magnitude is not a valid value1 for longitude, it will be normalised
@@ -973,10 +985,9 @@ class Longitude(EquatorialArc):
 
         If no arguments are given, a longitude of 0 degrees will be created.
 
-        value
-            the magnitude of the longitude
-        units
-            the units of longitude
+        Args:
+            value: The magnitude of the longitude.
+            units: The units of longitude.
         """
         super(Longitude, self).__init__(value, units)
         perCircle = self.units['units per circle']
@@ -988,7 +999,7 @@ class Longitude(EquatorialArc):
             self.value += perCircle
 
     @staticmethod
-    def parse(value):
+    def parse(value: str) -> Longitude:
         """Returns a new longitude based on the given text.
 
         See the parse method of Angle for information on the format of text.
@@ -1007,15 +1018,15 @@ class Longitude(EquatorialArc):
          legal, magnitude must be greater than or equal zero and less than or
          equal to one full circle, in the given units.
 
-        text
-            a string that will be converted into a longitude.
+        Args:
+            value: A string that will be converted into a longitude.
 
         Returns:
-            a new Longitude. If parsing was successful, the value of the
+            A new Longitude. If parsing was successful, the value of the
             Longitude will be based on the parameter string. If it was not, the
             returned longitude will be of zero degrees.
 
-        Throws:
+        Raises:
             ValueError - if text is not in the expected form.
         """
         match = Longitude.patt.match(value)
@@ -1029,12 +1040,12 @@ class Longitude(EquatorialArc):
         except AttributeError:
             raise ValueError
 
-    def isOpposite(self, other):
+    def isOpposite(self, other: Longitude) -> bool:
         """Returns True if this longitude and other are separated by one half
         circle.
 
-        other
-            the other longitude to be tested.
+        Args:
+            other: The other longitude to be tested.
 
         Returns:
             True if other is separated from this longitude by one half circle.
@@ -1043,7 +1054,7 @@ class Longitude(EquatorialArc):
         difference = abs(self.value - other.to_units(self.units))
         return difference == halfCircle
 
-    def isEastOf(self, other):
+    def isEastOf(self, other: Longitude) -> bool:
         """Returns true if this longitude is east of other.
 
         One longitude is east of another if there are fewer lines of longitude
@@ -1054,8 +1065,8 @@ class Longitude(EquatorialArc):
         this one is neither east nor west of this one. Second, a longitude that
         is opposite this one is both east and west of this one.
 
-        other
-            the longitude to be tested.
+        Args:
+            other: The longitude to be tested.
 
         Returns:
             True if this longitude is east of other.
@@ -1065,7 +1076,7 @@ class Longitude(EquatorialArc):
         r = self.units['units per circle'] / 2 + self.value
         return o < self.value or o >= r
 
-    def isWestOf(self, other):
+    def isWestOf(self, other: Longitude):
         """Returns True if this longitude is west of other.
 
         One longitude is west of another if there are fewer lines of longitude
@@ -1076,8 +1087,8 @@ class Longitude(EquatorialArc):
         this one is neither east nor west of this one. Second, a longitude that
         is opposite this one is both east and west of this one.
 
-        other
-            the longitude to be tested.
+        Args:
+            other: The longitude to be tested.
 
         Returns:
             True if this longitude is west of other.
@@ -1087,11 +1098,11 @@ class Longitude(EquatorialArc):
         r = self.units['units per circle'] / 2 + self.value
         return not (o <= self.value or o > r)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Longitude(%s, ArcUnits.%s)' % (self.value,
                                                self.units['name'])
 
-    def __str__(self):
+    def __str__(self) -> str:
         (h, m, s) = self.toHms()
         return '%.2d%s%.2d%s%05.2f%s' % (h, ArcUnits.HOUR['symbol'],
                                          m, ArcUnits.MINUTE['symbol'],
@@ -1139,37 +1150,53 @@ class TemporalCollection(object):
 
 
 class TimeInterval(object):
+    """
+    Logical representation of a time interval.
+
+    Attributes:
+        start: start time of interval, as datetime object.
+        end: end time of interval, as datetime object.
+    """
     __slots__ = ('start', 'end')
 
-    def __getstate__(self):
+    FOREVER = datetime.datetime(9999, 12, 31)
+
+    def __getstate__(self) -> tuple[datetime.datetime, datetime.datetime]:
         return self.start, self.end
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[datetime.datetime, datetime.datetime]):
         self.start, self.end = state
 
-    def __init__(self, start=None, end=None):
+    def __init__(self, start: datetime.datetime | None = None, end: datetime.datetime | None = None) -> None:
+        """
+        Initialize a TimeInterval object.
+
+        Args:
+            start: start time of interval, as datetime object.
+            end: end time of interval, as datetime object.
+        """
         self.start = start
         self.end = end
 
-    def __composite_values__(self):
-        return (self.start, self.end)
+    def __composite_values__(self) -> tuple[datetime.datetime, datetime.datetime]:
+        return self.start, self.end
 
-    def __set_composite_values__(self, start, end):
+    def __set_composite_values__(self, start: datetime.datetime, end: datetime.datetime) -> None:
         self.start = start
         self.end = end
 
-    def __eq__(self, other):
+    def __eq__(self, other: TimeInterval) -> bool:
         if not isinstance(other, self.__class__):
             return False
         return other.start == self.start and other.end == self.end
 
-    def __ne__(self, other):
+    def __ne__(self, other: TimeInterval) -> bool:
         return not self.__eq__(other)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'TimeInterval(%s, %s)' % (self.start, self.end)
 
-    def contains(self, time):
+    def contains(self, time: datetime.datetime | TimeInterval) -> bool:
         """Returns True if time is contained in this interval.
 
         Note that this interval is half-open; it does not include its ending
@@ -1178,8 +1205,8 @@ class TimeInterval(object):
         infinitely thin walls: a box that is exactly the same as another cannot
         fit inside it.
 
-        time
-            the datetime or TimeInterval to be tested for containment.
+        Args:
+            time: The datetime or TimeInterval to be tested for containment.
 
         Returns:
             True if time is contained in this interval.
@@ -1192,28 +1219,44 @@ class TimeInterval(object):
             return self.contains(time.start) and self.contains(time.end)
         return False
 
-    def isEmpty(self):
-        """Returns True if this TimeInterval is empty
+    def is_empty(self) -> bool:
+        """Returns True if this TimeInterval is empty.
         """
         return self.start > self.end
 
-    def overlaps(self, ti):
-        """Returns True if this interval overlaps with the given interval.
+    def overlaps(self, ti: TimeInterval) -> bool:
+        """
+        Returns True if this interval overlaps with the given interval.
+
+        Args:
+            ti: TimeInterval object to test overlap with.
+
+        Returns:
+            Boolean denoting whether this time interval overlaps with given interval.
         """
         if isinstance(ti, TimeInterval):
             return ti.contains(self.start) or ti.contains(self.end) or self.contains(ti)
         return False
 
-    def startingFrom(start):
-        """Returns an open-ended TimeInterval starting from the given time.
+    @classmethod
+    def starting_from(cls, start: datetime.datetime) -> TimeInterval:
         """
-        return TimeInterval(start, TimeInterval.FOREVER)
+        Returns an open-ended TimeInterval starting from the given time.
 
-    def startingFromNow():
-        """Returns an open-ended TimeInterval starting from now.
+        Args:
+            start (object): Datetime object denoting start time of interval.
+
+        Returns:
+            TimeInterval object from given time until 31-12-9999.
         """
-        return TimeInterval(datetime.datetime.utcnow(), TimeInterval.FOREVER)
+        return cls(start, cls.FOREVER)
 
-    FOREVER = datetime.datetime(9999, 12, 31)
-    startingFrom = staticmethod(startingFrom)
-    startingFromNow = staticmethod(startingFromNow)
+    @classmethod
+    def starting_from_now(cls) -> TimeInterval:
+        """
+        Returns an open-ended TimeInterval starting from now.
+
+        Returns:
+            TimeInterval object from "utcnow()" until 31-12-9999.
+        """
+        return cls(datetime.datetime.utcnow(), cls.FOREVER)

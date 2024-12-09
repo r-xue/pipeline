@@ -1,4 +1,7 @@
 """Provide a class to store logical representation of MeasurementSet."""
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import contextlib
 import inspect
@@ -6,7 +9,7 @@ import itertools
 import operator
 import os
 import re
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Sequence
 
 import numpy as np
 
@@ -16,6 +19,11 @@ from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
+    from .antenna import Antenna
+    from .datadescription import DataDescription
+    from .field import Field
+    from .scan import Scan
+    from .state import State
 
 from pipeline.infrastructure import logging
 
@@ -31,109 +39,133 @@ class MeasurementSet(object):
     A class to store logical representation of a MeasurementSet (MS).
 
     Attributes:
-        name: A path to MeasurementSet
-        session: Session name of MS
-        antenna_array: Antenna array information
-        array_name: Name of array configuration
-        derived_fluxes: Flux measurements
-        flagcmds: A list of flag commands
-        filesize: Disk size of MS
-        representative_target: A tuple of the name of representative source,
-            frequency and bandwidth.
-        representative_window: A representative spectral window name
-        science_goals: A science goal information consists of min/max
-            acceptable angular resolution, max allowed beam ratio, sensitivity,
-            dynamic range, spectral dynamic range bandwidth (Cycle 10+), and SB name.
-        data_descriptions: A list of DataDescription objects associated with MS
-        spectral_windows: A list of SpectralWindow objects associated with MS
-        phasecal_mapping: A dictionary mapping phase calibrator fields to
-            corresponding fields with TARGET or CHECK intent.
-        spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
-            spectral window IDs.
-        fields: A list of Field objects associated with MS
-        scans: A list of Scan objects associated with MS
-        sources: A list of Source objects associated with MS
-        states: A list of State objects associated with MS
-        spwmaps: Spectral window mapping to use for combining/mapping, split by
-            (intent, field), used in ALMA interferometry calibration tasks.
-        reference_spwmap: Reference spectral window map
+        name: Name of MeasurementSet, equivalent to file path to MeasurementSet.
+        session: Name of session associated with MS.
+
+        exclude_num_chans: Tuple containing spectral window sizes (in number of
+            channels) used to filter out non-science-spectral-windows.
+        filesize: Disk size of MS.
+
+        acs_software_build_version: ALMA Common Software build version used to
+            create this MS (None if not ALMA).
+        acs_software_version: ALMA Common Software version used to create this
+            MS (None if not ALMA).
+        antenna_array: Antenna array information.
+        array_name: Name of array configuration.
+        correlator_name: The name of the correlator, populated from the
+            PROCESSOR table. Example values: ALMA_ACA, ALMA_BASELINE.
         data_column: A dictionary to store data type (key) and corresponding
-            data column (value)
+            data column (value).
+        data_descriptions: A list of DataDescription objects associated with MS.
         data_types_per_source_and_spw: A dictionary to store a list of
             available data types (values) in this MS per (source,spw) tuples
-            (keys)
-        observing_modes: The name(s) of the Observing Mode(s) used for this MS
-            (empty list if not ALMA).
-        reference_antenna_locked: If True, reference antenna is locked to
-            prevent modification
-        origin_ms: A path to the first generation MeasurementSet from which
-            the current MS is generated.
-        acs_software_version: ALMA Common Software version used to create this MS. (None if not ALMA.)
-        acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
-        phase_calapps_for_check_sources : The phase calapps for the check sources 
-            from hifa_gfluxscale
-        phaseup_caltable_for_phase_rms : The bandpass phaseup caltable name from hifa_bandpass
-        fluxscale_fluxes: flux measurements derived by CASA's fluxscale; used
-            in ALMA interferometry polarisation calibration.
-        correlator_name: the name of the correlator, for example: ALMA_ACA, ALMA_BASELINE
-    """
+            (keys).
+        execblock_id: Execution Block ID for this MS (only for ALMA, VLA).
+        fields: A list of Field objects associated with MS.
+        observer: The name of the observer, as listed in the OBSERVATIONS table.
+        observing_modes: The name(s) of the Observing Mode(s) used for this MS,
+            populated from the ASDM_SBSUMMARY table (empty list if not ALMA).
+        project_id: Project ID associated with this MS, as listed in the
+            OBSERVATIONS table.
+        representative_target: A tuple of the name of representative source,
+            frequency and bandwidth.
+        representative_window: A representative spectral window name.
+        scans: A list of Scan objects associated with MS.
+        schedblock_id: Scheduling Block ID for this MS (only for ALMA, VLA).
+        science_goals: A science goal information consists of min/max acceptable
+            angular resolution, max allowed beam ratio, sensitivity, dynamic
+            range, spectral dynamic range bandwidth (Cycle 10+), and SB name.
+        sources: A list of Source objects associated with MS.
+        spectral_windows: A list of SpectralWindow objects associated with MS.
+        spectralspec_spwmap: A dictionary to map each SpectralSpec to a list of
+            corresponding spectral window IDs.
+        states: A list of State objects associated with MS.
 
-    def __init__(self, name: str, session: Optional[str] = None):
+        derived_fluxes: Calibrated visibility based flux measurements derived
+            during pipeline run, used in subsequent imaging stages.
+        flagcmds: A list of flag commands, typically populated by hifa_fluxcalflag.
+        fluxscale_fluxes: Flux measurements derived by CASA's fluxscale during
+            the hifa_gfluxscale task, for use by a subsequent hifa_polcal task
+            (ALMA interferometry polarisation calibration only).
+        origin_ms: A path to the first generation MeasurementSet from which
+            the current MS is generated. This is typically set by tasks such as
+            h_mssplit, hif_mstransform, hifv_mstransform, hif_transformimagedata.
+        phase_calapps_for_check_sources: List of CalApplications for the phase
+            calibration of the check source(s) generated during hifa_gfluxscale.
+            These are used in a subsequent hifa_timegaincal task to overplot
+            the phase calibration for check source in its Diagnostic Phase Vs.
+            Time plots.
+        phasecal_mapping: A dictionary mapping phase calibrator fields to
+            corresponding fields with TARGET or CHECK intent; typically
+            populated by the hifa_spwphaseup task (ALMA-only).
+        phaseup_caltable_for_phase_rms: The bandpass phase-up caltable created
+            during the hifa_bandpass task (prior to deriving the bandpass
+            solution), for use in subsequent phase RMS stability assessment
+            during the hifa_spwphaseup task (ALMA-interferometry-only).
+        reference_antenna_locked: If True, reference antenna is locked to
+            prevent modification. Typically used in polarization calibration
+            stages / recipes.
+        reference_spwmap: Vector of spectral window IDs, enabling flux scaling
+            across spectral windows. Typically populated by the hifa_fluxcalflag
+            task, and used by a subsequent hifa_gfluxscale task in its call to
+            CASA `fluxscale` task (ALMA-interferometry-only).
+        spwmaps: Dictionary mapping (intent, field) keys to corresponding
+            phase-up spectral window mapping to use for combining/mapping
+            spectral windows; used in subsequent calibration tasks
+            (ALMA-interferometry-only).
+    """
+    def __init__(self, name: str, session: str | None = None) -> None:
         """
         Initialize a MeasurementSet object.
 
         Args:
-            name: A path to MS
-            session: Session name of MS
+            name: A path to MS.
+            session: Name of session associated with MS.
         """
+        # Attributes based on input arguments.
         self.name: str = name
-        self.session: Optional[str] = session
-        self.antenna_array: Optional[AntennaArray] = None
-        self.array_name: str = ''
-        self.derived_fluxes: Optional[collections.defaultdict] = None
-        self.flagcmds: List[str] = []
+        self.session: str | None = session
+
+        # Other attributes populated at init.
+        self.exclude_num_chans: tuple[int, int] = (1, 4)
         self.filesize: measures.FileSize = self._calc_filesize()
-        self.representative_target: Tuple[Optional[str], Optional[dict],
-                                          Optional[dict]] = (None, None, None)
-        self.representative_window: Optional[str] = None
-        self.science_goals: dict = {}
-        self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
-        self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
-        self.fields: Union[RetrieveByIndexContainer, list] = []
+
+        # Attributes expected to be populated during import of MS (see
+        # infrastructure.tablereader.MeasurementSetReader.get_measurement_set).
+        self.antenna_array: AntennaArray | None = None
+        self.acs_software_build_version: str | None = None  # PIPE-132
+        self.acs_software_version: str | None = None  # PIPE-132
+        self.array_name: str = ''
+        self.correlator_name: str | None = None
+        self.data_column: dict = {}  # PIPE-1062
+        self.data_descriptions: RetrieveByIndexContainer | list = []
+        self.data_types_per_source_and_spw: dict = {}  # PIPE-1246
+        self.execblock_id: str = ''
+        self.fields: RetrieveByIndexContainer | list = []
+        self.observer: str = ''
+        self.observing_modes: list[str] = []  # PIPE-2084
+        self.project_id: str = ''
+        self.representative_target: tuple[str | None, dict | None, dict | None] = (None, None, None)
+        self.representative_window: str | None = None
         self.scans: list = []
-        self.sources: Union[RetrieveByIndexContainer, list] = []
-        self.states: Union[RetrieveByIndexContainer, list] = []
-        self.reference_spwmap: Optional[List[int]] = None
-        self.origin_ms: str = name
-        self.data_column: dict = {}
-        self.exclude_num_chans: Tuple[int, int] = (1, 4)
+        self.schedblock_id: str = ''
+        self.science_goals: dict = {}
+        self.sources: RetrieveByIndexContainer | list = []
+        self.spectral_windows: RetrieveByIndexContainer | list = []
+        self.spectralspec_spwmap: dict = {}  # PIPE-1132
+        self.states: RetrieveByIndexContainer | list = []
 
-        # The ALMA Common Software version used to create this MS, if ALMA. Otherwise, None
-        # (PIPE-132)
-        self.acs_software_version = None
-
-        # The ALMA Common Software build version used to create this MS, if ALMA. Otherwise, None.
-        # (PIPE-132)
-        self.acs_software_build_version = None
-
-        self.data_types_per_source_and_spw: dict = {}
-
-        # ALMA only: the name(s) of the Observing Mode(s) selected for this MS,
-        # populated from the ASDM_SBSUMMARY table (PIPE-2084).
-        self.observing_modes: List[str] = []
-
-        # Dictionary mapping phase calibrator fields to corresponding fields
-        # with TARGET / CHECK intents (PIPE-1154).
-        self.phasecal_mapping: dict = {}
-
-        # Dictionary to map each SpectralSpec to list of corresponding spectral
-        # window IDs (PIPE-1132).
-        self.spectralspec_spwmap: dict = {}
-
-        # Dictionary with collections of spectral window maps for mapping or
-        # combining spws, split by (intent, field). This is used in several
-        # ALMA ('hifa') calibration tasks (PIPE-1154).
-        self.spwmaps: dict = {}
+        # Attributes expected to be populated during the Pipeline run, to store
+        # information derived by stages that is used in subsequent stages.
+        self.derived_fluxes: collections.defaultdict | None = None  # PIPE-644, PIPE-660
+        self.flagcmds: list[str] = []  # TODO: updated by hifa_fluxcalflag, but appear unused; remove?
+        self.fluxscale_fluxes: collections.defaultdict | None = None  # PIPE-1776
+        self.origin_ms: str = name  # PIPE-1062
+        self.phase_calapps_for_check_sources = []  # PIPE-1377
+        self.phasecal_mapping: dict = {}  # PIPE-1154
+        self.phaseup_caltable_for_phase_rms = []  # PIPE-1624
+        self.reference_spwmap: list[int] | None = None
+        self.spwmaps: dict = {}  # PIPE-1154
 
         # Polarisation calibration requires the refant list be frozen, after
         # which subsequent gaincal calls are executed with
@@ -144,34 +176,14 @@ class MeasurementSet(object):
         # checks the lock status to know whether to set refantmode to strict.
         #
         # The backing property for the refant list.
-        self._reference_antenna: Optional[str] = None
+        self._reference_antenna: str | None = None
         # The refant lock. Setting reference_antenna_locked to True prevents
         # the reference antenna list from being modified. I would have liked
         # to put the lock on a custom refant list class, but some tasks check
         # the type of reference_antenna directly which prevents that approach.
         self.reference_antenna_locked: bool = False
 
-        # This contains the phase calapps for the check sources from hifa_gfluxscale.
-        # Added for ALMA IF to support PIPE-1377
-        # These calapps are saved off from hifa_gfluxscale and saved here 
-        # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
-        self.phase_calapps_for_check_sources = []
-
-        # Added for ALMA IF to support PIPE-1624
-        # This phaseup caltable name is saved in hifa_bandpass
-        # so it can be used for the phase RMS stability assessment
-        self.phaseup_caltable_for_phase_rms = []
-        
-        # This contains flux measurements derived by CASA's fluxscale as
-        # derived during hifa_gfluxscale. Added for ALMA IF as part of
-        # PIPE-1776 to support polarisation calibration.
-        self.fluxscale_fluxes: Optional[collections.defaultdict] = None
-
-        # This contains the name of the correlator from the PROCESSOR table
-        # Example values: ALMA_ACA, ALMA_BASELINE
-        self.correlator_name: Optional[str] = None
-
-    def _calc_filesize(self):
+    def _calc_filesize(self) -> measures.FileSize:
         """
         Calculate the disk usage of this measurement set.
         """
@@ -184,11 +196,12 @@ class MeasurementSet(object):
         return measures.FileSize(total_bytes,
                                  measures.FileSizeUnits.BYTES)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return 'MeasurementSet({0})'.format(self.name)
 
     @property
-    def intents(self):
+    def intents(self) -> set[str]:
+        """Return unique intents in the measurement set."""
         intents = set()
         # we look to field rather than state as VLA datasets don't have state
         # entries
@@ -197,38 +210,86 @@ class MeasurementSet(object):
         return intents
 
     @property
-    def antennas(self):
+    def antennas(self) -> list[Antenna]:
+        """Return list of Antenna objects for all antennas in the measurement set."""
         # return a copy rather than the underlying list
         return list(self.antenna_array.antennas)
 
     @property
-    def basename(self):
+    def basename(self) -> str:
+        """Return base path to the measurement set."""
         return os.path.basename(self.name)
 
     @property
     def is_band_to_band(self) -> bool:
-        # PIPE-2084: declares whether this MS is for band-to-band
-        # interferometry. This is deemed True if either the observing mode
-        # declares it as band-to-band, or if the diffgain intent + SpW setup are
-        # consistent with band-to-band (latter covers datasets that don't have
-        # correct observing mode set in their metadata).
+        """Return whether this MS is for band-to-band interferometry.
+
+        Criteria adopted from PIPE-2084: an MS is deemed to be for band-to-band
+        interferometry if either the observing mode declares it as band-to-band,
+        or if the diffgain intent + SpW setup are consistent with band-to-band.
+        The latter covers datasets that don't have correct observing mode set in
+        their metadata.
+        """
         return "BandToBand Interferometry" in self.observing_modes or self.get_diffgain_mode() == "B2B"
 
-    def get_antenna(self, search_term=''):
+    def get_antenna(self, search_term: str = '') -> list[Antenna]:
+        """
+        Return Antenna(s) for given antenna selection in CASA format.
+
+        If the ``search_term`` is omitted or an empty string, this will return
+        all antennas in the measurement set.
+
+        Args:
+            search_term: Antenna selection string in CASA format.
+
+        Returns:
+            List of Antenna objects matching search term.
+        """
         if search_term == '':
             return self.antennas
 
         return [a for a in self.antennas
                 if a.id in utils.ant_arg_to_id(self.name, search_term, self.antennas)]
 
-    def get_state(self, state_id=None):
+    def get_state(self, state_id: int | None = None) -> State | None:
+        """
+        Return State in MeasurementSet matching the given identifier.
+
+        Args:
+            state_id: Numerical identifier of state to search for.
+
+        Returns:
+            State object associated with matched identifier, or None if no match
+            was found.
+        """
         match = [state for state in self.states if state.id == state_id]
         if match:
             return match[0]
         else:
             return None
 
-    def get_scans(self, scan_id=None, scan_intent=None, field=None, spw=None):
+    def get_scans(self, scan_id: int | Sequence[int] | None = None, scan_intent: str | Sequence[str] | None = None,
+                  field: int | str | None = None, spw: int | str | Sequence[int] | Sequence[str] | None = None) \
+            -> list[Scan]:
+        """
+        Return Scan(s) in MeasurementSet matching the given criteria (ID,
+        intent, field, and/or spectral window). If no criteria are given, all
+        Scans in the MeasurementSet will be returned.
+
+        Criteria arguments can be given as either single items of the expected
+        type, sequences of the expected type, or in the case of intent or spw,
+        as a comma-separated values string. For example, intent could be
+        'ATMOSPHERE', 'ATMOSPHERE,BANDPASS', or ('ATMOSPHERE', 'BANDPASS').
+
+        Args:
+            scan_id: Scan ID(s) to match.
+            scan_intent: Intent(s) to match.
+            field: Field(s) to match, as field selection in CASA format.
+            spw: Spectral window(s) to match.
+
+        Returns:
+            List of Scan objects for scans in MS matching the given criteria.
+        """
         pool = self.scans
 
         if scan_id is not None:
@@ -266,7 +327,21 @@ class MeasurementSet(object):
 
         return pool
 
-    def get_data_description(self, spw=None, id=None):
+    def get_data_description(self, spw: int | spectralwindow.SpectralWindow | None = None, id: int | None = None) \
+            -> DataDescription | None:
+        """
+        Return the DataDescription in the MeasurementSet that matches the given
+        criteria (spectral window or ID). If no criteria are given, this will
+        return None. If both `spw` and `id` are given, this will match by `id`
+        only.
+
+        Args:
+            spw: Spectral window to match (as ID or SpectralWindow object).
+            id: Data description numerical identifier to match.
+
+        Returns:
+            DataDescription matching the given criteria, or None if no match was found.
+        """
         match = None
         if spw is not None:
             if isinstance(spw, spectralwindow.SpectralWindow):
@@ -283,20 +358,23 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_representative_source_spw(self, source_name: Optional[str] = None, source_spwid: Optional[int] = None) -> \
-            Tuple[Optional[str], Optional[int]]:
+    def get_representative_source_spw(self, source_name: str | None = None, source_spwid: int | None = None) \
+            -> tuple[str | None, int | None]:
         """
         Get the representative target source object:
-            Use user name if source_name is supplied by user and it has TARGET intent.
-            Otherwise use the source defined in the ASDM SBSummary table if it has TARGET intent.
-            Otherwise use the first source in the source list with TARGET intent.
-        Arguments:
-            source_name:  a string with the source name, or None for an automatic selection.
-            source_spwid:  an int with the spw id, or None for an automatic selection.
+
+        * Use user name if ``source_name`` is supplied by user and it has TARGET intent.
+        * Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.
+        * Otherwise, use the first source in the source list with TARGET intent.
+
+        Args:
+            source_name: A string with the source name, or None for an automatic selection.
+            source_spwid: An int with the spw id, or None for an automatic selection.
+
         Returns:
             a tuple with representative source name and spw id;
             if such a source cannot be identified, return (None, None),
-            and if an spw cannot be determined, return (name, None).
+            and if a spw cannot be determined, return (name, None).
         """
         qa = casa_tools.quanta
         cme = casa_tools.measures
@@ -358,7 +436,7 @@ class MeasurementSet(object):
 
         # Target source not found
         if target_source is None:
-            return (None, None)
+            return None, None
 
         # Target source name
         target_source_name = target_source.name
@@ -375,11 +453,11 @@ class MeasurementSet(object):
             if found:
                 LOG.info('Selecting user defined representative spw %s for data set %s' %
                          (str(source_spwid), self.basename))
-                return (target_source_name, source_spwid)
+                return target_source_name, source_spwid
             else:
                 LOG.warning('No target source data for representative spw %s in data set %s' %
                             (str(source_spwid), self.basename))
-                return (target_source_name, None)
+                return target_source_name, None
 
         target_spwid = None
         # Check for representative spw from ASDM (>= Cycle 7)
@@ -391,14 +469,14 @@ class MeasurementSet(object):
                         self.representative_window)
 
         if target_spwid is not None:
-            return (target_source_name, target_spwid)
+            return target_source_name, target_spwid
 
         # Get the representative bandwidth
         #     Return if there isn't one
         if not self.representative_target[2]:
             if self.antenna_array.name not in ('VLA', 'EVLA'):
                 LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
-            return (target_source_name, None)
+            return target_source_name, None
         
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
@@ -408,7 +486,7 @@ class MeasurementSet(object):
         #     Return if there isn't one
         if not self.representative_target[1]:
             LOG.warning('Undefined representative frequency for data set %s' % self.basename)
-            return (target_source_name, None)
+            return target_source_name, None
         target_frequency = cme.frequency('BARY',
             qa.quantity(qa.getvalue(self.representative_target[1]),
             qa.getunit(self.representative_target[1])))
@@ -431,7 +509,7 @@ class MeasurementSet(object):
 
         # No representative frequency
         if not target_frequency_topo:
-            return (target_source_name, None)
+            return target_source_name, None
 
         # Find the science spw 
 
@@ -478,7 +556,7 @@ class MeasurementSet(object):
                 LOG.info('Selecting the narrowest chanwidth spw id %s which overlaps the representative frequency in data set %s' %
                          (str(target_spwid), self.basename))
 
-            return (target_source_name, target_spwid)
+            return target_source_name, target_spwid
 
         # Now find all the spw that contain the representative frequency
         target_spws_freq = [spw for spw in target_spws_bw
@@ -495,7 +573,7 @@ class MeasurementSet(object):
             LOG.info('Selecting widest channel width spw id {} with channel width <= representative bandwidth in data'
                      ' set {}'.format(str(target_spwid), self.basename))
 
-            return (target_source_name, target_spwid)
+            return target_source_name, target_spwid
 
         # For all the spws with channel width less than or equal
         # to the representative bandwidth which contain the
@@ -511,21 +589,27 @@ class MeasurementSet(object):
 
         return target_source_name, target_spwid
 
-    def get_fields(self, task_arg=None, field_id=None, name=None, intent=None):
+    def get_fields(self, task_arg: int | str | None = None, field_id: int | Sequence[int] | None = None,
+                   name: str | Sequence[str] | None = None, intent: str | Sequence[str] | None = None) -> list[Field]:
         """
         Get Fields from this MeasurementSet matching the given criteria. If no
         criteria are given, all Fields in the MeasurementSet will be returned.
 
         Arguments can be given as either single items of the expected type,
-        sequences of the expected type, or in the case of name or intent, as
-        comma separated strings. For instance, name could be 'HOIX', 
+        sequences of the expected type, or as comma separated strings in the
+        case of name and/or intent. For instance, name could be 'HOIX',
         'HOIX,0841+708' or ('HOIX','0841+708').
 
-        :param field_id: field ID(s) to match
-        :param name: field name(s) to match
-        :param intent: observing intent(s) to match
-        :rtype: a (potentially empty) list of :class:`~pipeline.domain.field.Field` \
-             objects
+        Args:
+            task_arg: A field selection in CASA format to match.
+            field_id: Field ID(s) to match.
+            name: Field name(s) to match.
+            intent: Select fields that are associated with these intents. If
+                set to an empty string or '*', this is the equivalent to all
+                intents in the measurement set.
+
+        Returns:
+            List of Field objects for fields in MS matching the given criteria.
         """
         pool = self.fields
 
@@ -556,7 +640,20 @@ class MeasurementSet(object):
 
         return pool
 
-    def get_spectral_window(self, spw_id):
+    def get_spectral_window(self, spw_id: int | str) -> spectralwindow.SpectralWindow:
+        """
+        Return the SpectralWindow object matching the given identifier.
+        The identifier can be provided as an integer or string of integer.
+
+        Args:
+            spw_id: Numerical identifier of spectral window to match.
+
+        Returns:
+            SpectralWindow object for spectral window matching the identifier.
+
+        Raises:
+            KeyError if no matching spectral window is found for given identifier.
+        """
         if spw_id is not None:
             spw_id = int(spw_id)
             match = [spw for spw in self.spectral_windows
@@ -567,12 +664,38 @@ class MeasurementSet(object):
                 raise KeyError('No spectral window with ID \'{0}\' found in '
                                '{1}'.format(spw_id, self.basename))
 
-    def get_spectral_windows(self, task_arg='', with_channels=False, num_channels=(), science_windows_only=True,
-                             spectralspecs=None, intent=None):
+    def get_spectral_windows(self, task_arg: str = '', with_channels: bool = False,
+                             num_channels: list | None = None, science_windows_only: bool = True,
+                             spectralspecs: list | None = None, intent: str | None = None) \
+            -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
         """
-        Return the spectral windows corresponding to the given CASA-style spw
-        argument, filtering out windows that may not be science spectral 
-        windows (WVR windows, channel average windows etc.).
+        Return spectral windows matching given criteria.
+
+        This returns spectral windows that correspond to the given CASA-style
+        spw argument (specified as ``task_arg``), filtering out windows for a
+        number of criteria: number of channels, science spectral windows,
+        spectral specs, intents.
+
+        By default, this returns a list of SpectralWindow objects; if
+        ``with_channels`` is True, this will instead return the spectral windows
+        as a list of SpectralWindowWithChannelSelection objects.
+
+        Args:
+            task_arg: Spectral window selection in CASA format to match.
+            with_channels: If True, return spectral window with channel selection.
+            num_channels: Optional list of spectral window sizes in number of
+                channels; if set, only return spectral windows whose number of
+                channels matches any of the given sizes.
+            science_windows_only: If True, only return "science" spectral
+                windows, aka spectral windows associated with science intents.
+            spectralspecs: Optional list of spectral specs; if set, only return
+                spectral windows associated with given spectral specs.
+            intent: Optional string of comma-separated intents; if set, only
+                return spectral windows that observed given intent(s).
+
+        Returns:
+            List of SpectralWindow or SpectralWindowWithChannelSelection objects
+            for given search criteria.
         """
         spws = self.get_all_spectral_windows(task_arg, with_channels)
 
@@ -611,14 +734,27 @@ class MeasurementSet(object):
 
         return spws
 
-    def get_spectral_specs(self) -> List[str]:
+    def get_spectral_specs(self) -> list[str]:
         """Return list of all spectral specs used in the MS."""
         return list(self.spectralspec_spwmap.keys())
 
     def get_all_spectral_windows(self, task_arg: str = '', with_channels: bool = False) \
-            -> List[Union[spectralwindow.SpectralWindow, spectralwindow.SpectralWindowWithChannelSelection]]:
-        """Return the spectral windows corresponding to the given CASA-style
-        spw argument.
+            -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
+        """
+        Return spectral windows corresponding to the given CASA-style spw
+        argument.
+
+        By default, this returns a list of SpectralWindow objects; if
+        ``with_channels`` is True, this will instead return the spectral windows
+        as a list of SpectralWindowWithChannelSelection objects.
+
+        Args:
+            task_arg: Spectral window selection in CASA format to match.
+            with_channels: If True, return spectral window with channel selection.
+
+        Returns:
+            List of SpectralWindow or SpectralWindowWithChannelSelection objects
+            for given CASA-style search criteria.
         """
         # we may have more spectral windows in our MeasurementSet than have
         # data in the measurement set on disk. Ask for all 
@@ -640,20 +776,20 @@ class MeasurementSet(object):
             spws.append(proxy)
         return spws
 
-    def get_diffgain_mode(self) -> Optional[str]:
+    def get_diffgain_mode(self) -> str | None:
         """
         Determine if the intents and SpW setup in this measurement set are
         consistent with an observing mode that uses a differential gain
         calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).
 
         Returns:
-            'B2B' if the ratio of frequencies between on-source and reference spws is above 1.661;
-            'BWSW' if the ratio of bandwidths between reference and on-source is above 1.5;
-            None if there are no DIFFGAIN* intents in this MS.
+            - 'B2B' if the ratio of frequencies between on-source and reference spws is above 1.661;
+            - 'BWSW' if the ratio of bandwidths between reference and on-source is above 1.5;
+            - None if there are no DIFFGAIN* intents in this MS.
 
         Raises:
             ValueError if the DIFFGAIN* intents are present in the MS, but either
-            a. the MS is missing diffgain reference or on-source SpWs
+            a. the MS is missing diffgain reference or on-source SpWs, or
             b. the SpW setup does not match either BandToBand or BandwidthSwitching.
         """
         if 'DIFFGAINREF' in self.intents or 'DIFFGAINSRC' in self.intents:
@@ -683,18 +819,26 @@ class MeasurementSet(object):
 
         return None
 
-    def get_original_intent(self, intent=None):
+    def get_original_intent(self, intent: str) -> set[str]:
         """
         Get the original obs_modes that correspond to the given pipeline
-        observing intents.
+        observing intent(s).
+
+        Args:
+            intent: Pipeline intent(s) to convert.
+
+        Returns:
+            Set of original CASA intent(s) (obs_modes) corresponding to given
+            Pipeline intent(s).
         """
         obs_modes = [state.get_obs_mode_for_intent(intent)
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
 
-    def get_alma_cycle_number(self) -> Optional[int]:
+    def get_alma_cycle_number(self) -> int | None:
         """
-        Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.
+        Get the ALMA cycle number from the ALMA control software version that
+        this MeasurementSet was acquired with.
 
         Returns:
             int cycle_number or None if not found
@@ -707,27 +851,25 @@ class MeasurementSet(object):
             return None
 
     @property
-    def start_time(self):
+    def start_time(self) -> dict:
+        """Return start time for this measurement set as CASA 'epoch' measure dictionary."""
         earliest, _ = min([(scan, utils.get_epoch_as_datetime(scan.start_time)) for scan in self.scans],
                           key=operator.itemgetter(1))
         return earliest.start_time
 
     @property
-    def end_time(self):
+    def end_time(self) -> dict:
+        """Return end time for this measurement set as CASA 'epoch' measure dictionary."""
         latest, _ = max([(scan, utils.get_epoch_as_datetime(scan.end_time)) for scan in self.scans],
                         key=operator.itemgetter(1))
         return latest.end_time
 
     def get_vla_max_integration_time(self):
-        """Get the integration time used by the original VLA scripts
-
-        Args:
-            None
+        """Get the integration time used by the original VLA scripts.
 
         Returns:
             int_time: int value of the max integration time used
         """
-
         # with casa_tools.TableReader(vis + '/FIELD') as table:
         #     numFields = table.nrows()
         #     field_positions = table.getcol('PHASE_DIR')
@@ -774,18 +916,13 @@ class MeasurementSet(object):
 
         return int_time
 
-    def get_vla_datadesc(self):
+    def get_vla_datadesc(self) -> dict[int, dict]:
         """Generate VLA data description index
             Use the original VLA buildscans function to return a dd index
 
-        Args:
-            None
-
         Returns:
             ddindex: indexed list of dictionaries with VLA metadata
-
         """
-
         cordesclist = ['Undefined', 'I', 'Q', 'U', 'V',
                        'RR', 'RL', 'LR', 'LL',
                        'XX', 'XY', 'YX', 'YY',
@@ -855,17 +992,12 @@ class MeasurementSet(object):
 
         return ddindex
 
-    def get_vla_corrstring(self):
+    def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
-
-        Args:
-            None
 
         Returns:
             corrstring: string value of correlation
-
         """
-
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
@@ -878,7 +1010,7 @@ class MeasurementSet(object):
 
         return corrstring
 
-    def get_vla_corrlist_from_spw(self, spw=None):
+    def get_vla_corrlist_from_spw(self, spw: str | None = None) -> list:
         """Get all VLA correlation labels as a list of string from selected spw(s).
 
         Args:
@@ -895,17 +1027,12 @@ class MeasurementSet(object):
 
         return sorted(corrs)
 
-    def get_alma_corrstring(self):
-        """Get correlation string for ALMA for the science windows
-
-        Args:
-            None
+    def get_alma_corrstring(self) -> str:
+        """Get correlation string for ALMA for the science spectral windows.
 
         Returns:
             corrstring: string value of correlation
-
         """
-
         sci_spwlist = self.get_spectral_windows(science_windows_only=True)
         sci_spwids = [spw.id for spw in sci_spwlist]
 
@@ -920,17 +1047,12 @@ class MeasurementSet(object):
 
         return corrstring
 
-    def get_vla_spw2band(self):
+    def get_vla_spw2band(self) -> dict:
         """Find field spws for VLA
-
-        Args:
-            None
 
         Returns:
             spw2band: dictionary with each string key spw index giving a single letter string value of the band
-
         """
-
         ddindex = self.get_vla_datadesc()
 
         spw2band = {}
@@ -949,17 +1071,12 @@ class MeasurementSet(object):
 
         return spw2band
 
-    def vla_minbaselineforcal(self):
+    def vla_minbaselineforcal(self) -> int:
         """Min baseline for cal
-
-        Args:
-            None
 
         Returns:
             Constant value
-
         """
-
         # Old determination before it was changed to a constant value of 4
         # return max(4, int(len(self.antennas) / 2.0))
         return 4
@@ -972,9 +1089,7 @@ class MeasurementSet(object):
 
         Returns:
             field_spws: List of dictionaries
-
         """
-
         # Map field IDs to spws
         field_spws = []
 
@@ -1006,9 +1121,7 @@ class MeasurementSet(object):
 
         Returns:
             channels:  NUM_CHAN column from spectral window table
-
         """
-
         vis = self.name
 
         with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
@@ -1023,11 +1136,9 @@ class MeasurementSet(object):
         Args:
             spwlist (List, optional): list of string spws   ['1', '2', '3']
 
-
         Returns:
             tst_bpass_spws: CASA argument format of spws:channels    '0:10~80, 1:15~60, 2:30~70'
         """
-
         tst_delay_spw = ''
 
         channels = self.get_vla_numchan()
@@ -1045,17 +1156,12 @@ class MeasurementSet(object):
 
         return tst_bpass_spw
 
-    def get_vla_critfrac(self):
+    def get_vla_critfrac(self) -> float:
         """Identify bands/basebands/spws
-
-        Args:
-            None
 
         Returns:
             critical fraction
-
         """
-
         vis = self.name
 
         with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
@@ -1112,8 +1218,8 @@ class MeasurementSet(object):
 
         return critfrac
 
-    def get_vla_baseband_spws(self, science_windows_only=True,
-                              return_select_list=True, warning=True):
+    def get_vla_baseband_spws(self, science_windows_only: bool = True, return_select_list: bool = True,
+                              warning: bool = True) -> dict | tuple[dict, list]:
         """Get the SPW information from individual VLA band/baseband.
 
         Args:
@@ -1126,7 +1232,6 @@ class MeasurementSet(object):
             baseband_spws_list: spw_list of individual basebands
                 e.g., [[0,1,2,3],[4,5,6,7]]
         """
-
         baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
 
         for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
@@ -1153,12 +1258,12 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_median_integration_time(self, intent=None):
+    def get_median_integration_time(self, intent: str | None = None) -> np.float:
         """Get the median integration time used to get data for the given
         intent.
 
         Args:
-            intent (str, optional): The intent of the data of interest.
+            intent: The intent of the data of interest.
 
         Returns:
             The median integration time used.
@@ -1195,7 +1300,9 @@ class MeasurementSet(object):
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
 
-    def get_median_science_integration_time(self, intent=None, spw=None):
+    # FiXME: Investigate usage: intent argument unused, but method is called
+    # with specific values for intent.
+    def get_median_science_integration_time(self, intent=None, spw: str | None = None) -> np.float:
         """Get the median integration time for science targets used to get data for the given
         intent.
 
@@ -1250,11 +1357,16 @@ class MeasurementSet(object):
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
 
-    def get_times_on_source_per_field_id(self, field: str, intent: str):
+    def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
-        :param field: field name
-        :param intent: field intent
-        returns dictionary of on source times for selected field IDs
+        Return on-source time for given field ID(s) and intent(s).
+
+        Args:
+            field: Field name(s) to return times for.
+            intent: Intent(s) to filter for.
+
+        Returns:
+            Dictionary of on-source times for selected field ID(s) and intent(s).
         """
         field_ids = [field.id for field in self.fields if intent in field.intents]
         state_ids = [state.id for state in self.states if intent in state.intents]
@@ -1274,7 +1386,7 @@ class MeasurementSet(object):
         return times_on_source_per_field_id
 
     @property
-    def reference_antenna(self):
+    def reference_antenna(self) -> str:
         """
         Get the reference antenna list for this MS. The refant value is
         a comma-separated string.
@@ -1284,12 +1396,18 @@ class MeasurementSet(object):
         return self._reference_antenna
 
     @reference_antenna.setter
-    def reference_antenna(self, value):
+    def reference_antenna(self, value: str) -> None:
         """
         Set the reference antenna list for this MS.
 
-        If this property is in R/O mode, signified by reference_antenna_locked
-        being set True, an AttributeError will be raised.
+        Args:
+            value: Antenna names to set as reference antennas.
+
+        Raises:
+            AttributeError if the reference antenna list is in read-only mode,
+            as set by the reference_antenna_locked property.
+
+        Example: ms.reference_antenna = 'DV01,DV02,DV03'
         """
         if self.reference_antenna_locked:
             # AttributeError is raised for R/O properties, which seems
@@ -1297,21 +1415,14 @@ class MeasurementSet(object):
             raise AttributeError(f'Refant list for {self.basename} is locked')
         self._reference_antenna = value
 
-    def update_reference_antennas(self, ants_to_demote=None, ants_to_remove=None):
-        """Update the reference antenna list by demoting and/or removing
-        specified antennas.
+    def update_reference_antennas(self, ants_to_demote: set[str] | None = None, ants_to_remove: set[str] | None = None)\
+            -> None:
+        """Update the reference antenna list for this MS to demote/remove specified antennas.
 
-        If the same antenna is specified to be demoted and to be removed, it
-        is removed.
-
-        :param ants_to_demote: list of antenna names to demote
-        :param ants_to_remove: list of antenna names to remove
+        Args:
+            ants_to_demote: Set of antenna names to demote.
+            ants_to_remove: Set of antenna names to remove.
         """
-        if ants_to_demote is None:
-            ants_to_demote = []
-        if ants_to_remove is None:
-            ants_to_remove = []
-
         # Return early if no refants are registered (None, or empty string).
         if not (self.reference_antenna and self.reference_antenna.strip()):
             LOG.warning('No reference antennas registered set for MS {} ({}), '
@@ -1325,8 +1436,8 @@ class MeasurementSet(object):
         refants_to_keep = []
         refants_to_move = []
         for ant in self.reference_antenna.split(','):
-            if ant not in ants_to_remove:
-                if ant in ants_to_demote:
+            if not ants_to_remove or ant not in ants_to_remove:
+                if ants_to_demote and ant in ants_to_demote:
                     refants_to_move.append(ant)
                 else:
                     refants_to_keep.append(ant)
@@ -1343,15 +1454,22 @@ class MeasurementSet(object):
 
     @property
     def session(self):
+        """Return name of session associated with this measurement set."""
         return self._session
 
     @session.setter
-    def session(self, value):
+    def session(self, value: str) -> None:
+        """
+        Set name of session associated with this measurement set.
+
+        Args:
+            value: Name of session.
+        """
         if value is None:
             value = 'session_1'
         self._session = value
 
-    def all_colnames(self):
+    def all_colnames(self) -> list[str]:
         """
         Return all available column names for this MS.
         """
@@ -1359,16 +1477,14 @@ class MeasurementSet(object):
             colnames = table.colnames()
         return colnames
 
-    def data_colnames(self):
+    def data_colnames(self) -> list[str]:
         """
         Return all data column names for this MS.
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_column(self, dtype: DataType, column: str,
-                        source: Optional[str] = None,
-                        spw: Optional[str] = None,
-                        overwrite: bool = False):
+    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
+                        overwrite: bool = False) -> None:
         """
         Set data type and column.
 
@@ -1432,21 +1548,22 @@ class MeasurementSet(object):
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
 
-    def get_data_column(self, dtype: DataType, source: Optional[str] = None, spw: Optional[str] = None) -> Optional[str]:
+    def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """
-        Return the column name associated with a DataType in an MS domain object.
+        Return the column name associated with a DataType in an MS domain
+        object for given source and spectral window.
+
+        If ``source`` and ``spw`` are both unset, the method will just look
+        at the MS data type and column information. If one or both parameters
+        are set, it will require all (source,spw) combinations to have data of
+        the requested data type.
 
         Args:
             dtype: DataType to fetch column name for
-            source: source names (comma separated name selection string) to filter for. 
-                    If unset, all sources will be used.
-            spw: spectral windows (comma separated real spw ID selection string) to filter for. 
-                 If unset, all real spw IDs will be used.
-
-            If source and spw are both unset, the method will just look
-            at the MS data type and column information. If one or both
-            parameters are set, it will require all (source,spw)
-            combinations to have data of the requested data type.
+            source: Source names (comma separated name selection string) to
+                filter for. If unset, all sources will be used.
+            spw: Spectral windows (comma separated real spw ID selection string)
+                to filter for. If unset, all real spw IDs will be used.
 
         Returns:
             A name of column of a dtype. Returns None if dtype is not defined
@@ -1474,21 +1591,22 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_data_type(self, column: str, source: Optional[str] = None, spw: Optional[str] = None) -> Optional[DataType]:
+    def get_data_type(self, column: str, source: str | None = None, spw: str | None = None) -> DataType | None:
         """
-        Return the DataType associated with a column in an MS domain object.
+        Return the DataType associated with a column in an MS domain object for
+        given source and spectral window.
+
+        If ``source`` and ``spw`` are both unset, the method will just look at
+        the MS data type and column information. If one or both parameters are
+        set, it will require all (source,spw) combinations to have data of the
+        requested data type.
 
         Args:
-            column: name of column in MS
-            source: source names (comma separated name selection string) to filter for. 
-                    If unset, all sources will be used.
-            spw: spectral windows (comma separated real spw ID selection string) to filter for. 
-                 If unset, all real spw IDs will be used.
-
-            If source and spw are both unset, the method will just look
-            at the MS data type and column information. If one or both
-            parameters are set, it will require all (source,spw)
-            combinations to have data of the requested data type.
+            column: Name of column in MS
+            source: Source names (comma separated name selection string) to
+                filter for. If unset, all sources will be used.
+            spw: Spectral windows (comma separated real spw ID selection string)
+                to filter for. If unset, all real spw IDs will be used.
 
         Returns:
             The DataType associated with the column name. Returns None
@@ -1522,7 +1640,7 @@ class MeasurementSet(object):
         else:
             return None
 
-    def _source_select_to_list(self, source_select: Union[str, None]) -> List[str]:
+    def _source_select_to_list(self, source_select: str | None) -> list[str]:
         """
         Convert a CASA-style source selection string to a list of source names.
 
@@ -1532,7 +1650,6 @@ class MeasurementSet(object):
         Returns:
             A list of source names (as strings)
         """
-
         if source_select is None or not source_select.strip():
             # if None or empty or blank selection string, use all sources
             source_list = [utils.dequote(s.name) for s in self.sources]
@@ -1541,7 +1658,7 @@ class MeasurementSet(object):
 
         return source_list
 
-    def _spw_select_to_list(self, spw_select: Union[str, None]) -> List[int]:
+    def _spw_select_to_list(self, spw_select: str | None) -> list[int]:
         """
         Convert a CASA-style spw selection string to a list of spw IDs.
 
@@ -1551,7 +1668,6 @@ class MeasurementSet(object):
         Returns:
             A list of spw IDs (as integers)
         """
-
         if spw_select is None or not spw_select.strip():
             # if None or empty or blank selection string, use all spws
             spw_list = [s.id for s in self.spectral_windows]

@@ -1,3 +1,5 @@
+from .spectralwindow import SpectralWindow
+
 polarization_map = { 'linear': { 0: ['XX',  9],
                                  1: ['YY', 12],
                                  2: ['XY', 10],
@@ -22,7 +24,34 @@ to_polid = {'XX': 0, 'YY': 1, 'XY': 2, 'YX': 3,
 
 
 class DataDescription(object):
-    def __init__(self, dd_id, spw, pol_id):
+    """
+    A DataDescription is a logical representation of an entry in the
+    DATA_DESCRIPTION table in the measurement set, where the latter is used to
+    define the shape of the data in the MAIN table in the MS.
+
+    Attributes:
+        id: the numerical identifier of the data description entry.
+        spw: SpectralWindow object for the spectral window ID associated with
+            the data description.
+        pol_id: polarization ID associated with the data description.
+        obs_time: mean of midpoint observation times for data matching the data
+            description.
+        chan_freq: list of channel centre frequencies for data matching the data
+            description.
+        corr_axis: vector containing polarization labels that were correlated
+            together for data matching the data description.
+        group_name: TODO: unknown purpose, no known usage.
+    """
+    def __init__(self, dd_id: int, spw: SpectralWindow, pol_id: int) -> None:
+        """
+        Initialize a DataDescription object.
+
+        Args:
+            dd_id: Numerical identifier of the data description.
+            spw: SpectralWindow object for spectral window ID associated with
+                the data description.
+            pol_id: Polarization ID associated with the data description.
+        """
         self.id = dd_id
         self.spw = spw
         self.pol_id = pol_id
@@ -31,17 +60,23 @@ class DataDescription(object):
         self.corr_axis = []
         self.group_name = ''
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'DataDescription({0}, {1!r}, {2!r})'.format(
             self.id, self.spw, self.pol_id
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         args = map(str, (self.id, self.spw.id, self.pol_id))
         return 'DataDescription({0})'.format(', '.join(args))
 
     @property
-    def polarizations(self):
+    def polarizations(self) -> list[str]:
+        """
+        Return polarizations in the DataDescription.
+
+        Returns:
+            List of polarizations.
+        """
         all_corrs = ''.join(self.corr_axis)
 
         pols = []
@@ -61,13 +96,20 @@ class DataDescription(object):
         return pols
 
     @property
-    def num_polarizations(self):
+    def num_polarizations(self) -> int:
+        """Return number of polarizations in the DataDescription."""
         return len(self.polarizations)
 
-    def get_polarization_label(self, pol_id):
+    def get_polarization_label(self, pol_id: int) -> str:
         """
-        Get the polarization label associated with the polarization ID. This
+        Get the polarization label associated with given polarization ID. This
         converts an integer to a string, eg. 0 -> 'XX'.
+
+        Args:
+            pol_id: Polarization ID to get label for.
+
+        Returns:
+            Polarization label associated with given ID.
         """
         corr_type = self.polarizations
         if 'X' in corr_type or 'Y' in corr_type:
@@ -80,5 +122,15 @@ class DataDescription(object):
         label, _ = polarization_map[poltype][pol_id]
         return label
 
-    def get_polarization_id(self, pol):
+    @staticmethod
+    def get_polarization_id(pol: str) -> int:
+        """
+        Get the polarization ID associated with given polarization label.
+
+        Args:
+            pol: Polarization label to get ID for.
+
+        Returns:
+            Polarization ID associated with given label.
+        """
         return to_polid[pol]

@@ -4,10 +4,13 @@ Store frequency information of MeasurementSet.
 This module provides classes to store logical representation of spectral
 windows, channel frequency information, and channel selection.
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import decimal
 import itertools
 import operator
-from typing import List, Optional, Union
+from typing import Iterable, Sequence
 
 import numpy
 
@@ -25,13 +28,21 @@ class ArithmeticProgression(object):
     """
     __slots__ = ('start', 'delta', 'num_terms')
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[int | float, int | float, int]:
         return self.start, self.delta, self.num_terms
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[int | float, int | float, int]) -> None:
         self.start, self.delta, self.num_terms = state
 
-    def __init__(self, start, delta, num_terms):
+    def __init__(self, start: int | float, delta: int | float, num_terms: int) -> None:
+        """
+        Initialize an ArithmeticProgression object.
+
+        Args:
+            start: Value of first element in the progression.
+            delta: Common difference between each element in the progression.
+            num_terms: Number of elements in the progression.
+        """
         self.start = start
         self.delta = delta
         self.num_terms = num_terms
@@ -40,10 +51,10 @@ class ArithmeticProgression(object):
         g = itertools.count(self.start, self.delta)
         return itertools.islice(g, 0, self.num_terms)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.num_terms
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         if abs(index) >= self.num_terms:
             raise IndexError
         if index < 0:
@@ -51,7 +62,7 @@ class ArithmeticProgression(object):
         return self.start + index * self.delta
 
 
-def compress(values):
+def compress(values: Sequence[int | float]) -> Sequence[int | float] | ArithmeticProgression:
     """
     Compress (if possible) a sequence of values.
 
@@ -75,26 +86,52 @@ class ChannelList(object):
     A spectral window can contain thousands of channels. Rather than store all of
     these objects, a ChannelList generates and returns them lazily, on-demand.
     """
-    def __init__(self, chan_freqs, chan_widths, effbw):
+    def __init__(self,
+                 chan_freqs: Sequence[int | float] | ArithmeticProgression,
+                 chan_widths: Sequence[int | float] | ArithmeticProgression,
+                 effbw: Sequence[int | float] | ArithmeticProgression) -> None:
+        """
+        Initialize a ChannelList object.
+
+        Args:
+            chan_freqs: Sequence or ArithmeticProgression of center frequency of
+                channel (in Hertz) for all channels in ChannelList.
+            chan_widths: Sequence or ArithmeticProgression of channel width (in
+                Hertz) for all channels in ChannelList.
+            effbw: Sequence or ArithmeticProgression of effective bandwidth (in
+                Hertz) for all channels in ChannelList.
+        """
         assert len(chan_freqs) == len(chan_widths) == len(effbw)
         self.chan_freqs = chan_freqs
         self.chan_widths = chan_widths
         self.chan_effbws = effbw
 
-    def __iter__(self):
+    def __iter__(self) -> Channel:
         raw_channel_data = list(zip(self.chan_freqs, self.chan_widths, self.chan_effbws))
         for chan_centre, chan_width, chan_effective_bw in raw_channel_data:
             yield self.__create_channel(chan_centre, chan_width, chan_effective_bw)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.chan_freqs)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Channel:
         return self.__create_channel(self.chan_freqs[index],
                                      self.chan_widths[index],
                                      self.chan_effbws[index])
 
-    def __create_channel(self, centre, width, effective_bw):
+    @staticmethod
+    def __create_channel(centre: int | float, width: int | float, effective_bw: int | float) -> Channel:
+        """
+        Return a Channel object for given parameters.
+
+        Args:
+            centre: Center frequency of the channel (in Hertz).
+            width: Frequency width of the channel (in Hertz).
+            effective_bw: Effective bandwidth of the channel (in Hertz).
+
+        Returns:
+            Channel object.
+        """
         dec_centre = decimal.Decimal(centre)
         dec_width = decimal.Decimal(width)
         # The abs() call is not strictly necessary as Channel extends
@@ -117,20 +154,33 @@ class Channel(object):
 
     This object can be considered as a FrequencyRange object plus an effective
     bandwidth property. It provides the same interface as a FrequencyRange.
+
+    Attributes:
+        frequency_range: FrequencyRange object denoting the low- and high-end
+            frequencies of this channel (in Hertz).
+        effective_bw: The effective bandwidth of this channel (in Hertz).
     """
     __slots__ = ('frequency_range', 'effective_bw')
 
-    def __getstate__(self):
-        return self.frequency_range, self.effective_bw
+    def __init__(self, start: measures.Frequency, end: measures.Frequency, effective_bw: measures.Frequency) -> None:
+        """Creates a new Channel with the given start and end frequency and
+        effective bandwidth.
 
-    def __setstate__(self, state):
-        self.frequency_range, self.effective_bw = state
-
-    def __init__(self, start, end, effective_bw):
+        Args:
+            start: Start frequency of channel (in Hertz).
+            end: End frequency of channel (in Hertz).
+            effective_bw: Effective bandwidth of channel (in Hertz).
+        """
         self.frequency_range = measures.FrequencyRange(start, end)
         self.effective_bw = effective_bw
 
-    def __eq__(self, other):
+    def __getstate__(self) -> tuple[measures.FrequencyRange, measures.Frequency]:
+        return self.frequency_range, self.effective_bw
+
+    def __setstate__(self, state: tuple[measures.FrequencyRange, measures.Frequency]) -> None:
+        self.frequency_range, self.effective_bw = state
+
+    def __eq__(self, other: Channel) -> bool:
         if not isinstance(other, Channel):
             return False
 
@@ -141,44 +191,103 @@ class Channel(object):
 
         return True
 
-    def __ne__(self, other):
+    def __ne__(self, other: Channel) -> bool:
         return not self.__eq__(other)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Channel(%s, %s, %s)' % (self.frequency_range.low,
                                         self.frequency_range.high,
                                         self.effective_bw)
 
     @property
-    def low(self):
+    def low(self) -> measures.Frequency:
+        """Return the low end frequency of the Channel."""
         return self.frequency_range.low
 
     @property
-    def high(self):
+    def high(self) -> measures.Frequency:
+        """Returns the high end frequency of the Channel."""
         return self.frequency_range.high
 
-    def contains(self, frequency):
+    def contains(self, frequency: measures.Frequency | measures.FrequencyRange) -> bool:
+        """Returns whether the Channel contains given frequency (range)."""
         return self.frequency_range.contains(frequency)
 
-    def convert_to(self, newUnits=measures.FrequencyUnits.GIGAHERTZ):
+    def convert_to(self, newUnits: dict = measures.FrequencyUnits.GIGAHERTZ) -> measures.FrequencyRange:
+        """Converts both endpoints of this Channel (frequency range) to the
+        given units.
+
+        This converts the endpoint frequency of the endpoints in-place, as well
+        as returns a reference to the frequency range of this Channel.
+
+        Args:
+            newUnits: New units to convert the frequencies to. By default, this
+                will convert to Gigahertz.
+        """
         return self.frequency_range.convert_to(newUnits)
 
-    def getCentreFrequency(self):
+    def getCentreFrequency(self) -> measures.Frequency:
+        """Returns the center frequency of the Channel."""
         return self.frequency_range.getCentreFrequency()
 
-    def getOverlapWith(self, other):
+    def getOverlapWith(self, other: measures.FrequencyRange) -> measures.FrequencyRange:
+        """Return a new frequency range that represents the region of overlap
+        between this Channel (frequency range) and "other". If there is no
+        overlap, None is returned.
+
+        Args:
+            other: Another frequency range that may overlap this Channel.
+
+        Returns:
+            FrequencyRange object representing the overlapping region of this
+            range and other, or None if there is no overlap.
+        """
         return self.frequency_range.getOverlapWith(other)
 
-    def getGapBetween(self, other):
+    def getGapBetween(self, other: measures.FrequencyRange) -> measures.FrequencyRange | None:
+        """Returns a new frequency range that represents the region of frequency
+        space between this Channel (frequency range) and ``other``. If the other
+        range is coincident with, or overlaps, this Channel, None is returned.
+        If the other range is None, None is returned.
+
+        Args:
+            other: Channel/frequency range for which to assess frequency gap
+                with this Channel.
+
+        Returns:
+            The frequency gap between this range and ``other``."""
         return self.frequency_range.getGapBetween(other)
 
-    def getWidth(self):
+    def getWidth(self) -> measures.Frequency:
+        """Returns the width of the Channel."""
         return self.frequency_range.getWidth()
 
-    def overlaps(self, other):
+    # TODO: method appears to be broken, does not work if provided another channel.
+    def overlaps(self, other) -> bool:
+        """
+        Returns whether this Channel overlaps with given ``other`` Channel.
+
+        The frequency range is a closed interval, that is, one that contains
+        both of its endpoints.
+
+        If ``other`` is None, the return value is False.
+
+        Args:
+            other: Another Channel (frequency range) that may overlap this one.
+
+        Returns:
+            True if this range overlaps with ``other``.
+        """
         return self.frequency_range.overlaps(other)
 
-    def set(self, frequency1, frequency2):
+    def set(self, frequency1: measures.Frequency, frequency2: measures.Frequency) -> None:
+        """
+        Set frequency range for this Channel based on given frequency endpoints.
+
+        Args:
+            frequency1: One endpoint of frequency range for this Channel.
+            frequency2: Other endpoint of frequency range for this Channel.
+        """
         self.frequency_range.set(frequency1, frequency2)
 
 
@@ -188,49 +297,122 @@ class SpectralWindow(object):
 
     Attributes:
         id: The numerical identifier of this spectral window within the
-            SPECTRAL_WINDOW subtable of the MeasurementSet
-        band: Frequency band
-        bandwidth: The total bandwidth
-        baseband: The baseband
+            SPECTRAL_WINDOW subtable of the MeasurementSet.
+        band: Frequency band.
+        bandwidth: The total bandwidth.
+        baseband: The baseband.
         channels: Frequency information of each channel in spectral window,
-            i.e.,, frequencies, channel width, effective band width.
-        freq_lo: A list of LO frequencies
+            i.e., frequencies, channel width, effective bandwidth.
+        freq_lo: A list of LO frequencies.
         intents: the observing intents that have been observed using this
-            spectral window
-        mean_frequency: Mean frequency of spectral window
-        name: Spectral window name
-        receiver: Receiver type, e.g., 'TSB'
-        ref_frequency: The reference frequency
-        sideband: Side band
-        transitions: Spectral transitions recorded associated with spectral window
-        type: Spectral window type, e.g., 'TDM'
-        sdm_num_bin: Number of bins for online spectral averaging
-        correlation_bits: Number of bits used for correlation
+            spectral window.
+        mean_frequency: Mean frequency of spectral window.
+        name: Spectral window name.
+        receiver: Receiver type, e.g., 'TSB'.
+        ref_frequency: The reference frequency.
+        sideband: Side band.
+        transitions: Spectral transitions recorded associated with spectral window.
+        type: Spectral window type, e.g., 'TDM'.
+        sdm_num_bin: Number of bins for online spectral averaging.
+        correlation_bits: Number of bits used for correlation.
         median_receptor_angle: Median feed receptor angle.
-        specline_window: whether spw is intended for spectral line or continuum (VLA only)
+        specline_window: Whether spw is intended for spectral line or continuum (VLA only).
     """
-
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
                  'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'correlation_bits',
                  'median_receptor_angle', 'specline_window')
 
-    def __getstate__(self):
-        """Define what to pickle as a class intance."""
+    def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float, ref_freq: dict, mean_freq: float,
+                 chan_freqs: numpy.ndarray, chan_widths: numpy.ndarray, chan_effective_bws: numpy.ndarray,
+                 sideband: int, baseband: int, receiver: str | None, freq_lo: list[float] | numpy.ndarray | None,
+                 band: str = 'Unknown', spectralspec: str | None = None, transitions: list[str] | None = None,
+                 sdm_num_bin: int | None = None, correlation_bits: str | None = None,
+                 median_receptor_angle: numpy.ndarray | None = None, specline_window: bool = False) -> None:
+        """
+        Initialize SpectralWindow class.
+
+        Args:
+            spw_id: Spw ID.
+            name: Spw name.
+            spw_type: Spectral window type, e.g., 'TDM'.
+            bandwidth: The total bandwidth.
+            ref_freq: The reference frequency, as a CASA 'frequency' measure dictionary.
+            mean_freq: Mean frequency of spectral window in Hz.
+            chan_freqs: A list of frequency of each channel in spw in Hz.
+            chan_widths: A list of channel width of each channel in spw in Hz.
+            chan_effective_bws: A list of effective bandwidth of each channel in spw in Hz.
+            sideband: Side band.
+            baseband: The baseband.
+            receiver: Receiver type, e.g., 'TSB'.
+            freq_lo: A list of LO frequencies in Hz.
+            band: Frequency band.
+            spectralspec: SpectralSpec name.
+            transitions: Spectral transitions recorded associated with spectral window.
+            sdm_num_bin: Number of bins for online spectral averaging.
+            correlation_bits: Number of bits used for correlation.
+            median_receptor_angle: Median feed receptor angle.
+            specline_window: Whether spw is intended for spectral line or continuum (VLA only).
+        """
+        if transitions is None:
+            transitions = ['Unknown']
+
+        self.id = spw_id
+        self.bandwidth = measures.Frequency(bandwidth, measures.FrequencyUnits.HERTZ)
+
+        ref_freq_hz = casa_tools.quanta.convertfreq(ref_freq['m0'], 'Hz')
+        ref_freq_val = casa_tools.quanta.getvalue(ref_freq_hz)[0]
+        self.ref_frequency = measures.Frequency(ref_freq_val, measures.FrequencyUnits.HERTZ)
+        self._ref_frequency_frame = ref_freq['refer']
+
+        self.mean_frequency = measures.Frequency(mean_freq, measures.FrequencyUnits.HERTZ)
+        self.band = band
+        self.type = spw_type
+        self.spectralspec = spectralspec
+        self.intents = set()
+
+        # work around NumPy bug with empty strings
+        # http://projects.scipy.org/numpy/ticket/1239
+        self.name = str(name)
+        self.sideband = str(sideband)
+        self.baseband = str(baseband)
+        self.receiver = receiver
+        if freq_lo is not None:
+            self.freq_lo = [measures.Frequency(freq, measures.FrequencyUnits.HERTZ) for freq in freq_lo]
+        else:
+            self.freq_lo = freq_lo
+
+        chan_freqs = compress(chan_freqs)
+        chan_widths = compress(chan_widths)
+        chan_effective_bws = compress(chan_effective_bws)
+        self.channels = ChannelList(chan_freqs, chan_widths, chan_effective_bws)
+
+        self._min_frequency: measures.Frequency = min(self.channels, key=lambda r: r.low).low
+        self._max_frequency: measures.Frequency = max(self.channels, key=lambda r: r.high).high
+        self._centre_frequency: measures.Frequency = (self._min_frequency + self._max_frequency) / 2.0
+
+        self.transitions = transitions
+        self.sdm_num_bin = sdm_num_bin
+        self.correlation_bits = correlation_bits
+        self.median_receptor_angle = median_receptor_angle
+        self.specline_window = specline_window
+
+    def __getstate__(self) -> tuple:
+        """Define what to pickle as a class instance."""
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
                 self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle,
                 self.specline_window)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple) -> None:
         """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
          self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle, self.specline_window) = state
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         chan_freqs = self.channels.chan_freqs
         if isinstance(chan_freqs, ArithmeticProgression):
             chan_freqs = numpy.array(list(chan_freqs))
@@ -267,95 +449,23 @@ class SpectralWindow(object):
             self.specline_window
         )
 
-    def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float,
-                 ref_freq: dict, mean_freq: float, chan_freqs: numpy.ndarray,
-                 chan_widths: numpy.ndarray, chan_effective_bws: numpy.ndarray,
-                 sideband: int, baseband: int,
-                 receiver: Optional[str], freq_lo: Optional[Union[List[float], numpy.ndarray]],
-                 band: str = 'Unknown',
-                 spectralspec: Optional[str] = None,
-                 transitions: Optional[List[str]] = None,
-                 sdm_num_bin: Optional[int] = None,
-                 correlation_bits: Optional[str]=None,
-                 median_receptor_angle: Optional[numpy.ndarray] = None,
-                 specline_window: bool = False):
-        """
-        Initialize SpectralWindow class.
-
-        Args:
-            spw_id: Spw ID
-            name: Spw name
-            spw_type: Spectral window type, e.g., 'TDM'
-            bandwidth: The total bandwidth
-            ref_freq: The reference frequency
-            mean_freq: Mean frequency of spectral window in Hz
-            chan_freqs: A list of frequency of each channel in spw in Hz
-            chan_widths: A list of channel width of each channel in spw in Hz
-            chan_effective_bws: A list of effective bandwidth of each channel in spw in Hz
-            sideband: Side band
-            baseband: The baseband
-            receiver: Receiver type, e.g., 'TSB'
-            freq_lo: A list of LO frequencies in Hz
-            band: Frequency band
-            spectralspec: SpectralSpec name
-            transitions: Spectral transitions recorded associated with spectral window
-            sdm_num_bin: Number of bins for online spectral averaging
-            correlation_bits: Number of bits used for correlation
-            median_receptor_angle: Median feed receptor angle.
-            specline_window: whether spw is intended for spectral line or continuum (VLA only)
-        """
-        if transitions is None:
-            transitions = ['Unknown']
-
-        self.id = spw_id
-        self.bandwidth = measures.Frequency(bandwidth, measures.FrequencyUnits.HERTZ)
-
-        ref_freq_hz = casa_tools.quanta.convertfreq(ref_freq['m0'], 'Hz')
-        ref_freq_val = casa_tools.quanta.getvalue(ref_freq_hz)[0]
-        self.ref_frequency = measures.Frequency(ref_freq_val, measures.FrequencyUnits.HERTZ)
-        self._ref_frequency_frame = ref_freq['refer']
-
-        self.mean_frequency = measures.Frequency(mean_freq, measures.FrequencyUnits.HERTZ)
-        self.band = band
-        self.type = spw_type
-        self.spectralspec = spectralspec
-        self.intents = set()
-
-        # work around NumPy bug with empty strings
-        # http://projects.scipy.org/numpy/ticket/1239
-        self.name = str(name)
-        self.sideband = str(sideband)
-        self.baseband = str(baseband)
-        self.receiver = receiver
-        if freq_lo is not None:
-            self.freq_lo = [measures.Frequency(freq, measures.FrequencyUnits.HERTZ) for freq in freq_lo]
-        else:
-            self.freq_lo = freq_lo
-
-        chan_freqs = compress(chan_freqs)
-        chan_widths = compress(chan_widths)
-        chan_effective_bws = compress(chan_effective_bws)
-        self.channels = ChannelList(chan_freqs, chan_widths, chan_effective_bws)
-
-        self._min_frequency = min(self.channels, key=lambda r: r.low).low
-        self._max_frequency = max(self.channels, key=lambda r: r.high).high
-        self._centre_frequency = (self._min_frequency + self._max_frequency) / 2.0
-
-        self.transitions = transitions
-        self.sdm_num_bin = sdm_num_bin
-        self.correlation_bits = correlation_bits
-        self.median_receptor_angle = median_receptor_angle
-        self.specline_window = specline_window
-
     @property
-    def centre_frequency(self):
+    def centre_frequency(self) -> measures.Frequency:
+        """Return the center frequency of the SpectralWindow."""
         return self._centre_frequency
 
-    def channel_range(self, minfreq, maxfreq):
+    def channel_range(self, minfreq: measures.Frequency, maxfreq: measures.Frequency) \
+            -> tuple[int, int] | tuple[None, None]:
         """
-        # More work on this in future
-        minfreq -- measures.Frequency object in HERTZ
-        maxfreq -- measures.Frequency object in HERTZ
+        Return the channel range for given minimum/maximum frequency.
+
+        Args:
+            minfreq: Minimum frequency as measures.Frequency object.
+            maxfreq: Maximum frequency as measures.Frequency object.
+
+        Returns:
+            2-Tuple of integers representing indices (min, max) of channel range
+            end-points corresponding to given min/max frequency.
         """
         freqmin = minfreq
         freqmax = maxfreq
@@ -396,22 +506,26 @@ class SpectralWindow(object):
         return chan_min, chan_max
 
     @property
-    def frame(self):
+    def frame(self) -> str:
+        """Return the reference frame code of the SpectralWindow."""
         return self._ref_frequency_frame
 
     @property
-    def min_frequency(self):
+    def min_frequency(self) -> measures.Frequency:
+        """Return the minimum frequency of the SpectralWindow."""
         return self._min_frequency
 
     @property
-    def max_frequency(self):
+    def max_frequency(self) -> measures.Frequency:
+        """Return the maximum frequency of the SpectralWindow."""
         return self._max_frequency
 
     @property
-    def num_channels(self):
+    def num_channels(self) -> int:
+        """Return the number of channels in the SpectralWindow."""
         return len(self.channels)
 
-    def __str__(self):
+    def __str__(self) -> str:
         args = [str(x) for x in [self.id, self.centre_frequency, self.bandwidth, self.type]]
         return 'SpectralWindow({0})'.format(', '.join(args))
 
@@ -421,7 +535,7 @@ class SpectralWindowWithChannelSelection(object):
     SpectralWindowWithChannelSelection decorates a SpectralWindow so that the
     spectral window ID also contains a channel selection.
     """
-    def __init__(self, subject, channels):
+    def __init__(self, subject: SpectralWindow, channels: Iterable[int]) -> None:
         self._subject = subject
 
         channels = sorted(list(channels))
@@ -445,7 +559,8 @@ class SpectralWindowWithChannelSelection(object):
         return getattr(self._subject, name)
 
     @property
-    def id(self):
+    def id(self) -> str:
+        """Returns the spectral window ID including channel selection."""
         channels = ':%s' % self._channels if self._channels else ''
         return '{spw}{channels}'.format(spw=self._subject.id,
                                         channels=channels)
