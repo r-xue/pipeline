@@ -16,7 +16,6 @@ from . import qa
 def_output_path = "./pipe-1770"
 
 memlim = 8.0
-applycalQAversion ='32p'
 
 ##Default Parameter dictionary##
 def_param = { \
@@ -106,7 +105,6 @@ def main():
             ms.basename,
             output_path=output_path,
             memory_gb=memlim,
-            applycalQAversion=applycalQAversion,
             timestamp=timestamp
         )
 
