@@ -242,7 +242,6 @@ def get_qa_scores(
         outlier_score: float=0.5,
         output_path: Path = Path(''),
         memory_gb: str='2.0',
-        applycalQAversion="",
         intents: list[str] | None = None,
         flag_all=False,
         timestamp=''
@@ -264,7 +263,7 @@ def get_qa_scores(
     #if there are any average visibilities saved, they are in buffer_folder
     buffer_folder = output_path / 'databuffer'
     #this is still using function from analysisUtils, but should probably be replaced
-    spwsetup = qau.getSpecSetup(ms, intentlist=intents, bfolder=buffer_folder, applycalQAversion=applycalQAversion)
+    spwsetup = qau.getSpecSetup(ms, intentlist=intents, bfolder=buffer_folder)
     #All outlier objects in this list
     outliers = []
     #all outlier scores objects will be saved here
@@ -280,7 +279,6 @@ def get_qa_scores(
     for intent in intents2proc:
         print('Processing intent '+str(intent))
         outliers_for_intent = score_all_scans(ms, intent, spwsetup, memory_gb=memory_gb,
-                                              applycalQAversion=applycalQAversion,
                                               saved_visibilities=buffer_folder, flag_all=flag_all)
         outliers.extend(outliers_for_intent)
 
@@ -307,7 +305,6 @@ def score_all_scans(
         intent: str,
         spwsetup: dict,
         memory_gb: str = '2.0',
-        applycalQAversion: str = "",
         saved_visibilities: Path = Path(''),
         flag_all=False
 ):
@@ -317,7 +314,6 @@ def score_all_scans(
     :param intent: intent for scans
     :spwsetup: dictionary with information regarding the spectral set-up, remnant from old script. should probably be a class
     :memory_gb: max memory allowed in gb
-    :applycalQAversion: version of script, optional and remnant from old script. The version is used to find posible saved average visibilites.
     :saved_visibilities: folder where saved average visibilities are, if any
     :param outlier_score: score to assign to generated QAScores
     :return: list of Outlier objects
@@ -357,7 +353,7 @@ def score_all_scans(
             if nscans > 1:
                 #string to check whether a file of averaged visibilities for all scans exists
                 all_scans = str(scanlist).replace(', ','_')[1:-1] #string with list of all scans separated by underscore
-                all_scans_saved_visibilities = saved_visibilities / f'buf.{msname}.{all_scans}.{ddi}.{fieldid}.v{applycalQAversion}.pkl'
+                all_scans_saved_visibilities = saved_visibilities / f'buf.{msname}.{all_scans}.{ddi}.{fieldid}.pkl'
                 all_scans_visibility_exists = os.path.exists(all_scans_saved_visibilities) #do the average visibili ties for all scans already exist
 
             #all mswrapper objects of this ms, intent, will go here. this is in case we need to average the visibilities of all scans
@@ -367,7 +363,7 @@ def score_all_scans(
 
                 print('Starting QA of scan '+str(scan))
                 #are there saved averaged visbilities? 
-                saved_visibility = saved_visibilities / f'buf.{msname}.{scan}.{ddi}.{fieldid}.v{applycalQAversion}.pkl'
+                saved_visibility = saved_visibilities / f'buf.{msname}.{scan}.{ddi}.{fieldid}.pkl'
                 if os.path.exists(saved_visibility):
                     #then load them
                     print("loading visibilities")
