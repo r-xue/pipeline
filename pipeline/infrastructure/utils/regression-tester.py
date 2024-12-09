@@ -267,7 +267,7 @@ class PipelineRegression(object):
                     LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
                     if oldval != pytest.approx(newval, rel=tolerance):
                         diff = oldval-newval
-                        percent_diff = (oldval-newval)/oldval * 100 
+                        percent_diff = (oldval-newval)/oldval * 100 if oldval != 0 else 100
                         if abs(diff) > abs(worst_diff[0]):
                             worst_diff = diff, oldkey
                         if abs(percent_diff) > abs(worst_percent_diff[0]):
