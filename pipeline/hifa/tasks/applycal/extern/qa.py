@@ -4,11 +4,13 @@ import functools
 import itertools
 import math
 import os
+from pathlib import Path
 from typing import Dict, Iterable, List, Reversible
 
 import numpy as np
 
 import pipeline.infrastructure.pipelineqa as pqa
+from pipeline.domain.measurementset import MeasurementSet
 from . import ampphase_vs_freq_qa
 from . import mswrapper
 from . import qa_utils as qau
@@ -235,9 +237,16 @@ class QAScoreEvalFunc(object):
         return self.qascoremetrics['finalscore']
 
 
-def get_qa_scores(ms, outlier_score=0.5, output_path="", memory_gb='2.0',applycalQAversion="",intents=['*BANDPASS*', '*FLUX*', '*PHASE*', '*CHECK*', '*POLARIZATION*'], flag_all=False, timestamp=''):
-    
-
+def get_qa_scores(
+        ms: str,
+        outlier_score: float=0.5,
+        output_path: Path = Path(''),
+        memory_gb: str='2.0',
+        applycalQAversion="",
+        intents: list[str] | None = None,
+        flag_all=False,
+        timestamp=''
+):
     """
     Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
 
@@ -247,10 +256,13 @@ def get_qa_scores(ms, outlier_score=0.5, output_path="", memory_gb='2.0',applyca
     converting the outlier descriptions to normalised QA
     scores.
     """
+    if intents is None:
+        intents = ['*BANDPASS*', '*FLUX*', '*PHASE*', '*CHECK*', '*POLARIZATION*']
+
     msname = ms.split('/')[-1]
     print('Calculating scores for MS: '+msname)
     #if there are any average visibilities saved, they are in buffer_folder
-    buffer_folder = output_path + "/databuffer"
+    buffer_folder = output_path / 'databuffer'
     #this is still using function from analysisUtils, but should probably be replaced
     spwsetup = qau.getSpecSetup(ms, intentlist=intents, bfolder=buffer_folder, applycalQAversion=applycalQAversion)
     #All outlier objects in this list
@@ -258,7 +270,7 @@ def get_qa_scores(ms, outlier_score=0.5, output_path="", memory_gb='2.0',applyca
     #all outlier scores objects will be saved here
     all_scores = []
     #Define debug filename
-    debug_path = output_path+'/PIPE356_outliers.pipe.'+timestamp+'.txt'
+    debug_path = output_path / f'PIPE356_outliers.pipe.{timestamp}.txt'
 
     #Define intents that need to be processed
     #avoiding intents with repeated scans
@@ -290,8 +302,15 @@ def get_qa_scores(ms, outlier_score=0.5, output_path="", memory_gb='2.0',applyca
 
     return all_scores, final_scores, qaevalf
 
-def score_all_scans(ms, intent, spwsetup, memory_gb='2.0',applycalQAversion="",saved_visibilities="", flag_all=False):
-   
+def score_all_scans(
+        ms: str,
+        intent: str,
+        spwsetup: dict,
+        memory_gb: str = '2.0',
+        applycalQAversion: str = "",
+        saved_visibilities: Path = Path(''),
+        flag_all=False
+):
     """
     Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
     :param ms: name of ms file 
@@ -338,7 +357,7 @@ def score_all_scans(ms, intent, spwsetup, memory_gb='2.0',applycalQAversion="",s
             if nscans > 1:
                 #string to check whether a file of averaged visibilities for all scans exists
                 all_scans = str(scanlist).replace(', ','_')[1:-1] #string with list of all scans separated by underscore
-                all_scans_saved_visibilities = saved_visibilities+'/buf.'+msname+'.'+str(all_scans)+'.'+str(ddi)+'.'+str(fieldid)+'.v'+str(applycalQAversion)+'.pkl'
+                all_scans_saved_visibilities = saved_visibilities / f'buf.{msname}.{all_scans}.{ddi}.{fieldid}.v{applycalQAversion}.pkl'
                 all_scans_visibility_exists = os.path.exists(all_scans_saved_visibilities) #do the average visibili ties for all scans already exist
 
             #all mswrapper objects of this ms, intent, will go here. this is in case we need to average the visibilities of all scans
@@ -348,7 +367,7 @@ def score_all_scans(ms, intent, spwsetup, memory_gb='2.0',applycalQAversion="",s
 
                 print('Starting QA of scan '+str(scan))
                 #are there saved averaged visbilities? 
-                saved_visibility = saved_visibilities+'/buf.'+msname+'.'+str(scan)+'.'+str(ddi)+'.'+str(fieldid)+'.v'+str(applycalQAversion)+'.pkl'
+                saved_visibility = saved_visibilities / f'buf.{msname}.{scan}.{ddi}.{fieldid}.v{applycalQAversion}.pkl'
                 if os.path.exists(saved_visibility):
                     #then load them
                     print("loading visibilities")
@@ -497,7 +516,11 @@ def to_data_selection(tds: pqa.TargetDataSelection) -> DataSelection:
     return DataSelection(**hashable_vals)
 
 
-def summarise_scores(all_scores: List[pqa.QAScore], ms, qaevalf: QAScoreEvalFunc = None) -> Dict[str, List[pqa.QAScore]]:
+def summarise_scores(
+        all_scores: List[pqa.QAScore],
+        ms: MeasurementSet,
+        qaevalf: QAScoreEvalFunc = None
+) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
     input scores with compressed representations intended for display in the
@@ -506,14 +529,16 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms, qaevalf: QAScoreEvalFunc
     """
     # list to hold the final QA scores: non-combined hidden scores, plus the
     # summarised (and less specific) accordion scores and banner scores
-    final_scores: Dict[str, List[pqa.QAScore]] = {}
+    final_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
 
     # we don't want the non-combined scores reported in the web log. They're
     # useful for the QA report written to disk, but for the web log the
     # individual scores will be aggregated into general, less specific QA
     # scores.
     hidden_scores = copy.deepcopy(all_scores)
-    # final_scores[pqa.WebLogLocation.HIDDEN] = hidden_scores
+    for score in hidden_scores:
+        score.weblog_location = pqa.WebLogLocation.HIDDEN
+    final_scores[pqa.WebLogLocation.HIDDEN] = hidden_scores
 
     # JH update to spec for PIPE-477:
     #
@@ -530,7 +555,7 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms, qaevalf: QAScoreEvalFunc
         # leaving the messages specific enough to identify the plot that
         # caused the problem
         discard = ['pol']
-        msgs = combine_scores(all_scores, hierarchy_root, discard, ms)
+        msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
         final_scores.extend(msgs)
 
         # add a 1.0 accordion score for metrics that generated no outlier
@@ -585,7 +610,8 @@ def get_max_scores(all_scores: List[pqa.QAScore]) -> Dict[str, List[pqa.QAScore]
 def combine_scores(all_scores: List[pqa.QAScore],
                    hierarchy_base: str,
                    discard: List[str],
-                   ms) -> List[pqa.QAScore]:
+                   ms: MeasurementSet,
+                   location: pqa.WebLogLocation) -> List[pqa.QAScore]:
     """
     Combine and summarise a list of QA scores.
 
@@ -639,6 +665,7 @@ def combine_scores(all_scores: List[pqa.QAScore],
         qa_score.shortmsg = msgs.short_message
         qa_score.longmsg = msgs.full_message
         qa_score.hierarchy = hierarchy_base
+        qa_score.weblog_location = location
 
     return qa_scores
 
