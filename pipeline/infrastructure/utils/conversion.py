@@ -182,11 +182,11 @@ def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
     return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
-def get_epoch_as_datetime(epoch: Number) -> datetime:
-    """Convert a CASA epoch measure into a Python datetime.
+def get_epoch_as_datetime(epoch: dict) -> datetime:
+    """Convert a CASA 'epoch' measure into a Python datetime.
 
     Args:
-        epoch: CASA epoch measure.
+        epoch: CASA 'epoch' measure dictionary.
     Returns:
         The equivalent Python datetime.
     """
