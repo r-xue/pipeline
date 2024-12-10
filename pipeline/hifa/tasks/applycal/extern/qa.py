@@ -293,7 +293,7 @@ def get_qa_scores(
     #Create QA evaluation function
     qaevalf = QAScoreEvalFunc(ms, spwsetup, outliers)
     # convert outliers to QA scores
-    all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score, qafunction = None))
+    all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
 
     #Get summary QA scores
     final_scores = summarise_scores(all_scores, ms, qaevalf = qaevalf)
@@ -446,7 +446,7 @@ class QAMessage:
 
 def outliers_to_qa_scores(ms,
                           outliers: List[Outlier],
-                          outlier_score: float, qafunction: QAScoreEvalFunc = None) -> List[pqa.QAScore]:
+                          outlier_score: float) -> List[pqa.QAScore]:
     """
     Convert a list of consolidated Outliers into a list of equivalent
     QAScores.
@@ -495,10 +495,6 @@ def outliers_to_qa_scores(ms,
             score.origin = pqa.QAOrigin(metric_name=reason,
                                         metric_score=outlier.num_sigma,
                                         metric_units='sigma deviation from reference fit')
-            #Use continuum scoring function, if one is given. (Deactivated)
-            # if qafunction is not None:
-            #     newscore = qafunction(score)
-            #     score.score = newscore
             qa_scores.append(score)
 
     return qa_scores
