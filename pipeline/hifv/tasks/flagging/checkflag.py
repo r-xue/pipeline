@@ -496,7 +496,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         columnselect = 'corrected'
 
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        msinfo = self.inputs.context.evla['msinfo'][ms.name]
+        msinfo = self.inputs.context.evla['msinfo'].get(ms.name, None)
         sci_spw_list = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
         # Select Bandpass/Delay (BPD) calibrators

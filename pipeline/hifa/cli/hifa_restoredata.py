@@ -11,19 +11,22 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
 
 
     The hifa_restoredata task restores flagged and calibrated MeasurementSets
-    from archived ASDMs and pipeline flagging and calibration date products.
+    from archived ASDMs and pipeline flagging and calibration data products.
 
-    The hifa_restoredata restores flagged and calibrated data from archived
-    ASDMs and pipeline flagging and calibration data products. Pending archive
-    retrieval support hifa_restoredata assumes that the required products
-    are available in the rawdata_dir in the format produced by the
-    hifa_exportdata task.
+    hifa_restoredata assumes that the ASDMs to be restored are present in the
+    directory specified by the ``rawdata_dir`` (default: '../rawdata').
 
-    hifa_restoredata assumes that the following entities are available in the
-    raw data directory:
+    By default (``copytoraw`` = True), hifa_restoredata assumes that for each
+    ASDM in the input list, the corresponding pipeline flagging and calibration
+    data products (in the format produced by the hifa_exportdata task) are
+    present in the directory specified by ``products_dir`` (default: '../products').
+    At the start of the task, these products are copied from the ``products_dir``
+    to the ``rawdata_dir``.
 
-    - the ASDMs to be restored
-    - for each ASDM in the input list:
+    If ``copytoraw`` = False, hifa_restoredata assumes that these products are
+    to be found in ``rawdata_dir`` along with the ASDMs.
+
+    The expected flagging and calibration products (for each ASDM) include:
 
       - a compressed tar file of the final flagversions file, e.g.
         uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
@@ -33,7 +36,6 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
 
       - a compressed tar file containing the caltables for the parent session,
         e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-
 
     hifa_restoredata performs the following operations:
 
@@ -66,36 +68,45 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                   Example: session=['session_3']
     products_dir
                   Name of the data products directory to copy calibration
-                  products from. The parameter is effective only when
-                  copytoraw = True. When ``copytoraw`` = False, calibration
-                  products in rawdata_dir will be used.
+                  products from.
+                  Default: '../products'
+
+                  The parameter is effective only when ``copytoraw`` = True.
+                  When ``copytoraw`` = False, calibration products in
+                  ``rawdata_dir`` will be used.
 
                   Example: products_dir='myproductspath'
     copytoraw
-                  Copy calibration and flagging tables from products_dir to
-                  rawdata_dir directory.
+                  Copy calibration and flagging tables from ``products_dir`` to
+                  ``rawdata_dir`` directory.
+                  Default: True
 
                   Example: copytoraw=False
     rawdata_dir
-                  Name of the rawdata subdirectory.
+                  Name of the raw data directory.
+                  Default: '../rawdata'
 
                   Example: rawdata_dir='myrawdatapath'
     lazy
                   Use the lazy filler option.
+                  Default: False
 
                   Example: lazy=True
     bdfflags
                   Set the BDF flags.
+                  Default: True
 
                   Example: bdfflags=False
     ocorr_mode
                   Set ocorr_mode.
+                  Default: 'ca'
 
                   Example: ocorr_mode='ca'
     asis
                   Creates verbatim copies of the ASDM tables in the output MS.
                   The value given to this option must be a string containing a
                   list of table names separated by whitespace characters.
+                  Default: 'SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing'
 
                   Example: asis='Source Receiver'
 
