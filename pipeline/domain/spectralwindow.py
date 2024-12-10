@@ -262,23 +262,23 @@ class Channel(object):
         """Returns the width of the Channel."""
         return self.frequency_range.getWidth()
 
-    # TODO: method appears to be broken, does not work if provided another channel.
-    def overlaps(self, other) -> bool:
+    def overlaps(self, other: Channel) -> bool:
         """
         Returns whether this Channel overlaps with given ``other`` Channel.
 
-        The frequency range is a closed interval, that is, one that contains
-        both of its endpoints.
-
-        If ``other`` is None, the return value is False.
+        The Channel spans a frequency range that is a closed interval, that is,
+        one that contains both of its endpoints.
 
         Args:
             other: Another Channel (frequency range) that may overlap this one.
 
         Returns:
-            True if this range overlaps with ``other``.
+            True if this Channel overlaps with ``other``. If ``other`` is not a
+            Channel, the return value is False.
         """
-        return self.frequency_range.overlaps(other)
+        if isinstance(other, Channel):
+            return self.frequency_range.overlaps(other.frequency_range)
+        return False
 
     def set(self, frequency1: measures.Frequency, frequency2: measures.Frequency) -> None:
         """
