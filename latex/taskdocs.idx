@@ -1,0 +1,135 @@
+\indexentry{module@\spxentry{module}!pipeline.h.cli@\spxentry{pipeline.h.cli}|hyperpage}{2}
+\indexentry{pipeline.h.cli@\spxentry{pipeline.h.cli}!module@\spxentry{module}|hyperpage}{2}
+\indexentry{h\_applycal() (in module pipeline.h.cli)@\spxentry{h\_applycal()}\spxextra{in module pipeline.h.cli}|hyperpage}{2}
+\indexentry{h\_export\_calstate() (in module pipeline.h.cli)@\spxentry{h\_export\_calstate()}\spxextra{in module pipeline.h.cli}|hyperpage}{3}
+\indexentry{h\_exportdata() (in module pipeline.h.cli)@\spxentry{h\_exportdata()}\spxextra{in module pipeline.h.cli}|hyperpage}{4}
+\indexentry{h\_import\_calstate() (in module pipeline.h.cli)@\spxentry{h\_import\_calstate()}\spxextra{in module pipeline.h.cli}|hyperpage}{5}
+\indexentry{h\_importdata() (in module pipeline.h.cli)@\spxentry{h\_importdata()}\spxextra{in module pipeline.h.cli}|hyperpage}{5}
+\indexentry{h\_init() (in module pipeline.h.cli)@\spxentry{h\_init()}\spxextra{in module pipeline.h.cli}|hyperpage}{7}
+\indexentry{h\_mssplit() (in module pipeline.h.cli)@\spxentry{h\_mssplit()}\spxextra{in module pipeline.h.cli}|hyperpage}{7}
+\indexentry{h\_restoredata() (in module pipeline.h.cli)@\spxentry{h\_restoredata()}\spxextra{in module pipeline.h.cli}|hyperpage}{8}
+\indexentry{h\_resume() (in module pipeline.h.cli)@\spxentry{h\_resume()}\spxextra{in module pipeline.h.cli}|hyperpage}{9}
+\indexentry{h\_save() (in module pipeline.h.cli)@\spxentry{h\_save()}\spxextra{in module pipeline.h.cli}|hyperpage}{10}
+\indexentry{h\_show\_calstate() (in module pipeline.h.cli)@\spxentry{h\_show\_calstate()}\spxextra{in module pipeline.h.cli}|hyperpage}{10}
+\indexentry{h\_tsyscal() (in module pipeline.h.cli)@\spxentry{h\_tsyscal()}\spxextra{in module pipeline.h.cli}|hyperpage}{11}
+\indexentry{h\_weblog() (in module pipeline.h.cli)@\spxentry{h\_weblog()}\spxextra{in module pipeline.h.cli}|hyperpage}{11}
+\indexentry{module@\spxentry{module}!pipeline.h.cli.cli@\spxentry{pipeline.h.cli.cli}|hyperpage}{12}
+\indexentry{pipeline.h.cli.cli@\spxentry{pipeline.h.cli.cli}!module@\spxentry{module}|hyperpage}{12}
+\indexentry{module@\spxentry{module}!pipeline.h.cli.utils@\spxentry{pipeline.h.cli.utils}|hyperpage}{12}
+\indexentry{pipeline.h.cli.utils@\spxentry{pipeline.h.cli.utils}!module@\spxentry{module}|hyperpage}{12}
+\indexentry{cli\_wrapper() (in module pipeline.h.cli.utils)@\spxentry{cli\_wrapper()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{12}
+\indexentry{execute\_task() (in module pipeline.h.cli.utils)@\spxentry{execute\_task()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{12}
+\indexentry{get\_context() (in module pipeline.h.cli.utils)@\spxentry{get\_context()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{12}
+\indexentry{get\_heuristic() (in module pipeline.h.cli.utils)@\spxentry{get\_heuristic()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{12}
+\indexentry{get\_ms() (in module pipeline.h.cli.utils)@\spxentry{get\_ms()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{13}
+\indexentry{get\_output\_dir() (in module pipeline.h.cli.utils)@\spxentry{get\_output\_dir()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{13}
+\indexentry{wraps() (in module pipeline.h.cli.utils)@\spxentry{wraps()}\spxextra{in module pipeline.h.cli.utils}|hyperpage}{13}
+\indexentry{module@\spxentry{module}!pipeline.hif.cli@\spxentry{pipeline.hif.cli}|hyperpage}{14}
+\indexentry{pipeline.hif.cli@\spxentry{pipeline.hif.cli}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{hif\_analyzealpha() (in module pipeline.hif.cli)@\spxentry{hif\_analyzealpha()}\spxextra{in module pipeline.hif.cli}|hyperpage}{14}
+\indexentry{hif\_antpos() (in module pipeline.hif.cli)@\spxentry{hif\_antpos()}\spxextra{in module pipeline.hif.cli}|hyperpage}{15}
+\indexentry{hif\_applycal() (in module pipeline.hif.cli)@\spxentry{hif\_applycal()}\spxextra{in module pipeline.hif.cli}|hyperpage}{16}
+\indexentry{hif\_bandpass() (in module pipeline.hif.cli)@\spxentry{hif\_bandpass()}\spxextra{in module pipeline.hif.cli}|hyperpage}{17}
+\indexentry{hif\_checkproductsize() (in module pipeline.hif.cli)@\spxentry{hif\_checkproductsize()}\spxextra{in module pipeline.hif.cli}|hyperpage}{18}
+\indexentry{hif\_correctedampflag() (in module pipeline.hif.cli)@\spxentry{hif\_correctedampflag()}\spxextra{in module pipeline.hif.cli}|hyperpage}{19}
+\indexentry{hif\_editimlist() (in module pipeline.hif.cli)@\spxentry{hif\_editimlist()}\spxextra{in module pipeline.hif.cli}|hyperpage}{20}
+\indexentry{hif\_findcont() (in module pipeline.hif.cli)@\spxentry{hif\_findcont()}\spxextra{in module pipeline.hif.cli}|hyperpage}{22}
+\indexentry{hif\_gaincal() (in module pipeline.hif.cli)@\spxentry{hif\_gaincal()}\spxextra{in module pipeline.hif.cli}|hyperpage}{23}
+\indexentry{hif\_lowgainflag() (in module pipeline.hif.cli)@\spxentry{hif\_lowgainflag()}\spxextra{in module pipeline.hif.cli}|hyperpage}{25}
+\indexentry{hif\_makecutoutimages() (in module pipeline.hif.cli)@\spxentry{hif\_makecutoutimages()}\spxextra{in module pipeline.hif.cli}|hyperpage}{26}
+\indexentry{hif\_makeimages() (in module pipeline.hif.cli)@\spxentry{hif\_makeimages()}\spxextra{in module pipeline.hif.cli}|hyperpage}{26}
+\indexentry{hif\_makeimlist() (in module pipeline.hif.cli)@\spxentry{hif\_makeimlist()}\spxextra{in module pipeline.hif.cli}|hyperpage}{28}
+\indexentry{hif\_makermsimages() (in module pipeline.hif.cli)@\spxentry{hif\_makermsimages()}\spxextra{in module pipeline.hif.cli}|hyperpage}{30}
+\indexentry{hif\_mstransform() (in module pipeline.hif.cli)@\spxentry{hif\_mstransform()}\spxextra{in module pipeline.hif.cli}|hyperpage}{31}
+\indexentry{hif\_rawflagchans() (in module pipeline.hif.cli)@\spxentry{hif\_rawflagchans()}\spxextra{in module pipeline.hif.cli}|hyperpage}{31}
+\indexentry{hif\_refant() (in module pipeline.hif.cli)@\spxentry{hif\_refant()}\spxextra{in module pipeline.hif.cli}|hyperpage}{33}
+\indexentry{hif\_selfcal() (in module pipeline.hif.cli)@\spxentry{hif\_selfcal()}\spxextra{in module pipeline.hif.cli}|hyperpage}{34}
+\indexentry{hif\_setjy() (in module pipeline.hif.cli)@\spxentry{hif\_setjy()}\spxextra{in module pipeline.hif.cli}|hyperpage}{35}
+\indexentry{hif\_setmodels() (in module pipeline.hif.cli)@\spxentry{hif\_setmodels()}\spxextra{in module pipeline.hif.cli}|hyperpage}{37}
+\indexentry{hif\_transformimagedata() (in module pipeline.hif.cli)@\spxentry{hif\_transformimagedata()}\spxextra{in module pipeline.hif.cli}|hyperpage}{37}
+\indexentry{hif\_uvcontsub() (in module pipeline.hif.cli)@\spxentry{hif\_uvcontsub()}\spxextra{in module pipeline.hif.cli}|hyperpage}{38}
+\indexentry{module@\spxentry{module}!pipeline.hifa.cli@\spxentry{pipeline.hifa.cli}|hyperpage}{40}
+\indexentry{pipeline.hifa.cli@\spxentry{pipeline.hifa.cli}!module@\spxentry{module}|hyperpage}{40}
+\indexentry{hifa\_antpos() (in module pipeline.hifa.cli)@\spxentry{hifa\_antpos()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{41}
+\indexentry{hifa\_bandpass() (in module pipeline.hifa.cli)@\spxentry{hifa\_bandpass()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{43}
+\indexentry{hifa\_bandpassflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_bandpassflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{45}
+\indexentry{hifa\_bpsolint() (in module pipeline.hifa.cli)@\spxentry{hifa\_bpsolint()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{47}
+\indexentry{hifa\_diffgaincal() (in module pipeline.hifa.cli)@\spxentry{hifa\_diffgaincal()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{49}
+\indexentry{hifa\_exportdata() (in module pipeline.hifa.cli)@\spxentry{hifa\_exportdata()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{49}
+\indexentry{hifa\_flagdata() (in module pipeline.hifa.cli)@\spxentry{hifa\_flagdata()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{51}
+\indexentry{hifa\_flagtargets() (in module pipeline.hifa.cli)@\spxentry{hifa\_flagtargets()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{53}
+\indexentry{hifa\_fluxcalflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_fluxcalflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{53}
+\indexentry{hifa\_gaincalsnr() (in module pipeline.hifa.cli)@\spxentry{hifa\_gaincalsnr()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{54}
+\indexentry{hifa\_gfluxscale() (in module pipeline.hifa.cli)@\spxentry{hifa\_gfluxscale()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{55}
+\indexentry{hifa\_gfluxscaleflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_gfluxscaleflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{57}
+\indexentry{hifa\_imageprecheck() (in module pipeline.hifa.cli)@\spxentry{hifa\_imageprecheck()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{58}
+\indexentry{hifa\_importdata() (in module pipeline.hifa.cli)@\spxentry{hifa\_importdata()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{59}
+\indexentry{hifa\_lock\_refant() (in module pipeline.hifa.cli)@\spxentry{hifa\_lock\_refant()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{61}
+\indexentry{hifa\_polcal() (in module pipeline.hifa.cli)@\spxentry{hifa\_polcal()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{61}
+\indexentry{hifa\_polcalflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_polcalflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{62}
+\indexentry{hifa\_renorm() (in module pipeline.hifa.cli)@\spxentry{hifa\_renorm()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{62}
+\indexentry{hifa\_restoredata() (in module pipeline.hifa.cli)@\spxentry{hifa\_restoredata()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{63}
+\indexentry{hifa\_session\_refant() (in module pipeline.hifa.cli)@\spxentry{hifa\_session\_refant()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{65}
+\indexentry{hifa\_spwphaseup() (in module pipeline.hifa.cli)@\spxentry{hifa\_spwphaseup()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{65}
+\indexentry{hifa\_targetflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_targetflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{67}
+\indexentry{hifa\_timegaincal() (in module pipeline.hifa.cli)@\spxentry{hifa\_timegaincal()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{68}
+\indexentry{hifa\_tsysflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_tsysflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{69}
+\indexentry{hifa\_tsysflagcontamination() (in module pipeline.hifa.cli)@\spxentry{hifa\_tsysflagcontamination()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{71}
+\indexentry{hifa\_unlock\_refant() (in module pipeline.hifa.cli)@\spxentry{hifa\_unlock\_refant()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{72}
+\indexentry{hifa\_wvrgcal() (in module pipeline.hifa.cli)@\spxentry{hifa\_wvrgcal()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{72}
+\indexentry{hifa\_wvrgcalflag() (in module pipeline.hifa.cli)@\spxentry{hifa\_wvrgcalflag()}\spxextra{in module pipeline.hifa.cli}|hyperpage}{74}
+\indexentry{module@\spxentry{module}!pipeline.hifv.cli@\spxentry{pipeline.hifv.cli}|hyperpage}{77}
+\indexentry{pipeline.hifv.cli@\spxentry{pipeline.hifv.cli}!module@\spxentry{module}|hyperpage}{77}
+\indexentry{hifv\_analyzestokescubes() (in module pipeline.hifv.cli)@\spxentry{hifv\_analyzestokescubes()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{78}
+\indexentry{hifv\_applycals() (in module pipeline.hifv.cli)@\spxentry{hifv\_applycals()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{78}
+\indexentry{hifv\_checkflag() (in module pipeline.hifv.cli)@\spxentry{hifv\_checkflag()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{79}
+\indexentry{hifv\_circfeedpolcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_circfeedpolcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{80}
+\indexentry{hifv\_exportdata() (in module pipeline.hifv.cli)@\spxentry{hifv\_exportdata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{81}
+\indexentry{hifv\_exportvlassdata() (in module pipeline.hifv.cli)@\spxentry{hifv\_exportvlassdata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{82}
+\indexentry{hifv\_finalcals() (in module pipeline.hifv.cli)@\spxentry{hifv\_finalcals()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{82}
+\indexentry{hifv\_fixpointing() (in module pipeline.hifv.cli)@\spxentry{hifv\_fixpointing()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{83}
+\indexentry{hifv\_flagcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_flagcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{83}
+\indexentry{hifv\_flagdata() (in module pipeline.hifv.cli)@\spxentry{hifv\_flagdata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{84}
+\indexentry{hifv\_flagtargetsdata() (in module pipeline.hifv.cli)@\spxentry{hifv\_flagtargetsdata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{85}
+\indexentry{hifv\_fluxboot() (in module pipeline.hifv.cli)@\spxentry{hifv\_fluxboot()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{86}
+\indexentry{hifv\_gaincurves() (in module pipeline.hifv.cli)@\spxentry{hifv\_gaincurves()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{86}
+\indexentry{hifv\_hanning() (in module pipeline.hifv.cli)@\spxentry{hifv\_hanning()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{87}
+\indexentry{hifv\_importdata() (in module pipeline.hifv.cli)@\spxentry{hifv\_importdata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{87}
+\indexentry{hifv\_mstransform() (in module pipeline.hifv.cli)@\spxentry{hifv\_mstransform()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{89}
+\indexentry{hifv\_opcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_opcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{90}
+\indexentry{hifv\_pbcor() (in module pipeline.hifv.cli)@\spxentry{hifv\_pbcor()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{90}
+\indexentry{hifv\_plotsummary() (in module pipeline.hifv.cli)@\spxentry{hifv\_plotsummary()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{90}
+\indexentry{hifv\_priorcals() (in module pipeline.hifv.cli)@\spxentry{hifv\_priorcals()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{91}
+\indexentry{hifv\_restoredata() (in module pipeline.hifv.cli)@\spxentry{hifv\_restoredata()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{91}
+\indexentry{hifv\_restorepims() (in module pipeline.hifv.cli)@\spxentry{hifv\_restorepims()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{93}
+\indexentry{hifv\_rqcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_rqcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{93}
+\indexentry{hifv\_selfcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_selfcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{94}
+\indexentry{hifv\_semiFinalBPdcals() (in module pipeline.hifv.cli)@\spxentry{hifv\_semiFinalBPdcals()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{94}
+\indexentry{hifv\_solint() (in module pipeline.hifv.cli)@\spxentry{hifv\_solint()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{95}
+\indexentry{hifv\_statwt() (in module pipeline.hifv.cli)@\spxentry{hifv\_statwt()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{95}
+\indexentry{hifv\_swpowcal() (in module pipeline.hifv.cli)@\spxentry{hifv\_swpowcal()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{96}
+\indexentry{hifv\_syspower() (in module pipeline.hifv.cli)@\spxentry{hifv\_syspower()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{96}
+\indexentry{hifv\_targetflag() (in module pipeline.hifv.cli)@\spxentry{hifv\_targetflag()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{97}
+\indexentry{hifv\_tecmaps() (in module pipeline.hifv.cli)@\spxentry{hifv\_tecmaps()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{97}
+\indexentry{hifv\_testBPdcals() (in module pipeline.hifv.cli)@\spxentry{hifv\_testBPdcals()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{97}
+\indexentry{hifv\_vlasetjy() (in module pipeline.hifv.cli)@\spxentry{hifv\_vlasetjy()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{98}
+\indexentry{hifv\_vlassmasking() (in module pipeline.hifv.cli)@\spxentry{hifv\_vlassmasking()}\spxextra{in module pipeline.hifv.cli}|hyperpage}{99}
+\indexentry{module@\spxentry{module}!pipeline.hsd.cli@\spxentry{pipeline.hsd.cli}|hyperpage}{100}
+\indexentry{pipeline.hsd.cli@\spxentry{pipeline.hsd.cli}!module@\spxentry{module}|hyperpage}{100}
+\indexentry{hsd\_applycal() (in module pipeline.hsd.cli)@\spxentry{hsd\_applycal()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{100}
+\indexentry{hsd\_atmcor() (in module pipeline.hsd.cli)@\spxentry{hsd\_atmcor()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{101}
+\indexentry{hsd\_baseline() (in module pipeline.hsd.cli)@\spxentry{hsd\_baseline()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{103}
+\indexentry{hsd\_blflag() (in module pipeline.hsd.cli)@\spxentry{hsd\_blflag()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{105}
+\indexentry{hsd\_exportdata() (in module pipeline.hsd.cli)@\spxentry{hsd\_exportdata()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{107}
+\indexentry{hsd\_flagdata() (in module pipeline.hsd.cli)@\spxentry{hsd\_flagdata()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{107}
+\indexentry{hsd\_imaging() (in module pipeline.hsd.cli)@\spxentry{hsd\_imaging()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{109}
+\indexentry{hsd\_importdata() (in module pipeline.hsd.cli)@\spxentry{hsd\_importdata()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{109}
+\indexentry{hsd\_k2jycal() (in module pipeline.hsd.cli)@\spxentry{hsd\_k2jycal()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{111}
+\indexentry{hsd\_restoredata() (in module pipeline.hsd.cli)@\spxentry{hsd\_restoredata()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{112}
+\indexentry{hsd\_skycal() (in module pipeline.hsd.cli)@\spxentry{hsd\_skycal()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{114}
+\indexentry{hsd\_tsysflag() (in module pipeline.hsd.cli)@\spxentry{hsd\_tsysflag()}\spxextra{in module pipeline.hsd.cli}|hyperpage}{115}
+\indexentry{module@\spxentry{module}!pipeline.hsdn.cli@\spxentry{pipeline.hsdn.cli}|hyperpage}{117}
+\indexentry{pipeline.hsdn.cli@\spxentry{pipeline.hsdn.cli}!module@\spxentry{module}|hyperpage}{117}
+\indexentry{hsdn\_exportdata() (in module pipeline.hsdn.cli)@\spxentry{hsdn\_exportdata()}\spxextra{in module pipeline.hsdn.cli}|hyperpage}{117}
+\indexentry{hsdn\_importdata() (in module pipeline.hsdn.cli)@\spxentry{hsdn\_importdata()}\spxextra{in module pipeline.hsdn.cli}|hyperpage}{118}
+\indexentry{hsdn\_restoredata() (in module pipeline.hsdn.cli)@\spxentry{hsdn\_restoredata()}\spxextra{in module pipeline.hsdn.cli}|hyperpage}{119}

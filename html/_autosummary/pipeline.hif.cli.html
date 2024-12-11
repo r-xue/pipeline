@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.cli &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hif.cli.hif_analyzealpha" href="pipeline.hif.cli.hif_analyzealpha.html" />
+    <link rel="prev" title="pipeline.h.cli.utils.wraps" href="pipeline.h.cli.utils.wraps.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.cli</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hif.cli.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.hif.cli">
+<span id="pipeline-hif-cli"></span><h1>pipeline.hif.cli<a class="headerlink" href="#module-pipeline.hif.cli" title="Link to this heading"></a></h1>
+<p>Interferometry Generic Tasks</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_analyzealpha.html#pipeline.hif.cli.hif_analyzealpha" title="pipeline.hif.cli.hif_analyzealpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_analyzealpha</span></code></a></p></td>
+<td><p>Extract spectral index from intensity peak in VLA/VLASS images</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_antpos.html#pipeline.hif.cli.hif_antpos" title="pipeline.hif.cli.hif_antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_antpos</span></code></a></p></td>
+<td><p>Derive an antenna position calibration table</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_applycal.html#pipeline.hif.cli.hif_applycal" title="pipeline.hif.cli.hif_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_applycal</span></code></a></p></td>
+<td><p>Apply the calibration(s) to the data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_bandpass.html#pipeline.hif.cli.hif_bandpass" title="pipeline.hif.cli.hif_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_bandpass</span></code></a></p></td>
+<td><p>Compute bandpass calibration solutions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_checkproductsize.html#pipeline.hif.cli.hif_checkproductsize" title="pipeline.hif.cli.hif_checkproductsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_checkproductsize</span></code></a></p></td>
+<td><p>Check imaging product size</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_correctedampflag.html#pipeline.hif.cli.hif_correctedampflag" title="pipeline.hif.cli.hif_correctedampflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code></a></p></td>
+<td><p>Flag corrected - model amplitudes based on calibrators.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_editimlist.html#pipeline.hif.cli.hif_editimlist" title="pipeline.hif.cli.hif_editimlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_editimlist</span></code></a></p></td>
+<td><p>Add to a list of images to be produced with hif_makeimages()</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_findcont.html#pipeline.hif.cli.hif_findcont" title="pipeline.hif.cli.hif_findcont"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_findcont</span></code></a></p></td>
+<td><p>Find continuum frequency ranges</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_gaincal.html#pipeline.hif.cli.hif_gaincal" title="pipeline.hif.cli.hif_gaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_gaincal</span></code></a></p></td>
+<td><p>Determine temporal gains from calibrator observations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_lowgainflag.html#pipeline.hif.cli.hif_lowgainflag" title="pipeline.hif.cli.hif_lowgainflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_lowgainflag</span></code></a></p></td>
+<td><p>Flag antennas with low or high gain</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_makecutoutimages.html#pipeline.hif.cli.hif_makecutoutimages" title="pipeline.hif.cli.hif_makecutoutimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makecutoutimages</span></code></a></p></td>
+<td><p>Cutout central 1 sq.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_makeimages.html#pipeline.hif.cli.hif_makeimages" title="pipeline.hif.cli.hif_makeimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimages</span></code></a></p></td>
+<td><p>Compute clean map</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_makeimlist.html#pipeline.hif.cli.hif_makeimlist" title="pipeline.hif.cli.hif_makeimlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimlist</span></code></a></p></td>
+<td><p>Compute list of clean images to be produced</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_makermsimages.html#pipeline.hif.cli.hif_makermsimages" title="pipeline.hif.cli.hif_makermsimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makermsimages</span></code></a></p></td>
+<td><p>Create RMS images for VLASS data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_mstransform.html#pipeline.hif.cli.hif_mstransform" title="pipeline.hif.cli.hif_mstransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_mstransform</span></code></a></p></td>
+<td><p>Create new MeasurementSets for science target imaging</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_rawflagchans.html#pipeline.hif.cli.hif_rawflagchans" title="pipeline.hif.cli.hif_rawflagchans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_rawflagchans</span></code></a></p></td>
+<td><p>Flag deviant baseline/channels in raw data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_refant.html#pipeline.hif.cli.hif_refant" title="pipeline.hif.cli.hif_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_refant</span></code></a></p></td>
+<td><p>Select the best reference antennas</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_selfcal.html#pipeline.hif.cli.hif_selfcal" title="pipeline.hif.cli.hif_selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_selfcal</span></code></a></p></td>
+<td><p>Determine and apply self-calibration with the science target data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_setjy.html#pipeline.hif.cli.hif_setjy" title="pipeline.hif.cli.hif_setjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setjy</span></code></a></p></td>
+<td><p>Fill the model column with calibrated visibilities</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_setmodels.html#pipeline.hif.cli.hif_setmodels" title="pipeline.hif.cli.hif_setmodels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setmodels</span></code></a></p></td>
+<td><p>Set calibrator source models</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_transformimagedata.html#pipeline.hif.cli.hif_transformimagedata" title="pipeline.hif.cli.hif_transformimagedata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_transformimagedata</span></code></a></p></td>
+<td><p>Extract fields for the desired VLASS image to a new MS and reset weights if desired</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.cli.hif_uvcontsub.html#pipeline.hif.cli.hif_uvcontsub" title="pipeline.hif.cli.hif_uvcontsub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_uvcontsub</span></code></a></p></td>
+<td><p>Fit and subtract continuum from the data</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.h.cli.utils.wraps.html" class="btn btn-neutral float-left" title="pipeline.h.cli.utils.wraps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hif.cli.hif_analyzealpha.html" class="btn btn-neutral float-right" title="pipeline.hif.cli.hif_analyzealpha" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

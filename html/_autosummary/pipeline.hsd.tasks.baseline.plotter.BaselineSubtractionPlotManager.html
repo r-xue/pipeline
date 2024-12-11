@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager" href="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager" href="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html">pipeline.hsd.heuristics</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.templates.html">pipeline.hsd.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.baseline.html">pipeline.hsd.tasks.baseline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.baseline.plotter.html">pipeline.hsd.tasks.baseline.plotter</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-tasks-baseline-plotter-baselinesubtractionplotmanager">
+<h1>pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager<a class="headerlink" href="#pipeline-hsd-tasks-baseline-plotter-baselinesubtractionplotmanager" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaselineSubtractionPlotManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">blvis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataTable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaselineSubtractionDataManager</span></code></a></p>
+<p>Manages any operation necessary to produce baseline subtraction plot.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.analyze_plot_table" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.analyze_plot_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyze_plot_table</span></code></a></p></td>
+<td><p>Create and analyze plot table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a></p></td>
+<td><p>Finalize plot manager.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_plot_meta_table</span></code></a></p></td>
+<td><p>Return metadata table for plotting.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_plot_rowlist</span></code></a></p></td>
+<td><p>Generate list of datatable row ids for plotting.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.get_data" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a></p></td>
+<td><p>Create array data for sparse map.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_flatness_profile</span></code></a></p></td>
+<td><p>Create plots of baseline flatness profile of a spectrum (after baseline subtraction).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_profile_map_with_fit</span></code></a></p></td>
+<td><p>Create various type of plots.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_spectra_with_fit</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.resize_storage" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.resize_storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize_storage</span></code></a></p></td>
+<td><p>Resize storage as necessary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.store_result_get_data" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.store_result_get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">store_result_get_data</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.analyze_plot_table">
+<span class="sig-name descname"><span class="pre">analyze_plot_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin_ms_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">virtual_spwid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">org_direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Direction</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.analyze_plot_table" title="Link to this definition"></a></dt>
+<dd><p>Create and analyze plot table.</p>
+<p>Extract datatable row ids that match the selection given by
+MS id, antenna id, (virtual) spw id, and polarization ids, and
+associate them with the sparse map panels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin_ms_id</strong> – MS id for selection</p></li>
+<li><p><strong>antid</strong> – Antenna id for selection</p></li>
+<li><p><strong>virtual_spwid</strong> – Virtual spw id for selection</p></li>
+<li><p><strong>polids</strong> – List of polarization ids for selection</p></li>
+<li><p><strong>grid_table</strong> – grid_table created by simplegrid module</p></li>
+<li><p><strong>org_direction</strong> – direction of the origin</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Position information and associated datatable row ids
+for each sparse map positions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.finalize" title="Link to this definition"></a></dt>
+<dd><p>Finalize plot manager.</p>
+<p>Release resources allocated for plotting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_plot_meta_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polarization_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager.generate_plot_meta_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_meta_table" title="Link to this definition"></a></dt>
+<dd><p>Return metadata table for plotting.</p>
+<p>Metadata table for given spw and polarization ids contains
+spatial position information in both pixel and world coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_id</strong> – spw id for filtering</p></li>
+<li><p><strong>polarization_ids</strong> – polarization ids for filtering</p></li>
+<li><p><strong>grid_table</strong> – grid_table generated by simplegrid module</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Metadata table (plot_table). The table is intended to be used jointly
+with the return value of generate_plot_rowlist.
+plot_table layout: [RA_ID, DEC_ID, RA_DIR, DEC_DIR]</p>
+<blockquote>
+<div><dl>
+<dt>[[0, 0, RA0, DEC0], &lt;- plane 0</dt><dd><p>[0, 0, RA0, DEC0], &lt;- plane 1
+[0, 0, RA0, DEC0], &lt;- plane 2
+[1, 0, RA1, DEC0], &lt;- plane 0</p>
+<blockquote>
+<div><p>…</p>
+</div></blockquote>
+<p>[M, 0, RAM, DEC0], &lt;- plane 2
+[0, 1, RA0, DEC1], &lt;- plane 0
+…
+[M, N, RAM, DECN]] &lt;- plane 2</p>
+</dd>
+</dl>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate_plot_rowlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin_ms_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polarization_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">each_plane</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager.generate_plot_rowlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.generate_plot_rowlist" title="Link to this definition"></a></dt>
+<dd><p>Generate list of datatable row ids for plotting.</p>
+<p>Extract list of datatable row ids that matches selection for
+MS, spw, polarization, and spatial grid location. Return
+one-dimensional list of row ids to process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin_ms_id</strong> – MS id for selection</p></li>
+<li><p><strong>antenna_id</strong> – Antenna id for selection</p></li>
+<li><p><strong>spw_id</strong> – Spw id for selection</p></li>
+<li><p><strong>polarization_ids</strong> – List of polarization ids for selection</p></li>
+<li><p><strong>grid_table</strong> – grid_table generated by simplegrid module</p></li>
+<li><p><strong>plot_table</strong> – Metadata table generated by generate_plot_meta_table</p></li>
+<li><p><strong>each_plane</strong> – List of indices for grid_table/plot_table</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of datatable row ids for plotting. Return value is intended
+to be used jointly with the table returned by generate_plot_meta_table.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtrows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_ra</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_chan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowlist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrated_data_storage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_data_storage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_mask_storage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">produce_averaged_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.get_data" title="Link to this definition"></a></dt>
+<dd><p>Create array data for sparse map.</p>
+<p>Computes the following masked array data for sparse map:
+1. The integrated spectrum averaged over entire spectral data</p>
+<blockquote>
+<div><p>regardless of their spatial position, which is displayed in
+the top panel of the figure.</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>The ‘representative’ spectrum for each panel of the sparse map.
+rowlist holds the Spatial grouping information of the panels.</p></li>
+<li><p>Averaged spectra for each panel of the sparse map
+rowlist holds the Spatial grouping information of the panels.
+Returned only when produce_averaged_data is specified as True.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong> – Name of the MS</p></li>
+<li><p><strong>dtrows</strong> – List of datatable rows</p></li>
+<li><p><strong>num_ra</strong> – Number of panels along horizontal axis</p></li>
+<li><p><strong>num_dec</strong> – Number of panels along vertical axis</p></li>
+<li><p><strong>num_chan</strong> – Number of spectral channels</p></li>
+<li><p><strong>num_pol</strong> – Number of polarizaionts</p></li>
+<li><p><strong>rowlist</strong> – List of datatable row ids per sparse map panel with metadata</p></li>
+<li><p><strong>rowmap</strong> – Row mapping between original (calibrated) MS and the MS
+specified by infile. It will be EchoDictionary if None is given.</p></li>
+<li><p><strong>integrated_data_storage</strong> – Storage for integrated spectrum. If None is given,
+new array is created.</p></li>
+<li><p><strong>map_data_storage</strong> – Storage for sparse map. If None is given, new array is created.</p></li>
+<li><p><strong>map_mask_storage</strong> – Storage for sparse map mask. If None is given, new array is created.</p></li>
+<li><p><strong>produce_averaged_data</strong> – Whether to produce averaged data for each panel. Defaut is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Integrated spectrum averaged over entire spectral data
+Representative spectrum for each panel of the sparse map
+Averaged spectra for each panel of the sparse map (only if produce_averaged_data is True)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile">
+<span class="sig-name descname"><span class="pre">plot_flatness_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">postfit_figfile_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postfit_integrated_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">npol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager.plot_flatness_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_flatness_profile" title="Link to this definition"></a></dt>
+<dd><p>Create plots of baseline flatness profile of a spectrum (after baseline subtraction).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>postfit_figfile_prefix</strong> – Prefix for the filename (after baseline subtraction)</p></li>
+<li><p><strong>postfit_integrated_data</strong> – integrated spectral data after baseline subtraction.</p></li>
+<li><p><strong>npol</strong> – Number of polarizations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Dictionary containing names of the figure with plot type and
+polarization id as keys</p>
+<blockquote>
+<div><p>plot_list[plot_type][polarization_id] = figfile</p>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit">
+<span class="sig-name descname"><span class="pre">plot_profile_map_with_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefit_figfile_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postfit_figfile_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postfit_integrated_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">postfit_map_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefit_integrated_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefit_map_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefit_averaged_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_ra</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowlist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviation_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_rowmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baseline/plotter.html#BaselineSubtractionPlotManager.plot_profile_map_with_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.plot_profile_map_with_fit" title="Link to this definition"></a></dt>
+<dd><p>Create various type of plots.</p>
+<p>This method produces the following plots.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>sparse profile map for raw spectra before baseline subtraction</p></li>
+<li><p>sparse profile map for spatially averaged spectra before baseline subtraction</p></li>
+<li><p>sparse profile map for raw spectra after baseline subtraction</p></li>
+<li><p>sparse profile map for spatially averaged spectra after baseline subtraction</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefit_figfile_prefix</strong> – Prefix string for the filename (before baseline subtraction)</p></li>
+<li><p><strong>postfit_figfile_prefix</strong> – Prefix for the filename (after baseline subtraction)</p></li>
+<li><p><strong>postfit_integrated_data</strong> – integrated spectral data after baseline subtraction.</p></li>
+<li><p><strong>postfit_map_data</strong> – sparse map spectral data after baseline subtraction.</p></li>
+<li><p><strong>prefit_integrated_data</strong> – integrated spectral data before baseline subtraction.</p></li>
+<li><p><strong>prefit_map_data</strong> – sparse map spectral data after baseline subtraction.</p></li>
+<li><p><strong>prefit_averaged_data</strong> – averaged spectral data with each grid before baseline subtraction.</p></li>
+<li><p><strong>num_ra</strong> – Number of panels along horizontal axis</p></li>
+<li><p><strong>num_dec</strong> – Number of panels along vertical axis</p></li>
+<li><p><strong>rowlist</strong> – List of datatable row indices per sparse map panel with metadata</p></li>
+<li><p><strong>npol</strong> – Number of polarizations</p></li>
+<li><p><strong>frequency</strong> – Frequency values of each element in spectrum</p></li>
+<li><p><strong>deviation_mask</strong> – List of channel ranges identified as the “deviation mask”</p></li>
+<li><p><strong>line_range</strong> – List of channel ranges identified as astronomical line</p></li>
+<li><p><strong>atm_transmission</strong> – ATM transmission data</p></li>
+<li><p><strong>atm_frequency</strong> – frequency label associated with ATM transmission</p></li>
+<li><p><strong>edge</strong> – Edge channels excluded from the baseline fitting</p></li>
+<li><p><strong>in_rowmap</strong> – Row mapping between original (calibrated) MS and the MS
+before baseline subtraction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Dictionary containing names of the figure with plot type and
+polarization id as keys</p>
+<blockquote>
+<div><p>plot_list[plot_type][polarization_id] = figfile</p>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.resize_storage">
+<span class="sig-name descname"><span class="pre">resize_storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ra</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_chan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.resize_storage" title="Link to this definition"></a></dt>
+<dd><p>Resize storage as necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_ra</strong> – Number of panels along horizontal axis</p></li>
+<li><p><strong>num_dec</strong> – Number of panels along vertical axis</p></li>
+<li><p><strong>num_pol</strong> – Number of polarizations</p></li>
+<li><p><strong>num_chan</strong> – Number of spectral channels</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.store_result_get_data">
+<span class="sig-name descname"><span class="pre">store_result_get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ra</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowlist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_rowmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_rowmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="numpy.ma.core.MaskedArray"><span class="pre">MaskedArray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionPlotManager.store_result_get_data" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_ra</strong> – Number of panels along horizontal axis</p></li>
+<li><p><strong>num_dec</strong> – Number of panels along vertical axis</p></li>
+<li><p><strong>rowlist</strong> – List of datatable row ids per sparse map panel with metadata</p></li>
+<li><p><strong>npol</strong> – Number of polarizations</p></li>
+<li><p><strong>nchan</strong> – Number of spectral channels</p></li>
+<li><p><strong>out_rowmap</strong> – Row mapping between original (calibrated) MS and the MS
+after baseline subtraction.</p></li>
+<li><p><strong>in_rowmap</strong> – Row mapping between original (calibrated) MS and the MS
+before baseline subtraction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing five masked arrays; postfit integrated spectrum data,
+postfit sparse map data, prefit integrated spectrum data, prefit sparse map
+data, and prefit averaged sparse map data.
+Each element of postfit or prefit integrated spectrum data: (npol, nchan).
+Each element of postfit, prefit sparse map data or prefit averaged sparse map
+data: (nx, ny, npol, nchan).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionDataManager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.baseline.plotter.BaselineSubtractionQualityManager" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

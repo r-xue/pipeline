@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.AntennaArray &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.domain.DataDescription" href="pipeline.domain.DataDescription.html" />
+    <link rel="prev" title="pipeline.domain.Antenna" href="pipeline.domain.Antenna.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Antenna.html">pipeline.domain.Antenna</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pipeline.domain.AntennaArray</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline.domain.AntennaArray"><code class="docutils literal notranslate"><span class="pre">AntennaArray</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.baselines"><code class="docutils literal notranslate"><span class="pre">AntennaArray.baselines</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.baselines_for_antennas"><code class="docutils literal notranslate"><span class="pre">AntennaArray.baselines_for_antennas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.centre"><code class="docutils literal notranslate"><span class="pre">AntennaArray.centre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.elevation"><code class="docutils literal notranslate"><span class="pre">AntennaArray.elevation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.get_antenna"><code class="docutils literal notranslate"><span class="pre">AntennaArray.get_antenna()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.get_baseline"><code class="docutils literal notranslate"><span class="pre">AntennaArray.get_baseline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.get_offset"><code class="docutils literal notranslate"><span class="pre">AntennaArray.get_offset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.latitude"><code class="docutils literal notranslate"><span class="pre">AntennaArray.latitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.longitude"><code class="docutils literal notranslate"><span class="pre">AntennaArray.longitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.median_direction"><code class="docutils literal notranslate"><span class="pre">AntennaArray.median_direction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.name"><code class="docutils literal notranslate"><span class="pre">AntennaArray.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pipeline.domain.AntennaArray.position"><code class="docutils literal notranslate"><span class="pre">AntennaArray.position</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataDescription.html">pipeline.domain.DataDescription</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataTable.html">pipeline.domain.DataTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.DataType.html">pipeline.domain.DataType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Field.html">pipeline.domain.Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.FluxMeasurement.html">pipeline.domain.FluxMeasurement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.MeasurementSet.html">pipeline.domain.MeasurementSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.ObservingRun.html">pipeline.domain.ObservingRun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Polarization.html">pipeline.domain.Polarization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Scan.html">pipeline.domain.Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.Source.html">pipeline.domain.Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.SpectralWindow.html">pipeline.domain.SpectralWindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.SpectralWindowWithChannelSelection.html">pipeline.domain.SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.State.html">pipeline.domain.State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.antenna.html">pipeline.domain.antenna</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.antennaarray.html">pipeline.domain.antennaarray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datadescription.html">pipeline.domain.datadescription</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datatable.html">pipeline.domain.datatable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.datatype.html">pipeline.domain.datatype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.field.html">pipeline.domain.field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.fluxmeasurement.html">pipeline.domain.fluxmeasurement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.measurementset.html">pipeline.domain.measurementset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.measures.html">pipeline.domain.measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.observingrun.html">pipeline.domain.observingrun</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.polarization.html">pipeline.domain.polarization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.scan.html">pipeline.domain.scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.singledish.html">pipeline.domain.singledish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.source.html">pipeline.domain.source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.spectralwindow.html">pipeline.domain.spectralwindow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.state.html">pipeline.domain.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.domain.unitformat.html">pipeline.domain.unitformat</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.domain.html">pipeline.domain</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.AntennaArray</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.domain.AntennaArray.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-domain-antennaarray">
+<h1>pipeline.domain.AntennaArray<a class="headerlink" href="#pipeline-domain-antennaarray" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antennas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.AntennaArray" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>AntennaArray is a logical representation of the antenna array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>antennas</strong> – a list of Antenna objects that comprise the array.</p></li>
+<li><p><strong>baseline_lookup</strong> – 2D matrix of baseline lengths.</p></li>
+<li><p><strong>baselines_m</strong> – 1D array of baseline lengths for unique antenna baselines
+(excluding auto-correlations).</p></li>
+<li><p><strong>baseline_min</strong> – Baseline tuple (antenna1, antenna2, length) for shortest baseline.</p></li>
+<li><p><strong>baseline_max</strong> – Baseline tuple (antenna1, antenna2, length) for longest baseline.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.baselines_for_antennas" title="pipeline.domain.AntennaArray.baselines_for_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baselines_for_antennas</span></code></a></p></td>
+<td><p>Return a list of Baseline tuples for input antenna IDs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_antenna" title="pipeline.domain.AntennaArray.get_antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_antenna</span></code></a></p></td>
+<td><p>Return Antenna object for given antenna ID or name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_baseline" title="pipeline.domain.AntennaArray.get_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_baseline</span></code></a></p></td>
+<td><p>Get the baseline distance between two antennas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.get_offset" title="pipeline.domain.AntennaArray.get_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset</span></code></a></p></td>
+<td><p>Get the offset of the given antenna from the centre of the array.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.baselines" title="pipeline.domain.AntennaArray.baselines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baselines</span></code></a></p></td>
+<td><p>Return a list of Baseline tuples for all antennas in the array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.centre" title="pipeline.domain.AntennaArray.centre"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centre</span></code></a></p></td>
+<td><p>Return the array centre as earth-centered x, y, z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.elevation" title="pipeline.domain.AntennaArray.elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elevation</span></code></a></p></td>
+<td><p>Get the array elevation as a CASA quantity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.latitude" title="pipeline.domain.AntennaArray.latitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">latitude</span></code></a></p></td>
+<td><p>Get the array latitude as a CASA quantity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.longitude" title="pipeline.domain.AntennaArray.longitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">longitude</span></code></a></p></td>
+<td><p>Get the array longitude as a CASA quantity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.median_direction" title="pipeline.domain.AntennaArray.median_direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median_direction</span></code></a></p></td>
+<td><p>Return the median center direction for the array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.name" title="pipeline.domain.AntennaArray.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p>Return the name of the observatory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.position" title="pipeline.domain.AntennaArray.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a></p></td>
+<td><p>Return the position of the observatory as a CASA 'position' measure dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.baselines">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">baselines</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.antennaarray.Baseline.html#pipeline.domain.antennaarray.Baseline" title="pipeline.domain.antennaarray.Baseline"><span class="pre">Baseline</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.baselines" title="Link to this definition"></a></dt>
+<dd><p>Return a list of Baseline tuples for all antennas in the array.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.baselines_for_antennas">
+<span class="sig-name descname"><span class="pre">baselines_for_antennas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.antennaarray.Baseline.html#pipeline.domain.antennaarray.Baseline" title="pipeline.domain.antennaarray.Baseline"><span class="pre">Baseline</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.baselines_for_antennas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.AntennaArray.baselines_for_antennas" title="Link to this definition"></a></dt>
+<dd><p>Return a list of Baseline tuples for input antenna IDs.</p>
+<p>This creates and returns a list of Baseline tuples for combinations
+of unique IDs in input antenna IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>antenna_ids</strong> – IDs of antennas to return baselines for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of Baseline objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.centre">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">centre</span></span><a class="headerlink" href="#pipeline.domain.AntennaArray.centre" title="Link to this definition"></a></dt>
+<dd><p>Return the array centre as earth-centered x, y, z.</p>
+<p>If the array position reference frame is “IRTF”, this will return the
+position directly. Otherwise, the array position reference is assumed to
+be “WGS84” and the array position (geodetic longitude, latitute,
+elevation) is converted to earth-centered x, y, z, using the private
+CASA script “simutil”.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.elevation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elevation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.elevation" title="Link to this definition"></a></dt>
+<dd><p>Get the array elevation as a CASA quantity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.get_antenna">
+<span class="sig-name descname"><span class="pre">get_antenna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_antenna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.AntennaArray.get_antenna" title="Link to this definition"></a></dt>
+<dd><p>Return Antenna object for given antenna ID or name.</p>
+<p>If both ID and name are given, the antenna is searched for by ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Antenna ID to search for.</p></li>
+<li><p><strong>name</strong> – Antenna name to search for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Antenna object for given antenna ID or name.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong><strong>, </strong><strong>if no id</strong><strong> or </strong><strong>name are given.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.get_baseline">
+<span class="sig-name descname"><span class="pre">get_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.domain.antennaarray.Baseline.html#pipeline.domain.antennaarray.Baseline" title="pipeline.domain.antennaarray.Baseline"><span class="pre">Baseline</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_baseline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.AntennaArray.get_baseline" title="Link to this definition"></a></dt>
+<dd><p>Get the baseline distance between two antennas.</p>
+<p>Antenna identifiers will be considered first as numeric antenna IDs,
+then as antenna names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>antenna1</strong> – Numerical ID or name of first antenna.</p></li>
+<li><p><strong>antenna2</strong> – Numerical ID or name of second antenna.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The baseline length in meters between antennass identified by
+arguments antenna1 and antenna2. If an identifier does not match a
+known antenna, None will be returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.get_offset">
+<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.AntennaArray.get_offset" title="Link to this definition"></a></dt>
+<dd><p>Get the offset of the given antenna from the centre of the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>antenna</strong> – Antenna object to determine offset for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>2-tuple containing x- and y-offset to centre of the array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.latitude">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.latitude" title="Link to this definition"></a></dt>
+<dd><p>Get the array latitude as a CASA quantity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.longitude">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.longitude" title="Link to this definition"></a></dt>
+<dd><p>Get the array longitude as a CASA quantity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.median_direction">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">median_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.median_direction" title="Link to this definition"></a></dt>
+<dd><p>Return the median center direction for the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Median center direction for the array as a CASA ‘direction’ measure
+dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.name" title="Link to this definition"></a></dt>
+<dd><p>Return the name of the observatory.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.domain.AntennaArray.position">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.AntennaArray.position" title="Link to this definition"></a></dt>
+<dd><p>Return the position of the observatory as a CASA ‘position’ measure dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.domain.Antenna.html" class="btn btn-neutral float-left" title="pipeline.domain.Antenna" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.domain.DataDescription.html" class="btn btn-neutral float-right" title="pipeline.domain.DataDescription" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

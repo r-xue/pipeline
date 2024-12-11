@@ -1,0 +1,633 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.state &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.state</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.domain.state</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="State">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.State.html#pipeline.domain.State">[docs]</a>
+<span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    State is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    relating STATE_ID (in the MAIN table) to the observing mode(s) and</span>
+<span class="sd">    corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;obs_mode&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a State object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">state_id</span>
+        <span class="c1"># work around NumPy bug with empty strings</span>
+        <span class="c1"># http://projects.scipy.org/numpy/ticket/1239</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1!r}</span><span class="s1">, </span><span class="si">{2!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all intents associated with this State.&quot;&quot;&quot;</span>
+        <span class="c1"># return all intents</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">intent</span> <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">intent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">reduction_intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># get the raw intents from the ms</span>
+        <span class="n">raw_intents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span>
+
+        <span class="c1"># translate these into intents understood by the pipeline</span>
+        <span class="n">red_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;CHECK&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;CHECK&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;POLANGLE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;POLLEAKAGE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;FLUX&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;DIFFGAINREF&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;TARGET&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
+          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
+          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
+          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;FLUX&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
+          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">):</span>
+            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;PHASE&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">red_intents</span>
+
+<div class="viewcode-block" id="State.get_obs_mode_for_intent">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.State.html#pipeline.domain.State.get_obs_mode_for_intent">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_obs_mode_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of obs_mode values associated with given intent.&quot;&quot;&quot;</span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">mode</span> <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">pipeline_intent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">pipeline_intent</span> <span class="ow">in</span> <span class="n">intents</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(id=</span><span class="si">{1}</span><span class="s1">, intents=</span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> 
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StateALMA">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMA.html#pipeline.domain.StateALMA">[docs]</a>
+<span class="k">class</span> <span class="nc">StateALMA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateALMA is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    for ALMA Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
+<span class="sd">    to the observing mode(s) and corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dictionary to map from STATE table obs_mode to pipeline intent</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION#ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION.ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION_ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE#ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE.ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE_ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE#ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE.ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE_ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS#ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS.ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS_ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FLUX#ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FLUX.ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FLUX_ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET#ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET.ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET_ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING#ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING.ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING_ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR#ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR.ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR_ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE.ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE_ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#AMBIENT&#39;</span>       <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#HOT&#39;</span>           <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#OFF_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE.OFF_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE_OFF_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#TEST&#39;</span>          <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO#ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO.ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO_ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO.OFF_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO_OFF_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_DIFFGAIN#REFERENCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_DIFFGAIN#ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_DELAY#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_DELAY.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_DELAY_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_CHECK_SOURCE#ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_CHECK_SOURCE.ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_CHECK_SOURCE_ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET.ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET_ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET.OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET_OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateALMA object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateALMA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;CALIBRATE_FLUX&#39;</span> <span class="ow">in</span> <span class="n">obs_mode</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Translating </span><span class="si">%s</span><span class="s1"> intent to AMPLITUDE for state #</span><span class="si">%s</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_mode</span><span class="p">,</span> <span class="n">state_id</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="StateALMACycle0">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMACycle0.html#pipeline.domain.StateALMACycle0">[docs]</a>
+<span class="k">class</span> <span class="nc">StateALMACycle0</span><span class="p">(</span><span class="n">StateALMA</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateALMACycle0 is a logical representation of (part of) rows in the STATE</span>
+<span class="sd">    table for ALMA Observatory Cycle 0 measurement sets, relating STATE_ID (in</span>
+<span class="sd">    the MAIN table) to the observing mode(s) and corresponding pipeline</span>
+<span class="sd">    intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check whether these states co-exist with PHASE</span>
+    <span class="n">_PHASE_BYPASS_INTENTS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateALMACycle0 object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateALMACycle0</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span>
+
+        <span class="c1"># For Cycle 0, check whether this state has PHASE and another cal</span>
+        <span class="c1"># intent. If so, the PHASE obsmode will be removed.</span>
+
+        <span class="c1"># First collect the intents using the raw obsmodes recorded in the</span>
+        <span class="c1"># state table.. </span>
+        <span class="n">intents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span>
+        <span class="c1"># .. and test to see if any of these intents require phase removal</span>
+        <span class="n">has_bypass_intent</span> <span class="o">=</span> <span class="n">intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">StateALMACycle0</span><span class="o">.</span><span class="n">_PHASE_BYPASS_INTENTS</span><span class="p">)</span>
+
+        <span class="c1"># if so, and PHASE is indeed included as an intent, ..</span>
+        <span class="k">if</span> <span class="s1">&#39;PHASE&#39;</span> <span class="ow">in</span> <span class="n">intents</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_bypass_intent</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Cycle 0 mislabeled data workaround: removing PHASE &#39;</span>
+                     <span class="s1">&#39;intent for State </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="c1"># .. find the obs_mode(s) responsible for the addition of the</span>
+            <span class="c1"># phase intent..</span>
+            <span class="n">phase_obs_modes</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">]</span>
+            <span class="c1"># and remove them from the obsmodes we should register</span>
+            <span class="n">dephased_obs_modes</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">obs_mode</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">phase_obs_modes</span><span class="p">]</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Before: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">())</span>
+            <span class="c1"># .. so that in resetting this object&#39;s obs_modes to the </span>
+            <span class="c1"># corrected value, we remove the registration of the pipeline</span>
+            <span class="c1"># PHASE intent</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dephased_obs_modes</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;After: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="StateVLA">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateVLA.html#pipeline.domain.StateVLA">[docs]</a>
+<span class="k">class</span> <span class="nc">StateVLA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateVLA is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    for VLA Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
+<span class="sd">    to the observing mode(s) and corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dictionary to map from STATE table obs_mode to pipeline intent</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION#ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION.ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION_ON_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POLARIZATION#UNSPECIFIED&#39;</span> <span class="p">:</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE#ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE.ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE_ON_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_ANGLE#UNSPECIFIED&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE#ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE.ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE_ON_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POL_LEAKAGE#UNSPECIFIED&#39;</span>  <span class="p">:</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS#ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS.ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS_ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>  <span class="c1"># Was amplitude</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>  <span class="c1"># Was amplitude</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>  <span class="c1"># Was amplitude</span>
+        <span class="s1">&#39;CALIBRATE_FLUX#ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FLUX.ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FLUX_ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET#ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET.ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_TARGET_ON_SOURCE&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING#ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING.ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_POINTING_ON_SOURCE&#39;</span>       <span class="p">:</span> <span class="s1">&#39;POINTING&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS#ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS.ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_FOCUS_ON_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR#ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR.ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_WVR_ON_SOURCE&#39;</span>            <span class="p">:</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE.ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE_ON_SOURCE&#39;</span>     <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO#ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO.ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_SIDEBAND_RATIO_ON_SOURCE&#39;</span> <span class="p">:</span> <span class="s1">&#39;SIDEBAND&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET.ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET_ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#UNSPECIFIED&#39;</span>         <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET.OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET_OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_BANDPASS#UNSPECIFIED&#39;</span>     <span class="p">:</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span>    
+        <span class="s1">&#39;CALIBRATE_FLUX#UNSPECIFIED&#39;</span>         <span class="p">:</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_PHASE#UNSPECIFIED&#39;</span>        <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_AMPLI#UNSPECIFIED&#39;</span>        <span class="p">:</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>  <span class="c1"># Was amplitude</span>
+        <span class="s1">&#39;UNSPECIFIED#UNSPECIFIED&#39;</span>            <span class="p">:</span> <span class="s1">&#39;UNSPECIFIED#UNSPECIFIED&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span>               <span class="p">:</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SYSTEM_CONFIGURATION#UNSPECIFIED&#39;</span>   <span class="p">:</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateVLA object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateVLA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StateAPEX">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateAPEX.html#pipeline.domain.StateAPEX">[docs]</a>
+<span class="k">class</span> <span class="nc">StateAPEX</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateAPEX is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    for APEX Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
+<span class="sd">    to the observing mode(s) and corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dictionary to map from STATE table obs_mode to pipeline intent</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateAPEX object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateAPEX</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StateSMT">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateSMT.html#pipeline.domain.StateSMT">[docs]</a>
+<span class="k">class</span> <span class="nc">StateSMT</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateSMT is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    for SMT Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
+<span class="sd">    to the observing mode(s) and corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dictionary to map from STATE table obs_mode to pipeline intent</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateSMT object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateSMT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StateNAOJ">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateNAOJ.html#pipeline.domain.StateNAOJ">[docs]</a>
+<span class="k">class</span> <span class="nc">StateNAOJ</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StateNAOJ is a logical representation of (part of) rows in the STATE table</span>
+<span class="sd">    for Nobeyama or ASTE Observatory measurement sets, relating STATE_ID (in the</span>
+<span class="sd">    MAIN table) to the observing mode(s) and corresponding pipeline intent(s).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: Numerical identifier of this State.</span>
+<span class="sd">        obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># dictionary to map from STATE table obs_mode to pipeline intent</span>
+    <span class="n">obs_mode_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>           <span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;OBSERVE_TARGET#OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#R_SOURCE&#39;</span>      <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#SKY_SOURCE&#39;</span>    <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CALIBRATE_ATMOSPHERE#ZERO_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateNAOJ object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state_id: Numerical identifier of this State.</span>
+<span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StateNAOJ</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StateFactory">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory">[docs]</a>
+<span class="k">class</span> <span class="nc">StateFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class to create State objects based on given observatory and</span>
+<span class="sd">    observation/measurement set start time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a StateFactory object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            observatory: name of observatory to create State(s) for.</span>
+<span class="sd">            start: start time of observation / measurement set; this is used</span>
+<span class="sd">                to distinguish between Cycle 0 and later ALMA datasets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateALMACycle0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateALMA</span>
+        <span class="k">elif</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;VLA&#39;</span> <span class="ow">or</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateVLA</span>
+        <span class="k">elif</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;APEX&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateAPEX</span>
+        <span class="k">elif</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;SMT&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateSMT</span>
+        <span class="k">elif</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;NRO&#39;</span> <span class="ow">or</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;ASTE&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateNAOJ</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> has no matching State class&#39;</span> <span class="o">%</span> <span class="n">observatory</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StateFactory.create_state">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory.create_state">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a State object with given ID and obs_mode.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

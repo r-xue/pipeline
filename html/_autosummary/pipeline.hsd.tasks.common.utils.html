@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.utils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.utils.TableSelector" href="pipeline.hsd.tasks.common.utils.TableSelector.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.common.sdtyping.NewType" href="pipeline.hsd.tasks.common.sdtyping.NewType.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html">pipeline.hsd.heuristics</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.templates.html">pipeline.hsd.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.html">pipeline.hsd.tasks.common</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hsd.tasks.common.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pipeline.hsd.tasks.common.utils">
+<span id="pipeline-hsd-tasks-common-utils"></span><h1>pipeline.hsd.tasks.common.utils<a class="headerlink" href="#module-pipeline.hsd.tasks.common.utils" title="Link to this heading"></a></h1>
+<p>A collection of Single Dish utility methods and classes.</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.TableSelector.html#pipeline.hsd.tasks.common.utils.TableSelector" title="pipeline.hsd.tasks.common.utils.TableSelector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TableSelector</span></code></a></p></td>
+<td><p>Retun a CASA table tool instance of selected rows of a table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.absolute_path.html#pipeline.hsd.tasks.common.utils.absolute_path" title="pipeline.hsd.tasks.common.utils.absolute_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">absolute_path</span></code></a></p></td>
+<td><p>Return an absolute path of a given file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.asdm_name_from_ms.html#pipeline.hsd.tasks.common.utils.asdm_name_from_ms" title="pipeline.hsd.tasks.common.utils.asdm_name_from_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asdm_name_from_ms</span></code></a></p></td>
+<td><p>Parse a name of MeasurementSet (MS) and return the ASDM name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.convert_spw_virtual2real.html#pipeline.hsd.tasks.common.utils.convert_spw_virtual2real" title="pipeline.hsd.tasks.common.utils.convert_spw_virtual2real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_spw_virtual2real</span></code></a></p></td>
+<td><p>Convert virtual spw selection into real spw selection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_brightness_unit.html#pipeline.hsd.tasks.common.utils.get_brightness_unit" title="pipeline.hsd.tasks.common.utils.get_brightness_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_brightness_unit</span></code></a></p></td>
+<td><p>Obtain a unit of data column of MeasurementSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_data_table_path.html#pipeline.hsd.tasks.common.utils.get_data_table_path" title="pipeline.hsd.tasks.common.utils.get_data_table_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_table_path</span></code></a></p></td>
+<td><p>Return the path of DataTable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_datacolumn_name.html#pipeline.hsd.tasks.common.utils.get_datacolumn_name" title="pipeline.hsd.tasks.common.utils.get_datacolumn_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_datacolumn_name</span></code></a></p></td>
+<td><p>Return a name of column that stores spectral or visibility data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_index_list_for_ms.html#pipeline.hsd.tasks.common.utils.get_index_list_for_ms" title="pipeline.hsd.tasks.common.utils.get_index_list_for_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_list_for_ms</span></code></a></p></td>
+<td><p>Return an array of row IDs in datatable that matches selection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_index_list_for_ms2.html#pipeline.hsd.tasks.common.utils.get_index_list_for_ms2" title="pipeline.hsd.tasks.common.utils.get_index_list_for_ms2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_list_for_ms2</span></code></a></p></td>
+<td><p>Return row IDs of datatable of selected reductions group members.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_mask_from_flagtra.html#pipeline.hsd.tasks.common.utils.get_mask_from_flagtra" title="pipeline.hsd.tasks.common.utils.get_mask_from_flagtra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mask_from_flagtra</span></code></a></p></td>
+<td><p>Convert a flag array (0=valid, 1=flagged) to mask (1=valid, 0=flagged).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_ms_idx.html#pipeline.hsd.tasks.common.utils.get_ms_idx" title="pipeline.hsd.tasks.common.utils.get_ms_idx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ms_idx</span></code></a></p></td>
+<td><p>Return an index of a given MeasurementSet (MS) in Pipeline Context.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_restfrequency.html#pipeline.hsd.tasks.common.utils.get_restfrequency" title="pipeline.hsd.tasks.common.utils.get_restfrequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_restfrequency</span></code></a></p></td>
+<td><p>Obtain the rest frequency of a given source and spectral windpw (SpW).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_spw_names.html#pipeline.hsd.tasks.common.utils.get_spw_names" title="pipeline.hsd.tasks.common.utils.get_spw_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spw_names</span></code></a></p></td>
+<td><p>Return a list of SpWSimpleView of all spectral windpws in a MeasurementSet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_spw_properties.html#pipeline.hsd.tasks.common.utils.get_spw_properties" title="pipeline.hsd.tasks.common.utils.get_spw_properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spw_properties</span></code></a></p></td>
+<td><p>Return a list of SpwDetailedView of all spectral windpws in a MeasurementSet.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.get_valid_ms_members.html#pipeline.hsd.tasks.common.utils.get_valid_ms_members" title="pipeline.hsd.tasks.common.utils.get_valid_ms_members"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_valid_ms_members</span></code></a></p></td>
+<td><p>Yield IDs of reduction groups that matches selection criteria.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.is_nro.html#pipeline.hsd.tasks.common.utils.is_nro" title="pipeline.hsd.tasks.common.utils.is_nro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_nro</span></code></a></p></td>
+<td><p>Test if processing Nobeyama data or not.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.iterate_group_member.html#pipeline.hsd.tasks.common.utils.iterate_group_member" title="pipeline.hsd.tasks.common.utils.iterate_group_member"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterate_group_member</span></code></a></p></td>
+<td><p>Yeild reduction group members.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.list_to_str.html#pipeline.hsd.tasks.common.utils.list_to_str" title="pipeline.hsd.tasks.common.utils.list_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_to_str</span></code></a></p></td>
+<td><p>Convert list or numpy.ndarray into string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.make_ddid_map.html#pipeline.hsd.tasks.common.utils.make_ddid_map" title="pipeline.hsd.tasks.common.utils.make_ddid_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_ddid_map</span></code></a></p></td>
+<td><p>Map polarization and spwctral window IDs to data description ID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.make_polid_map.html#pipeline.hsd.tasks.common.utils.make_polid_map" title="pipeline.hsd.tasks.common.utils.make_polid_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_polid_map</span></code></a></p></td>
+<td><p>Make mapping of Polarization IDs in two MeasurementSets (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.make_row_map.html#pipeline.hsd.tasks.common.utils.make_row_map" title="pipeline.hsd.tasks.common.utils.make_row_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_row_map</span></code></a></p></td>
+<td><p>Make row mapping between a source and a derived MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.make_row_map_between_ms.html#pipeline.hsd.tasks.common.utils.make_row_map_between_ms" title="pipeline.hsd.tasks.common.utils.make_row_map_between_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_row_map_between_ms</span></code></a></p></td>
+<td><p>Make row mapping between source and derived MSes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.make_spwid_map.html#pipeline.hsd.tasks.common.utils.make_spwid_map" title="pipeline.hsd.tasks.common.utils.make_spwid_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_spwid_map</span></code></a></p></td>
+<td><p>Make mapping of spectral windpw IDs in two MeasurementSets (MS).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.match_origin_ms.html#pipeline.hsd.tasks.common.utils.match_origin_ms" title="pipeline.hsd.tasks.common.utils.match_origin_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_origin_ms</span></code></a></p></td>
+<td><p>Return an MS domain object that has the same origin_ms as origin_name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.mjd_to_datestring.html#pipeline.hsd.tasks.common.utils.mjd_to_datestring" title="pipeline.hsd.tasks.common.utils.mjd_to_datestring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_to_datestring</span></code></a></p></td>
+<td><p>Convert a given Modified Julian Date (MJD) to a date string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.mjd_to_datetime.html#pipeline.hsd.tasks.common.utils.mjd_to_datetime" title="pipeline.hsd.tasks.common.utils.mjd_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_to_datetime</span></code></a></p></td>
+<td><p>Convert MJD to datetime instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.parseEdge.html#pipeline.hsd.tasks.common.utils.parseEdge" title="pipeline.hsd.tasks.common.utils.parseEdge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parseEdge</span></code></a></p></td>
+<td><p>Convert a given edge value to a two-element-tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.profiler.html#pipeline.hsd.tasks.common.utils.profiler" title="pipeline.hsd.tasks.common.utils.profiler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profiler</span></code></a></p></td>
+<td><p>Measure execution time of a decorated function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.relative_path.html#pipeline.hsd.tasks.common.utils.relative_path" title="pipeline.hsd.tasks.common.utils.relative_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path</span></code></a></p></td>
+<td><p>Retun a relative path of a given file with respect a given origin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.require_virtual_spw_id_handling.html#pipeline.hsd.tasks.common.utils.require_virtual_spw_id_handling" title="pipeline.hsd.tasks.common.utils.require_virtual_spw_id_handling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">require_virtual_spw_id_handling</span></code></a></p></td>
+<td><p>Test if SpW IDs vary across MeasurementSets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.sort_fields.html#pipeline.hsd.tasks.common.utils.sort_fields" title="pipeline.hsd.tasks.common.utils.sort_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_fields</span></code></a></p></td>
+<td><p>Obtain a set of field objects registered to a context.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.to_bool.html#pipeline.hsd.tasks.common.utils.to_bool" title="pipeline.hsd.tasks.common.utils.to_bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool</span></code></a></p></td>
+<td><p>Convert the input argument to a bool.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.to_list.html#pipeline.hsd.tasks.common.utils.to_list" title="pipeline.hsd.tasks.common.utils.to_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_list</span></code></a></p></td>
+<td><p>Convert the input argument to a list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.to_numeric.html#pipeline.hsd.tasks.common.utils.to_numeric" title="pipeline.hsd.tasks.common.utils.to_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_numeric</span></code></a></p></td>
+<td><p>Convert the input argument to a number.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.Context.html#pipeline.hsd.tasks.common.utils.Context" title="pipeline.hsd.tasks.common.utils.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.DataTable.html#pipeline.hsd.tasks.common.utils.DataTable" title="pipeline.hsd.tasks.common.utils.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.EchoDictionary.html#pipeline.hsd.tasks.common.utils.EchoDictionary" title="pipeline.hsd.tasks.common.utils.EchoDictionary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EchoDictionary</span></code></a></p></td>
+<td><p>Dictionary that always returns key.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.Field.html#pipeline.hsd.tasks.common.utils.Field" title="pipeline.hsd.tasks.common.utils.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a></p></td>
+<td><p>A class to store logical representation of a field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.MeasurementSet.html#pipeline.hsd.tasks.common.utils.MeasurementSet" title="pipeline.hsd.tasks.common.utils.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.NewType.html#pipeline.hsd.tasks.common.utils.NewType" title="pipeline.hsd.tasks.common.utils.NewType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NewType</span></code></a></p></td>
+<td><p>NewType creates simple unique types with almost zero runtime overhead. NewType(name, tp) is considered a subtype of tp by static type checkers. At runtime, NewType(name, tp) returns a dummy callable that simply returns its argument. Usage::.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.ObservingRun.html#pipeline.hsd.tasks.common.utils.ObservingRun" title="pipeline.hsd.tasks.common.utils.ObservingRun"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservingRun</span></code></a></p></td>
+<td><p>ObservingRun is a logical representation of an observing run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.ProgressTimer.html#pipeline.hsd.tasks.common.ProgressTimer" title="pipeline.hsd.tasks.common.utils.ProgressTimer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProgressTimer</span></code></a></p></td>
+<td><p>Show the progress bar on the console.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.RGAccumulator.html#pipeline.hsd.tasks.common.utils.RGAccumulator" title="pipeline.hsd.tasks.common.utils.RGAccumulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RGAccumulator</span></code></a></p></td>
+<td><p>Accumulate metadata information of a reduction group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.SpwDetailedView.html#pipeline.hsd.tasks.common.utils.SpwDetailedView" title="pipeline.hsd.tasks.common.utils.SpwDetailedView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwDetailedView</span></code></a></p></td>
+<td><p>A class to store Spestral Window (SpW) settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.SpwSimpleView.html#pipeline.hsd.tasks.common.utils.SpwSimpleView" title="pipeline.hsd.tasks.common.utils.SpwSimpleView"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwSimpleView</span></code></a></p></td>
+<td><p>A simple class that holds an spectral windpw (SpW) ID and Name pair.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.Time.html#pipeline.hsd.tasks.common.utils.Time" title="pipeline.hsd.tasks.common.utils.Time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time</span></code></a></p></td>
+<td><p>Represent and manipulate times and dates for astronomy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.casa_table.html#pipeline.hsd.tasks.common.utils.casa_table" title="pipeline.hsd.tasks.common.utils.casa_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">casa_table</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.utils.pyLogger.html#pipeline.hsd.tasks.common.utils.pyLogger" title="pipeline.hsd.tasks.common.utils.pyLogger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyLogger</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.common.sdtyping.NewType.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.sdtyping.NewType" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.utils.TableSelector.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.utils.TableSelector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.atmcor.renderer &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.atmcor.renderer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.atmcor.renderer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Renderer for hsd_atmcor stage.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tools</span> <span class="k">as</span> <span class="nn">casa_tools</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.filenamer</span> <span class="k">as</span> <span class="nn">filenamer</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.basetemplates</span> <span class="k">as</span> <span class="nn">basetemplates</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.renderer.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="kn">import</span> <span class="n">ResultsList</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="kn">from</span> <span class="nn">.display</span> <span class="kn">import</span> <span class="n">PlotmsRealVsFreqPlotter</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.atmcor</span> <span class="kn">import</span> <span class="n">SDATMCorrectionResults</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">ATMHeuristicsTR</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;ATMHeuristicsTR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;msname apply plot atmtype h0 dtem_dh&#39;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="construct_heuristics_table_row">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.construct_heuristics_table_row.html#pipeline.hsd.tasks.atmcor.construct_heuristics_table_row">[docs]</a>
+<span class="k">def</span> <span class="nf">construct_heuristics_table_row</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="s1">&#39;SDATMCorrectionResults&#39;</span><span class="p">,</span> <span class="n">detail_page</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ATMHeuristicsTR</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct table row for ATM heuristics summary table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        results: SDAtmCorrectionResults instance</span>
+<span class="sd">        detail_page: relative path to ATM heuristics detail page</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: results doesn&#39;t hold model parameters</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        table row as ATMHeuristicsTR instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">atm_heuristics</span> <span class="o">==</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span>
+        <span class="n">plot</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="n">detail_page</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;class=&quot;replace&quot;&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;data-vis=&quot;</span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s1">&quot;&gt;View&lt;/a&gt;&#39;</span><span class="p">,</span>
+        <span class="p">])</span>
+        <span class="n">atm_model</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model_list</span><span class="p">[</span><span class="n">results</span><span class="o">.</span><span class="n">best_model_index</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># results.atm_heuristics should be either &#39;N&#39; or &#39;Default&#39;</span>
+        <span class="c1">#</span>
+        <span class="c1"># If it is &#39;N&#39;, ATM heuristics was skipped, and</span>
+        <span class="c1"># results.model_list should store a parameters taken from</span>
+        <span class="c1"># results.task_args.</span>
+        <span class="c1">#</span>
+        <span class="c1"># If it is &#39;Default&#39;, ATM heuristics was attempted but failed, and</span>
+        <span class="c1"># results.model_list should store a set of default parameters.</span>
+        <span class="c1">#</span>
+        <span class="c1"># In either case, length of results.model_list should be 1.</span>
+        <span class="n">plot</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">model_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">atm_model</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># something went wrong</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;model_list should store default model.&#39;</span><span class="p">)</span>
+
+    <span class="n">row</span> <span class="o">=</span> <span class="n">ATMHeuristicsTR</span><span class="p">(</span><span class="n">msname</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                          <span class="n">apply</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">atm_heuristics</span><span class="p">,</span>
+                          <span class="n">plot</span><span class="o">=</span><span class="n">plot</span><span class="p">,</span>
+                          <span class="n">atmtype</span><span class="o">=</span><span class="n">atm_model</span><span class="o">.</span><span class="n">atmtype</span><span class="p">,</span>
+                          <span class="n">h0</span><span class="o">=</span><span class="n">atm_model</span><span class="o">.</span><span class="n">h0</span><span class="p">,</span>
+                          <span class="n">dtem_dh</span><span class="o">=</span><span class="n">atm_model</span><span class="o">.</span><span class="n">dtem_dh</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">row</span></div>
+
+
+
+<div class="viewcode-block" id="identify_heuristics_plots">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.identify_heuristics_plots.html#pipeline.hsd.tasks.atmcor.identify_heuristics_plots">[docs]</a>
+<span class="k">def</span> <span class="nf">identify_heuristics_plots</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="s1">&#39;SDATMCorrectionResults&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify ATM heuristics plots created by SDcalatmcor module.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stage_dir: Weblog directory for hsd_atmcor stage</span>
+<span class="sd">        results: SDATMCorrectionResults instance</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of plots. Each plot element is Plot instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">atm_heuristics</span> <span class="o">!=</span> <span class="s1">&#39;Y&#39;</span> <span class="ow">or</span> <span class="n">results</span><span class="o">.</span><span class="n">best_model_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># no useful heuristics plots exist, return empty list</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+    <span class="n">heuristics_plots</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best_model_index</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">best_model_index</span>
+    <span class="n">model_list</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">model_list</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="sa">fr</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="s1">\.field([0-9]+)\.spw([0-9]+)\.model\.([0-9]+)\.png$&#39;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Collecting ATM heuristics plots&#39;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;figure name pattern: &quot;</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="c1"># examine png file names using regex pattern search</span>
+    <span class="n">matching_results</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">iglob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="s1">&#39;*.png&#39;</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="c1"># process only matched png file names</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">matching_results</span><span class="p">):</span>
+        <span class="n">png_file</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">string</span>
+        <span class="n">field_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">spw_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">model_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Match: field </span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1"> model </span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Applied&#39;</span> <span class="k">if</span> <span class="n">model_id</span> <span class="o">==</span> <span class="n">best_model_index</span> <span class="k">else</span> <span class="s1">&#39;Discarded&#39;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">model_list</span><span class="p">[</span><span class="n">model_id</span><span class="p">])</span>
+        <span class="n">heuristics_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span>
+                <span class="n">png_file</span><span class="p">,</span>
+                <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,</span>
+                <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">,</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">field_id</span><span class="p">,</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">basename</span><span class="p">,</span>
+                    <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw_id</span><span class="p">,</span>
+                    <span class="s1">&#39;ant&#39;</span><span class="p">:</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;pol&#39;</span><span class="p">:</span> <span class="s1">&#39;XXYY&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+                    <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">heuristics_plots</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">heuristics_plots</span></div>
+
+
+
+<div class="viewcode-block" id="iterate_field_spw">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.iterate_field_spw.html#pipeline.hsd.tasks.atmcor.iterate_field_spw">[docs]</a>
+<span class="k">def</span> <span class="nf">iterate_field_spw</span><span class="p">(</span><span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_id_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">spw_id_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yields valid pair of field_id and spw_id.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vis: Name of MS</span>
+<span class="sd">        field_id_list: List of field ids</span>
+<span class="sd">        spw_id_list: List of spw ids</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        valid (field_id, spw_id) pair</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_id_list</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">msmd</span><span class="o">.</span><span class="n">fieldsforspw</span><span class="p">(</span><span class="n">spw_id</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">field_id_list</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span></div>
+
+
+
+<div class="viewcode-block" id="SDATMCorrHeuristicsDetailPlotRenderer">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.SDATMCorrHeuristicsDetailPlotRenderer.html#pipeline.hsd.tasks.atmcor.SDATMCorrHeuristicsDetailPlotRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">SDATMCorrHeuristicsDetailPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Renderer class for ATM heuristics detail plots.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="s1">&#39;SDATMCorrectionResults&#39;</span><span class="p">,</span> <span class="n">plots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct SDATMCorrHeuristicsDetailPlotRenderer instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: pipeline Context</span>
+<span class="sd">            result: SDATMCorrectionResults instance</span>
+<span class="sd">            plots: list of plot objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;hsd_atmcor_heuristics_detail_plots.mako&#39;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;ATM Heuristics Plots&#39;</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">.html&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SDATMCorrHeuristicsDetailPlotRenderer.update_json_dict">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.SDATMCorrHeuristicsDetailPlotRenderer.html#pipeline.hsd.tasks.atmcor.SDATMCorrHeuristicsDetailPlotRenderer.update_json_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="n">logger</span><span class="o">.</span><span class="n">Plot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update json dict to add new filters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d: Json dict for plot</span>
+<span class="sd">            plot: plot object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="T2_4MDetailsSingleDishATMCorRenderer">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.T2_4MDetailsSingleDishATMCorRenderer.html#pipeline.hsd.tasks.atmcor.T2_4MDetailsSingleDishATMCorRenderer">[docs]</a>
+<span class="k">class</span> <span class="nc">T2_4MDetailsSingleDishATMCorRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Renderer class for hsd_atmcor stage.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize renderer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            always_rerender: Set True to always render the page. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;hsd_atmcor.mako&#39;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Apply correction for atmospheric effects&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">always_rerender</span><span class="o">=</span><span class="n">always_rerender</span><span class="p">)</span>
+
+<div class="viewcode-block" id="T2_4MDetailsSingleDishATMCorRenderer.update_mako_context">
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.renderer.T2_4MDetailsSingleDishATMCorRenderer.html#pipeline.hsd.tasks.atmcor.T2_4MDetailsSingleDishATMCorRenderer.update_mako_context">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">mako_context</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                            <span class="n">pipeline_context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                            <span class="n">result</span><span class="p">:</span> <span class="n">ResultsList</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update Mako context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mako_context (): original Mako context</span>
+<span class="sd">            pipeline_context (): pipeline context</span>
+<span class="sd">            result (): ResultsList containing SDATMCorrectionResults</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: given results object is not valid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_mako_context</span><span class="p">(</span><span class="n">mako_context</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span>
+            <span class="s1">&#39;stage</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="n">summary_plots</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">detail_plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">heuristics_plots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Rendering result for &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;atmcor_ms_name&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Wrong result object is given.&#39;</span><span class="p">)</span>
+
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">]</span>
+            <span class="n">atmvis</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">atmcor_ms_name</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span>
+            <span class="n">antenna_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">()])</span>
+            <span class="n">field_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)])</span>
+            <span class="n">science_spws</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
+            <span class="n">spw_selection</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_selection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">selected_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">spw_selection</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">science_spws</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">selected_spws</span> <span class="o">=</span> <span class="n">science_spws</span>
+            <span class="n">selected_spws</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">selected_spws</span><span class="p">)</span>
+
+            <span class="n">plotter</span> <span class="o">=</span> <span class="n">PlotmsRealVsFreqPlotter</span><span class="p">(</span>
+                <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">atmvis</span><span class="o">=</span><span class="n">atmvis</span><span class="p">,</span>
+                <span class="n">atmtype</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;atmtype&#39;</span><span class="p">],</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">stage_dir</span>
+            <span class="p">)</span>
+            <span class="n">summaries</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">iterate_field_spw</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">,</span> <span class="n">selected_spws</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;field </span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">spw</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span>
+                <span class="n">plotter</span><span class="o">.</span><span class="n">set_field</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
+                <span class="n">field_name</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">original_field_name</span>
+                <span class="n">summaries</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">())</span>
+                <span class="n">plotter</span><span class="o">.</span><span class="n">set_spw</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span>
+                <span class="c1"># reset antenna selection</span>
+                <span class="n">plotter</span><span class="o">.</span><span class="n">set_antenna</span><span class="p">()</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+                <span class="n">summaries</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+                <span class="k">for</span> <span class="n">antenna_id</span> <span class="ow">in</span> <span class="n">antenna_ids</span><span class="p">:</span>
+                    <span class="n">plotter</span><span class="o">.</span><span class="n">set_antenna</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">)</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+                    <span class="n">detail_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">summary_plots</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)]</span> <span class="o">=</span> <span class="n">summaries</span>
+
+            <span class="c1"># PIPE-1443 ATM heuristics plots</span>
+            <span class="n">heuristics_plots</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">identify_heuristics_plots</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+
+        <span class="n">detail_page_title</span> <span class="o">=</span> <span class="s1">&#39;ATM corrected amplitude vs frequency&#39;</span>
+        <span class="n">detail_renderer</span> <span class="o">=</span> <span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">(</span>
+            <span class="s1">&#39;generic_x_vs_y_field_spw_ant_detail_plots.mako&#39;</span><span class="p">,</span>
+            <span class="n">pipeline_context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">detail_plots</span><span class="p">,</span>
+            <span class="n">detail_page_title</span><span class="p">,</span>
+            <span class="n">filenamer</span><span class="o">.</span><span class="n">sanitize</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">detail_page_title</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">.html&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">detail_renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">detail_renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+
+        <span class="n">heuristics_renderer</span> <span class="o">=</span> <span class="n">SDATMCorrHeuristicsDetailPlotRenderer</span><span class="p">(</span>
+            <span class="n">pipeline_context</span><span class="p">,</span>
+            <span class="n">result</span><span class="p">,</span>
+            <span class="n">heuristics_plots</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">heuristics_renderer</span><span class="o">.</span><span class="n">get_file</span><span class="p">()</span> <span class="k">as</span> <span class="n">fileobj</span><span class="p">:</span>
+            <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">heuristics_renderer</span><span class="o">.</span><span class="n">render</span><span class="p">())</span>
+
+        <span class="c1"># PIPE-1443 ATM heuristics table</span>
+        <span class="n">heuristics_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">heuristics_renderer</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">pipeline_context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">heuristics_path</span><span class="p">)</span>
+        <span class="n">heuristics_summary</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">construct_heuristics_table_row</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">heuristics_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">result</span>
+        <span class="p">]</span>
+        <span class="n">heuristics_table</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">merge_td_columns</span><span class="p">(</span><span class="n">heuristics_summary</span><span class="p">,</span> <span class="n">num_to_merge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">mako_context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;summary_plots&#39;</span><span class="p">:</span> <span class="n">summary_plots</span><span class="p">,</span>
+            <span class="s1">&#39;detail_page&#39;</span><span class="p">:</span> <span class="n">detail_renderer</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="s1">&#39;heuristics_table&#39;</span><span class="p">:</span> <span class="n">heuristics_table</span><span class="p">,</span>
+        <span class="p">})</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

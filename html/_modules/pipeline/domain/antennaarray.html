@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.antennaarray &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.antennaarray</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.domain.antennaarray</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">casatasks.private</span> <span class="kn">import</span> <span class="n">simutil</span>
+
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">measures</span><span class="p">,</span> <span class="n">Antenna</span>
+<span class="kn">from</span> <span class="nn">.measures</span> <span class="kn">import</span> <span class="n">Distance</span><span class="p">,</span> <span class="n">DistanceUnits</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">infrastructure</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">Baseline</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;antenna1 antenna2 length&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AntennaArray">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.AntennaArray.html#pipeline.domain.AntennaArray">[docs]</a>
+<span class="k">class</span> <span class="nc">AntennaArray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AntennaArray is a logical representation of the antenna array.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        antennas: a list of Antenna objects that comprise the array.</span>
+<span class="sd">        baseline_lookup: 2D matrix of baseline lengths.</span>
+<span class="sd">        baselines_m: 1D array of baseline lengths for unique antenna baselines</span>
+<span class="sd">            (excluding auto-correlations).</span>
+<span class="sd">        baseline_min: Baseline tuple (antenna1, antenna2, length) for shortest baseline.</span>
+<span class="sd">        baseline_max: Baseline tuple (antenna1, antenna2, length) for longest baseline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">antennas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Antenna</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an AntennaArray object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: the name of the observatory/telescope (as per OBSERVATIONS</span>
+<span class="sd">                table in the measurement set).</span>
+<span class="sd">            position: the position of the observatory/telescope (as per</span>
+<span class="sd">                OBSERVATIONS table in the measurement set) as a CASA &#39;position&#39;</span>
+<span class="sd">                measure dictionary.</span>
+<span class="sd">            antennas: a list of Antenna objects that comprise the array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__position</span> <span class="o">=</span> <span class="n">position</span>
+
+        <span class="c1"># antennas instance property must be set early for subsequent calls to</span>
+        <span class="c1"># self.get_antenna(...) to succeed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span> <span class="o">=</span> <span class="n">antennas</span>
+
+        <span class="c1"># PIPE-1823</span>
+        <span class="c1"># Prior to PIPE-1823, .antennas was considered mutable and .baselines was</span>
+        <span class="c1"># calculated on demand. This led to gross inefficiencies and excessive memory</span>
+        <span class="c1"># use, as described in PIPE-1823. To resolve this, antennas is now considered</span>
+        <span class="c1"># immutable, allowing the array of baseline lengths to be precomputed and</span>
+        <span class="c1"># stored as an instance property.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Storing on the instance raises the context size by a small amount (ballpark</span>
+        <span class="c1"># ~4k for ALMA, 0.5k for VLA). This is probably OK, but we could detach the</span>
+        <span class="c1"># array from the context if this too proves a problem.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_baseline_lookup</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span>
+
+        <span class="c1"># Mask symmetric values and self-correlations (by specifying offset=1) from the</span>
+        <span class="c1"># lookup table to give a 1-D array we can use for calculating statistics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baselines_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">tril_indices_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="c1"># create mask to omit diagonal (=self-correlations). This mask will be applied</span>
+        <span class="c1"># when looking up indices of min/max baselines below.</span>
+        <span class="n">mask_self_corr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">mask_self_corr</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># We want the IDs of the antennas that give the minimum and maximum baselines.</span>
+        <span class="c1"># Using argmin/argmax returns the index within a flattened input array, and that</span>
+        <span class="c1"># index can be reshaped into a 2D index using unravel_index. However, min/max</span>
+        <span class="c1"># needs to be calculated on masked values to omit self-correlations, and this</span>
+        <span class="c1"># masking warps the 1D coordinates, breaking the subsequent index unravelling.</span>
+        <span class="c1"># To get around this we use numpy masked arrays; using argmin/argmax on the masked</span>
+        <span class="c1"># array returns non-warped coordinates we can unravel and dereference on the original</span>
+        <span class="c1"># unmasked array.</span>
+        <span class="n">ma</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">,</span> <span class="n">mask</span><span class="o">=~</span><span class="n">mask_self_corr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># if there is only zero or one antenna, no need to calculate min/max baselines.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseline_min</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseline_max</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span>
+                <span class="n">indices</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="o">.</span><span class="n">shape</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseline_min</span> <span class="o">=</span> <span class="n">Baseline</span><span class="p">(</span>
+                <span class="n">antenna1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">min_x</span><span class="p">),</span>
+                <span class="n">antenna2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">min_y</span><span class="p">),</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">Distance</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">[</span><span class="n">min_x</span><span class="p">][</span><span class="n">min_y</span><span class="p">],</span> <span class="n">units</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span>
+                <span class="n">indices</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+                <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="o">.</span><span class="n">shape</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseline_max</span> <span class="o">=</span> <span class="n">Baseline</span><span class="p">(</span>
+                <span class="n">antenna1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">max_x</span><span class="p">),</span>
+                <span class="n">antenna2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">max_y</span><span class="p">),</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">Distance</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">[</span><span class="n">max_x</span><span class="p">][</span><span class="n">max_y</span><span class="p">],</span> <span class="n">units</span><span class="o">=</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_baselines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">baselines_for_antennas</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;AntennaArray(</span><span class="si">{0!r}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">, </span><span class="si">{2!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__position</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the observatory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the position of the observatory as a CASA &#39;position&#39; measure dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">elevation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the array elevation as a CASA quantity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span><span class="p">[</span><span class="s1">&#39;m2&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the array latitude as a CASA quantity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the array longitude as a CASA quantity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">centre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the array centre as earth-centered x, y, z.</span>
+
+<span class="sd">        If the array position reference frame is &quot;IRTF&quot;, this will return the</span>
+<span class="sd">        position directly. Otherwise, the array position reference is assumed to</span>
+<span class="sd">        be &quot;WGS84&quot; and the array position (geodetic longitude, latitute,</span>
+<span class="sd">        elevation) is converted to earth-centered x, y, z, using the private</span>
+<span class="sd">        CASA script &quot;simutil&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">datum</span> <span class="o">==</span> <span class="s1">&#39;ITRF&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__position</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">longitude</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+        <span class="n">latitude</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+        <span class="n">elevation</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elevation</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">simutil</span><span class="o">.</span><span class="n">simutil</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">long2xyz</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">longitude</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">latitude</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">elevation</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">datum</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AntennaArray.baselines_for_antennas">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.AntennaArray.html#pipeline.domain.AntennaArray.baselines_for_antennas">[docs]</a>
+    <span class="k">def</span> <span class="nf">baselines_for_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Baseline</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of Baseline tuples for input antenna IDs.</span>
+
+<span class="sd">        This creates and returns a list of Baseline tuples for combinations</span>
+<span class="sd">        of unique IDs in input antenna IDs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antenna_ids: IDs of antennas to return baselines for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of Baseline objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unique_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">antenna_ids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">Baseline</span><span class="p">(</span>
+                <span class="n">antenna1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">ant1</span><span class="p">),</span>
+                <span class="n">antenna2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">ant2</span><span class="p">),</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">Distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">[</span><span class="n">ant1</span><span class="p">][</span><span class="n">ant2</span><span class="p">],</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">unique_ids</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">baselines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Baseline</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of Baseline tuples for all antennas in the array.&quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Deprecated: AntennaArray.baselines is deprecated. Use AntennaArray.baselines_m instead&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baselines</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_calc_baseline_lookup</span><span class="p">(</span><span class="n">antennas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Antenna</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate a 2D matrix of baseline lengths where:</span>
+
+<span class="sd">         - x index = antenna 1 ID</span>
+<span class="sd">         - y index = antenna 2 ID</span>
+<span class="sd">         - value   = baseline in metres</span>
+
+<span class="sd">        This matrix is rectangular and symmetric (that is, baseline between</span>
+<span class="sd">        antenna 1 and antenna 2 is the same as between antenna 2 and antenna</span>
+<span class="sd">        1). A regular non-sparse matrix is used over a sparse triangular</span>
+<span class="sd">        matrix, valuing simplicity of implementation over efficiency.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antennas: List of Antenna objects to compute baseline lengths for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            2D Numpy array containing baseline lengths.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># no baselines = zero baseline length</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">antennas</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># calculate the array size required for our baselines. Another assumption:</span>
+        <span class="c1"># the antenna IDs zero indexed and continuous enough for a sparse matrix to</span>
+        <span class="c1"># be unnecessary.</span>
+        <span class="n">max_id</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">baselines</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_id</span><span class="p">,</span> <span class="n">max_id</span><span class="p">))</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">ant1</span><span class="p">:</span> <span class="n">Antenna</span><span class="p">,</span> <span class="n">ant2</span><span class="p">:</span> <span class="n">Antenna</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Function to return the position difference along the attr axis between two</span>
+<span class="sd">            antennas. </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">v1</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">ant1</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="n">attr</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">v2</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">ant2</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="n">attr</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">v1</span><span class="o">-</span><span class="n">v2</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">antennas</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">baseline_m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="s1">&#39;longitude offset&#39;</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                   <span class="n">diff</span><span class="p">(</span><span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="s1">&#39;latitude offset&#39;</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                   <span class="n">diff</span><span class="p">(</span><span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="s1">&#39;elevation offset&#39;</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">baselines</span><span class="p">[</span><span class="n">ant1</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">ant2</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">baseline_m</span>
+            <span class="n">baselines</span><span class="p">[</span><span class="n">ant2</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">ant1</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">baseline_m</span>
+
+        <span class="k">return</span> <span class="n">baselines</span>
+
+<div class="viewcode-block" id="AntennaArray.get_offset">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.AntennaArray.html#pipeline.domain.AntennaArray.get_offset">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="n">Antenna</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Distance</span><span class="p">,</span> <span class="n">Distance</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the offset of the given antenna from the centre of the array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antenna: Antenna object to determine offset for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            2-tuple containing x- and y-offset to centre of the array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">antenna</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="s1">&#39;longitude offset&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">antenna</span><span class="o">.</span><span class="n">offset</span><span class="p">[</span><span class="s1">&#39;latitude offset&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+        <span class="n">x_offset</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+        <span class="n">y_offset</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span></div>
+
+
+<div class="viewcode-block" id="AntennaArray.get_baseline">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.AntennaArray.html#pipeline.domain.AntennaArray.get_baseline">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Baseline</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the baseline distance between two antennas.</span>
+
+<span class="sd">        Antenna identifiers will be considered first as numeric antenna IDs,</span>
+<span class="sd">        then as antenna names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antenna1: Numerical ID or name of first antenna.</span>
+<span class="sd">            antenna2: Numerical ID or name of second antenna.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             The baseline length in meters between antennass identified by</span>
+<span class="sd">             arguments antenna1 and antenna2. If an identifier does not match a</span>
+<span class="sd">             known antenna, None will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># FIXME This function signature seems too wide. Do clients really call by</span>
+        <span class="c1"># antenna name? Do they *really* handle None? Wouldn&#39;t it be better to let</span>
+        <span class="c1"># the IndexError exception bubble up?</span>
+        <span class="k">def</span> <span class="nf">get_antenna_by_id_then_name</span><span class="p">(</span><span class="n">predicate</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">predicate</span><span class="p">))</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                <span class="c1"># ValueError = failed cast to int</span>
+                <span class="c1"># IndexError = no antenna with that ID</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">predicate</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">ant1</span> <span class="o">=</span> <span class="n">get_antenna_by_id_then_name</span><span class="p">(</span><span class="n">antenna1</span><span class="p">)</span>
+        <span class="n">ant2</span> <span class="o">=</span> <span class="n">get_antenna_by_id_then_name</span><span class="p">(</span><span class="n">antenna2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ant1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ant2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># no match by using arg as ID or antenna name</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">Baseline</span><span class="p">(</span>
+            <span class="n">ant1</span><span class="p">,</span>
+            <span class="n">ant2</span><span class="p">,</span>
+            <span class="n">Distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseline_lookup</span><span class="p">[</span><span class="n">ant1</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">ant2</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AntennaArray.get_antenna">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.AntennaArray.html#pipeline.domain.AntennaArray.get_antenna">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Antenna</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return Antenna object for given antenna ID or name.</span>
+
+<span class="sd">        If both ID and name are given, the antenna is searched for by ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id: Antenna ID to search for.</span>
+<span class="sd">            name: Antenna name to search for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Antenna object for given antenna ID or name.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception, if no id or name are given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;No antenna with ID </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;No antenna with name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>  
+            <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No id or name given to get_antenna&#39;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">median_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the median center direction for the array.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Median center direction for the array as a CASA &#39;direction&#39; measure</span>
+<span class="sd">            dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># construct lists of the longitude and latitude of each antenna.. </span>
+        <span class="n">qt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+        <span class="n">longs</span> <span class="o">=</span> <span class="p">[</span><span class="n">qt</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">antenna</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+        <span class="n">lats</span> <span class="o">=</span> <span class="p">[</span><span class="n">qt</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">antenna</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
+
+        <span class="c1"># .. and find the median of these lists </span>
+        <span class="n">med_lon</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">longs</span><span class="p">))</span>
+        <span class="n">med_lat</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lats</span><span class="p">))</span>
+
+        <span class="c1"># Construct and return a CASA direction using these median values. As</span>
+        <span class="c1"># antenna positions are given in radians, the units of the median</span>
+        <span class="c1"># direction is set to radians too.  </span>
+        <span class="n">mt</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="k">return</span> <span class="n">mt</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="n">v0</span><span class="o">=</span><span class="n">qt</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">med_lon</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">),</span> 
+                            <span class="n">v1</span><span class="o">=</span><span class="n">qt</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">med_lat</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;AntennaArray(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">names</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

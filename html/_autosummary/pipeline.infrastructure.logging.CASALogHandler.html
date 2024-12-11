@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.logging.CASALogHandler &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.logging.CapturingHandler" href="pipeline.infrastructure.logging.CapturingHandler.html" />
+    <link rel="prev" title="pipeline.infrastructure.logging.suspend_handler" href="pipeline.infrastructure.logging.suspend_handler.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.basetask.html">pipeline.infrastructure.basetask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.html">pipeline.infrastructure.callibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.casa_tasks.html">pipeline.infrastructure.casa_tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.casa_tools.html">pipeline.infrastructure.casa_tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.contfilehandler.html">pipeline.infrastructure.contfilehandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.daskhelpers.html">pipeline.infrastructure.daskhelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.displays.html">pipeline.infrastructure.displays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.docutils.html">pipeline.infrastructure.docutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.eventbus.html">pipeline.infrastructure.eventbus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.exceptions.html">pipeline.infrastructure.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executeppr.html">pipeline.infrastructure.executeppr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executevlappr.html">pipeline.infrastructure.executevlappr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.filenamer.html">pipeline.infrastructure.filenamer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imageheader.html">pipeline.infrastructure.imageheader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imagelibrary.html">pipeline.infrastructure.imagelibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.jobrequest.html">pipeline.infrastructure.jobrequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.infrastructure.logging.html">pipeline.infrastructure.logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.mpihelpers.html">pipeline.infrastructure.mpihelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.new_pipeline_task.html">pipeline.infrastructure.new_pipeline_task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipeline_statistics.html">pipeline.infrastructure.pipeline_statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipelineqa.html">pipeline.infrastructure.pipelineqa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.project.html">pipeline.infrastructure.project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.refantflag.html">pipeline.infrastructure.refantflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.renderer.html">pipeline.infrastructure.renderer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.sessionutils.html">pipeline.infrastructure.sessionutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.tablereader.html">pipeline.infrastructure.tablereader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.taskregistry.html">pipeline.infrastructure.taskregistry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.timetracker.html">pipeline.infrastructure.timetracker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.utils.html">pipeline.infrastructure.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.vdp.html">pipeline.infrastructure.vdp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.version.html">pipeline.infrastructure.version</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.logging.html">pipeline.infrastructure.logging</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.logging.CASALogHandler</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.infrastructure.logging.CASALogHandler.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-infrastructure-logging-casaloghandler">
+<h1>pipeline.infrastructure.logging.CASALogHandler<a class="headerlink" href="#pipeline-infrastructure-logging-casaloghandler" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CASALogHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/logging.html#CASALogHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Handler</span></code></p>
+<p>A handler class which writes logging records, appropriately formatted,
+to the CASA log.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.acquire" title="pipeline.infrastructure.logging.CASALogHandler.acquire"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acquire</span></code></a></p></td>
+<td><p>Acquire the I/O thread lock.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.addFilter" title="pipeline.infrastructure.logging.CASALogHandler.addFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addFilter</span></code></a></p></td>
+<td><p>Add the specified filter to this handler.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.close" title="pipeline.infrastructure.logging.CASALogHandler.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a></p></td>
+<td><p>Tidy up any resources used by the handler.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.createLock" title="pipeline.infrastructure.logging.CASALogHandler.createLock"><code class="xref py py-obj docutils literal notranslate"><span class="pre">createLock</span></code></a></p></td>
+<td><p>Acquire a thread lock for serializing access to the underlying I/O.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.emit" title="pipeline.infrastructure.logging.CASALogHandler.emit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emit</span></code></a></p></td>
+<td><p>Emit a record.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.filter" title="pipeline.infrastructure.logging.CASALogHandler.filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter</span></code></a></p></td>
+<td><p>Determine if a record is loggable by consulting all the filters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.flush" title="pipeline.infrastructure.logging.CASALogHandler.flush"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flush</span></code></a></p></td>
+<td><p>Flushes the stream.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.format" title="pipeline.infrastructure.logging.CASALogHandler.format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code></a></p></td>
+<td><p>Format the specified record.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_casa_priority</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_name</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.handle" title="pipeline.infrastructure.logging.CASALogHandler.handle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle</span></code></a></p></td>
+<td><p>Conditionally emit the specified logging record.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.handleError" title="pipeline.infrastructure.logging.CASALogHandler.handleError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handleError</span></code></a></p></td>
+<td><p>Handle errors which occur during an emit() call.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.release" title="pipeline.infrastructure.logging.CASALogHandler.release"><code class="xref py py-obj docutils literal notranslate"><span class="pre">release</span></code></a></p></td>
+<td><p>Release the I/O thread lock.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.removeFilter" title="pipeline.infrastructure.logging.CASALogHandler.removeFilter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeFilter</span></code></a></p></td>
+<td><p>Remove the specified filter from this handler.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.setFormatter" title="pipeline.infrastructure.logging.CASALogHandler.setFormatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setFormatter</span></code></a></p></td>
+<td><p>Set the formatter for this handler.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.logging.CASALogHandler.setLevel" title="pipeline.infrastructure.logging.CASALogHandler.setLevel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setLevel</span></code></a></p></td>
+<td><p>Set the logging level of this handler.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.acquire">
+<span class="sig-name descname"><span class="pre">acquire</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.acquire" title="Link to this definition"></a></dt>
+<dd><p>Acquire the I/O thread lock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.addFilter">
+<span class="sig-name descname"><span class="pre">addFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.addFilter" title="Link to this definition"></a></dt>
+<dd><p>Add the specified filter to this handler.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.close" title="Link to this definition"></a></dt>
+<dd><p>Tidy up any resources used by the handler.</p>
+<p>This version removes the handler from an internal map of handlers,
+_handlers, which is used for handler lookup by name. Subclasses
+should ensure that this gets called from overridden close()
+methods.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.createLock">
+<span class="sig-name descname"><span class="pre">createLock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.createLock" title="Link to this definition"></a></dt>
+<dd><p>Acquire a thread lock for serializing access to the underlying I/O.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.emit">
+<span class="sig-name descname"><span class="pre">emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/logging.html#CASALogHandler.emit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.emit" title="Link to this definition"></a></dt>
+<dd><p>Emit a record.</p>
+<p>If a formatter is specified, it is used to format the record. The
+record is then written to the stream with a trailing newline. If
+exception information is present, it is formatted using
+traceback.print_exception and appended to the stream.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.filter" title="Link to this definition"></a></dt>
+<dd><p>Determine if a record is loggable by consulting all the filters.</p>
+<p>The default is to allow the record to be logged; any filter can veto
+this and the record is then dropped. Returns a zero value if a record
+is to be dropped, else non-zero.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.2: </span>Allow filters to be just callables.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/logging.html#CASALogHandler.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.flush" title="Link to this definition"></a></dt>
+<dd><p>Flushes the stream.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.format" title="Link to this definition"></a></dt>
+<dd><p>Format the specified record.</p>
+<p>If a formatter is set, use it. Otherwise, use the default formatter
+for the module.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.handle" title="Link to this definition"></a></dt>
+<dd><p>Conditionally emit the specified logging record.</p>
+<p>Emission depends on filters which may have been added to the handler.
+Wrap the actual emission of the record with acquisition/release of
+the I/O thread lock. Returns whether the filter passed the record for
+emission.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.handleError">
+<span class="sig-name descname"><span class="pre">handleError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.handleError" title="Link to this definition"></a></dt>
+<dd><p>Handle errors which occur during an emit() call.</p>
+<p>This method should be called from handlers when an exception is
+encountered during an emit() call. If raiseExceptions is false,
+exceptions get silently ignored. This is what is mostly wanted
+for a logging system - most users will not care about errors in
+the logging system, they are more interested in application errors.
+You could, however, replace this with a custom handler if you wish.
+The record which was being processed is passed in to this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.release" title="Link to this definition"></a></dt>
+<dd><p>Release the I/O thread lock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.removeFilter">
+<span class="sig-name descname"><span class="pre">removeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.removeFilter" title="Link to this definition"></a></dt>
+<dd><p>Remove the specified filter from this handler.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.setFormatter">
+<span class="sig-name descname"><span class="pre">setFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.setFormatter" title="Link to this definition"></a></dt>
+<dd><p>Set the formatter for this handler.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.infrastructure.logging.CASALogHandler.setLevel">
+<span class="sig-name descname"><span class="pre">setLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.logging.CASALogHandler.setLevel" title="Link to this definition"></a></dt>
+<dd><p>Set the logging level of this handler.  level must be an int or a str.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.logging.suspend_handler.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.logging.suspend_handler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.logging.CapturingHandler.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.logging.CapturingHandler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

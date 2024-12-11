@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.domain.spectralwindow &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#full-list">Full List</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.domain.spectralwindow</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.domain.spectralwindow</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Store frequency information of MeasurementSet.</span>
+
+<span class="sd">This module provides classes to store logical representation of spectral</span>
+<span class="sd">windows, channel frequency information, and channel selection.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Do not evaluate type annotations at definition time.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">decimal</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">measures</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ArithmeticProgression">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.ArithmeticProgression.html#pipeline.domain.ArithmeticProgression">[docs]</a>
+<span class="k">class</span> <span class="nc">ArithmeticProgression</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A representation of an arithmetic progression that can generate sequence</span>
+<span class="sd">    elements on demand.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;num_terms&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_terms</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an ArithmeticProgression object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start: Value of first element in the progression.</span>
+<span class="sd">            delta: Common difference between each element in the progression.</span>
+<span class="sd">            num_terms: Number of elements in the progression.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span> <span class="o">=</span> <span class="n">num_terms</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_terms</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">index</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span></div>
+
+
+
+<div class="viewcode-block" id="compress">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.compress.html#pipeline.domain.compress">[docs]</a>
+<span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">ArithmeticProgression</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compress (if possible) a sequence of values.</span>
+
+<span class="sd">    If the numbers in the given list constitute an arithmetic progression,</span>
+<span class="sd">    return an ArithmeticProgression object that summarises it as such. If</span>
+<span class="sd">    the list cannot be summarised as a simple arithmetic progression,</span>
+<span class="sd">    return the list as given.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">deltas</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deltas</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">deltas</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ArithmeticProgression</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delta</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">values</span></div>
+
+
+
+<div class="viewcode-block" id="ChannelList">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.ChannelList.html#pipeline.domain.ChannelList">[docs]</a>
+<span class="k">class</span> <span class="nc">ChannelList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container/generator for Channel objects.</span>
+
+<span class="sd">    A spectral window can contain thousands of channels. Rather than store all of</span>
+<span class="sd">    these objects, a ChannelList generates and returns them lazily, on-demand.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">chan_freqs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">ArithmeticProgression</span><span class="p">,</span>
+                 <span class="n">chan_widths</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">ArithmeticProgression</span><span class="p">,</span>
+                 <span class="n">effbw</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">ArithmeticProgression</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a ChannelList object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chan_freqs: Sequence or ArithmeticProgression of center frequency of</span>
+<span class="sd">                channel (in Hertz) for all channels in ChannelList.</span>
+<span class="sd">            chan_widths: Sequence or ArithmeticProgression of channel width (in</span>
+<span class="sd">                Hertz) for all channels in ChannelList.</span>
+<span class="sd">            effbw: Sequence or ArithmeticProgression of effective bandwidth (in</span>
+<span class="sd">                Hertz) for all channels in ChannelList.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">chan_freqs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">chan_widths</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">effbw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chan_freqs</span> <span class="o">=</span> <span class="n">chan_freqs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chan_widths</span> <span class="o">=</span> <span class="n">chan_widths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chan_effbws</span> <span class="o">=</span> <span class="n">effbw</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
+        <span class="n">raw_channel_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chan_widths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chan_effbws</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">chan_centre</span><span class="p">,</span> <span class="n">chan_width</span><span class="p">,</span> <span class="n">chan_effective_bw</span> <span class="ow">in</span> <span class="n">raw_channel_data</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_channel</span><span class="p">(</span><span class="n">chan_centre</span><span class="p">,</span> <span class="n">chan_width</span><span class="p">,</span> <span class="n">chan_effective_bw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_channel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chan_freqs</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">chan_widths</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">chan_effbws</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__create_channel</span><span class="p">(</span><span class="n">centre</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">effective_bw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a Channel object for given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            centre: Center frequency of the channel (in Hertz).</span>
+<span class="sd">            width: Frequency width of the channel (in Hertz).</span>
+<span class="sd">            effective_bw: Effective bandwidth of the channel (in Hertz).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Channel object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dec_centre</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">centre</span><span class="p">)</span>
+        <span class="n">dec_width</span> <span class="o">=</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+        <span class="c1"># The abs() call is not strictly necessary as Channel extends</span>
+        <span class="c1"># FrequencyRange, whose .set() method swaps low and high when</span>
+        <span class="c1"># low &gt; high.</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dec_width</span><span class="p">)</span> <span class="o">/</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">f_lo</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">dec_centre</span> <span class="o">-</span> <span class="n">delta</span><span class="p">,</span>
+                                  <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+        <span class="n">f_hi</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">dec_centre</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span>
+                                  <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+        <span class="n">f_bw</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">effective_bw</span><span class="p">,</span>
+                                  <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Channel</span><span class="p">(</span><span class="n">f_lo</span><span class="p">,</span> <span class="n">f_hi</span><span class="p">,</span> <span class="n">f_bw</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Channel">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel">[docs]</a>
+<span class="k">class</span> <span class="nc">Channel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Representation of a channel within a spectral window.</span>
+
+<span class="sd">    This object can be considered as a FrequencyRange object plus an effective</span>
+<span class="sd">    bandwidth property. It provides the same interface as a FrequencyRange.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        frequency_range: FrequencyRange object denoting the low- and high-end</span>
+<span class="sd">            frequencies of this channel (in Hertz).</span>
+<span class="sd">        effective_bw: The effective bandwidth of this channel (in Hertz).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;frequency_range&#39;</span><span class="p">,</span> <span class="s1">&#39;effective_bw&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">effective_bw</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new Channel with the given start and end frequency and</span>
+<span class="sd">        effective bandwidth.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start: Start frequency of channel (in Hertz).</span>
+<span class="sd">            end: End frequency of channel (in Hertz).</span>
+<span class="sd">            effective_bw: Effective bandwidth of channel (in Hertz).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">effective_bw</span> <span class="o">=</span> <span class="n">effective_bw</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_bw</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_bw</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Channel</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">frequency_range</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">effective_bw</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_bw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Channel(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">effective_bw</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the low end frequency of the Channel.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">low</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the high end frequency of the Channel.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">high</span>
+
+<div class="viewcode-block" id="Channel.contains">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.contains">[docs]</a>
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span> <span class="o">|</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether the Channel contains given frequency (range).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.convert_to">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.convert_to">[docs]</a>
+    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts both endpoints of this Channel (frequency range) to the</span>
+<span class="sd">        given units.</span>
+
+<span class="sd">        This converts the endpoint frequency of the endpoints in-place, as well</span>
+<span class="sd">        as returns a reference to the frequency range of this Channel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            newUnits: New units to convert the frequencies to. By default, this</span>
+<span class="sd">                will convert to Gigahertz.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">newUnits</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.getCentreFrequency">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.getCentreFrequency">[docs]</a>
+    <span class="k">def</span> <span class="nf">getCentreFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the center frequency of the Channel.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">getCentreFrequency</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Channel.getOverlapWith">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.getOverlapWith">[docs]</a>
+    <span class="k">def</span> <span class="nf">getOverlapWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new frequency range that represents the region of overlap</span>
+<span class="sd">        between this Channel (frequency range) and &quot;other&quot;. If there is no</span>
+<span class="sd">        overlap, None is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: Another frequency range that may overlap this Channel.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FrequencyRange object representing the overlapping region of this</span>
+<span class="sd">            range and other, or None if there is no overlap.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">getOverlapWith</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.getGapBetween">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.getGapBetween">[docs]</a>
+    <span class="k">def</span> <span class="nf">getGapBetween</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new frequency range that represents the region of frequency</span>
+<span class="sd">        space between this Channel (frequency range) and ``other``. If the other</span>
+<span class="sd">        range is coincident with, or overlaps, this Channel, None is returned.</span>
+<span class="sd">        If the other range is None, None is returned.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: Channel/frequency range for which to assess frequency gap</span>
+<span class="sd">                with this Channel.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The frequency gap between this range and ``other``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">getGapBetween</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Channel.getWidth">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.getWidth">[docs]</a>
+    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the width of the Channel.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Channel.overlaps">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.overlaps">[docs]</a>
+    <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whether this Channel overlaps with given ``other`` Channel.</span>
+
+<span class="sd">        The Channel spans a frequency range that is a closed interval, that is,</span>
+<span class="sd">        one that contains both of its endpoints.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: Another Channel (frequency range) that may overlap this one.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if this Channel overlaps with ``other``. If ``other`` is not a</span>
+<span class="sd">            Channel, the return value is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Channel</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">frequency_range</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Channel.set">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.spectralwindow.Channel.html#pipeline.domain.Channel.set">[docs]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set frequency range for this Channel based on given frequency endpoints.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frequency1: One endpoint of frequency range for this Channel.</span>
+<span class="sd">            frequency2: Other endpoint of frequency range for this Channel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency_range</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frequency1</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SpectralWindow">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datadescription.SpectralWindow.html#pipeline.domain.SpectralWindow">[docs]</a>
+<span class="k">class</span> <span class="nc">SpectralWindow</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SpectralWindow is a logical representation of a spectral window (spw).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: The numerical identifier of this spectral window within the</span>
+<span class="sd">            SPECTRAL_WINDOW subtable of the MeasurementSet.</span>
+<span class="sd">        band: Frequency band.</span>
+<span class="sd">        bandwidth: The total bandwidth.</span>
+<span class="sd">        baseband: The baseband.</span>
+<span class="sd">        channels: Frequency information of each channel in spectral window,</span>
+<span class="sd">            i.e., frequencies, channel width, effective bandwidth.</span>
+<span class="sd">        freq_lo: A list of LO frequencies.</span>
+<span class="sd">        intents: the observing intents that have been observed using this</span>
+<span class="sd">            spectral window.</span>
+<span class="sd">        mean_frequency: Mean frequency of spectral window.</span>
+<span class="sd">        name: Spectral window name.</span>
+<span class="sd">        receiver: Receiver type, e.g., &#39;TSB&#39;.</span>
+<span class="sd">        ref_frequency: The reference frequency.</span>
+<span class="sd">        sideband: Side band.</span>
+<span class="sd">        transitions: Spectral transitions recorded associated with spectral window.</span>
+<span class="sd">        type: Spectral window type, e.g., &#39;TDM&#39;.</span>
+<span class="sd">        sdm_num_bin: Number of bins for online spectral averaging.</span>
+<span class="sd">        correlation_bits: Number of bits used for correlation.</span>
+<span class="sd">        median_receptor_angle: Median feed receptor angle.</span>
+<span class="sd">        specline_window: Whether spw is intended for spectral line or continuum (VLA only).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="s1">&#39;bandwidth&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;intents&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;baseband&#39;</span><span class="p">,</span> <span class="s1">&#39;sideband&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;receiver&#39;</span><span class="p">,</span> <span class="s1">&#39;freq_lo&#39;</span><span class="p">,</span> <span class="s1">&#39;mean_frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;_min_frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;_max_frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;_centre_frequency&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;channels&#39;</span><span class="p">,</span> <span class="s1">&#39;_ref_frequency_frame&#39;</span><span class="p">,</span> <span class="s1">&#39;spectralspec&#39;</span><span class="p">,</span> <span class="s1">&#39;transitions&#39;</span><span class="p">,</span> <span class="s1">&#39;sdm_num_bin&#39;</span><span class="p">,</span> <span class="s1">&#39;correlation_bits&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;median_receptor_angle&#39;</span><span class="p">,</span> <span class="s1">&#39;specline_window&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ref_freq</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">mean_freq</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">chan_freqs</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">chan_widths</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">chan_effective_bws</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">sideband</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">baseband</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">receiver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">freq_lo</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">band</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> <span class="n">spectralspec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">transitions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">sdm_num_bin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">correlation_bits</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">median_receptor_angle</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">specline_window</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize SpectralWindow class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spw_id: Spw ID.</span>
+<span class="sd">            name: Spw name.</span>
+<span class="sd">            spw_type: Spectral window type, e.g., &#39;TDM&#39;.</span>
+<span class="sd">            bandwidth: The total bandwidth.</span>
+<span class="sd">            ref_freq: The reference frequency, as a CASA &#39;frequency&#39; measure dictionary.</span>
+<span class="sd">            mean_freq: Mean frequency of spectral window in Hz.</span>
+<span class="sd">            chan_freqs: A list of frequency of each channel in spw in Hz.</span>
+<span class="sd">            chan_widths: A list of channel width of each channel in spw in Hz.</span>
+<span class="sd">            chan_effective_bws: A list of effective bandwidth of each channel in spw in Hz.</span>
+<span class="sd">            sideband: Side band.</span>
+<span class="sd">            baseband: The baseband.</span>
+<span class="sd">            receiver: Receiver type, e.g., &#39;TSB&#39;.</span>
+<span class="sd">            freq_lo: A list of LO frequencies in Hz.</span>
+<span class="sd">            band: Frequency band.</span>
+<span class="sd">            spectralspec: SpectralSpec name.</span>
+<span class="sd">            transitions: Spectral transitions recorded associated with spectral window.</span>
+<span class="sd">            sdm_num_bin: Number of bins for online spectral averaging.</span>
+<span class="sd">            correlation_bits: Number of bits used for correlation.</span>
+<span class="sd">            median_receptor_angle: Median feed receptor angle.</span>
+<span class="sd">            specline_window: Whether spw is intended for spectral line or continuum (VLA only).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">transitions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">transitions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Unknown&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">spw_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">bandwidth</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+
+        <span class="n">ref_freq_hz</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convertfreq</span><span class="p">(</span><span class="n">ref_freq</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+        <span class="n">ref_freq_val</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">ref_freq_hz</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_frequency</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">ref_freq_val</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ref_frequency_frame</span> <span class="o">=</span> <span class="n">ref_freq</span><span class="p">[</span><span class="s1">&#39;refer&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_frequency</span> <span class="o">=</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">mean_freq</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band</span> <span class="o">=</span> <span class="n">band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">spw_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectralspec</span> <span class="o">=</span> <span class="n">spectralspec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># work around NumPy bug with empty strings</span>
+        <span class="c1"># http://projects.scipy.org/numpy/ticket/1239</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sideband</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">sideband</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseband</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">baseband</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span> <span class="o">=</span> <span class="n">receiver</span>
+        <span class="k">if</span> <span class="n">freq_lo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freq_lo</span> <span class="o">=</span> <span class="p">[</span><span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span> <span class="k">for</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">freq_lo</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">freq_lo</span> <span class="o">=</span> <span class="n">freq_lo</span>
+
+        <span class="n">chan_freqs</span> <span class="o">=</span> <span class="n">compress</span><span class="p">(</span><span class="n">chan_freqs</span><span class="p">)</span>
+        <span class="n">chan_widths</span> <span class="o">=</span> <span class="n">compress</span><span class="p">(</span><span class="n">chan_widths</span><span class="p">)</span>
+        <span class="n">chan_effective_bws</span> <span class="o">=</span> <span class="n">compress</span><span class="p">(</span><span class="n">chan_effective_bws</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">ChannelList</span><span class="p">(</span><span class="n">chan_freqs</span><span class="p">,</span> <span class="n">chan_widths</span><span class="p">,</span> <span class="n">chan_effective_bws</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_frequency</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">low</span><span class="p">)</span><span class="o">.</span><span class="n">low</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_frequency</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">high</span><span class="p">)</span><span class="o">.</span><span class="n">high</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_centre_frequency</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_frequency</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_frequency</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">transitions</span> <span class="o">=</span> <span class="n">transitions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sdm_num_bin</span> <span class="o">=</span> <span class="n">sdm_num_bin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlation_bits</span> <span class="o">=</span> <span class="n">correlation_bits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">median_receptor_angle</span> <span class="o">=</span> <span class="n">median_receptor_angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specline_window</span> <span class="o">=</span> <span class="n">specline_window</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define what to pickle as a class instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">baseband</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sideband</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_lo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_frequency</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_max_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_centre_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_frequency_frame</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transitions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdm_num_bin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_bits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">median_receptor_angle</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">specline_window</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define how to unpickle a class instance.&quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseband</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">sideband</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">receiver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_lo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_frequency</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_centre_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_frequency_frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transitions</span><span class="p">,</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">sdm_num_bin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation_bits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">median_receptor_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">specline_window</span><span class="p">)</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">chan_freqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_freqs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chan_freqs</span><span class="p">,</span> <span class="n">ArithmeticProgression</span><span class="p">):</span>
+            <span class="n">chan_freqs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chan_freqs</span><span class="p">))</span>
+
+        <span class="n">chan_widths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_widths</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chan_widths</span><span class="p">,</span> <span class="n">ArithmeticProgression</span><span class="p">):</span>
+            <span class="n">chan_widths</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chan_widths</span><span class="p">))</span>
+
+        <span class="n">chan_effective_bws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">chan_effbws</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chan_effective_bws</span><span class="p">,</span> <span class="n">ArithmeticProgression</span><span class="p">):</span>
+            <span class="n">chan_effective_bws</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chan_effective_bws</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;SpectralWindow(</span><span class="si">{0!r}</span><span class="s1">, </span><span class="si">{1!r}</span><span class="s1">, </span><span class="si">{2!r}</span><span class="s1">, </span><span class="si">{3!r}</span><span class="s1">, </span><span class="si">{4!r}</span><span class="s1">, </span><span class="si">{5!r}</span><span class="s1">, </span><span class="si">{6}</span><span class="s1">, </span><span class="si">{7}</span><span class="s1">, </span><span class="si">{8}</span><span class="s1">, </span><span class="si">{9!r}</span><span class="s1">, </span><span class="si">{10!r}</span><span class="s1">, </span><span class="si">{11!r}</span><span class="s1">, &#39;</span>
+                <span class="s1">&#39;</span><span class="si">{12!r}</span><span class="s1">, </span><span class="si">{13}</span><span class="s1">, </span><span class="si">{14}</span><span class="s1">, </span><span class="si">{15!r}</span><span class="s1">, </span><span class="si">{16}</span><span class="s1">)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)),</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">m0</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;Hz&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))},</span>
+                 <span class="n">refer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_frequency_frame</span><span class="p">,</span>
+                 <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;frequency&#39;</span><span class="p">),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)),</span>
+            <span class="s1">&#39;numpy.array(</span><span class="si">%r</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">chan_freqs</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s1">&#39;numpy.array(</span><span class="si">%r</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">chan_widths</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s1">&#39;numpy.array(</span><span class="si">%r</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">chan_effective_bws</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sideband</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">baseband</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">band</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transitions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sdm_num_bin</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">correlation_bits</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">median_receptor_angle</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specline_window</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">centre_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the center frequency of the SpectralWindow.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_centre_frequency</span>
+
+<div class="viewcode-block" id="SpectralWindow.channel_range">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datadescription.SpectralWindow.html#pipeline.domain.SpectralWindow.channel_range">[docs]</a>
+    <span class="k">def</span> <span class="nf">channel_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minfreq</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">maxfreq</span><span class="p">:</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the channel range for given minimum/maximum frequency.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            minfreq: Minimum frequency as measures.Frequency object.</span>
+<span class="sd">            maxfreq: Maximum frequency as measures.Frequency object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            2-Tuple of integers representing indices (min, max) of channel range</span>
+<span class="sd">            end-points corresponding to given min/max frequency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">freqmin</span> <span class="o">=</span> <span class="n">minfreq</span>
+        <span class="n">freqmax</span> <span class="o">=</span> <span class="n">maxfreq</span>
+
+        <span class="c1"># Check for the no overlap case.</span>
+        <span class="n">nchan</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_channels</span>
+        <span class="k">if</span> <span class="n">freqmax</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frequency</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">freqmin</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_frequency</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># Find the minimum channel</span>
+        <span class="n">chan_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">low</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">nchan</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span> <span class="o">&gt;</span> <span class="n">freqmin</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">chan_min</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span> <span class="o">&lt;</span> <span class="n">freqmax</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">chan_min</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="c1"># Find the maximum channel</span>
+        <span class="n">chan_max</span> <span class="o">=</span> <span class="n">nchan</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">low</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">nchan</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">low</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">high</span> <span class="o">&lt;</span> <span class="n">freqmax</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">chan_max</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchan</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">low</span> <span class="o">&gt;</span> <span class="n">freqmin</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">chan_max</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="k">return</span> <span class="n">chan_min</span><span class="p">,</span> <span class="n">chan_max</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference frame code of the SpectralWindow.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_frequency_frame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum frequency of the SpectralWindow.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_frequency</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Frequency</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum frequency of the SpectralWindow.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_frequency</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of channels in the SpectralWindow.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="s1">&#39;SpectralWindow(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="SpectralWindowWithChannelSelection">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection">[docs]</a>
+<span class="k">class</span> <span class="nc">SpectralWindowWithChannelSelection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SpectralWindowWithChannelSelection decorates a SpectralWindow so that the</span>
+<span class="sd">    spectral window ID also contains a channel selection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">SpectralWindow</span><span class="p">,</span> <span class="n">channels</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subject</span> <span class="o">=</span> <span class="n">subject</span>
+
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">channels</span><span class="p">))</span>
+
+        <span class="c1"># prepare a string representation of the number of channels. If all</span>
+        <span class="c1"># channels are specified for this spw, just specify the spw in the</span>
+        <span class="c1"># string representation</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">subject</span><span class="o">.</span><span class="n">num_channels</span><span class="p">))):</span>
+            <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">channels</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">i_x</span><span class="p">:</span> <span class="n">i_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">i_x</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">rng</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">g</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">~</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rng</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subject</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the spectral window ID including channel selection.&quot;&quot;&quot;</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="s1">&#39;:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channels</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{spw}{channels}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_subject</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                        <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

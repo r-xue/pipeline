@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.tsys_contamination.find_peaks &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm" href="pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm.html" />
+    <link rel="prev" title="pipeline.extern.tsys_contamination.exp_rescale" href="pipeline.extern.tsys_contamination.exp_rescale.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.SDcalatmcorr.html">pipeline.extern.SDcalatmcorr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.TsysDataClassFile.html">pipeline.extern.TsysDataClassFile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.XmlObjectifier.html">pipeline.extern.XmlObjectifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.adopted.html">pipeline.extern.adopted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almahelpers.html">pipeline.extern.almahelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almarenorm.html">pipeline.extern.almarenorm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almarenorm_pl2023.html">pipeline.extern.almarenorm_pl2023</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.findContinuum.html">pipeline.extern.findContinuum</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.extern.tsys_contamination.html">pipeline.extern.tsys_contamination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.html">pipeline.extern</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.tsys_contamination.html">pipeline.extern.tsys_contamination</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.tsys_contamination.find_peaks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.extern.tsys_contamination.find_peaks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-extern-tsys-contamination-find-peaks">
+<h1>pipeline.extern.tsys_contamination.find_peaks<a class="headerlink" href="#pipeline-extern-tsys-contamination-find-peaks" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.find_peaks">
+<span class="sig-name descname"><span class="pre">find_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prominence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plateau_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/signal/_peak_finding.html#find_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.tsys_contamination.find_peaks" title="Link to this definition"></a></dt>
+<dd><p>Find peaks inside a signal based on peak properties.</p>
+<p>This function takes a 1-D array and finds all local maxima by
+simple comparison of neighboring values. Optionally, a subset of these
+peaks can be selected by specifying conditions for a peak’s properties.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>x</strong> (<em>sequence</em>) – A signal with peaks.</p></li>
+<li><p><strong>height</strong> (<em>number or ndarray or sequence, optional</em>) – Required height of peaks. Either a number, <code class="docutils literal notranslate"><span class="pre">None</span></code>, an array matching
+<cite>x</cite> or a 2-element sequence of the former. The first element is
+always interpreted as the  minimal and the second, if supplied, as the
+maximal required height.</p></li>
+<li><p><strong>threshold</strong> (<em>number or ndarray or sequence, optional</em>) – Required threshold of peaks, the vertical distance to its neighboring
+samples. Either a number, <code class="docutils literal notranslate"><span class="pre">None</span></code>, an array matching <cite>x</cite> or a
+2-element sequence of the former. The first element is always
+interpreted as the  minimal and the second, if supplied, as the maximal
+required threshold.</p></li>
+<li><p><strong>distance</strong> (<em>number, optional</em>) – Required minimal horizontal distance (&gt;= 1) in samples between
+neighbouring peaks. Smaller peaks are removed first until the condition
+is fulfilled for all remaining peaks.</p></li>
+<li><p><strong>prominence</strong> (<em>number or ndarray or sequence, optional</em>) – Required prominence of peaks. Either a number, <code class="docutils literal notranslate"><span class="pre">None</span></code>, an array
+matching <cite>x</cite> or a 2-element sequence of the former. The first
+element is always interpreted as the  minimal and the second, if
+supplied, as the maximal required prominence.</p></li>
+<li><p><strong>width</strong> (<em>number or ndarray or sequence, optional</em>) – Required width of peaks in samples. Either a number, <code class="docutils literal notranslate"><span class="pre">None</span></code>, an array
+matching <cite>x</cite> or a 2-element sequence of the former. The first
+element is always interpreted as the  minimal and the second, if
+supplied, as the maximal required width.</p></li>
+<li><p><strong>wlen</strong> (<em>int, optional</em>) – Used for calculation of the peaks prominences, thus it is only used if
+one of the arguments <cite>prominence</cite> or <cite>width</cite> is given. See argument
+<cite>wlen</cite> in <cite>peak_prominences</cite> for a full description of its effects.</p></li>
+<li><p><strong>rel_height</strong> (<em>float, optional</em>) – Used for calculation of the peaks width, thus it is only used if <cite>width</cite>
+is given. See argument  <cite>rel_height</cite> in <cite>peak_widths</cite> for a full
+description of its effects.</p></li>
+<li><p><strong>plateau_size</strong> (<em>number or ndarray or sequence, optional</em>) – Required size of the flat top of peaks in samples. Either a number,
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, an array matching <cite>x</cite> or a 2-element sequence of the former.
+The first element is always interpreted as the minimal and the second,
+if supplied as the maximal required plateau size.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.2.0.</span></p>
+</div>
+</li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>peaks</strong> (<em>ndarray</em>) – Indices of peaks in <cite>x</cite> that satisfy all given conditions.</p></li>
+<li><p><strong>properties</strong> (<em>dict</em>) – A dictionary containing properties of the returned peaks which were
+calculated as intermediate results during evaluation of the specified
+conditions:</p>
+<ul>
+<li><dl class="simple">
+<dt>’peak_heights’</dt><dd><p>If <cite>height</cite> is given, the height of each peak in <cite>x</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’left_thresholds’, ‘right_thresholds’</dt><dd><p>If <cite>threshold</cite> is given, these keys contain a peaks vertical
+distance to its neighbouring samples.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’prominences’, ‘right_bases’, ‘left_bases’</dt><dd><p>If <cite>prominence</cite> is given, these keys are accessible. See
+<cite>peak_prominences</cite> for a description of their content.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’width_heights’, ‘left_ips’, ‘right_ips’</dt><dd><p>If <cite>width</cite> is given, these keys are accessible. See <cite>peak_widths</cite>
+for a description of their content.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>’plateau_sizes’, left_edges’, ‘right_edges’</dt><dd><p>If <cite>plateau_size</cite> is given, these keys are accessible and contain
+the indices of a peak’s edges (edges are still part of the
+plateau) and the calculated plateau sizes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.2.0.</span></p>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+<p>To calculate and return properties without excluding peaks, provide the
+open interval <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> as a value to the appropriate argument
+(excluding <cite>distance</cite>).</p>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Warns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>PeakPropertyWarning</strong> – Raised if a peak’s properties have unexpected values (see
+<cite>peak_prominences</cite> and <cite>peak_widths</cite>).</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function may return unexpected results for data containing NaNs. To
+avoid this, NaNs should either be removed or replaced.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_peaks_cwt</span></code></dt><dd><p>Find peaks using the wavelet transformation.</p>
+</dd>
+<dt><a class="reference internal" href="pipeline.extern.tsys_contamination.peak_prominences.html#pipeline.extern.tsys_contamination.peak_prominences" title="pipeline.extern.tsys_contamination.peak_prominences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peak_prominences</span></code></a></dt><dd><p>Directly calculate the prominence of peaks.</p>
+</dd>
+<dt><a class="reference internal" href="pipeline.extern.tsys_contamination.peak_widths.html#pipeline.extern.tsys_contamination.peak_widths" title="pipeline.extern.tsys_contamination.peak_widths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peak_widths</span></code></a></dt><dd><p>Directly calculate the width of peaks.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>In the context of this function, a peak or local maximum is defined as any
+sample whose two direct neighbours have a smaller amplitude. For flat peaks
+(more than one sample of equal amplitude wide) the index of the middle
+sample is returned (rounded down in case the number of samples is even).
+For noisy signals the peak locations can be off because the noise might
+change the position of local maxima. In those cases consider smoothing the
+signal before searching for peaks or use other peak finding and fitting
+methods (like <cite>find_peaks_cwt</cite>).</p>
+<p>Some additional comments on specifying conditions:</p>
+<ul class="simple">
+<li><p>Almost all conditions (excluding <cite>distance</cite>) can be given as half-open or
+closed intervals, e.g., <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">None)</span></code> defines the half-open
+interval <span class="math notranslate nohighlight">\([1, \infty]\)</span> while <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">1)</span></code> defines the interval
+<span class="math notranslate nohighlight">\([-\infty, 1]\)</span>. The open interval <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> can be specified
+as well, which returns the matching properties without exclusion of peaks.</p></li>
+<li><p>The border is always included in the interval used to select valid peaks.</p></li>
+<li><p>For several conditions the interval borders can be specified with
+arrays matching <cite>x</cite> in shape which enables dynamic constrains based on
+the sample position.</p></li>
+<li><p>The conditions are evaluated in the following order: <cite>plateau_size</cite>,
+<cite>height</cite>, <cite>threshold</cite>, <cite>distance</cite>, <cite>prominence</cite>, <cite>width</cite>. In most cases
+this order is the fastest one because faster operations are applied first
+to reduce the number of peaks that need to be evaluated later.</p></li>
+<li><p>While indices in <cite>peaks</cite> are guaranteed to be at least <cite>distance</cite> samples
+apart, edges of flat peaks may be closer than the allowed <cite>distance</cite>.</p></li>
+<li><p>Use <cite>wlen</cite> to reduce the time it takes to evaluate the conditions for
+<cite>prominence</cite> or <cite>width</cite> if <cite>x</cite> is large or has many local maxima
+(see <cite>peak_prominences</cite>).</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.1.0.</span></p>
+</div>
+<p class="rubric">Examples</p>
+<p>To demonstrate this function’s usage we use a signal <cite>x</cite> supplied with
+SciPy (see <cite>scipy.misc.electrocardiogram</cite>). Let’s find all peaks (local
+maxima) in <cite>x</cite> whose amplitude lies above 0.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="kn">import</span> <span class="n">electrocardiogram</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">electrocardiogram</span><span class="p">()[</span><span class="mi">2000</span><span class="p">:</span><span class="mi">4000</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We can select peaks below 0 with <code class="docutils literal notranslate"><span class="pre">height=(None,</span> <span class="pre">0)</span></code> or use arrays matching
+<cite>x</cite> in size to reflect a changing condition for different parts of the
+signal.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">border</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">border</span><span class="p">,</span> <span class="n">border</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">border</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Another useful condition for periodic signals can be given with the
+<cite>distance</cite> argument. In this case, we can easily select the positions of
+QRS complexes within the electrocardiogram (ECG) by demanding a distance of
+at least 150 samples.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">peaks</span><span class="p">)</span>
+<span class="go">array([186, 180, 177, 171, 177, 169, 167, 164, 158, 162, 172])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Especially for noisy signals peaks can be easily grouped by their
+prominence (see <cite>peak_prominences</cite>). E.g., we can select all peaks except
+for the mentioned QRS complexes by limiting the allowed prominence to 0.6.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span><span class="p">,</span> <span class="n">properties</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prominence</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;prominences&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="go">0.5049999999999999</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And, finally, let’s examine a different section of the ECG which contains
+beat forms of different shape. To select only the atypical heart beats, we
+combine two conditions: a minimal prominence of 1 and width of at least 20
+samples.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">electrocardiogram</span><span class="p">()[</span><span class="mi">17000</span><span class="p">:</span><span class="mi">18000</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span><span class="p">,</span> <span class="n">properties</span> <span class="o">=</span> <span class="n">find_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prominence</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;prominences&quot;</span><span class="p">],</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;widths&quot;</span><span class="p">]</span>
+<span class="go">(array([1.495, 2.3  ]), array([36.93773946, 39.32723577]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">peaks</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">vlines</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">peaks</span><span class="p">,</span> <span class="n">ymin</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span> <span class="o">-</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;prominences&quot;</span><span class="p">],</span>
+<span class="gp">... </span>           <span class="n">ymax</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">peaks</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;width_heights&quot;</span><span class="p">],</span> <span class="n">xmin</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;left_ips&quot;</span><span class="p">],</span>
+<span class="gp">... </span>           <span class="n">xmax</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;right_ips&quot;</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;C1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.extern.tsys_contamination.exp_rescale.html" class="btn btn-neutral float-left" title="pipeline.extern.tsys_contamination.exp_rescale" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm.html" class="btn btn-neutral float-right" title="pipeline.extern.tsys_contamination.find_prominent_peaks_in_atm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

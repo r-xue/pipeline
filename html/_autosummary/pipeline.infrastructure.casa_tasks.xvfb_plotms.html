@@ -1,0 +1,767 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.casa_tasks.xvfb_plotms &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.casa_tasks.CasaTasks" href="pipeline.infrastructure.casa_tasks.CasaTasks.html" />
+    <link rel="prev" title="pipeline.infrastructure.casa_tasks.wvrgcal" href="pipeline.infrastructure.casa_tasks.wvrgcal.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.basetask.html">pipeline.infrastructure.basetask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.html">pipeline.infrastructure.callibrary</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.infrastructure.casa_tasks.html">pipeline.infrastructure.casa_tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.casa_tools.html">pipeline.infrastructure.casa_tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.contfilehandler.html">pipeline.infrastructure.contfilehandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.daskhelpers.html">pipeline.infrastructure.daskhelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.displays.html">pipeline.infrastructure.displays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.docutils.html">pipeline.infrastructure.docutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.eventbus.html">pipeline.infrastructure.eventbus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.exceptions.html">pipeline.infrastructure.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executeppr.html">pipeline.infrastructure.executeppr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executevlappr.html">pipeline.infrastructure.executevlappr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.filenamer.html">pipeline.infrastructure.filenamer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imageheader.html">pipeline.infrastructure.imageheader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imagelibrary.html">pipeline.infrastructure.imagelibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.jobrequest.html">pipeline.infrastructure.jobrequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.logging.html">pipeline.infrastructure.logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.mpihelpers.html">pipeline.infrastructure.mpihelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.new_pipeline_task.html">pipeline.infrastructure.new_pipeline_task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipeline_statistics.html">pipeline.infrastructure.pipeline_statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipelineqa.html">pipeline.infrastructure.pipelineqa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.project.html">pipeline.infrastructure.project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.refantflag.html">pipeline.infrastructure.refantflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.renderer.html">pipeline.infrastructure.renderer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.sessionutils.html">pipeline.infrastructure.sessionutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.tablereader.html">pipeline.infrastructure.tablereader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.taskregistry.html">pipeline.infrastructure.taskregistry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.timetracker.html">pipeline.infrastructure.timetracker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.utils.html">pipeline.infrastructure.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.vdp.html">pipeline.infrastructure.vdp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.version.html">pipeline.infrastructure.version</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.casa_tasks.html">pipeline.infrastructure.casa_tasks</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.casa_tasks.xvfb_plotms</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.infrastructure.casa_tasks.xvfb_plotms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-infrastructure-casa-tasks-xvfb-plotms">
+<h1>pipeline.infrastructure.casa_tasks.xvfb_plotms<a class="headerlink" href="#pipeline-infrastructure-casa-tasks-xvfb-plotms" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.infrastructure.casa_tasks.xvfb_plotms">
+<span class="sig-name descname"><span class="pre">xvfb_plotms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridrows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridcols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdatacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xinterp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydatacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yinterp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxislocation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timerange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polarization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msselect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">averagedata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgchannel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgtime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgfield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgbaseline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgantenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avgspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freqframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">veldef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RADIO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extendflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extcorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extchannel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteraxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xselfscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yselfscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsharedaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ysharedaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">customsymbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbolshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'autoscaling'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbolsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbolcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0000ff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbolfill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symboloutline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coloraxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">customflaggedsymbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaggedsymbolshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'circle'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaggedsymbolsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaggedsymbolcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ff0000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaggedsymbolfill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fill'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaggedsymboloutline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xconnector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeconnector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">titlefont</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xaxisfont</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaxisfont</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showmajorgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">majorwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">majorstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">majorcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'B0B0B0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showminorgrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minorwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minorstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minorcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D0D0D0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showlegend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legendposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exprange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showgui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearplots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headeritems</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showatm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showtsky</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showimage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorizeoverlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/casa_tasks.html#xvfb_plotms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.casa_tasks.xvfb_plotms" title="Link to this definition"></a></dt>
+<dd><p>plotms —- A plotter/interactive flagger for visibility data.</p>
+<p>Task for plotting and interacting with visibility data and
+calibration tables.</p>
+<p>Plotms provides a variety of axis choices (including data column)
+along with selection, averaging, and transformation options for
+MeasurementSets.  Flag extension parameters are also available for
+interactive flagging operations in the plotter.</p>
+<p>All of the provided parameters can also be set using the GUI once
+the application has been launched or through the plotms tool (pm).</p>
+<p>Most of the basic plotms functions will work for calibration tables.
+The correlation selection string may be used to select polarization
+in a cal table, including ratio plots (“/”), or use
+polarization selection.  The antenna selection string is used to
+select antenna1 only, rather than baselines as in an MS. When
+plotting parameterized CalTables, such as delays, antpos, gaincurve,
+or opacity, plotms will plot the simple parameters contained in the
+table, not the effective amplitudes or phases sampled at observing
+times, frequencies etc.  BPOLY and GSPLINE tables are supported but
+interactive flagging is not allowed.  Features currently unsupported
+for CalTables include transformations (velocity conversions, etc.)
+and some axis and selection options which do not exist in these
+tables. In the plotms GUI, many options irrelevant for CalTables are
+not hidden when interacting with a CalTable, and such settings will
+be ignored (when benign) or cause an error message.</p>
+<p>——— parameter descriptions ———————————————</p>
+<p>vis                  Input MS or CalTable (blank for none)
+caltable             Input CalTable (blank for none)
+gridrows             Number of subplot rows
+gridcols             Number of subplot columns
+rowindex             Row location of the plot (0-based)
+colindex             Column location of the plot (0-based)
+plotindex            Index to address a subplot (0-based)
+xaxis                Plot x-axis (blank for default/current)
+xdatacolumn          Data column to use for x-axis (blank for default/current).  Note that unspecified residuals are complex (vector) differences or ratios.
+xframe               Coordinate frame to use for x-axis
+xinterp              Interpolation method for x-axis
+yaxis                Plot y-axis (blank for default/current)
+ydatacolumn          Data column to use for y-axis (blank for default/current). Note that unspecified residuals are complex (vector) differences or ratios.
+yframe               Coordinate frame to use for y-axis
+yinterp              Interpolation method for y-axis
+yaxislocation        Location of the y-axis (blank for default: left)
+selectdata           Enable data selection parameters
+field                Field names or ids (blank for all)
+spw                  Spectral windows:channels (blank for all)
+timerange            Time range (blank for all)
+uvrange              UV range (blank for all)
+antenna              Baseline/antenna names or ids (blank for all)
+scan                 Scan numbers (blank for all)
+correlation          Correlations/polarizations (blank for all)
+polarization         Polarizations (blank for all)
+antpos               Antenna positions (blank for all)
+array                (Sub)array numbers (blank for all)
+observation          Observation IDs (blank for all)
+intent               Observing intent (blank for all)
+feed                 Feed numbers (blank for all)
+msselect             MSSelection TaQL string (blank for none)
+averagedata          Enable data averaging parameters
+avgchannel           Average over channel (blank = False, otherwise value in channels)
+avgtime              Average over time (blank = False, otherwise value in seconds)
+avgscan              Average over scans. Only valid with time averaging
+avgfield             Average over fields. Only valid with time averaging
+avgbaseline          Average over all baselines (mutually exclusive with avgantenna)
+avgantenna           Average per antenna (mutually exclusive with avgbaseline)
+avgspw               Average over all spectral windows
+scalar               Scalar averaging (False=vector averaging)
+transform            Enable data transformations
+freqframe            The frame in which to render frequency and velocity axes
+restfreq             Rest frequency to use for velocity conversions
+veldef               The definition in which to render velocity
+phasecenter          The direction coordinates of the desired center
+extendflag           Extend flagging to other data points not plotted
+extcorr              Extend flags based on correlation
+extchannel           Extend flags based on channel
+iteraxis             The axis over which to iterate
+xselfscale           When True, iterated plots have a common x-axis range (scale).
+yselfscale           When True, iterated plots have a common y-axis range (scale).
+xsharedaxis          Iterated plots on a grid share a common external x-axis per column. Must also set xselfscale=True and gridrows&gt;1.
+ysharedaxis          Iterated plots on a grid share a common external y-axis per row. Must also set yselfscale=True and gridcols&gt;1.
+customsymbol         Enable custom symbol(s) for unflagged points
+symbolshape          Shape of plotted unflagged symbols
+symbolsize           Size of plotted unflagged symbols
+symbolcolor          Color (name or hex code) of plotted unflagged symbols
+symbolfill           Fill type of plotted unflagged symbols
+symboloutline        Outline plotted unflagged symbols
+coloraxis            Selects data axis for colorizing
+customflaggedsymbol  Enable custom symbol(s) for flagged points
+flaggedsymbolshape   Shape of plotted flagged symbols
+flaggedsymbolsize    Size of plotted flagged symbols
+flaggedsymbolcolor   Color (name or hex code) of plotted flagged symbols
+flaggedsymbolfill    Fill type of plotted flagged symbols
+flaggedsymboloutline Outline plotted flagged symbols
+xconnector           Set connector for data points (blank=”none”; “line”,”step”)
+timeconnector        Connect points by time rather than x-axis
+plotrange            Plot axes ranges: [xmin,xmax,ymin,ymax]
+title                Title at top of plot
+titlefont            Font size for plot title
+xlabel               Text for horizontal x-axis. Blank for default.
+xaxisfont            Font size for x-axis label
+ylabel               Text for vertical y-axis. Blank for default.
+yaxisfont            Font size for y-axis label
+showmajorgrid        Show major grid lines
+majorwidth           Line width in pixels of major grid lines
+majorstyle           Major grid line style
+majorcolor           Color (name or hex code) of major grid lines
+showminorgrid        Show minor grid lines
+minorwidth           Line width in pixels of minor grid lines
+minorstyle           Minor grid line style
+minorcolor           Color (name or hex code) of minor grid lines
+showlegend           Show a legend on the plot.
+legendposition       Legend position, default upperRight.
+plotfile             Name of plot file to save automatically
+expformat            Export format type. If not provided, plotfile extension will be used to determine type.
+verbose              Include metadata in text export
+exprange             Range of iteration plots to export, one plotfile per page.  Multipage pdf exports are not supported.
+highres              Use high resolution
+dpi                  DPI of exported plot
+width                Width in pixels of exported plot
+height               Height in pixels of exported plot
+overwrite            Overwrite plot file if it already exists
+showgui              Show GUI
+clearplots           Remove any existing plots so new ones can replace them.
+callib               Calibration library string or filename for on-the-fly calibration.
+headeritems          Comma-separated list of pre-defined page header items.
+showatm              Compute and overlay the atmospheric transmission curve
+showtsky             Compute and overlay the sky temperature curve
+showimage            Compute and overlay the image sideband curve
+colorizeoverlay      Colorize the curve overlay using coloraxis
+[1;42mRETURNS[1;m                 void</p>
+<p>——— examples ———————————————————–</p>
+<p>Task for plotting and interacting with visibility
+data.  Limited support for caltable plotting is also
+included as of CASA v4.1.</p>
+<p>A variety of axes choices (including data column) along
+with MS selection and averaging options are provided for data
+selection.  Flag extension parameters are also available for
+flagging operations in the plotter.</p>
+<p>All of the provided parameters can also be set using the GUI once
+the application has been launched.  Additional and more specific
+operations are available through the GUI and/or through the plotms
+tool (pm).</p>
+<p>Most basic functions (plotting, iteration, locate, flagging)
+will work for most CalTables. Parameterized CalTables
+(delays, antpos, gaincurve, opacity), will, at best, currently
+just plot the simple parameters contained in the
+table, not the effective amplitudes or phases sampled at
+observing times, frequencies etc.  BPOLY and GSPLINE tables
+are supported.   Features currently unsupported for
+CalTables include transformation options, some selection options
+depending on table type, and MS-based axes choices.  In the plotms
+GUI, many options irrelevant for CalTables are not hidden when
+interacting with a CalTable, and such settings will be ignored
+(when benign) or cause an error message.</p>
+<p>Keyword arguments:
+vis – input MS or CalTable
+default: ‘’  (will merely launch the gui unless caltable set)
+caltable – input CalTable
+default: ‘’  (will merely launch the gui unless vis set)
+gridrows – Number of subplot rows
+default: 1
+gridcols – Number of subplot columns
+default: 1
+rowindex – Row location of the subplot (0-based).
+default: 0
+colindex – Column location of the subplot (0-based).
+default: 0
+plotindex – Index to address a subplot (0-based).
+default: 0
+xaxis, yaxis – what to plot on the two axes
+default: ‘’ (defaults are xaxis=’time’,
+yaxis=’amp’ on first execution;
+thereafter the most recent
+settings are used)
+valid options (=indicates valid synonyms):
+MS Ids and other meta info:
+‘scan’   (number)
+‘field’  (index)
+‘time’,
+‘interval’=’timeint’=’timeinterval’=’time_interval’
+‘spw’    (index)
+‘chan’=’channel’    (index)
+‘freq’=’frequency’  (GHz)
+‘vel’=’velocity’   (km/s)
+‘corr’=’correlation’  (index)
+‘ant1’=’antenna1’   (index)
+‘ant2’=’antenna2’   (index)
+‘baseline’  (a baseline index)
+‘row’   (absoute row Id from the MS)
+‘observation’ (index)
+‘intent’      (index)
+‘feed1’       (index)
+‘feed2’       (index)
+Visibility values, flags:
+‘amp’=’amplitude’
+‘phase’  (deg)
+‘real’
+‘imag’=’imaginary’
+‘wt’=’weight’  (unchannelized)
+‘wtsp’=’weightspectrum’
+‘flag’
+‘flagrow’
+Observational geometry:
+‘uvdist’  (meters)
+‘uvwave’=’uvdistl’=’uvdist_l’  (wavelengths, per channel)
+‘u’  (meters)
+‘v’  (meters)
+‘w’  (meters)
+‘uwave’  (‘u’ in wavelengths, per channel)
+‘vwave’  (‘v’ in wavelengths, per channel)
+‘wwave’  (‘w’ in wavelengths, per channel)
+‘azimuth’  (at array reference; degrees)
+‘elevation’  (at array reference; degrees)
+‘hourang’=’hourangle’  (at array reference; hours)
+‘parang’=’parangle’=’parallacticangle’  (at array reference; degrees)
+Antenna-based:
+‘ant’=’antenna’
+‘ant-azimuth’
+‘ant-elevation’
+‘ant-ra’
+‘ant-dec’
+‘ant-parang’=’ant-parangle’
+Calibration:
+‘gainamp’=’gamp’
+‘gainphase’=’gphase’
+‘gainreal’=’greal’
+‘gainimag’=’gimag’
+‘delay’=’del’
+‘opacity’=’opac’
+‘swpower’=’swp’=’switchedpower’=’spgain’
+‘poln’=’polarization’  (index)
+‘antpos’=’AntPos’</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span> <span class="n">expandable</span> <span class="n">parameters</span>
+<span class="go">xdatacolumn,</span>
+<span class="go">ydatacolumn  -- data column to use for Visibility values:</span>
+<span class="go">default: &#39;&#39; (&#39;data&#39; on first execution;</span>
+<span class="go">thereafter the most recent</span>
+<span class="go">setting is used)</span>
+<span class="go">valid options:  &#39;data&#39;      (observed)</span>
+<span class="go">&#39;corrected&#39;=&#39;corr&#39;</span>
+<span class="go">&#39;model&#39;</span>
+<span class="go">&#39;residual&#39;  (aliases &#39;corrected-model&#39;)</span>
+<span class="go">&#39;corrected-model&#39;</span>
+<span class="go">&#39;data-model&#39;</span>
+<span class="go">&#39;data/model&#39;</span>
+<span class="go">&#39;corected/model&#39;</span>
+<span class="go">&#39;float&#39;</span>
+<span class="go">Note that residuals are complex (vector) differences or ratios.</span>
+</pre></div>
+</div>
+<p>selectdata – data selection parameters flag
+default: True  (reveals data selection parameters
+described below)
+Consult listobs output for data selection values,
+and see help par.selectdata for more detailed
+information on syntax; also, visit
+<a class="reference external" href="http://casa.nrao.edu/other_doc.shtml">http://casa.nrao.edu/other_doc.shtml</a> and click
+on “Measurement Set selection syntax” for more
+tips on using data selection parameters in CASA)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">selectdata</span> <span class="n">expandable</span> <span class="n">parameters</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>field – Select field using field id(s) or field name(s).
+default: ‘’=all fields
+If field string is a non-negative integer, it is assumed a
+field index,  otherwise, it is assumed a field name
+field=’0~2’; field ids 0,1,2
+field=’0,4,5~7’; field ids 0,4,5,6,7
+field=’3C286,3C295’; field named 3C286 and 3C295
+field = ‘3,4C*’; field id 3, all names starting with 4C
+spw – Select spectral window/channels
+type ‘help par.selection’ for more examples.
+spw=’0~2,4’; spectral windows 0,1,2,4 (all channels)
+spw=’&lt;2’;  spectral windows less than 2 (i.e. 0,1)
+spw=’0:5~61’; spw 0, channels 5 to 61, INCLUSIVE
+spw=’<a href="#id1"><span class="problematic" id="id2">*</span></a>:5~61’; all spw with channels 5 to 61
+spw=’0,10,3:3~45’; spw 0,10 all channels, spw 3, channels 3 to 45.
+spw=’0~2:2~6’; spw 0,1,2 with channels 2 through 6 in each.
+spw=’0:0~10;15~60’; spectral window 0 with channels 0-10,15-60
+NOTE ‘;’ to separate channel selections</p>
+<p>timerange  – Select data based on time range:
+default = ‘’ (all); examples,
+timerange = ‘YYYY/MM/DD/hh:mm:ss~YYYY/MM/DD/hh:mm:ss’
+Note: if YYYY/MM/DD is missing date defaults to first day in data set
+timerange=’09:14:0~09:54:0’ picks 40 min on first day
+timerange= ‘25:00:00~27:30:00’ picks 1 hr to 3 hr 30min on NEXT day
+timerange=’09:44:00’ pick data within one integration of time
+timerange=’&gt;10:24:00’ data after this time
+uvrange – Select data within uvrange (default units meters)
+default: ‘’ (all); example:
+uvrange=’0~1000klambda’; uvrange from 0-1000 kilo-lambda
+uvrange=’&gt;4klambda’;uvranges greater than 4 kilo lambda</p>
+<p>antenna – Select data based on antenna/baseline
+default: ‘’ (all, including auto-correlations, if present)
+If antenna string is a non-negative integer, it is assumed an
+antenna index, otherwise, it is assumed as an antenna name
+antenna=’5&amp;6’; baseline between antenna index 5 and index 6.
+antenna=’!ea02’; exclude EVLA antenna 2.
+antenna=’ea13;!ea22’; EVLA antenna 13, excluding antenna 22.
+antenna=’VA05&amp;VA06’; baseline between VLA antenna 5 and 6.
+antenna=’5&amp;6;7&amp;8’; baselines with indices 5-6 and 7-8
+antenna=’5’; all baselines with antenna index 5
+antenna=’05’; all baselines with antenna number 05 (VLA old name)
+antenna=’5,6,10’; all baselines with antennas 5,6,10 index numbers
+NB: For explicit selections, use a single ampersand (&amp;) to
+select only cross-correlations among the specified antennas,
+double ampersands (&amp;&amp;) to select cross- and
+auto-correlations among the specified antennas, and
+triple ampersands (&amp;&amp;&amp;) to select only
+auto-correlations.  E.g.:
+antenna=’<em>&amp;’; selects all cross-correlation baseline
+(excludes all auto-correlations)
+antenna=’*&amp;&amp;&amp;’; selects all auto-correlation baselines
+(excludes all cross-correlations)
+antenna=’1&amp;&amp;1,2,3’; selects baselines 1-1 (auto), 1-2,1-3 (cross)
+antenna=’VA05&amp;&amp;&amp;’; selects the VA05 autocorrelation
+See the link noted above for more information.
+scan – Scan numbers or ranges.
+default: ‘’  (all scans)
+scan=’1,2,6,43’; scans 1, 2, 6, and 43
+scan=’3~14’; scans 3 through 14, inclusive
+correlation – Select by correlation (polarization when plotting cal tables)
+default: ‘’  (all correlations/polarizations)
+For measurement sets: ‘RR’,’RL’,’LR’,’LL’,’XX’,’XY’,’YX’,’YY’
+For Stokes parameters and polarization quantities: ‘I’, ‘Q’, ‘U’, ‘V’,
+‘Ptotal’, ‘Plinear’, ‘PFtotal’, ‘PFlinear’, ‘Pangle’
+For cal tables: ‘R’,’L’,’RL’,’X’,’Y’,’XY’,’/’ (for ratio plots)
+or any comma-separated combination; use basis (R/L or X/Y)
+appropriate to the table
+polarization – Select by polarization when plotting cal tables
+default: ‘’  (all polarizations)
+options: ‘R’,’L’,’RL’,’X’,’Y’,’XY’,’/’ (for ratio plots)
+use basis (R/L or X/Y) appropriate to the table
+antpos – Select by antenna position when plotting KAntPos Jones cal tables.
+Ignored for MS and other cal table types.
+default: ‘’  (all positions)
+antenna position options for KAntPos Jones table: ‘X’,’Y’,’Z’
+or a combination ‘XY’, ‘XZ’, ‘YZ’, ‘XYZ’
+array – Select the array id
+default: ‘’  (all array ids)
+observation – Select by observation ID(s).
+default: ‘’–&gt;all;
+observation=’0’ (select obsID 0)
+intent – Select observing intent
+default: ‘’  (no selection by intent)
+intent=’*BANDPASS</em>’  (selects data labelled with
+BANDPASS intent)
+feed – Select by feed IDs
+default: ‘’ (all feeds)
+feed=’1~2’
+msselect – Optional TaQL data selection</p>
+<p>averagedata – data averaging parameters flag
+default: True   (reveals expandable parameters
+described below)
+&gt;&gt;&gt; averagedata expandable parameters
+avgchannel – average over channel?  either blank for none, or a value
+in channels.
+default: ‘’ (no channel averaging).
+avgtime – average over time?  either blank for none, or a value in
+seconds.
+default: ‘’ (no time averaging).
+avgscan – average over scans?  only valid if time averaging is turned
+on.
+default: False.
+avgfield – average over fields?  only valid if time averaging is
+turned on.
+default: False.
+avgbaseline – average over selected baselines; mutually
+exclusive with avgantenna.
+default: False.  (no averaging over baseline)
+avgantenna – form per-antenna averages; mutually exclusive with
+avgbaseline.
+default: False.   (no per-antenna averaging)
+avgspw – average over selected spectral windows?
+default: False.  (no average of spectral windows)
+scalar – scalar averaging?
+default: False  (i.e., do vector averaging)</p>
+<p>transform – apply various transformations on data for plotting
+default: True
+&gt;&gt;&gt; transform expandable parameters
+freqframe – the coordinate frame in which to render frequency and velocity axes
+default: ‘’  (unspecified: will use frame in which data were taken)
+options: LSRK, LSRD, BARY, GEO, TOPO, GALACTO, LGROUP, CMB
+restfreq – the rest frequency to use in velocity conversions (MHz)
+default: ‘’ (use spw central frequency and show relative velocity)
+example: ‘22235.08MHz’
+veldef – the velocity definition to use
+default: ‘RADIO’
+options: ‘RADIO’,’OPT’,’TRUE’
+phasecenter – the direction coordinate of the desired center.
+default: ‘’ (use phasecenter in MeasurementSet)</p>
+<p>extendflag – have flagging extend to other data points?
+default: False.
+&gt;&gt;&gt; extendflag expandable parameters
+extcorr – extend flags based on correlation?
+default: False.
+extchannel – extend flags based on channel?</p>
+<p>iteraxis – axis upon which iterate plots (one plot per page, for now)
+default: ‘’ (no iteration)
+options: ‘scan’,’field’,’spw’,’baseline’,’antenna’,’time’,’corr’
+additional caltable options: ‘poln’,’antpos’ (for KAntPos Jones tables)
+&gt;&gt;&gt; iteraxis expandable parameters
+xselfscale – When True, iterated plots have a common x-axis range (scale).
+yselfscale – When True, iterated plots have a common y-axis range (scale).
+default: false, which will scale all plots individually
+xsharedaxis – Iterated plots on a grid share a common external x-axis per column (must also set xselfscale=True and gridcols&gt;1)
+default: false, each plot will have its own x-axis.
+ysharedaxis – Iterated plots on a grid share a common external y-axis per row (must also set yselfscale=True and gridrows&gt;1)
+default: false, each plot will have its own y-axis.</p>
+<p>customsymbol – If true, use a custom symbol for drawing unflagged points
+default: False
+&gt;&gt;&gt; customsymbol expandable parameters
+symbolshape – If true, use a custom shape to draw unflagged symbols
+default: ‘autoscaling’ (ignores symbolsize)
+options: ‘autoscaling’, ‘circle’, ‘square’, ‘diamond’, ‘pixel’, ‘nosymbol’
+symbolsize – size of the unflagged symbols in pixels
+default: 2
+symbolcolor – color to use for unflagged symbols; can be a RGB hex code or a color name
+default: ‘0000ff’
+example: ‘purple’
+symbolfill – type of fill to use for unflagged symbols
+default: ‘fill’
+options: ‘fill’, ‘mesh1’, ‘mesh2’, ‘mesh3’, ‘nofill’
+symboloutline – If true, outline unflagged symbols in black</p>
+<p>coloraxis – axis upon which to colorize the plotted points
+default: ‘’  (use a single color for all points)
+options (= indicates synonyms):
+‘scan’,  ‘field’,  ‘spw’,  ‘antenna1’=’ant1’,  ‘antenna2’=’ant2’,
+‘baseline’,  ‘channel’=’chan’,  ‘corr’=’correlation’, ‘time’,
+‘observation’, ‘intent’
+additional caltable options: ‘poln’=’polarization’,’antpos’ (for KAntPos Jones tables)</p>
+<p>customflaggedsymbol – If true, use a custom symbol for drawing flagged points
+default: False
+&gt;&gt;&gt; customflaggedsymbol expandable parameters
+symbolshape – If true, use a custom shape to draw flagged symbols
+default: ‘nosymbol’
+options: ‘autoscaling’, ‘circle’, ‘square’, ‘diamond’, ‘pixel’, ‘nosymbol’
+symbolsize – size of the flagged symbols in pixels
+default: 2
+symbolcolor – color to use for flagged symbols; can be a RGB hex code or a color name
+default: ‘0000ff’
+example: ‘purple’
+symbolfill – type of fill to use for flagged symbols
+default: ‘fill’
+options: ‘fill’, ‘mesh1’, ‘mesh2’, ‘mesh3’, ‘nofill’
+symboloutline – If true, outline flagged symbols in black</p>
+<p>plotrange – manual plot axis ranges: [xmin,xmax,ymin,ymax]
+Does not affect data selection.
+default: []; both axes will be autoscaled according
+to the ranges found in the selected data
+If xmin=xmax (or ymin=ymax) then that axis will
+be autoscaled, e.g.:
+[0,0,-2.0,14.0]; autoscale the xaxis, and use
+ymin=-2.0, ymax=14.0</p>
+<p>title  – title along top of plot (called “canvas” in some places)
+titlefont – plot title font size
+default: 0 (autosize depending on grid)
+xlabel – text to label horizontal axis, with formatting using ‘%%’
+xaxisfont – x-axis font size
+default: 0 (autosize)
+ylabel – text to label horizontal axis, with formatting using ‘%%’
+yaxisfont – y-axis font size
+default: 0 (autosize)</p>
+<p>showmajorgrid  – show major grid lines
+default: False
+&gt;&gt;&gt;  showmajorgrid expandable parameters
+majorwidth  – line width in pixels of major grid lines
+majorstyle  – major grid line style: solid dash dot none
+majorcolor  – color in hex code of major grid lines</p>
+<p>showminorgrid  – show minor grid lines
+default: False
+&gt;&gt;&gt;  showminorgrid expandable parameters
+minorwidth  –  line width in pixels of minor grid lines
+minorstyle  –  minor grid line style: solid dash dot none
+minorcolor  –  color in hex code of minor grid lines</p>
+<p>plotfile – name of plot file to save automatically
+default: ‘’  (i.e., draw an interactive plot in the gui)
+&gt;&gt;&gt; plotfile expandable parameters
+expformat – export format type; if ‘txt’ is used an ASCII dump of the plotted points is generated (also available in the export tab)
+default:  ‘’   (plotfile extension will be used)
+options: ‘jpg’, ‘png’, ‘ps’, ‘pdf’, ‘txt’
+verbose – when export format is ‘txt’, print metadata for x and y values
+default: True
+exprange – pages to export for iteration plots
+default:   ‘’
+options: ‘current’, ‘all’
+highres – use high resolution in exported plot
+default: False (use screen resolution)
+dpi – DPI of exported plot
+default: -1 (not set)
+width – width of exported plot
+default: -1 (not set)
+height – height of exported plot
+default: -1 (not set)
+overwrite – overwrite plot file if it already exists
+default: False</p>
+<p>callib – calibration library string, list of strings, or filename
+default: ‘’</p>
+<p>showgui - Whether or not to display the plotting GUI
+default: True</p>
+<p>headeritems – append header items specific to this plot to the current list
+of page header items.
+Comma-separated string of header item selection keywords.
+Allowed keywords: ‘obsdate’,’obstime’,’filename’,’projid’,
+‘targname’,’targdir’,’telescope’,’observer’,
+‘ycolumn’
+default: ‘’
+example: ‘filename,projid,targname’</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.casa_tasks.wvrgcal.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.casa_tasks.wvrgcal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.casa_tasks.CasaTasks.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.casa_tasks.CasaTasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

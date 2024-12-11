@@ -1,0 +1,1094 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.applycal.qa.MeasurementSet &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hifa.tasks.applycal.qa.PIPE356Switches" href="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.html" />
+    <link rel="prev" title="pipeline.hifa.tasks.applycal.qa.DataSelection" href="pipeline.hifa.tasks.applycal.qa.DataSelection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.cli.html">pipeline.hifa.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.heuristics.html">pipeline.hifa.heuristics</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hifa.tasks.html">pipeline.hifa.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hifa.templates.html">pipeline.hifa.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.html">pipeline.hifa</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.html">pipeline.hifa.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.applycal.html">pipeline.hifa.tasks.applycal</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hifa.tasks.applycal.qa.html">pipeline.hifa.tasks.applycal.qa</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.applycal.qa.MeasurementSet</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hifa.tasks.applycal.qa.MeasurementSet.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hifa-tasks-applycal-qa-measurementset">
+<h1>pipeline.hifa.tasks.applycal.qa.MeasurementSet<a class="headerlink" href="#pipeline-hifa-tasks-applycal-qa-measurementset" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MeasurementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to store logical representation of a MeasurementSet (MS).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name of MeasurementSet, equivalent to file path to MeasurementSet.</p></li>
+<li><p><strong>session</strong> – Name of session associated with MS.</p></li>
+<li><p><strong>exclude_num_chans</strong> – Tuple containing spectral window sizes (in number of
+channels) used to filter out non-science-spectral-windows.</p></li>
+<li><p><strong>filesize</strong> – Disk size of MS.</p></li>
+<li><p><strong>acs_software_build_version</strong> – ALMA Common Software build version used to
+create this MS (None if not ALMA).</p></li>
+<li><p><strong>acs_software_version</strong> – ALMA Common Software version used to create this
+MS (None if not ALMA).</p></li>
+<li><p><strong>antenna_array</strong> – Antenna array information.</p></li>
+<li><p><strong>array_name</strong> – Name of array configuration.</p></li>
+<li><p><strong>correlator_name</strong> – The name of the correlator, populated from the
+PROCESSOR table. Example values: ALMA_ACA, ALMA_BASELINE.</p></li>
+<li><p><strong>data_column</strong> – A dictionary to store data type (key) and corresponding
+data column (value).</p></li>
+<li><p><strong>data_descriptions</strong> – A list of DataDescription objects associated with MS.</p></li>
+<li><p><strong>data_types_per_source_and_spw</strong> – A dictionary to store a list of
+available data types (values) in this MS per (source,spw) tuples
+(keys).</p></li>
+<li><p><strong>execblock_id</strong> – Execution Block ID for this MS (only for ALMA, VLA).</p></li>
+<li><p><strong>fields</strong> – A list of Field objects associated with MS.</p></li>
+<li><p><strong>observer</strong> – The name of the observer, as listed in the OBSERVATIONS table.</p></li>
+<li><p><strong>observing_modes</strong> – The name(s) of the Observing Mode(s) used for this MS,
+populated from the ASDM_SBSUMMARY table (empty list if not ALMA).</p></li>
+<li><p><strong>project_id</strong> – Project ID associated with this MS, as listed in the
+OBSERVATIONS table.</p></li>
+<li><p><strong>representative_target</strong> – A tuple of the name of representative source,
+frequency and bandwidth.</p></li>
+<li><p><strong>representative_window</strong> – A representative spectral window name.</p></li>
+<li><p><strong>scans</strong> – A list of Scan objects associated with MS.</p></li>
+<li><p><strong>schedblock_id</strong> – Scheduling Block ID for this MS (only for ALMA, VLA).</p></li>
+<li><p><strong>science_goals</strong> – A science goal information consists of min/max acceptable
+angular resolution, max allowed beam ratio, sensitivity, dynamic
+range, spectral dynamic range bandwidth (Cycle 10+), and SB name.</p></li>
+<li><p><strong>sources</strong> – A list of Source objects associated with MS.</p></li>
+<li><p><strong>spectral_windows</strong> – A list of SpectralWindow objects associated with MS.</p></li>
+<li><p><strong>spectralspec_spwmap</strong> – A dictionary to map each SpectralSpec to a list of
+corresponding spectral window IDs.</p></li>
+<li><p><strong>states</strong> – A list of State objects associated with MS.</p></li>
+<li><p><strong>derived_fluxes</strong> – Calibrated visibility based flux measurements derived
+during pipeline run, used in subsequent imaging stages.</p></li>
+<li><p><strong>flagcmds</strong> – A list of flag commands, typically populated by hifa_fluxcalflag.</p></li>
+<li><p><strong>fluxscale_fluxes</strong> – Flux measurements derived by CASA’s fluxscale during
+the hifa_gfluxscale task, for use by a subsequent hifa_polcal task
+(ALMA interferometry polarisation calibration only).</p></li>
+<li><p><strong>origin_ms</strong> – A path to the first generation MeasurementSet from which
+the current MS is generated. This is typically set by tasks such as
+h_mssplit, hif_mstransform, hifv_mstransform, hif_transformimagedata.</p></li>
+<li><p><strong>phase_calapps_for_check_sources</strong> – List of CalApplications for the phase
+calibration of the check source(s) generated during hifa_gfluxscale.
+These are used in a subsequent hifa_timegaincal task to overplot
+the phase calibration for check source in its Diagnostic Phase Vs.
+Time plots.</p></li>
+<li><p><strong>phasecal_mapping</strong> – A dictionary mapping phase calibrator fields to
+corresponding fields with TARGET or CHECK intent; typically
+populated by the hifa_spwphaseup task (ALMA-only).</p></li>
+<li><p><strong>phaseup_caltable_for_phase_rms</strong> – The bandpass phase-up caltable created
+during the hifa_bandpass task (prior to deriving the bandpass
+solution), for use in subsequent phase RMS stability assessment
+during the hifa_spwphaseup task (ALMA-interferometry-only).</p></li>
+<li><p><strong>reference_antenna_locked</strong> – If True, reference antenna is locked to
+prevent modification. Typically used in polarization calibration
+stages / recipes.</p></li>
+<li><p><strong>reference_spwmap</strong> – Vector of spectral window IDs, enabling flux scaling
+across spectral windows. Typically populated by the hifa_fluxcalflag
+task, and used by a subsequent hifa_gfluxscale task in its call to
+CASA <cite>fluxscale</cite> task (ALMA-interferometry-only).</p></li>
+<li><p><strong>spwmaps</strong> – Dictionary mapping (intent, field) keys to corresponding
+phase-up spectral window mapping to use for combining/mapping
+spectral windows; used in subsequent calibration tasks
+(ALMA-interferometry-only).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.all_colnames" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.all_colnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_colnames</span></code></a></p></td>
+<td><p>Return all available column names for this MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.data_colnames" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.data_colnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_colnames</span></code></a></p></td>
+<td><p>Return all data column names for this MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_all_spectral_windows" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_all_spectral_windows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_spectral_windows</span></code></a></p></td>
+<td><p>Return spectral windows corresponding to the given CASA-style spw argument.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_corrstring" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_corrstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alma_corrstring</span></code></a></p></td>
+<td><p>Get correlation string for ALMA for the science spectral windows.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_cycle_number" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_cycle_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alma_cycle_number</span></code></a></p></td>
+<td><p>Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_antenna" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_antenna</span></code></a></p></td>
+<td><p>Return Antenna(s) for given antenna selection in CASA format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_column" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_column</span></code></a></p></td>
+<td><p>Return the column name associated with a DataType in an MS domain object for given source and spectral window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_description" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_description</span></code></a></p></td>
+<td><p>Return the DataDescription in the MeasurementSet that matches the given criteria (spectral window or ID).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_type" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_type</span></code></a></p></td>
+<td><p>Return the DataType associated with a column in an MS domain object for given source and spectral window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_diffgain_mode" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_diffgain_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_diffgain_mode</span></code></a></p></td>
+<td><p>Determine if the intents and SpW setup in this measurement set are consistent with an observing mode that uses a differential gain calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_fields" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fields</span></code></a></p></td>
+<td><p>Get Fields from this MeasurementSet matching the given criteria.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_integration_time" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_integration_time</span></code></a></p></td>
+<td><p>Get the median integration time used to get data for the given intent.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_science_integration_time" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_science_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_science_integration_time</span></code></a></p></td>
+<td><p>Get the median integration time for science targets used to get data for the given intent.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_original_intent" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_original_intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_original_intent</span></code></a></p></td>
+<td><p>Get the original obs_modes that correspond to the given pipeline observing intent(s).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_representative_source_spw" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_representative_source_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_source_spw</span></code></a></p></td>
+<td><p>Get the representative target source object:</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_scans" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_scans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scans</span></code></a></p></td>
+<td><p>Return Scan(s) in MeasurementSet matching the given criteria (ID, intent, field, and/or spectral window).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_specs" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_specs</span></code></a></p></td>
+<td><p>Return list of all spectral specs used in the MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_window" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_window</span></code></a></p></td>
+<td><p>Return the SpectralWindow object matching the given identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_windows" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_windows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_windows</span></code></a></p></td>
+<td><p>Return spectral windows matching given criteria.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_state" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a></p></td>
+<td><p>Return State in MeasurementSet matching the given identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_times_on_source_per_field_id" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_times_on_source_per_field_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_times_on_source_per_field_id</span></code></a></p></td>
+<td><p>Return on-source time for given field ID(s) and intent(s).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_baseband_spws" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_baseband_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_baseband_spws</span></code></a></p></td>
+<td><p>Get the SPW information from individual VLA band/baseband.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrlist_from_spw" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrlist_from_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrlist_from_spw</span></code></a></p></td>
+<td><p>Get all VLA correlation labels as a list of string from selected spw(s).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrstring" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrstring</span></code></a></p></td>
+<td><p>Get correlation string for VLA</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_critfrac" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_critfrac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_critfrac</span></code></a></p></td>
+<td><p>Identify bands/basebands/spws</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_datadesc" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_datadesc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_datadesc</span></code></a></p></td>
+<td><p>Generate VLA data description index</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_field_spws" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_field_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_field_spws</span></code></a></p></td>
+<td><p>Find field spws for VLA</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_max_integration_time" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_max_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_max_integration_time</span></code></a></p></td>
+<td><p>Get the integration time used by the original VLA scripts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_numchan" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_numchan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_numchan</span></code></a></p></td>
+<td><p>Get number of channels for VLA</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_spw2band" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_spw2band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_spw2band</span></code></a></p></td>
+<td><p>Find field spws for VLA</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_tst_bpass_spw" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_tst_bpass_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_tst_bpass_spw</span></code></a></p></td>
+<td><p>Get VLA test bandpass or delay spws</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.set_data_column" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.set_data_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_column</span></code></a></p></td>
+<td><p>Set data type and column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.update_reference_antennas" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.update_reference_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_reference_antennas</span></code></a></p></td>
+<td><p>Update the reference antenna list for this MS to demote/remove specified antennas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.vla_minbaselineforcal" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.vla_minbaselineforcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_minbaselineforcal</span></code></a></p></td>
+<td><p>Min baseline for cal</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.antennas" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antennas</span></code></a></p></td>
+<td><p>Return list of Antenna objects for all antennas in the measurement set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.basename" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.basename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basename</span></code></a></p></td>
+<td><p>Return base path to the measurement set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.end_time" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.end_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">end_time</span></code></a></p></td>
+<td><p>Return end time for this measurement set as CASA 'epoch' measure dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.intents" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.intents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intents</span></code></a></p></td>
+<td><p>Return unique intents in the measurement set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.is_band_to_band" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.is_band_to_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_band_to_band</span></code></a></p></td>
+<td><p>Return whether this MS is for band-to-band interferometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.reference_antenna" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.reference_antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference_antenna</span></code></a></p></td>
+<td><p>Get the reference antenna list for this MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.session" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">session</span></code></a></p></td>
+<td><p>Return name of session associated with this measurement set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.start_time" title="pipeline.hifa.tasks.applycal.qa.MeasurementSet.start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></a></p></td>
+<td><p>Return start time for this measurement set as CASA 'epoch' measure dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.all_colnames">
+<span class="sig-name descname"><span class="pre">all_colnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.all_colnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.all_colnames" title="Link to this definition"></a></dt>
+<dd><p>Return all available column names for this MS.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.antennas">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">antennas</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.antennas" title="Link to this definition"></a></dt>
+<dd><p>Return list of Antenna objects for all antennas in the measurement set.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.basename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.basename" title="Link to this definition"></a></dt>
+<dd><p>Return base path to the measurement set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.data_colnames">
+<span class="sig-name descname"><span class="pre">data_colnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.data_colnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.data_colnames" title="Link to this definition"></a></dt>
+<dd><p>Return all data column names for this MS.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.end_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.end_time" title="Link to this definition"></a></dt>
+<dd><p>Return end time for this measurement set as CASA ‘epoch’ measure dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_all_spectral_windows">
+<span class="sig-name descname"><span class="pre">get_all_spectral_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html#pipeline.hifa.heuristics.phasespwmap.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection" title="pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection"><span class="pre">SpectralWindowWithChannelSelection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_all_spectral_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_all_spectral_windows" title="Link to this definition"></a></dt>
+<dd><p>Return spectral windows corresponding to the given CASA-style spw
+argument.</p>
+<p>By default, this returns a list of SpectralWindow objects; if
+<code class="docutils literal notranslate"><span class="pre">with_channels</span></code> is True, this will instead return the spectral windows
+as a list of SpectralWindowWithChannelSelection objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_arg</strong> – Spectral window selection in CASA format to match.</p></li>
+<li><p><strong>with_channels</strong> – If True, return spectral window with channel selection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of SpectralWindow or SpectralWindowWithChannelSelection objects
+for given CASA-style search criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_corrstring">
+<span class="sig-name descname"><span class="pre">get_alma_corrstring</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_alma_corrstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_corrstring" title="Link to this definition"></a></dt>
+<dd><p>Get correlation string for ALMA for the science spectral windows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string value of correlation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>corrstring</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_cycle_number">
+<span class="sig-name descname"><span class="pre">get_alma_cycle_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_alma_cycle_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_alma_cycle_number" title="Link to this definition"></a></dt>
+<dd><p>Get the ALMA cycle number from the ALMA control software version that
+this MeasurementSet was acquired with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int cycle_number or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_antenna">
+<span class="sig-name descname"><span class="pre">get_antenna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_antenna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_antenna" title="Link to this definition"></a></dt>
+<dd><p>Return Antenna(s) for given antenna selection in CASA format.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">search_term</span></code> is omitted or an empty string, this will return
+all antennas in the measurement set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>search_term</strong> – Antenna selection string in CASA format.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of Antenna objects matching search term.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_column">
+<span class="sig-name descname"><span class="pre">get_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_column" title="Link to this definition"></a></dt>
+<dd><p>Return the column name associated with a DataType in an MS domain
+object for given source and spectral window.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">spw</span></code> are both unset, the method will just look
+at the MS data type and column information. If one or both parameters
+are set, it will require all (source,spw) combinations to have data of
+the requested data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – DataType to fetch column name for</p></li>
+<li><p><strong>source</strong> – Source names (comma separated name selection string) to
+filter for. If unset, all sources will be used.</p></li>
+<li><p><strong>spw</strong> – Spectral windows (comma separated real spw ID selection string)
+to filter for. If unset, all real spw IDs will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A name of column of a dtype. Returns None if dtype is not defined
+in the MS.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_description">
+<span class="sig-name descname"><span class="pre">get_data_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html#pipeline.hifa.heuristics.phasespwmap.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">spectralwindow.SpectralWindow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_automodapi/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription" title="pipeline.domain.DataDescription"><span class="pre">DataDescription</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_description" title="Link to this definition"></a></dt>
+<dd><p>Return the DataDescription in the MeasurementSet that matches the given
+criteria (spectral window or ID). If no criteria are given, this will
+return None. If both <cite>spw</cite> and <cite>id</cite> are given, this will match by <cite>id</cite>
+only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw</strong> – Spectral window to match (as ID or SpectralWindow object).</p></li>
+<li><p><strong>id</strong> – Data description numerical identifier to match.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataDescription matching the given criteria, or None if no match was found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_type">
+<span class="sig-name descname"><span class="pre">get_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_data_type" title="Link to this definition"></a></dt>
+<dd><p>Return the DataType associated with a column in an MS domain object for
+given source and spectral window.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">spw</span></code> are both unset, the method will just look at
+the MS data type and column information. If one or both parameters are
+set, it will require all (source,spw) combinations to have data of the
+requested data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> – Name of column in MS</p></li>
+<li><p><strong>source</strong> – Source names (comma separated name selection string) to
+filter for. If unset, all sources will be used.</p></li>
+<li><p><strong>spw</strong> – Spectral windows (comma separated real spw ID selection string)
+to filter for. If unset, all real spw IDs will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DataType associated with the column name. Returns None
+if dtype is not defined in the MS or in the source/spw
+selection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_diffgain_mode">
+<span class="sig-name descname"><span class="pre">get_diffgain_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_diffgain_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_diffgain_mode" title="Link to this definition"></a></dt>
+<dd><p>Determine if the intents and SpW setup in this measurement set are
+consistent with an observing mode that uses a differential gain
+calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>‘B2B’ if the ratio of frequencies between on-source and reference spws is above 1.661;</p></li>
+<li><p>’BWSW’ if the ratio of bandwidths between reference and on-source is above 1.5;</p></li>
+<li><p>None if there are no DIFFGAIN* intents in this MS.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError if the DIFFGAIN* intents are present in the MS</strong><strong>, </strong><strong>but either</strong> – </p></li>
+<li><p><strong>a. the MS is missing diffgain reference</strong><strong> or </strong><strong>on-source SpWs</strong><strong>, </strong><strong>or</strong> – </p></li>
+<li><p><strong>b. the SpW setup does not match either BandToBand</strong><strong> or </strong><strong>BandwidthSwitching.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_fields">
+<span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.Field.html#pipeline.domain.Field" title="pipeline.domain.Field"><span class="pre">Field</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_fields" title="Link to this definition"></a></dt>
+<dd><p>Get Fields from this MeasurementSet matching the given criteria. If no
+criteria are given, all Fields in the MeasurementSet will be returned.</p>
+<p>Arguments can be given as either single items of the expected type,
+sequences of the expected type, or as comma separated strings in the
+case of name and/or intent. For instance, name could be ‘HOIX’,
+‘HOIX,0841+708’ or (‘HOIX’,’0841+708’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_arg</strong> – A field selection in CASA format to match.</p></li>
+<li><p><strong>field_id</strong> – Field ID(s) to match.</p></li>
+<li><p><strong>name</strong> – Field name(s) to match.</p></li>
+<li><p><strong>intent</strong> – Select fields that are associated with these intents. If
+set to an empty string or ‘*’, this is the equivalent to all
+intents in the measurement set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of Field objects for fields in MS matching the given criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_integration_time">
+<span class="sig-name descname"><span class="pre">get_median_integration_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_median_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_integration_time" title="Link to this definition"></a></dt>
+<dd><p>Get the median integration time used to get data for the given
+intent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>intent</strong> – The intent of the data of interest.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The median integration time used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_science_integration_time">
+<span class="sig-name descname"><span class="pre">get_median_science_integration_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_median_science_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_median_science_integration_time" title="Link to this definition"></a></dt>
+<dd><p>Get the median integration time for science targets used to get data for the given
+intent.</p>
+<p>Keyword arguments:
+intent  – The intent of the data of interest.
+spw     – spw string list - ‘1,7,11,18’</p>
+<p>Returns – The median integration time used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_original_intent">
+<span class="sig-name descname"><span class="pre">get_original_intent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_original_intent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_original_intent" title="Link to this definition"></a></dt>
+<dd><p>Get the original obs_modes that correspond to the given pipeline
+observing intent(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>intent</strong> – Pipeline intent(s) to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Set of original CASA intent(s) (obs_modes) corresponding to given
+Pipeline intent(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_representative_source_spw">
+<span class="sig-name descname"><span class="pre">get_representative_source_spw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_spwid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_representative_source_spw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_representative_source_spw" title="Link to this definition"></a></dt>
+<dd><p>Get the representative target source object:</p>
+<ul class="simple">
+<li><p>Use user name if <code class="docutils literal notranslate"><span class="pre">source_name</span></code> is supplied by user and it has TARGET intent.</p></li>
+<li><p>Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.</p></li>
+<li><p>Otherwise, use the first source in the source list with TARGET intent.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_name</strong> – A string with the source name, or None for an automatic selection.</p></li>
+<li><p><strong>source_spwid</strong> – An int with the spw id, or None for an automatic selection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a tuple with representative source name and spw id;
+if such a source cannot be identified, return (None, None),
+and if a spw cannot be determined, return (name, None).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_scans">
+<span class="sig-name descname"><span class="pre">get_scans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.Scan.html#pipeline.domain.Scan" title="pipeline.domain.Scan"><span class="pre">Scan</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_scans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_scans" title="Link to this definition"></a></dt>
+<dd><p>Return Scan(s) in MeasurementSet matching the given criteria (ID,
+intent, field, and/or spectral window). If no criteria are given, all
+Scans in the MeasurementSet will be returned.</p>
+<p>Criteria arguments can be given as either single items of the expected
+type, sequences of the expected type, or in the case of intent or spw,
+as a comma-separated values string. For example, intent could be
+‘ATMOSPHERE’, ‘ATMOSPHERE,BANDPASS’, or (‘ATMOSPHERE’, ‘BANDPASS’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan_id</strong> – Scan ID(s) to match.</p></li>
+<li><p><strong>scan_intent</strong> – Intent(s) to match.</p></li>
+<li><p><strong>field</strong> – Field(s) to match, as field selection in CASA format.</p></li>
+<li><p><strong>spw</strong> – Spectral window(s) to match.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of Scan objects for scans in MS matching the given criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_specs">
+<span class="sig-name descname"><span class="pre">get_spectral_specs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_spectral_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_specs" title="Link to this definition"></a></dt>
+<dd><p>Return list of all spectral specs used in the MS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_window">
+<span class="sig-name descname"><span class="pre">get_spectral_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html#pipeline.hifa.heuristics.phasespwmap.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_spectral_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_window" title="Link to this definition"></a></dt>
+<dd><p>Return the SpectralWindow object matching the given identifier.
+The identifier can be provided as an integer or string of integer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spw_id</strong> – Numerical identifier of spectral window to match.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SpectralWindow object for spectral window matching the identifier.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError if no matching spectral window is found for given identifier.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_windows">
+<span class="sig-name descname"><span class="pre">get_spectral_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralspecs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html#pipeline.hifa.heuristics.phasespwmap.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection" title="pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection"><span class="pre">SpectralWindowWithChannelSelection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_spectral_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_spectral_windows" title="Link to this definition"></a></dt>
+<dd><p>Return spectral windows matching given criteria.</p>
+<p>This returns spectral windows that correspond to the given CASA-style
+spw argument (specified as <code class="docutils literal notranslate"><span class="pre">task_arg</span></code>), filtering out windows for a
+number of criteria: number of channels, science spectral windows,
+spectral specs, intents.</p>
+<p>By default, this returns a list of SpectralWindow objects; if
+<code class="docutils literal notranslate"><span class="pre">with_channels</span></code> is True, this will instead return the spectral windows
+as a list of SpectralWindowWithChannelSelection objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_arg</strong> – Spectral window selection in CASA format to match.</p></li>
+<li><p><strong>with_channels</strong> – If True, return spectral window with channel selection.</p></li>
+<li><p><strong>num_channels</strong> – Optional list of spectral window sizes in number of
+channels; if set, only return spectral windows whose number of
+channels matches any of the given sizes.</p></li>
+<li><p><strong>science_windows_only</strong> – If True, only return “science” spectral
+windows, aka spectral windows associated with science intents.</p></li>
+<li><p><strong>spectralspecs</strong> – Optional list of spectral specs; if set, only return
+spectral windows associated with given spectral specs.</p></li>
+<li><p><strong>intent</strong> – Optional string of comma-separated intents; if set, only
+return spectral windows that observed given intent(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of SpectralWindow or SpectralWindowWithChannelSelection objects
+for given search criteria.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_automodapi/pipeline.domain.State.html#pipeline.domain.State" title="pipeline.domain.State"><span class="pre">State</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_state" title="Link to this definition"></a></dt>
+<dd><p>Return State in MeasurementSet matching the given identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state_id</strong> – Numerical identifier of state to search for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>State object associated with matched identifier, or None if no match
+was found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_times_on_source_per_field_id">
+<span class="sig-name descname"><span class="pre">get_times_on_source_per_field_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_times_on_source_per_field_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_times_on_source_per_field_id" title="Link to this definition"></a></dt>
+<dd><p>Return on-source time for given field ID(s) and intent(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> – Field name(s) to return times for.</p></li>
+<li><p><strong>intent</strong> – Intent(s) to filter for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of on-source times for selected field ID(s) and intent(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_baseband_spws">
+<span class="sig-name descname"><span class="pre">get_vla_baseband_spws</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_select_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_baseband_spws"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_baseband_spws" title="Link to this definition"></a></dt>
+<dd><p>Get the SPW information from individual VLA band/baseband.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>science_windows_only</strong> (<em>bool, optional</em>) – Defaults to True.</p></li>
+<li><p><strong>return_select_list</strong> (<em>bool, optional</em>) – return spw list of each baseband. Defaults to True.</p></li>
+<li><p><strong>warning</strong> (<em>bool, optional</em>) – Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>spws info of individual basebands as baseband_spws[band][baseband]
+baseband_spws_list: spw_list of individual basebands</p>
+<blockquote>
+<div><p>e.g., [[0,1,2,3],[4,5,6,7]]</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>baseband_spws</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrlist_from_spw">
+<span class="sig-name descname"><span class="pre">get_vla_corrlist_from_spw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_corrlist_from_spw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrlist_from_spw" title="Link to this definition"></a></dt>
+<dd><p>Get all VLA correlation labels as a list of string from selected spw(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spw</strong> – a spw selection string or None. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of correlation labels.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrstring">
+<span class="sig-name descname"><span class="pre">get_vla_corrstring</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_corrstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_corrstring" title="Link to this definition"></a></dt>
+<dd><p>Get correlation string for VLA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string value of correlation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>corrstring</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_critfrac">
+<span class="sig-name descname"><span class="pre">get_vla_critfrac</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_critfrac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_critfrac" title="Link to this definition"></a></dt>
+<dd><p>Identify bands/basebands/spws</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>critical fraction</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_datadesc">
+<span class="sig-name descname"><span class="pre">get_vla_datadesc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_datadesc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_datadesc" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generate VLA data description index</dt><dd><p>Use the original VLA buildscans function to return a dd index</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>indexed list of dictionaries with VLA metadata</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ddindex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_field_spws">
+<span class="sig-name descname"><span class="pre">get_vla_field_spws</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_field_spws"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_field_spws" title="Link to this definition"></a></dt>
+<dd><p>Find field spws for VLA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spwlist</strong> (<em>List, optional</em>) – list of string spws   [‘1’, ‘2’, ‘3’]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dictionaries</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>field_spws</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_max_integration_time">
+<span class="sig-name descname"><span class="pre">get_vla_max_integration_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_max_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_max_integration_time" title="Link to this definition"></a></dt>
+<dd><p>Get the integration time used by the original VLA scripts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int value of the max integration time used</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int_time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_numchan">
+<span class="sig-name descname"><span class="pre">get_vla_numchan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_numchan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_numchan" title="Link to this definition"></a></dt>
+<dd><p>Get number of channels for VLA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>NUM_CHAN column from spectral window table</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>channels</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_spw2band">
+<span class="sig-name descname"><span class="pre">get_vla_spw2band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_spw2band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_spw2band" title="Link to this definition"></a></dt>
+<dd><p>Find field spws for VLA</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dictionary with each string key spw index giving a single letter string value of the band</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>spw2band</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_tst_bpass_spw">
+<span class="sig-name descname"><span class="pre">get_vla_tst_bpass_spw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_tst_bpass_spw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.get_vla_tst_bpass_spw" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Get VLA test bandpass or delay spws</dt><dd><p>This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spwlist</strong> (<em>List, optional</em>) – list of string spws   [‘1’, ‘2’, ‘3’]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>CASA argument format of spws:channels    ‘0:10~80, 1:15~60, 2:30~70’</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tst_bpass_spws</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.intents">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.intents" title="Link to this definition"></a></dt>
+<dd><p>Return unique intents in the measurement set.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.is_band_to_band">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_band_to_band</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.is_band_to_band" title="Link to this definition"></a></dt>
+<dd><p>Return whether this MS is for band-to-band interferometry.</p>
+<p>Criteria adopted from PIPE-2084: an MS is deemed to be for band-to-band
+interferometry if either the observing mode declares it as band-to-band,
+or if the diffgain intent + SpW setup are consistent with band-to-band.
+The latter covers datasets that don’t have correct observing mode set in
+their metadata.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.reference_antenna">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_antenna</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.reference_antenna" title="Link to this definition"></a></dt>
+<dd><p>Get the reference antenna list for this MS. The refant value is
+a comma-separated string.</p>
+<p>Example: ‘DV01,DV02,DV03’</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.session">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.session" title="Link to this definition"></a></dt>
+<dd><p>Return name of session associated with this measurement set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.set_data_column">
+<span class="sig-name descname"><span class="pre">set_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.set_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.set_data_column" title="Link to this definition"></a></dt>
+<dd><p>Set data type and column.</p>
+<p>Set data type and column to MS domain object and record the available
+data types per (source,spw) tuple. If source or spw are unset, they
+will be expanded to all available values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – data type to set</p></li>
+<li><p><strong>column</strong> – name of column in MS associated with the data type</p></li>
+<li><p><strong>source</strong> – source name selection string (comma separated names). If
+unset, all sources will be used.</p></li>
+<li><p><strong>spw</strong> – real spectral window selection string (string of comma
+separated IDs). If unset, all real spw IDs will be used.</p></li>
+<li><p><strong>overwrite</strong> – if True existing data colum is overwritten by the new
+column. If False and if type is already associated with other
+column, the function raises ValueError.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – An error raised when the column does not exist
+    or the type is already associated with a column or the
+    column is already assigned to a type and would not
+    be overwritten.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.start_time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.start_time" title="Link to this definition"></a></dt>
+<dd><p>Return start time for this measurement set as CASA ‘epoch’ measure dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.update_reference_antennas">
+<span class="sig-name descname"><span class="pre">update_reference_antennas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_to_demote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ants_to_remove</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.update_reference_antennas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.update_reference_antennas" title="Link to this definition"></a></dt>
+<dd><p>Update the reference antenna list for this MS to demote/remove specified antennas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ants_to_demote</strong> – Set of antenna names to demote.</p></li>
+<li><p><strong>ants_to_remove</strong> – Set of antenna names to remove.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hifa.tasks.applycal.qa.MeasurementSet.vla_minbaselineforcal">
+<span class="sig-name descname"><span class="pre">vla_minbaselineforcal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.vla_minbaselineforcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.applycal.qa.MeasurementSet.vla_minbaselineforcal" title="Link to this definition"></a></dt>
+<dd><p>Min baseline for cal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Constant value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hifa.tasks.applycal.qa.DataSelection.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.applycal.qa.DataSelection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.applycal.qa.PIPE356Switches.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.applycal.qa.PIPE356Switches" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
