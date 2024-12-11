@@ -13,7 +13,7 @@ Past Releases
     - Used in Operation
     - Download
 
-  * - 2024.1.0.78
+  * - 2024.1.0.8
     - 6.6.1-17
     - - ALMA/Cycle-11
       - VLA/2024
