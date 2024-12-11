@@ -16,7 +16,7 @@ jobs:
         shell: bash -el {0}      
     steps:
     - uses: actions/checkout@v4  
-    - uses: conda-incubator/setup-miniconda@v3.0.4
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: pipe1669
         environment-file: pipe1669.yaml
