@@ -47,7 +47,7 @@ html_docs:
 	@rm -rf ${SOURCEDIR}/_apidoc
 	@rm -rf ${SOURCEDIR}/_taskdocs
 	# @make apidoc
-	@make taskdocs
+	# @make taskdocs
 	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees 
 	@rm -rf ${SOURCEDIR}/_autosummary*
 	@rm -rf ${SOURCEDIR}/_automodapi
