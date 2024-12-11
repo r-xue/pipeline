@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,11 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_exportdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_products_only</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exportmses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pprfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calintents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">calimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_exportdata ---- Prepare interferometry data for export</span>
-
-
-<span class="sd">    Prepare interferometry data for export.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare interferometry data for export</span>
 
 <span class="sd">    The hifa_exportdata task for ALMA CASA pipeline exports the data defined</span>
 <span class="sd">    in the pipeline context and exports it to the data products directory,</span>
@@ -173,68 +165,57 @@
 <span class="sd">    - an XML &quot;aquareport&quot; file listing the QA scores and sub-scores,</span>
 <span class="sd">      image sensitivities, and other numerical information</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of visibility data files for which flagging and calibration</span>
+<span class="sd">            information will be exported. Defaults to the list maintained in the</span>
+<span class="sd">            pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        session: List of sessions one per visibility file. Currently defaults</span>
+<span class="sd">            to a single virtual session containing all the visibility files in vis.</span>
+<span class="sd">            In the future, this will default to the set of observing sessions defined</span>
+<span class="sd">            in the context.</span>
+<span class="sd">            Example: session=[&#39;session1&#39;, &#39;session2&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        imaging_products_only: Export science target imaging products only</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                          List of visibility data files for which flagging and calibration</span>
-<span class="sd">                          information will be exported. Defaults to the list maintained in the</span>
-<span class="sd">                          pipeline context.</span>
+<span class="sd">        exportmses: Export the final MeasurementSets instead of the final flags,</span>
+<span class="sd">            calibration tables, and calibration instructions.</span>
 
-<span class="sd">                          Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
-<span class="sd">    session</span>
-<span class="sd">                          List of sessions one per visibility file. Currently defaults</span>
-<span class="sd">                          to a single virtual session containing all the visibility files in vis.</span>
-<span class="sd">                          In the future, this will default to the set of observing sessions defined</span>
-<span class="sd">                          in the context.</span>
+<span class="sd">        pprfile: Name of the pipeline processing request to be exported. Defaults</span>
+<span class="sd">            to a file matching the template &#39;PPR_*.xml&#39;.</span>
+<span class="sd">            Example: pprfile=[&#39;PPR_GRB021004.xml&#39;]</span>
 
-<span class="sd">                          Example: session=[&#39;session1&#39;, &#39;session2&#39;]</span>
-<span class="sd">    imaging_products_only</span>
-<span class="sd">                          Export science target imaging products only</span>
-<span class="sd">    exportmses</span>
-<span class="sd">                          Export the final MeasurementSets instead of the final flags,</span>
-<span class="sd">                          calibration tables, and calibration instructions.</span>
-<span class="sd">    pprfile</span>
-<span class="sd">                          Name of the pipeline processing request to be exported. Defaults</span>
-<span class="sd">                          to a file matching the template &#39;PPR_*.xml&#39;.</span>
+<span class="sd">        calintents: List of calibrator image types to be exported. Defaults to</span>
+<span class="sd">            all standard calibrator intents, &#39;BANDPASS&#39;, &#39;PHASE&#39;, &#39;FLUX&#39;.</span>
+<span class="sd">            Example: &#39;PHASE&#39;</span>
 
-<span class="sd">                          Example: pprfile=[&#39;PPR_GRB021004.xml&#39;]</span>
-<span class="sd">    calintents</span>
-<span class="sd">                          List of calibrator image types to be exported. Defaults to</span>
-<span class="sd">                          all standard calibrator intents, &#39;BANDPASS&#39;, &#39;PHASE&#39;, &#39;FLUX&#39;.</span>
+<span class="sd">        calimages: List of calibrator images to be exported. Defaults to all</span>
+<span class="sd">            calibrator images recorded in the pipeline context.</span>
+<span class="sd">            Example: calimages=[&#39;3C454.3.bandpass&#39;, &#39;3C279.phase&#39;]</span>
 
-<span class="sd">                          Example: &#39;PHASE&#39;</span>
-<span class="sd">    calimages</span>
-<span class="sd">                          List of calibrator images to be exported. Defaults to all</span>
-<span class="sd">                          calibrator images recorded in the pipeline context.</span>
+<span class="sd">        targetimages: List of science target images to be exported. Defaults to all</span>
+<span class="sd">            science target images recorded in the pipeline context.</span>
+<span class="sd">            Example: targetimages=[&#39;NGC3256.band3&#39;, &#39;NGC3256.band6&#39;]</span>
 
-<span class="sd">                          Example: calimages=[&#39;3C454.3.bandpass&#39;, &#39;3C279.phase&#39;]</span>
-<span class="sd">    targetimages</span>
-<span class="sd">                          List of science target images to be exported. Defaults to all</span>
-<span class="sd">                          science target images recorded in the pipeline context.</span>
+<span class="sd">        products_dir: Name of the data products subdirectory. Defaults to &#39;./&#39;.</span>
+<span class="sd">            Example: products_dir=&#39;../products&#39;</span>
 
-<span class="sd">                          Example: targetimages=[&#39;NGC3256.band3&#39;, &#39;NGC3256.band6&#39;]</span>
-<span class="sd">    products_dir</span>
-<span class="sd">                          Name of the data products subdirectory. Defaults to &#39;./&#39;.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                          Example: products_dir=&#39;../products&#39;</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Export the pipeline results for a single session to the data products</span>
+<span class="sd">        directory:</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        &gt;&gt;&gt; !mkdir ../products</span>
+<span class="sd">        &gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;)</span>
 
-<span class="sd">    1. Export the pipeline results for a single session to the data products</span>
-<span class="sd">    directory:</span>
+<span class="sd">        2. Export the pipeline results to the data products directory specify that</span>
+<span class="sd">        only the gain calibrator images be saved:</span>
 
-<span class="sd">    &gt;&gt;&gt; !mkdir ../products</span>
-<span class="sd">    &gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;)</span>
-
-<span class="sd">    2. Export the pipeline results to the data products directory specify that</span>
-<span class="sd">    only the gain calibrator images be saved:</span>
-
-<span class="sd">    &gt;&gt;&gt; !mkdir ../products</span>
-<span class="sd">    &gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;, calintents=&#39;*PHASE*&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; !mkdir ../products</span>
+<span class="sd">        &gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;, calintents=&#39;*PHASE*&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

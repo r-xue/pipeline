@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,9 +146,7 @@
 <span class="k">def</span> <span class="nf">hifa_timegaincal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calamptable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calphasetable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetphasetable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">amptable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">refantmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solnorm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calminsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetminsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smodel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_timegaincal ---- Determine temporal gains from calibrator observations</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine temporal gains from calibrator observations</span>
 
 <span class="sd">    The time-dependent complex gains for each antenna/spwid are determined from</span>
 <span class="sd">    the raw data (DATA column) divided by the model (MODEL column), for the</span>
@@ -174,103 +168,85 @@
 <span class="sd">    applied on the fly. Users can interact with these calibrations via the</span>
 <span class="sd">    h_export_calstate and h_import_calstate tasks.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        calamptable: The list of output diagnostic calibration amplitude tables for</span>
+<span class="sd">            the calibration targets. Defaults to the standard pipeline naming</span>
+<span class="sd">            convention.</span>
+<span class="sd">            Example: calamptable=[&#39;M82.gacal&#39;, &#39;M82B.gacal&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        offsetstable: The list of output diagnostic phase offset tables for the</span>
+<span class="sd">            calibration targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">            Example: offsetstable=[&#39;M82.offsets.gacal&#39;, &#39;M82B.offsets.gacal&#39;]</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                     The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                     MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        calphasetable: The list of output calibration phase tables for the</span>
+<span class="sd">            calibration targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">            Example: calphasetable=[&#39;M82.gpcal&#39;, &#39;M82B.gpcal&#39;]</span>
 
-<span class="sd">                     Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
-<span class="sd">    calamptable</span>
-<span class="sd">                     The list of output diagnostic calibration amplitude tables for</span>
-<span class="sd">                     the calibration targets. Defaults to the standard pipeline naming</span>
-<span class="sd">                     convention.</span>
+<span class="sd">        targetphasetable: The list of output phase calibration tables for the science</span>
+<span class="sd">            targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">            Example: targetphasetable=[&#39;M82.gpcal&#39;, &#39;M82B.gpcal&#39;]</span>
 
-<span class="sd">                     Example: calamptable=[&#39;M82.gacal&#39;, &#39;M82B.gacal&#39;]</span>
-<span class="sd">    offsetstable</span>
-<span class="sd">                     The list of output diagnostic phase offset tables for the</span>
-<span class="sd">                     calibration targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">        amptable: The list of output calibration amplitude tables for the</span>
+<span class="sd">            calibration and science targets.</span>
+<span class="sd">            Defaults to the standard pipeline naming convention.</span>
+<span class="sd">            Example: amptable=[&#39;M82.gacal&#39;, &#39;M82B.gacal&#39;]</span>
 
-<span class="sd">                     Example: offsetstable=[&#39;M82.offsets.gacal&#39;, &#39;M82B.offsets.gacal&#39;]</span>
-<span class="sd">    calphasetable</span>
-<span class="sd">                     The list of output calibration phase tables for the</span>
-<span class="sd">                     calibration targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">        field: The list of field names or field ids for which gain solutions are to</span>
+<span class="sd">            be computed. Defaults to all fields with the standard intent.</span>
+<span class="sd">            Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
 
-<span class="sd">                     Example: calphasetable=[&#39;M82.gpcal&#39;, &#39;M82B.gpcal&#39;]</span>
-<span class="sd">    targetphasetable</span>
-<span class="sd">                     The list of output phase calibration tables for the science</span>
-<span class="sd">                     targets. Defaults to the standard pipeline naming convention.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which gain solutions are</span>
+<span class="sd">            computed. Defaults to all science spectral windows.</span>
+<span class="sd">            Example: spw=&#39;11&#39;, spw=&#39;11, 13&#39;</span>
 
-<span class="sd">                     Example: targetphasetable=[&#39;M82.gpcal&#39;, &#39;M82B.gpcal&#39;]</span>
-<span class="sd">    amptable</span>
-<span class="sd">                     The list of output calibration amplitude tables for the</span>
-<span class="sd">                     calibration and science targets.</span>
-<span class="sd">                     Defaults to the standard pipeline naming convention.</span>
+<span class="sd">        antenna: The selection of antennas for which gains are computed. Defaults to all.</span>
 
-<span class="sd">                     Example: amptable=[&#39;M82.gacal&#39;, &#39;M82B.gacal&#39;]</span>
-<span class="sd">    field</span>
-<span class="sd">                     The list of field names or field ids for which gain solutions are to</span>
-<span class="sd">                     be computed. Defaults to all fields with the standard intent.</span>
+<span class="sd">        calsolint: Time solution interval in CASA syntax for calibrator source</span>
+<span class="sd">            solutions.</span>
+<span class="sd">            Example: calsolint=&#39;inf&#39;, calsolint=&#39;int&#39;, calsolint=&#39;100sec&#39;</span>
 
-<span class="sd">                     Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                     The list of spectral windows and channels for which gain solutions are</span>
-<span class="sd">                     computed. Defaults to all science spectral windows.</span>
+<span class="sd">        targetsolint: Time solution interval in CASA syntax for target source</span>
+<span class="sd">            solutions.</span>
+<span class="sd">            Example: targetsolint=&#39;inf&#39;, targetsolint=&#39;int&#39;, targetsolint=&#39;100sec&#39;</span>
 
-<span class="sd">                     Example: spw=&#39;11&#39;, spw=&#39;11, 13&#39;</span>
-<span class="sd">    antenna</span>
-<span class="sd">                     The selection of antennas for which gains are computed. Defaults to all.</span>
-<span class="sd">    calsolint</span>
-<span class="sd">                     Time solution interval in CASA syntax for calibrator source</span>
-<span class="sd">                     solutions.</span>
+<span class="sd">        refant: Reference antenna name(s) in priority order. Defaults to most recent</span>
+<span class="sd">            values set in the pipeline context. If no reference antenna is defined in</span>
+<span class="sd">            the pipeline context use the CASA defaults.</span>
+<span class="sd">            example: refant=&#39;DV01&#39;, refant=&#39;DV05,DV07&#39;</span>
 
-<span class="sd">                     Example: calsolint=&#39;inf&#39;, calsolint=&#39;int&#39;, calsolint=&#39;100sec&#39;</span>
-<span class="sd">    targetsolint</span>
-<span class="sd">                     Time solution interval in CASA syntax for target source</span>
-<span class="sd">                     solutions.</span>
+<span class="sd">        refantmode: Controls how the refant is applied. Currently available</span>
+<span class="sd">            choices are &#39;flex&#39;, &#39;strict&#39;, and the default value of &#39;&#39;.</span>
+<span class="sd">            Setting to &#39;&#39; allows the pipeline to select the appropriate</span>
+<span class="sd">            mode based on the state of the reference antenna list.</span>
+<span class="sd">            Examples: refantmode=&#39;strict&#39;, refantmode=&#39;&#39;</span>
 
-<span class="sd">                     Example: targetsolint=&#39;inf&#39;, targetsolint=&#39;int&#39;, targetsolint=&#39;100sec&#39;</span>
-<span class="sd">    refant</span>
-<span class="sd">                     Reference antenna name(s) in priority order. Defaults to most recent</span>
-<span class="sd">                     values set in the pipeline context. If no reference antenna is defined in</span>
-<span class="sd">                     the pipeline context use the CASA defaults.</span>
+<span class="sd">        solnorm: Normalise the gain solutions.</span>
 
-<span class="sd">                     example: refant=&#39;DV01&#39;, refant=&#39;DV05,DV07&#39;</span>
-<span class="sd">    refantmode</span>
-<span class="sd">                     Controls how the refant is applied. Currently available</span>
-<span class="sd">                     choices are &#39;flex&#39;, &#39;strict&#39;, and the default value of &#39;&#39;.</span>
-<span class="sd">                     Setting to &#39;&#39; allows the pipeline to select the appropriate</span>
-<span class="sd">                     mode based on the state of the reference antenna list.</span>
+<span class="sd">        minblperant: Minimum number of baselines required per antenna for each solve.</span>
+<span class="sd">            Antennas with fewer baselines are excluded from solutions.</span>
+<span class="sd">            Example: minblperant=2</span>
 
-<span class="sd">                     Examples: refantmode=&#39;strict&#39;, refantmode=&#39;&#39;</span>
-<span class="sd">    solnorm</span>
-<span class="sd">                     Normalise the gain solutions.</span>
-<span class="sd">    minblperant</span>
-<span class="sd">                     Minimum number of baselines required per antenna for each solve.</span>
-<span class="sd">                     Antennas with fewer baselines are excluded from solutions.</span>
+<span class="sd">        calminsnr: Solutions below this SNR are rejected for calibrator solutions.</span>
 
-<span class="sd">                     Example: minblperant=2</span>
-<span class="sd">    calminsnr</span>
-<span class="sd">                     Solutions below this SNR are rejected for calibrator solutions.</span>
-<span class="sd">    targetminsnr</span>
-<span class="sd">                     Solutions below this SNR are rejected for science target</span>
-<span class="sd">                     solutions.</span>
-<span class="sd">    smodel</span>
-<span class="sd">                     Point source Stokes parameters for source model (experimental)</span>
-<span class="sd">                     Defaults to using standard MODEL_DATA column data.</span>
+<span class="sd">        targetminsnr: Solutions below this SNR are rejected for science target</span>
+<span class="sd">            solutions.</span>
 
-<span class="sd">                     Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</span>
+<span class="sd">        smodel: Point source Stokes parameters for source model (experimental)</span>
+<span class="sd">            Defaults to using standard MODEL_DATA column data.</span>
+<span class="sd">            Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    1. Compute standard per scan gain solutions that will be used to calibrate</span>
-<span class="sd">    the target:</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Compute standard per scan gain solutions that will be used to calibrate</span>
+<span class="sd">        the target:</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_timegaincal()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_timegaincal()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

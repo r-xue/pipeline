@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -152,9 +148,7 @@
   <span class="n">flag_bad_quadrant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fbq_hilo_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
   <span class="n">fbq_antenna_frac_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fbq_baseline_frac_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_rawflagchans ---- Flag deviant baseline/channels in raw data</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag deviant baseline/channels in raw data</span>
 
 <span class="sd">    hif_rawflagchans flags deviant baseline/channels in the raw data.</span>
 
@@ -191,62 +185,52 @@
 <span class="sd">    Suspect points are not flagged unless as part of a bad antenna or</span>
 <span class="sd">    baseline quadrant.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline</span>
+<span class="sd">            context.</span>
 
-<span class="sd">    Output</span>
+<span class="sd">        spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline</span>
+<span class="sd">            context.</span>
+<span class="sd">            example: spw=&#39;17&#39;, spw=&#39;11, 15&#39;</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        intent: A string containing the list of intents to be checked for antennas with deviant gains. The default is blank, which causes the task to select</span>
+<span class="sd">            the &#39;BANDPASS&#39; intent.</span>
+<span class="sd">            example: intent=&#39;`*BANDPASS*`&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        flag_hilo: True to flag channel/baseline data further from the view median than fhl_limit * MAD.</span>
 
-<span class="sd">    vis                     List of input MeasurementSets.</span>
+<span class="sd">        fhl_limit: If flag_hilo is True then flag channel/baseline data further from the view median than fhl_limit * MAD.</span>
 
-<span class="sd">                            default: [] - Use the MeasurementSets currently known to the pipeline</span>
-<span class="sd">                            context.</span>
-<span class="sd">    spw                     The list of spectral windows and channels to which the calibration</span>
-<span class="sd">                            will be applied. Defaults to all science windows in the pipeline</span>
-<span class="sd">                            context.</span>
+<span class="sd">        fhl_minsample: Do no flagging if the view median and MAD are derived from fewer than fhl_minsample view pixels.</span>
 
-<span class="sd">                            example: spw=&#39;17&#39;, spw=&#39;11, 15&#39;</span>
-<span class="sd">    intent                  A string containing the list of intents to be checked for antennas</span>
-<span class="sd">                            with deviant gains. The default is blank, which causes the task to select</span>
-<span class="sd">                            the &#39;BANDPASS&#39; intent.</span>
+<span class="sd">        flag_bad_quadrant: True to search for and flag bad antenna quadrants and baseline quadrants. Here a /&#39;quadrant/&#39; is one</span>
+<span class="sd">            quarter of the channel axis.</span>
 
-<span class="sd">                            example: intent=&#39;`*BANDPASS*`&#39;</span>
-<span class="sd">    flag_hilo               True to flag channel/baseline data further from the view</span>
-<span class="sd">                            median than fhl_limit * MAD.</span>
-<span class="sd">    fhl_limit               If flag_hilo is True then flag channel/baseline data</span>
-<span class="sd">                            further from the view median than fhl_limit * MAD.</span>
-<span class="sd">    fhl_minsample           Do no flagging if the view median and MAD are derived</span>
-<span class="sd">                            from fewer than fhl_minsample view pixels.</span>
-<span class="sd">    flag_bad_quadrant       True to search for and flag bad antenna quadrants</span>
-<span class="sd">                            and baseline quadrants. Here a /&#39;quadrant/&#39; is one</span>
-<span class="sd">                            quarter of the channel axis.</span>
-<span class="sd">    fbq_hilo_limit          If flag_bad_quadrant is True then channel/baselines further</span>
-<span class="sd">                            from the view median than fbq_hilo_limit * MAD will be noted as</span>
-<span class="sd">                            &#39;suspect&#39;. If there are enough of them to indicate that an antenna or</span>
-<span class="sd">                            baseline quadrant is bad then all channel/baselines in that quadrant will</span>
-<span class="sd">                            be flagged.</span>
-<span class="sd">    fbq_antenna_frac_limit  If flag_bad_quadrant is True and the fraction of</span>
-<span class="sd">                            suspect channel/baselines in a particular antenna/quadrant exceeds</span>
-<span class="sd">                            fbq_antenna_frac_limit then all data for that antenna/quadrant will</span>
-<span class="sd">                            be flagged.</span>
-<span class="sd">    fbq_baseline_frac_limit If flag_bad_quadrant is True and the fraction of</span>
-<span class="sd">                            suspect channel/baselines in a particular baseline/quadrant exceeds</span>
-<span class="sd">                            fbq_baseline_frac_limit then all data for that baseline/quadrant will</span>
-<span class="sd">                            be flagged.</span>
+<span class="sd">        fbq_hilo_limit: If flag_bad_quadrant is True then channel/baselines further from the view median than fbq_hilo_limit * MAD will be noted as</span>
+<span class="sd">            &#39;suspect&#39;. If there are enough of them to indicate that an antenna or</span>
+<span class="sd">            baseline quadrant is bad then all channel/baselines in that quadrant will</span>
+<span class="sd">            be flagged.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        fbq_antenna_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular antenna/quadrant exceeds</span>
+<span class="sd">            fbq_antenna_frac_limit then all data for that antenna/quadrant will</span>
+<span class="sd">            be flagged.</span>
 
+<span class="sd">        fbq_baseline_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular baseline/quadrant exceeds</span>
+<span class="sd">            fbq_baseline_frac_limit then all data for that baseline/quadrant will</span>
+<span class="sd">            be flagged.</span>
 
-<span class="sd">    1. Flag bad quadrants and wild outliers, default method:</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_rawflagchans()</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Flag bad quadrants and wild outliers, default method:</span>
 
-<span class="sd">    equivalent to:</span>
+<span class="sd">        &gt;&gt;&gt; hif_rawflagchans()</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8, </span>
-<span class="sd">    ...                  fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)</span>
+<span class="sd">        equivalent to:</span>
 
+<span class="sd">        &gt;&gt;&gt; hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8, </span>
+<span class="sd">        ...                  fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,26 +145,25 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.hifv_flagtargetsdata">
 <span class="sig-name descname"><span class="pre">hifv_flagtargetsdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_flagtargetsdata.html#hifv_flagtargetsdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.hifv_flagtargetsdata" title="Link to this definition"></a></dt>
-<dd><p>hifv_flagtargetsdata —- Apply a flagtemplate to target data prior to running imaging pipeline tasks</p>
-<p>Apply a flagtemplate to target data prior to running imaging pipeline tasks</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           The list of input MeasurementSets. Defaults to the list</dt><dd><p>of MeasurementSets defined in the pipeline context.</p>
+<dd><p>Apply a flagtemplate to target data prior to running imaging pipeline tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>template</strong> – Apply flagging templates.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging template for issues with the science target data etc.
+If the template flags files is undefined a name of the
+form ‘msname_flagtargetstemplate.txt’ is assumed.</p></li>
+<li><p><strong>flagbackup</strong> – Back up any pre-existing flags.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>template      Apply flagging templates.
-filetemplate  The name of a text file that contains the flagging</p>
-<blockquote>
-<div><p>template for issues with the science target data etc.
-If the template flags files is undefined a name of the
-form ‘msname_flagtargetstemplate.txt’ is assumed.</p>
-</div></blockquote>
-<p>flagbackup    Back up any pre-existing flags.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Basic flagtargetsdata task</p></li>
+<li><p>Basic flagtargetsdata task:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_flagtargetsdata</span><span class="p">()</span>
 </pre></div>

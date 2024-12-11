@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -152,11 +148,8 @@
                      <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">accept_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_hi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">fhi_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_minsample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ants_with_wvr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_wvrgcalflag ----</span>
-<span class="sd">    Generate a gain table based on Water Vapor Radiometer data, interpolating over</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a gain table based on Water Vapor Radiometer data, interpolating over</span>
 <span class="sd">    antennas with bad radiometers.</span>
-
 
 <span class="sd">    This task will first identify for each vis whether it includes at least 3</span>
 <span class="sd">    antennas with Water Vapor Radiometer (WVR) data, and that the fraction of</span>
@@ -193,176 +186,150 @@
 <span class="sd">    wvr calibration file for merging into the context and use in the</span>
 <span class="sd">    subsequent reduction.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input visibility files.</span>
+<span class="sd">            Default: none, in which case the vis files to be used</span>
+<span class="sd">            will be read from the context.</span>
+<span class="sd">            Example: vis=[&#39;ngc5921.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: List of output gain calibration tables.</span>
+<span class="sd">            Default: none, in which case the names of the caltables</span>
+<span class="sd">            will be generated automatically.</span>
+<span class="sd">            Example: caltable=&#39;ngc5921.wvr&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        offsetstable: List of input temperature offsets table files to</span>
+<span class="sd">            subtract from WVR measurements before calculating phase</span>
+<span class="sd">            corrections.</span>
+<span class="sd">            Default: none, in which case no offsets are applied.</span>
+<span class="sd">            Example: offsetstable=[&#39;ngc5921.cloud_offsets&#39;]</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                         List of input visibility files.</span>
+<span class="sd">        hm_toffset: If &#39;manual&#39;, set the &#39;toffset&#39; parameter to the user-specified</span>
+<span class="sd">            value. If &#39;automatic&#39;, set the &#39;toffset&#39; parameter according to the</span>
+<span class="sd">            date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00</span>
+<span class="sd">            toffset=0 otherwise.</span>
 
-<span class="sd">                         Default: none, in which case the vis files to be used</span>
-<span class="sd">                         will be read from the context.</span>
+<span class="sd">        toffset: Time offset (sec) between interferometric and WVR data.</span>
 
-<span class="sd">                         Example: vis=[&#39;ngc5921.ms&#39;]</span>
-<span class="sd">    caltable</span>
-<span class="sd">                         List of output gain calibration tables.</span>
+<span class="sd">        segsource: If True calculate new atmospheric phase correction</span>
+<span class="sd">            coefficients for each source, subject to the</span>
+<span class="sd">            constraints of the ``tie`` parameter. ``segsource`` is</span>
+<span class="sd">            forced to be True if the ``tie`` parameter is set to a</span>
+<span class="sd">            non-empty value by the user or by the automatic</span>
+<span class="sd">            heuristic.</span>
 
-<span class="sd">                         Default: none, in which case the names of the caltables</span>
-<span class="sd">                         will be generated automatically.</span>
+<span class="sd">        sourceflag: Flag the WVR data for these source(s) as bad and do not</span>
+<span class="sd">            produce corrections for it. Requires</span>
+<span class="sd">            ``segsource`` = True.</span>
+<span class="sd">            Example: sourceflag=[&#39;3C273&#39;]</span>
 
-<span class="sd">                         Example: caltable=&#39;ngc5921.wvr&#39;</span>
-<span class="sd">    offsetstable</span>
-<span class="sd">                         List of input temperature offsets table files to</span>
-<span class="sd">                         subtract from WVR measurements before calculating phase</span>
-<span class="sd">                         corrections.</span>
+<span class="sd">        hm_tie: If &#39;manual&#39;, set the ``tie`` parameter to the</span>
+<span class="sd">            user-specified value. If &#39;automatic&#39;, set the ``tie``</span>
+<span class="sd">            parameter to include with the target all calibrators</span>
+<span class="sd">            that are within 15 degrees of it: if no calibrators are</span>
+<span class="sd">            that close then ``tie`` is left empty.</span>
 
-<span class="sd">                         Default: none, in which case no offsets are applied.</span>
+<span class="sd">        tie: Use the same atmospheric phase correction coefficients</span>
+<span class="sd">            when calculating the WVR correction for all sources in</span>
+<span class="sd">            the ``tie``. If ``tie`` is not empty then ``segsource``</span>
+<span class="sd">            is forced to be True. Ignored unless ``hm_tie`` = &#39;manual&#39;.</span>
+<span class="sd">            Example: tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]</span>
 
-<span class="sd">                         Example: offsetstable=[&#39;ngc5921.cloud_offsets&#39;]</span>
-<span class="sd">    hm_toffset</span>
-<span class="sd">                         If &#39;manual&#39;, set the &#39;toffset&#39; parameter to the user-specified</span>
-<span class="sd">                         value. If &#39;automatic&#39;, set the &#39;toffset&#39; parameter according to the</span>
-<span class="sd">                         date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00</span>
-<span class="sd">                         toffset=0 otherwise.</span>
-<span class="sd">    toffset</span>
-<span class="sd">                         Time offset (sec) between interferometric and WVR data.</span>
-<span class="sd">    segsource</span>
-<span class="sd">                         If True calculate new atmospheric phase correction</span>
-<span class="sd">                         coefficients for each source, subject to the</span>
-<span class="sd">                         constraints of the ``tie`` parameter. ``segsource`` is</span>
-<span class="sd">                         forced to be True if the ``tie`` parameter is set to a</span>
-<span class="sd">                         non-empty value by the user or by the automatic</span>
-<span class="sd">                         heuristic.</span>
-<span class="sd">    sourceflag</span>
-<span class="sd">                         Flag the WVR data for these source(s) as bad and do not</span>
-<span class="sd">                         produce corrections for it. Requires</span>
-<span class="sd">                         ``segsource`` = True.</span>
+<span class="sd">        nsol: Number of solutions for phase correction coefficients during this</span>
+<span class="sd">            observation, evenly distributed in time throughout the observation. It</span>
+<span class="sd">            is used only if segsource=False because if segsource=True then the</span>
+<span class="sd">            coefficients are recomputed whenever the telescope moves to a new</span>
+<span class="sd">            source (within the limits imposed by &#39;tie&#39;).</span>
 
-<span class="sd">                         Example: sourceflag=[&#39;3C273&#39;]</span>
-<span class="sd">    hm_tie</span>
-<span class="sd">                         If &#39;manual&#39;, set the ``tie`` parameter to the</span>
-<span class="sd">                         user-specified value. If &#39;automatic&#39;, set the ``tie``</span>
-<span class="sd">                         parameter to include with the target all calibrators</span>
-<span class="sd">                         that are within 15 degrees of it: if no calibrators are</span>
-<span class="sd">                         that close then ``tie`` is left empty.</span>
-<span class="sd">    tie</span>
-<span class="sd">                         Use the same atmospheric phase correction coefficients</span>
-<span class="sd">                         when calculating the WVR correction for all sources in</span>
-<span class="sd">                         the ``tie``. If ``tie`` is not empty then ``segsource``</span>
-<span class="sd">                         is forced to be True. Ignored unless ``hm_tie`` = &#39;manual&#39;.</span>
+<span class="sd">        disperse: Apply correction for dispersion.</span>
+<span class="sd">            (Deprecated; will be removed)</span>
 
-<span class="sd">                         Example: tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]</span>
-<span class="sd">    nsol</span>
-<span class="sd">                         Number of solutions for phase correction coefficients during this</span>
-<span class="sd">                         observation, evenly distributed in time throughout the observation. It</span>
-<span class="sd">                         is used only if segsource=False because if segsource=True then the</span>
-<span class="sd">                         coefficients are recomputed whenever the telescope moves to a new</span>
-<span class="sd">                         source (within the limits imposed by &#39;tie&#39;).</span>
-<span class="sd">    disperse</span>
-<span class="sd">                         Apply correction for dispersion.</span>
-<span class="sd">                         (Deprecated; will be removed)</span>
-<span class="sd">    wvrflag</span>
-<span class="sd">                         Flag the WVR data for these antenna(s) as bad and replace its data</span>
-<span class="sd">                         with interpolated values.</span>
+<span class="sd">        wvrflag: Flag the WVR data for these antenna(s) as bad and replace its data</span>
+<span class="sd">            with interpolated values.</span>
+<span class="sd">            Example: wvrflag=[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]</span>
 
-<span class="sd">                         Example: wvrflag=[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]</span>
-<span class="sd">    hm_smooth</span>
-<span class="sd">                         If &#39;manual&#39; set the &#39;smooth&#39; parameter to the user-specified value.</span>
-<span class="sd">                         If &#39;automatic&#39;, run the wvrgcal task with the range of &#39;smooth&#39; parameters</span>
-<span class="sd">                         required to match the integration time of the WVR data to that of the</span>
-<span class="sd">                         interferometric data in each spectral window.</span>
-<span class="sd">    smooth</span>
-<span class="sd">                         Smooth WVR data on this timescale before calculating the correction.</span>
-<span class="sd">                         Ignored unless hm_smooth=&#39;manual&#39;.</span>
-<span class="sd">    scale</span>
-<span class="sd">                         Scale the entire phase correction by this factor.</span>
-<span class="sd">    maxdistm</span>
-<span class="sd">                         Distance in meters of an antenna used for interpolation</span>
-<span class="sd">                         from a flagged antenna.</span>
+<span class="sd">        hm_smooth: If &#39;manual&#39; set the &#39;smooth&#39; parameter to the user-specified value.</span>
+<span class="sd">            If &#39;automatic&#39;, run the wvrgcal task with the range of &#39;smooth&#39; parameters</span>
+<span class="sd">            required to match the integration time of the WVR data to that of the</span>
+<span class="sd">            interferometric data in each spectral window.</span>
 
-<span class="sd">                         Default: -1 (automatically set to 100m if &gt;50% of</span>
-<span class="sd">                         antennas are 7m antennas without WVR and otherwise set</span>
-<span class="sd">                         to 500m).</span>
+<span class="sd">        smooth: Smooth WVR data on this timescale before calculating the correction.</span>
+<span class="sd">            Ignored unless hm_smooth=&#39;manual&#39;.</span>
 
-<span class="sd">                         Example: maxdistm=550</span>
-<span class="sd">    minnumants</span>
-<span class="sd">                         Minimum number of nearby antennas (up to 3) used for</span>
-<span class="sd">                         interpolation from a flagged antenna.</span>
+<span class="sd">        scale: Scale the entire phase correction by this factor.</span>
 
-<span class="sd">                         Example: minnumants=3</span>
-<span class="sd">    mingoodfrac</span>
-<span class="sd">                         Minimum fraction of good data per antenna.</span>
+<span class="sd">        maxdistm: Distance in meters of an antenna used for interpolation</span>
+<span class="sd">            from a flagged antenna.</span>
+<span class="sd">            Default: -1 (automatically set to 100m if &gt;50% of</span>
+<span class="sd">            antennas are 7m antennas without WVR and otherwise set</span>
+<span class="sd">            to 500m).</span>
+<span class="sd">            Example: maxdistm=550</span>
 
-<span class="sd">                         Example: mingoodfrac=0.7</span>
-<span class="sd">    refant</span>
-<span class="sd">                         Ranked comma delimited list of reference antennas.</span>
+<span class="sd">        minnumants: Minimum number of nearby antennas (up to 3) used for</span>
+<span class="sd">            interpolation from a flagged antenna.</span>
+<span class="sd">            Example: minnumants=3</span>
 
-<span class="sd">                         Example: refant=&#39;DV02,DV06&#39;</span>
-<span class="sd">    flag_intent</span>
-<span class="sd">                         The data intent(s) on whose WVR correction results the</span>
-<span class="sd">                         search for bad WVR antennas is to be based.</span>
+<span class="sd">        mingoodfrac: Minimum fraction of good data per antenna.</span>
+<span class="sd">            Example: mingoodfrac=0.7</span>
 
-<span class="sd">                         A &#39;flagging view&#39; will be calculated for each specified</span>
-<span class="sd">                         intent, in each spectral window in each vis file.</span>
+<span class="sd">        refant: Ranked comma delimited list of reference antennas.</span>
+<span class="sd">            Example: refant=&#39;DV02,DV06&#39;</span>
 
-<span class="sd">                         Each &#39;flagging view&#39; will consist of a 2-d image with dimensions</span>
-<span class="sd">                         [&#39;ANTENNA&#39;, &#39;TIME&#39;], showing the phase noise after the WVR</span>
-<span class="sd">                         correction has been applied.</span>
+<span class="sd">        flag_intent: The data intent(s) on whose WVR correction results the</span>
+<span class="sd">            search for bad WVR antennas is to be based.</span>
+<span class="sd">            A &#39;flagging view&#39; will be calculated for each specified</span>
+<span class="sd">            intent, in each spectral window in each vis file.</span>
+<span class="sd">            Each &#39;flagging view&#39; will consist of a 2-d image with dimensions</span>
+<span class="sd">            [&#39;ANTENNA&#39;, &#39;TIME&#39;], showing the phase noise after the WVR</span>
+<span class="sd">            correction has been applied.</span>
+<span class="sd">            If flag_intent is left blank, the default, the flagging views will be</span>
+<span class="sd">            derived from data with the default bandpass calibration intent i.e.</span>
+<span class="sd">            the first in the list BANDPASS, PHASE, AMPLITUDE for which the</span>
+<span class="sd">            MeasurementSet has data.</span>
 
-<span class="sd">                         If flag_intent is left blank, the default, the flagging views will be</span>
-<span class="sd">                         derived from data with the default bandpass calibration intent i.e.</span>
-<span class="sd">                         the first in the list BANDPASS, PHASE, AMPLITUDE for which the</span>
-<span class="sd">                         MeasurementSet has data.</span>
-<span class="sd">    qa_intent</span>
-<span class="sd">                         The list of data intents on which the WVR correction is to be</span>
-<span class="sd">                         tried as a means of estimating its effectiveness.</span>
+<span class="sd">        qa_intent: The list of data intents on which the WVR correction is to be</span>
+<span class="sd">            tried as a means of estimating its effectiveness.</span>
+<span class="sd">            A QA &#39;view&#39; will be calculated for each specified intent, in each spectral</span>
+<span class="sd">            window in each vis file.</span>
+<span class="sd">            Each QA &#39;view&#39; will consist of a pair of 2-d images with dimensions</span>
+<span class="sd">            [&#39;ANTENNA&#39;, &#39;TIME&#39;], one showing the data phase-noise before the</span>
+<span class="sd">            WVR application, the second showing the phase noise after (both &#39;before&#39;</span>
+<span class="sd">            and &#39;after&#39; images have a bandpass calibration applied as well).</span>
+<span class="sd">            An overall QA score is calculated for each vis file, by dividing the</span>
+<span class="sd">            &#39;before&#39; images by the &#39;after&#39; and taking the median of the result. An</span>
+<span class="sd">            overall score of 1 would correspond to no change in the phase noise,</span>
+<span class="sd">            a score &gt; 1 implies an improvement.</span>
+<span class="sd">            If the overall score for a vis file is less than the value in</span>
+<span class="sd">            &#39;accept_threshold&#39; then the WVR calibration file is not made available for</span>
+<span class="sd">            merging into the context for use in the subsequent reduction.</span>
 
-<span class="sd">                         A QA &#39;view&#39; will be calculated for each specified intent, in each spectral</span>
-<span class="sd">                         window in each vis file.</span>
+<span class="sd">        qa_bandpass_intent: The data intent to use for the bandpass calibration in</span>
+<span class="sd">            the qa calculation. The default is blank to allow the underlying bandpass</span>
+<span class="sd">            task to select a sensible intent if the dataset lacks BANDPASS data.</span>
 
-<span class="sd">                         Each QA &#39;view&#39; will consist of a pair of 2-d images with dimensions</span>
-<span class="sd">                         [&#39;ANTENNA&#39;, &#39;TIME&#39;], one showing the data phase-noise before the</span>
-<span class="sd">                         WVR application, the second showing the phase noise after (both &#39;before&#39;</span>
-<span class="sd">                         and &#39;after&#39; images have a bandpass calibration applied as well).</span>
+<span class="sd">        accept_threshold: The phase-rms improvement ratio</span>
+<span class="sd">            (rms without WVR / rms with WVR) above which the wrvg file will be</span>
+<span class="sd">            accepted into the context for subsequent application.</span>
 
-<span class="sd">                         An overall QA score is calculated for each vis file, by dividing the</span>
-<span class="sd">                         &#39;before&#39; images by the &#39;after&#39; and taking the median of the result. An</span>
-<span class="sd">                         overall score of 1 would correspond to no change in the phase noise,</span>
-<span class="sd">                         a score &gt; 1 implies an improvement.</span>
+<span class="sd">        flag_hi: True to flag high figure of merit outliers.</span>
 
-<span class="sd">                         If the overall score for a vis file is less than the value in</span>
-<span class="sd">                         &#39;accept_threshold&#39; then the WVR calibration file is not made available for</span>
-<span class="sd">                         merging into the context for use in the subsequent reduction.</span>
-<span class="sd">    qa_bandpass_intent</span>
-<span class="sd">                         The data intent to use for the bandpass calibration in</span>
-<span class="sd">                         the qa calculation. The default is blank to allow the underlying bandpass</span>
-<span class="sd">                         task to select a sensible intent if the dataset lacks BANDPASS data.</span>
-<span class="sd">    accept_threshold</span>
-<span class="sd">                         The phase-rms improvement ratio</span>
-<span class="sd">                         (rms without WVR / rms with WVR) above which the wrvg file will be</span>
-<span class="sd">                         accepted into the context for subsequent application.</span>
-<span class="sd">    flag_hi</span>
-<span class="sd">                         True to flag high figure of merit outliers.</span>
-<span class="sd">    fhi_limit</span>
-<span class="sd">                         Flag figure of merit values higher than limit * MAD.</span>
-<span class="sd">    fhi_minsample</span>
-<span class="sd">                         Minimum number of samples for valid MAD estimate.</span>
-<span class="sd">    ants_with_wvr_thresh</span>
-<span class="sd">                         This threshold sets the minimum fraction of antennas</span>
-<span class="sd">                         that should have WVR data for WVR calibration and flagging to proceed; the</span>
-<span class="sd">                         same threshold is used to determine, after flagging, whether there remain</span>
-<span class="sd">                         enough unflagged antennas with WVR data for the WVR calibration to be</span>
-<span class="sd">                         applied.</span>
+<span class="sd">        fhi_limit: Flag figure of merit values higher than limit * MAD.</span>
 
-<span class="sd">                         Example: ants_with_wvr_thresh=0.5</span>
+<span class="sd">        fhi_minsample: Minimum number of samples for valid MAD estimate.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        ants_with_wvr_thresh: This threshold sets the minimum fraction of antennas</span>
+<span class="sd">            that should have WVR data for WVR calibration and flagging to proceed; the</span>
+<span class="sd">            same threshold is used to determine, after flagging, whether there remain</span>
+<span class="sd">            enough unflagged antennas with WVR data for the WVR calibration to be</span>
+<span class="sd">            applied.</span>
+<span class="sd">            Example: ants_with_wvr_thresh=0.5</span>
 
-<span class="sd">    1. Compute the WVR calibration for all the MeasurementSets:</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_wvrgcalflag(hm_tie=&#39;automatic&#39;)</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Compute the WVR calibration for all the MeasurementSets:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifa_wvrgcalflag(hm_tie=&#39;automatic&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

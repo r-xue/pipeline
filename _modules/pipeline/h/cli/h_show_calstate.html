@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -147,19 +143,18 @@
 <div class="viewcode-block" id="h_show_calstate">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.h_show_calstate.html#pipeline.cli.h_show_calstate">[docs]</a>
 <span class="k">def</span> <span class="nf">h_show_calstate</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_show_calstate ---- Show the current pipeline calibration state</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the current pipeline calibration state</span>
 
 <span class="sd">    h_show_calstate displays the current on-the-fly calibration state</span>
 <span class="sd">    of the pipeline as a set of equivalent applycal calls.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Show the current on-the-fly pipeline calibration state.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Show the current on-the-fly pipeline calibration state.</span>
-
-<span class="sd">    &gt;&gt;&gt; h_show_calstate()</span>
+<span class="sd">        &gt;&gt;&gt; h_show_calstate()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>

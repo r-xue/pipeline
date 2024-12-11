@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,24 +145,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass.hifv_solint">
 <span class="sig-name descname"><span class="pre">hifv_solint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_short_solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_solint.html#hifv_solint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass.hifv_solint" title="Link to this definition"></a></dt>
-<dd><p>hifv_solint —- Determines different solution intervals</p>
+<dd><p>Determines different solution intervals.</p>
 <p>The hifv_solint task determines different solution intervals. Note that the short solint value is switched to ‘int’ when
 the minimum solution interval corresponds to one integration.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>specified in the h_init or hifv_importdata task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>limit_short_solint</strong> – Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of ‘0.45’ or 0.45.
+Can be set to a string value of ‘int’.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore Example:  refantignore=’ea02, ea03’</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>. Example: refant = ‘ea01, ea02’</p></li>
+</ul>
 </dd>
-<dt>limit_short_solint Keyword argument in units of seconds to limit the short solution interval.</dt><dd><p>Can be a string or float numerical value in units of seconds of ‘0.45’ or 0.45.
-Can be set to a string value of ‘int’.</p>
-</dd>
-<dt>refantignore       String list of antennas to ignore</dt><dd><p>Example:  refantignore=’ea02,ea03’</p>
-</dd>
-<dt>refant             A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</dt><dd><p>Example: refant = ‘ea01, ea02’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Determines different solution intervals:</p></li>
 </ol>

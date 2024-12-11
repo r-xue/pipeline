@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hifa_spwphaseup">
 <span class="sig-name descname"><span class="pre">hifa_spwphaseup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_spwmapmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxnarrowbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minfracmaxbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samebb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasesnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwedgefrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nantennas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfracflagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unregister_existing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_spwphaseup.html#hifa_spwphaseup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hifa_spwphaseup" title="Link to this definition"></a></dt>
-<dd><p>hifa_spwphaseup —- Compute phase calibration spw map and per spw phase offsets</p>
+<dd><p>Compute phase calibration spw map and per spw phase offsets</p>
 <p>The spw map for phase calibration is computed. Phase offsets as a function of
 spectral window are computed using high signal-to-noise calibration observations.</p>
 <p>Previous calibrations are applied on the fly.</p>
@@ -204,34 +200,26 @@ table in the pipeline are stored in the context for use by later tasks.</p>
 <p>Finally, the SNR of the calibration solutions are inspected and if the median value
 on a per-spw basis does not reach specific thresholds, then issue a warning and reduced
 QA score, with thresholds at <code class="docutils literal notranslate"><span class="pre">phasesnr</span></code> <a href="#id1"><span class="problematic" id="id2">*</span></a>0.75 (blue), <a href="#id3"><span class="problematic" id="id4">*</span></a>0.5 (yellow) and <a href="#id5"><span class="problematic" id="id6">*</span></a>0.33 (red).</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p>
-</dd>
-<dt>caltable</dt><dd><p>The list of output calibration tables. Defaults to the standard
-pipeline naming convention.</p>
-<p>Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p>
-</dd>
-<dt>field</dt><dd><p>The list of field names or field ids for which phase offset solutions
-are to be computed. Defaults to all fields with the default intent.</p>
-<p>Example: field=’3C279’, field=’3C279, M82’</p>
-</dd>
-<dt>intent</dt><dd><p>A string containing a comma delimited list of intents against
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p></li>
+<li><p><strong>caltable</strong> – The list of output calibration tables. Defaults to the standard
+pipeline naming convention.
+Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which phase offset solutions
+are to be computed. Defaults to all fields with the default intent.
+Example: field=’3C279’, field=’3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against
 which the selected fields are matched. Defaults to the BANDPASS
-observations.</p>
-<p>Example: intent=’PHASE’</p>
-</dd>
-<dt>spw</dt><dd><p>The list of spectral windows and channels for which gain solutions are
-computed. Defaults to all the science spectral windows.</p>
-<p>Example: spw=’13,15’</p>
-</dd>
-<dt>hm_spwmapmode</dt><dd><p>The spectral window mapping mode. The options are: ‘auto’,
+observations.
+Example: intent=’PHASE’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which gain solutions are
+computed. Defaults to all the science spectral windows.
+Example: spw=’13,15’</p></li>
+<li><p><strong>hm_spwmapmode</strong> – The spectral window mapping mode. The options are: ‘auto’,
 ‘combine’, ‘simple’, and ‘default’. In ‘auto’ mode hifa_spwphaseup
 estimates the SNR of the phase calibrator observations and uses these
 estimates to choose between ‘combine’ mode (low SNR) and ‘default’ mode
@@ -239,55 +227,47 @@ estimates to choose between ‘combine’ mode (low SNR) and ‘default’ mode
 one spectral window. In ‘simple’ mode narrow spectral windows are mapped to
 wider ones using an algorithm defined by ‘maxnarrowbw’, ‘minfracmaxbw’, and
 ‘samebb’. In ‘default’ mode the spectral window map defaults to the
-standard one to one mapping.</p>
-<p>Example: hm_spwmapmode=’combine’</p>
-</dd>
-<dt>maxnarrowbw</dt><dd><p>The maximum bandwidth defining narrow spectral windows. Values
-must be in CASA compatible frequency units.</p>
-<p>Example: maxnarrowbw=’’</p>
-</dd>
-<dt>minfracmaxbw</dt><dd><p>The minimum fraction of the maximum bandwidth in the set of
-spws to use for matching.</p>
-<p>Example: minfracmaxbw=0.75</p>
-</dd>
-<dt>samebb</dt><dd><p>Match within the same baseband if possible.</p>
-<p>Example: samebb=False</p>
-</dd>
-<dt>phasesnr</dt><dd><p>The required gaincal solution signal-to-noise.</p>
-<p>Example: phaseupsnr=20.0</p>
-</dd>
-<dt>bwedgefrac</dt><dd><p>The fraction of the bandwidth edges that is flagged.</p>
-<p>Example: bwedgefrac=0.0</p>
-</dd>
-<dt>hm_nantennas</dt><dd><p>The heuristics for determines the number of antennas to use
+standard one to one mapping.
+Example: hm_spwmapmode=’combine’</p></li>
+<li><p><strong>maxnarrowbw</strong> – The maximum bandwidth defining narrow spectral windows. Values
+must be in CASA compatible frequency units.
+Example: maxnarrowbw=’’</p></li>
+<li><p><strong>minfracmaxbw</strong> – The minimum fraction of the maximum bandwidth in the set of
+spws to use for matching.
+Example: minfracmaxbw=0.75</p></li>
+<li><p><strong>samebb</strong> – Match within the same baseband if possible.
+Example: samebb=False</p></li>
+<li><p><strong>phasesnr</strong> – The required gaincal solution signal-to-noise.
+Example: phaseupsnr=20.0</p></li>
+<li><p><strong>bwedgefrac</strong> – The fraction of the bandwidth edges that is flagged.
+Example: bwedgefrac=0.0</p></li>
+<li><p><strong>hm_nantennas</strong> – The heuristics for determines the number of antennas to use
 in the signal-to-noise estimate. The options are ‘all’ and ‘unflagged’.
-The ‘unflagged’ options is not currently supported.</p>
-<p>Example: hm_nantennas=’unflagged’</p>
-</dd>
-<dt>maxfracflagged</dt><dd><p>The maximum fraction of an antenna that can be flagged
-before it is excluded from the signal-to-noise estimate.</p>
-<p>Example: maxfracflagged=0.80</p>
-</dd>
-<dt>combine</dt><dd><p>Data axes to combine for solving. Options are ‘’, ‘scan’, ‘spw’,
-‘field’ or any comma-separated combination.</p>
-<p>Example: combine=’’</p>
-</dd>
-<dt>refant</dt><dd><p>Reference antenna name(s) in priority order. Defaults to most recent
+The ‘unflagged’ options is not currently supported.
+Example: hm_nantennas=’unflagged’</p></li>
+<li><p><strong>maxfracflagged</strong> – The maximum fraction of an antenna that can be flagged
+before it is excluded from the signal-to-noise estimate.
+Example: maxfracflagged=0.80</p></li>
+<li><p><strong>combine</strong> – Data axes to combine for solving. Options are ‘’, ‘scan’, ‘spw’,
+‘field’ or any comma-separated combination.
+Example: combine=’’</p></li>
+<li><p><strong>refant</strong> – Reference antenna name(s) in priority order. Defaults to most recent
 values set in the pipeline context.  If no reference antenna is defined in
-the pipeline context the CASA defaults are used.</p>
-<p>Example: refant=’DV01’, refant=’DV05,DV07’</p>
+the pipeline context the CASA defaults are used.
+Example: refant=’DV01’, refant=’DV05,DV07’</p></li>
+<li><p><strong>minblperant</strong> – Minimum number of baselines required per antenna for each solve.
+Antennas with fewer baselines are excluded from solutions.
+Example: minblperant=2</p></li>
+<li><p><strong>minsnr</strong> – Solutions below this SNR are rejected.</p></li>
+<li><p><strong>unregister_existing</strong> – Unregister previous spwphaseup calibrations from the pipeline context
+before registering the new calibrations from this task.</p></li>
+</ul>
 </dd>
-<dt>minblperant</dt><dd><p>Minimum number of baselines required per antenna for each solve.
-Antennas with fewer baselines are excluded from solutions.</p>
-<p>Example: minblperant=2</p>
-</dd>
-<dt>minsnr</dt><dd><p>Solutions below this SNR are rejected.</p>
-</dd>
-<dt>unregister_existing</dt><dd><p>Unregister previous spwphaseup calibrations from the pipeline context
-before registering the new calibrations from this task.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Compute the default spectral window map and the per spectral window phase
 offsets:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_spwphaseup</span><span class="p">()</span>

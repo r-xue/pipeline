@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,8 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass.hif_correctedampflag">
 <span class="sig-name descname"><span class="pre">hif_correctedampflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmantint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxed_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_correctedampflag.html#hif_correctedampflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass.hif_correctedampflag" title="Link to this definition"></a></dt>
-<dd><p>hif_correctedampflag —- Flag corrected - model amplitudes based on calibrators.</p>
-<p>Flag corrected - model amplitudes based on calibrators.</p>
+<dd><p>Flag corrected - model amplitudes based on calibrators.</p>
 <p>This task computes the flagging heuristics on a calibrator by calling hif_correctedampflag
 which looks for outlier visibility points by statistically examining the scalar
 difference of corrected amplitudes minus model amplitudes, and flags those outliers.
@@ -159,40 +154,37 @@ calibration will be flagged. The heuristic works equally well on resolved calibr
 and point sources because it is not performing a vector difference, and thus is not
 sensitive to nulls in the flux density vs. uvdistance domain. Note that the phase of
 the data is not assessed.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis            The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched. If undefined (default),
+it will select all data with the BANDPASS intent.
+Example: intent=’<cite>*PHASE*</cite>’</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which bandpasses are computed. If undefined (default), it will select all fields.
+Examples: field=’3C279’, ‘3C279, M82’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which bandpasses are computed. If undefined (default), it will select all
+science spectral windows.
+Example: spw=’11,13,15,17’</p></li>
+<li><p><strong>antnegsig</strong> – Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
+<li><p><strong>antpossig</strong> – Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
+<li><p><strong>tmantint</strong> – Threshold for maximum fraction of timestamps that are allowed to contain outliers</p></li>
+<li><p><strong>tmint</strong> – Initial threshold for maximum fraction of “outlier timestamps” over “total timestamps” that a baseline may be a part of</p></li>
+<li><p><strong>tmbl</strong> – Initial threshold for maximum fraction of “bad baselines” over “all timestamps” that an antenna may be a part of</p></li>
+<li><p><strong>antblnegsig</strong> – Lower sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)</p></li>
+<li><p><strong>antblpossig</strong> – Upper sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)</p></li>
+<li><p><strong>relaxed_factor</strong> – Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</p></li>
+<li><p><strong>niter</strong> – Maximum number of times to iterate on evaluation of flagging heuristics. If an iteration results in no new flags, then
+subsequent iterations are skipped.</p></li>
+</ul>
 </dd>
-<dt>intent         A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched. If undefined (default),
-it will select all data with the BANDPASS intent.</p>
-<p>Example: intent=’<cite>*PHASE*</cite>’</p>
-</dd>
-<dt>field          The list of field names or field ids for which bandpasses are</dt><dd><p>computed. If undefined (default), it will select all fields.</p>
-<p>Examples: field=’3C279’, ‘3C279, M82’</p>
-</dd>
-<dt>spw            The list of spectral windows and channels for which bandpasses</dt><dd><p>are computed. If undefined (default), it will select all
-science spectral windows.</p>
-<p>Example: spw=’11,13,15,17’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>antnegsig      Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
-antpossig      Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps
-tmantint       Threshold for maximum fraction of timestamps that are allowed to contain outliers
-tmint          Initial threshold for maximum fraction of “outlier timestamps” over “total timestamps” that a baseline may be a part of
-tmbl           Initial threshold for maximum fraction of “bad baselines” over “all timestamps” that an antenna may be a part of
-antblnegsig    Lower sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)
-antblpossig    Upper sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)
-relaxed_factor Relaxed value to set the threshold scaling factor to under certain conditions (see task description)
-niter          Maximum number of times to iterate on evaluation of flagging</p>
-<blockquote>
-<div><p>heuristics. If an iteration results in no new flags, then
-subsequent iterations are skipped.</p>
-</div></blockquote>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>Run default flagging on bandpass calibrator with recommended settings:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_correctedampflag</span><span class="p">()</span>
 </pre></div>

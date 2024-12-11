@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -154,7 +150,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageParamsHeuristicsALMA</span><span class="p">(</span><span class="n">ImageParamsHeuristics</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -164,7 +160,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">=</span> <span class="s1">&#39;ALMA&#39;</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.robust">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.robust">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.robust">[docs]</a>
     <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;robust parameter heuristic.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;robust&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">:</span>
@@ -176,7 +172,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.uvtaper">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.uvtaper">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.uvtaper">[docs]</a>
     <span class="k">def</span> <span class="nf">uvtaper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_natural</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_long</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">beam_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tapering_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of uvtaper parameter based on desired resolution or representative baseline length.&quot;&quot;&quot;</span>
 
@@ -232,7 +228,7 @@
         <span class="c1"># return uvtaper</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.dr_correction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.dr_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.dr_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">dr_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">tlimit</span><span class="p">,</span> <span class="n">drcorrect</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of cleaning threshold due to dynamic range limitations.&quot;&quot;&quot;</span>
 
@@ -337,7 +333,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.niter_correction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.niter_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.niter_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjustment of number of cleaning iterations due to mask size.</span>
 
@@ -358,7 +354,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.calc_length_of_nth_baseline">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.calc_length_of_nth_baseline">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.calc_length_of_nth_baseline">[docs]</a>
     <span class="k">def</span> <span class="nf">calc_length_of_nth_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the length of the nth baseline for the vis list used in the heuristics instance.&quot;&quot;&quot;</span>
         <span class="n">baseline_lengths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -377,7 +373,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.get_autobox_params">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.get_autobox_params">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.get_autobox_params">[docs]</a>
     <span class="k">def</span> <span class="nf">get_autobox_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">robust</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Default auto-boxing parameters for ALMA main array and ACA.&quot;&quot;&quot;</span>
 
@@ -551,7 +547,7 @@
             <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.mosweight">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.mosweight">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.mosweight">[docs]</a>
     <span class="k">def</span> <span class="nf">mosweight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mosaic&#39;</span><span class="p">:</span>
@@ -561,14 +557,14 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.tclean_stopcode_ignore">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tclean_stopcode_ignore">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.tclean_stopcode_ignore">[docs]</a>
     <span class="k">def</span> <span class="nf">tclean_stopcode_ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tclean stop code(s) to be ignored for warning messages (PIPE-1319).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.keep_iterating">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.keep_iterating">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.keep_iterating">[docs]</a>
     <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span>
                        <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if another tclean iteration is necessary.&quot;&quot;&quot;</span>
@@ -637,7 +633,7 @@
             <span class="k">return</span> <span class="s1">&#39;I&#39;</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.reffreq">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.reffreq">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.reffreq">[docs]</a>
     <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;PIPE-1838: Tclean reffreq parameter heuristics.&quot;&quot;&quot;</span>
 
@@ -685,7 +681,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsALMA.arrays">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.arrays">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_alma_srdp.ImageParamsHeuristicsALMA.html#pipeline.hif.heuristics.imageparams_alma.ImageParamsHeuristicsALMA.arrays">[docs]</a>
     <span class="k">def</span> <span class="nf">arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the array descriptions.&quot;&quot;&quot;</span>

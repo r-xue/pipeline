@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,67 +145,67 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hifa_renorm">
 <span class="sig-name descname"><span class="pre">hifa_renorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_auto_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_renorm.html#hifa_renorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hifa_renorm" title="Link to this definition"></a></dt>
-<dd><p>hifa_renorm —- ALMA renormalization task</p>
+<dd><p>ALMA renormalization task</p>
 <p>This task makes an assessment, and optionally applies a correction, to data
 suffering from incorrect amplitude normalization caused by bright
 astronomical lines detected in the autocorrelations of some target sources.</p>
 <p>For a full description of the effects of bright emission lines and the
 correction heuristics used in this task, please see the Pipeline User Guide.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>List of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘ngc5921.ms’]</p>
-</dd>
-<dt>createcaltable</dt><dd><p>Boolean to select whether to create the renormalization
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>vis</strong> – List of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘ngc5921.ms’]</p></li>
+<li><p><strong>createcaltable</strong> – Boolean to select whether to create the renormalization
 correction cal table (True), or only run the assessment
-(False, default).</p>
-<p>Example: createcaltable=True</p>
-</dd>
-<dt>threshold</dt><dd><p>Apply correction if max correction is above this threshold
-value and <code class="docutils literal notranslate"><span class="pre">apply</span></code> = True. Default is 1.02 (i.e. 2%).</p>
-<p>Example: threshold=1.02</p>
-</dd>
-<dt>spw</dt><dd><p>The list of real (not virtual - i.e. the actual spwIDs in
-the MS) spectral windows to evaluate.</p>
-<p>Set to spw=’’ by default, which means the task will select
-all relevant (science FDM) spectral windows.</p>
-<p>Note that for data with multiple MSs, a list with the
+(False, default).
+Example: createcaltable=True</p></li>
+<li><p><strong>threshold</strong> – Apply correction if max correction is above this threshold
+value and <code class="docutils literal notranslate"><span class="pre">apply</span></code> = True. Default is 1.02 (i.e. 2%).
+Example: threshold=1.02</p></li>
+<li><p><strong>spw</strong> – The list of real (not virtual - i.e. the actual spwIDs in
+the MS) spectral windows to evaluate.
+Set to spw=’’ by default, which means the task will select
+all relevant (science FDM) spectral windows.
+Note that for data with multiple MSs, a list with the
 correct spectral window selection for each MS can be
 provided.</p>
 <p>Examples:</p>
-<p>spw=”11,13,15,17”</p>
-<p>spw=[“11,13,15,17”, “5,7,11,13”]</p>
-</dd>
-<dt>excludechan</dt><dd><p>Channels to exclude in either channel or frequency space
+<ul class="simple">
+<li><p>spw=”11,13,15,17”</p></li>
+<li><p>spw=[“11,13,15,17”, “5,7,11,13”]</p></li>
+</ul>
+</li>
+<li><p><strong>excludechan</strong> – Channels to exclude in either channel or frequency space
 (TOPO, GHz), specifying the real (not virtual) spectral
-window per selection.</p>
-<p>Note that for data with multiple MSs, a list of
+window per selection.
+Note that for data with multiple MSs, a list of
 dictionaries with the correct selection for each MS can be
-provided.</p>
-<p>Examples:</p>
-<p>excludechan={‘22’:’100~150;800~850’, ‘24’:’100~200’}</p>
-<p>excludechan={‘22’:’230.1GHz~230.2GHz’}</p>
-<p>excludechan=[{‘22’:’100~150’}, {‘15’:’100~150’}]</p>
-</dd>
-<dt>atm_auto_exclude</dt><dd><p>Automatically find and exclude regions with atmospheric
-features. Default is False</p>
-</dd>
-<dt>bwthreshspw</dt><dd><p>Bandwidth beyond which a SPW is split into chunks to fit
+provided.
+Examples:</p>
+<ul class="simple">
+<li><p>excludechan={‘22’:’100~150;800~850’, ‘24’:’100~200’}</p></li>
+<li><p>excludechan={‘22’:’230.1GHz~230.2GHz’}</p></li>
+<li><p>excludechan=[{‘22’:’100~150’}, {‘15’:’100~150’}]</p></li>
+</ul>
+</li>
+<li><p><strong>atm_auto_exclude</strong> – Automatically find and exclude regions with atmospheric
+features. Default is False</p></li>
+<li><p><strong>bwthreshspw</strong> – Bandwidth beyond which a SPW is split into chunks to fit
 separately. The default value for all SPWs is 120e6, and
 this parameter allows one to override it for specific SPWs,
 due to needing potentially various ‘nsegments’ when EBs
-have very different SPW bandwidths.</p>
-<p>Example: bwthreshspw={‘16: 64e6, ‘22: 64e6}</p>
+have very different SPW bandwidths.
+Example: bwthreshspw={‘16: 64e6, ‘22: 64e6}</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+</ul>
 </dd>
-<dt>parallel</dt><dd><p>Execute using CASA HPC functionality, if available.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Run with recommended settings to assess the need for an ALMA amplitude
 renormalization correction.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_renorm</span><span class="p">()</span>

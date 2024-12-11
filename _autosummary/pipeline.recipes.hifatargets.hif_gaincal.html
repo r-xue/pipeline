@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hif_gaincal">
 <span class="sig-name descname"><span class="pre">hif_gaincal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_gaintype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splinetime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npointaver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasewrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_gaincal.html#hif_gaincal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hif_gaincal" title="Link to this definition"></a></dt>
-<dd><p>hif_gaincal —- Determine temporal gains from calibrator observations</p>
+<dd><p>Determine temporal gains from calibrator observations</p>
 <p>The complex gains are derived from the data column (raw data) divided by the
 model column (usually set with hif_setjy). The gains are obtained for a
 specified solution interval, spw combination and field combination.</p>
@@ -158,75 +154,54 @@ task.</p>
 <p>Previous calibrations that have been stored in the pipeline context are
 applied on the fly. Users can interact with these calibrations via the
 h_export_calstate and h_import_calstate tasks.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-<dt>caltable      The list of output calibration tables. Defaults to the</dt><dd><p>standard pipeline naming convention.</p>
-<p>Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p>
-</dd>
-<dt>field         The list of field names or field ids for which gain solutions</dt><dd><p>are to be computed. Defaults to all fields with the standard
-intent.</p>
-<p>Example: field=’3C279’, field=’3C279, M82’</p>
-</dd>
-<dt>intent        A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched. Defaults to <cite>*PHASE*</cite>.</p>
-<p>Examples: intent=’’, intent=’<cite>*AMP*,*PHASE*</cite>’</p>
-</dd>
-<dt>spw           The list of spectral windows and channels for which gain</dt><dd><p>solutions are computed. Defaults to all science spectral
-windows.</p>
-<p>Examples: spw=’21’, spw=’21, 23’</p>
-</dd>
-</dl>
-<p>antenna       Set of data selection antenna ids
-hm_gaintype   The type of gain calibration. The options are ‘gtype’ and</p>
-<blockquote>
-<div><p>‘gspline’ for CASA gain types = ‘G’ and ‘GSPLINE’ respectively.</p>
-</div></blockquote>
-<dl>
-<dt>calmode       Type of solution. The options are ‘ap’ (amp and phase), ‘p’</dt><dd><p>(phase only) and ‘a’ (amp only).</p>
-<p>Examples: calmode=’p’, calmode=’a’, calmode=’ap’</p>
-</dd>
-<dt>solint        Time solution intervals in CASA syntax. Works for</dt><dd><p>hm_gaintype=’gtype’ only.</p>
-<p>Examples: solint=’inf’, solint=’int’, solint=’100sec’</p>
-</dd>
-<dt>combine       Data axes to combine for solving. Options are  ‘’, ‘scan’,</dt><dd><p>‘spw’, ‘field’ or any comma-separated combination. Works for
-hm_gaintype=’gtype’ only.</p>
-</dd>
-<dt>refant        Reference antenna name(s) in priority order. Defaults to most</dt><dd><p>recent values set in the pipeline context. If no reference
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>caltable</strong> – The list of output calibration tables. Defaults to the standard pipeline naming convention.
+Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which gain solutions are to be computed. Defaults to all fields with the standard
+intent.
+Example: field=’3C279’, field=’3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to <cite>*PHASE*</cite>.
+Examples: intent=’’, intent=’<cite>*AMP*,*PHASE*</cite>’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which gain solutions are computed. Defaults to all science spectral
+windows.
+Examples: spw=’21’, spw=’21, 23’</p></li>
+<li><p><strong>antenna</strong> – Set of data selection antenna ids</p></li>
+<li><p><strong>hm_gaintype</strong> – The type of gain calibration. The options are ‘gtype’ and ‘gspline’ for CASA gain types = ‘G’ and ‘GSPLINE’ respectively.</p></li>
+<li><p><strong>calmode</strong> – Type of solution. The options are ‘ap’ (amp and phase), ‘p’ (phase only) and ‘a’ (amp only).
+Examples: calmode=’p’, calmode=’a’, calmode=’ap’</p></li>
+<li><p><strong>solint</strong> – Time solution intervals in CASA syntax. Works for hm_gaintype=’gtype’ only.
+Examples: solint=’inf’, solint=’int’, solint=’100sec’</p></li>
+<li><p><strong>combine</strong> – Data axes to combine for solving. Options are  ‘’, ‘scan’, ‘spw’, ‘field’ or any comma-separated combination. Works for
+hm_gaintype=’gtype’ only.</p></li>
+<li><p><strong>refant</strong> – Reference antenna name(s) in priority order. Defaults to most recent values set in the pipeline context. If no reference
 antenna is defined in the pipeline context use the CASA
-defaults.</p>
-<p>Examples: refant=’DV01’, refant=’DV05,DV07’</p>
-</dd>
-<dt>refantmode    Controls how the refant is applied. Currently available</dt><dd><p>choices are ‘flex’, ‘strict’, and the default value of ‘’.
+defaults.
+Examples: refant=’DV01’, refant=’DV05,DV07’</p></li>
+<li><p><strong>refantmode</strong> – Controls how the refant is applied. Currently available choices are ‘flex’, ‘strict’, and the default value of ‘’.
 Setting to ‘’ allows the pipeline to select the appropriate
-mode based on the state of the reference antenna list.</p>
-<p>Examples: refantmode=’strict’, refantmode=’’</p>
+mode based on the state of the reference antenna list.
+Examples: refantmode=’strict’, refantmode=’’</p></li>
+<li><p><strong>solnorm</strong> – Normalize average solution amplitudes to 1.0</p></li>
+<li><p><strong>minblperant</strong> – Minimum number of baselines required per antenna for each solve. Antennas with fewer baselines are excluded from
+solutions. Works for hm_gaintype=’gtype’ only.</p></li>
+<li><p><strong>minsnr</strong> – Solutions below this SNR are rejected. Works for hm_gaintype=’channel’ only.</p></li>
+<li><p><strong>smodel</strong> – Point source Stokes parameters for source model (experimental). Defaults to using standard MODEL_DATA column data.
+Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</p></li>
+<li><p><strong>splinetime</strong> – Spline timescale (sec). Used for hm_gaintype=’gspline’. Typical splinetime should cover about 3 to 5 calibrator scans.</p></li>
+<li><p><strong>npointaver</strong> – Tune phase-unwrapping algorithm. Used for hm_gaintype=’gspline’. Keep at default value.</p></li>
+<li><p><strong>phasewrap</strong> – Wrap the phase for changes larger than this amount (degrees). Used for hm_gaintype=’gspline’. Keep at default value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>solnorm       Normalize average solution amplitudes to 1.0
-minblperant   Minimum number of baselines required per antenna for each</p>
-<blockquote>
-<div><p>solve. Antennas with fewer baselines are excluded from
-solutions. Works for hm_gaintype=’gtype’ only.</p>
-</div></blockquote>
-<dl>
-<dt>minsnr        Solutions below this SNR are rejected. Works for</dt><dd><p>hm_gaintype=’channel’ only.</p>
-</dd>
-<dt>smodel        Point source Stokes parameters for source model (experimental).</dt><dd><p>Defaults to using standard MODEL_DATA column data.</p>
-<p>Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</p>
-</dd>
-<dt>splinetime    Spline timescale (sec). Used for hm_gaintype=’gspline’.</dt><dd><p>Typical splinetime should cover about 3 to 5 calibrator scans.</p>
-</dd>
-<dt>npointaver    Tune phase-unwrapping algorithm. Used for</dt><dd><p>hm_gaintype=’gspline’. Keep at default value.</p>
-</dd>
-<dt>phasewrap     Wrap the phase for changes larger than this amount (degrees).</dt><dd><p>Used for hm_gaintype=’gspline’. Keep at default value.</p>
-</dd>
-</dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>Compute standard per scan gain solutions that will be used to calibrate
 the target:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_gaincal</span><span class="p">()</span>

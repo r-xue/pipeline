@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,46 +146,45 @@
 <span class="k">def</span> <span class="nf">hif_transformimagedata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">timebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clear_pointing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">modify_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wtmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_transformimagedata ---- Extract fields for the desired VLASS image to a new MS and reset weights if desired</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract fields for the desired VLASS image to a new MS and reset weights if desired</span>
 
 <span class="sd">    Extract fields for the desired VLASS image to a new MS and reset weights if desired</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be</span>
+<span class="sd">            converted  to MS format.</span>
+<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        outputvis: The output MeasurementSet.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        field: Set of data selection field names or ids, &#39;&#39; for all.</span>
 
-<span class="sd">    vis            List of visibility data files. These may be ASDMs, tar files of ASDMs,</span>
-<span class="sd">                   MSs, or tar files of MSs, If ASDM files are specified, they will be</span>
-<span class="sd">                   converted  to MS format.</span>
+<span class="sd">        intent: Set of data selection intents, &#39;&#39; for all.</span>
 
-<span class="sd">                   example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
-<span class="sd">    outputvis      The output MeasurementSet.</span>
-<span class="sd">    field          Set of data selection field names or ids, \&#39;\&#39; for all.</span>
-<span class="sd">    intent         Set of data selection intents, \&#39;\&#39; for all.</span>
-<span class="sd">    spw            Set of data selection spectral window ids \&#39;\&#39; for all.</span>
-<span class="sd">    datacolumn     Select spectral windows to split. The standard CASA options are</span>
-<span class="sd">                   supported</span>
+<span class="sd">        spw: Set of data selection spectral window ids &#39;&#39; for all.</span>
 
-<span class="sd">                   example: &#39;data&#39;, &#39;model&#39;</span>
-<span class="sd">    chanbin        Bin width for channel averaging.</span>
-<span class="sd">    timebin        Bin width for time averaging.</span>
-<span class="sd">    replace        If a split was performed delete the parent MS and remove it from the context.</span>
+<span class="sd">        datacolumn: Select spectral windows to split. The standard CASA options are supported</span>
+<span class="sd">            example: &#39;data&#39;, &#39;model&#39;</span>
 
-<span class="sd">                   example: True or False</span>
-<span class="sd">    clear_pointing Clear the pointing table.</span>
-<span class="sd">    modify_weights Re-initialize the weights.</span>
-<span class="sd">    wtmode         optional weight initialization mode when modify_weights=True</span>
+<span class="sd">        chanbin: Bin width for channel averaging.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        timebin: Bin width for time averaging.</span>
 
+<span class="sd">        replace: If a split was performed delete the parent MS and remove it from the context. example: True or False</span>
 
-<span class="sd">    1. Basic transformimagedata task</span>
+<span class="sd">        clear_pointing: Clear the pointing table.</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_transformimagedata()</span>
+<span class="sd">        modify_weights: Re-initialize the weights.</span>
 
+<span class="sd">        wtmode: optional weight initialization mode when modify_weights=True</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Basic transformimagedata task</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_transformimagedata()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

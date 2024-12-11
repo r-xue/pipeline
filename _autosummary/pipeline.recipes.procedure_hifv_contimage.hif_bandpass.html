@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hif_bandpass">
 <span class="sig-name descname"><span class="pre">hif_bandpass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupbw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_bandpass.html#hif_bandpass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hif_bandpass" title="Link to this definition"></a></dt>
-<dd><p>hif_bandpass —- Compute bandpass calibration solutions</p>
+<dd><p>Compute bandpass calibration solutions</p>
 <p>Compute amplitude and phase as a function of frequency for each spectral
 window in each MeasurementSet.</p>
 <p>Previous calibration can be applied on the fly.</p>
@@ -158,65 +154,45 @@ spectral window. By default a ‘phaseup’ pre-calibration is performed
 and applied on the fly to the data, before the bandpass is computed.</p>
 <p>The hif_refant task may be used to precompute a prioritized list of
 reference antennas.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>caltable</strong> – The list of output calibration tables. Defaults to the standard pipeline naming convention.
+Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which bandpasses are computed. Defaults to all fields.
+Examples: field=’3C279’, field=’3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched.  Defaults to all data
+with bandpass intent.
+Example: intent=’<cite>*PHASE*</cite>’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which bandpasses are computed. Defaults to all science spectral windows.
+Example: spw=’11,13,15,17’</p></li>
+<li><p><strong>antenna</strong> – Set of data selection antenna IDs</p></li>
+<li><p><strong>phaseup</strong> – Do a phaseup on the data before computing the bandpass solution.</p></li>
+<li><p><strong>phaseupsolint</strong> – The phase correction solution interval in CASA syntax. Used when phaseup is True.
+Example: phaseupsolint=300</p></li>
+<li><p><strong>phaseupbw</strong> – Bandwidth to be used for phaseup. Defaults to 500MHz. Used when phaseup is True.
+Examples: phaseupbw=’’ to use entire bandpass
+phaseupbw=’500MHz’ to use central 500MHz</p></li>
+<li><p><strong>solint</strong> – Time and channel solution intervals in CASA syntax. Examples: solint=’inf,10ch’, solint=’inf’</p></li>
+<li><p><strong>combine</strong> – Data axes to combine for solving. Axes are ‘’, ‘scan’, ‘spw’, ‘field’ or any comma-separated combination.
+Example: combine=’scan,field’</p></li>
+<li><p><strong>refant</strong> – Reference antenna names. Defaults to the value(s) stored in the pipeline context. If undefined in the pipeline context
+defaults to the CASA reference antenna naming scheme.
+Examples: refant=’DV01’, refant=’DV06,DV07’</p></li>
+<li><p><strong>solnorm</strong> – Normalise the bandpass solution</p></li>
+<li><p><strong>minblperant</strong> – Minimum number of baselines required per antenna for each solve. Antennas with fewer baselines are excluded from
+solutions.</p></li>
+<li><p><strong>minsnr</strong> – Reject solutions below this SNR</p></li>
+</ul>
 </dd>
-<dt>caltable      The list of output calibration tables. Defaults to the</dt><dd><p>standard pipeline naming convention.</p>
-<p>Example: caltable=[‘M82.gcal’, ‘M82B.gcal’]</p>
-</dd>
-<dt>field         The list of field names or field ids for which bandpasses are</dt><dd><p>computed. Defaults to all fields.</p>
-<p>Examples: field=’3C279’, field=’3C279, M82’</p>
-</dd>
-<dt>intent        A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched.  Defaults to all data
-with bandpass intent.</p>
-<p>Example: intent=’<cite>*PHASE*</cite>’</p>
-</dd>
-<dt>spw           The list of spectral windows and channels for which bandpasses</dt><dd><p>are computed. Defaults to all science spectral windows.</p>
-<p>Example: spw=’11,13,15,17’</p>
-</dd>
-</dl>
-<p>antenna       Set of data selection antenna IDs
-phaseup       Do a phaseup on the data before computing the bandpass</p>
-<blockquote>
-<div><p>solution.</p>
-</div></blockquote>
-<dl>
-<dt>phaseupsolint The phase correction solution interval in CASA syntax.</dt><dd><p>Used when phaseup is True.</p>
-<p>Example: phaseupsolint=300</p>
-</dd>
-<dt>phaseupbw     Bandwidth to be used for phaseup. Defaults to 500MHz.</dt><dd><p>Used when phaseup is True.</p>
-<dl class="simple">
-<dt>Examples: phaseupbw=’’ to use entire bandpass</dt><dd><p>phaseupbw=’500MHz’ to use central 500MHz</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>solint        Time and channel solution intervals in CASA syntax.</p>
-<blockquote>
-<div><p>Examples: solint=’inf,10ch’, ‘inf’</p>
-</div></blockquote>
-<dl>
-<dt>combine       Data axes to combine for solving. Axes are ‘’, ‘scan’, ‘spw’,</dt><dd><p>‘field’ or any comma-separated combination.</p>
-<p>Example: combine=’scan,field’</p>
-</dd>
-<dt>refant        Reference antenna names. Defaults to the value(s) stored in</dt><dd><p>the pipeline context. If undefined in the pipeline context
-defaults to the CASA reference antenna naming scheme.</p>
-<p>Examples: refant=’DV01’, refant=’DV06,DV07’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>solnorm       Normalise the bandpass solution
-minblperant   Minimum number of baselines required per antenna for each</p>
-<blockquote>
-<div><p>solve. Antennas with fewer baselines are excluded from
-solutions.</p>
-</div></blockquote>
-<p>minsnr        Reject solutions below this SNR</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Compute a channel bandpass for all visibility files in the pipeline
 context using the CASA reference antenna determination scheme:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_bandpass</span><span class="p">()</span>
@@ -229,10 +205,6 @@ context using the CASA reference antenna determination scheme:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hif_bandpass</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>——— issues ———————————————————–</p>
-<p>The specified minsnr parameter is currently applied to the bandpass
-solution computation but not the ‘phaseup’ computation. Some noisy
-solutions in the phaseup may not be properly rejected.</p>
 </dd></dl>
 
 </section>

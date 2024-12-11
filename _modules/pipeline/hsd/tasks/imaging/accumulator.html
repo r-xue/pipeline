@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 
 
 <div class="viewcode-block" id="GaussianKernel">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.GaussianKernel.html#pipeline.hsd.tasks.imaging.accumulator.GaussianKernel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.GaussianKernel.html#pipeline.hsd.tasks.imaging.gridding.GaussianKernel">[docs]</a>
 <span class="k">class</span> <span class="nc">GaussianKernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
@@ -162,7 +158,7 @@
 
 
 <div class="viewcode-block" id="LinearKernel">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.LinearKernel.html#pipeline.hsd.tasks.imaging.accumulator.LinearKernel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.LinearKernel.html#pipeline.hsd.tasks.imaging.gridding.LinearKernel">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearKernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
@@ -173,7 +169,7 @@
 
 
 <div class="viewcode-block" id="Accumulator">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.Accumulator.html#pipeline.hsd.tasks.imaging.accumulator.Accumulator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.Accumulator.html#pipeline.hsd.tasks.imaging.gridding.Accumulator">[docs]</a>
 <span class="k">class</span> <span class="nc">Accumulator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">KernelType</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;gauss&#39;</span><span class="p">:</span> <span class="n">GaussianKernel</span><span class="p">,</span>
                   <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="n">LinearKernel</span><span class="p">}</span>

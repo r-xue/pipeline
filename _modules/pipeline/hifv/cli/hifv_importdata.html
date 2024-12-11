@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,101 +146,96 @@
 <span class="k">def</span> <span class="nf">hifv_importdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specline_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_importdata ---- Imports data into the VLA pipeline</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imports data into the VLA pipeline.</span>
 
 <span class="sd">    The hifv_importdata task loads the specified visibility data into the pipeline</span>
 <span class="sd">    context unpacking and / or converting it as necessary.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
+<span class="sd">            converted  to MS format.</span>
+<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise</span>
+<span class="sd">            a session must be assigned to each vis file.</span>
+<span class="sd">            example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names</span>
+<span class="sd">            separated by space characters.</span>
+<span class="sd">            examples: &#39;Receiver CalAtmosphere&#39;</span>
+<span class="sd">            &#39;Receiver&#39;, &#39;&#39;</span>
 
-<span class="sd">    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,</span>
-<span class="sd">                  MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
-<span class="sd">                  converted  to MS format.</span>
-<span class="sd">                  example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
-<span class="sd">    session       List of sessions to which the visibility files belong. Defaults</span>
-<span class="sd">                  to a single session containing all the visibility files, otherwise</span>
-<span class="sd">                  a session must be assigned to each vis file.</span>
-<span class="sd">                  example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
-<span class="sd">    asis          Creates verbatim copies of the ASDM tables in the output MS.</span>
-<span class="sd">                  The value given to this option must be a list of table names</span>
-<span class="sd">                  separated by space characters.</span>
-<span class="sd">                  examples: &#39;Receiver CalAtmosphere&#39;</span>
-<span class="sd">                  &#39;Receiver&#39;, &#39;&#39;</span>
-<span class="sd">    overwrite     Overwrite existing files on import.</span>
-<span class="sd">    nocopy        When importing an MS, disable copying of the MS to the working directory.</span>
-<span class="sd">    createmms     Create a multi-MeasurementSet (&#39;true&#39;) ready for parallel</span>
-<span class="sd">                  processing, or a standard MeasurementSet (&#39;false&#39;). The default setting</span>
-<span class="sd">                  (&#39;automatic&#39;) creates an MMS if running in a cluster environment.</span>
-<span class="sd">    ocorr_mode    Read in cross- and auto-correlation data(ca), cross-</span>
-<span class="sd">                  correlation data only (co), or autocorrelation data only (ao).</span>
-<span class="sd">    datacolumns   Dictionary defining the data types of</span>
-<span class="sd">                  existing columns. The format is:</span>
+<span class="sd">        overwrite: Overwrite existing files on import.</span>
 
-<span class="sd">                  {&#39;data&#39;: &#39;data type 1&#39;}</span>
-<span class="sd">                  or</span>
-<span class="sd">                  {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+<span class="sd">        nocopy: When importing an MS, disable copying of the MS to the working directory.</span>
 
-<span class="sd">                  For ASDMs the data type can only be RAW and one</span>
-<span class="sd">                  can only specify it for the data column.</span>
+<span class="sd">        createmms: Create a multi-MeasurementSet (&#39;true&#39;) ready for parallel processing, or a standard MeasurementSet (&#39;false&#39;). The default setting</span>
+<span class="sd">            (&#39;automatic&#39;) creates an MMS if running in a cluster environment.</span>
 
-<span class="sd">                  For MSes one can define two different data types</span>
-<span class="sd">                  for the DATA and CORRECTED_DATA columns and they</span>
-<span class="sd">                  can be any of the known data types (RAW,</span>
-<span class="sd">                  REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
-<span class="sd">                  SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
-<span class="sd">                  SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The</span>
-<span class="sd">                  intent selection strings _ALL or _SCIENCE can be</span>
-<span class="sd">                  skipped. In that case the task determines this</span>
-<span class="sd">                  automatically by inspecting the existing intents</span>
-<span class="sd">                  in the dataset.</span>
+<span class="sd">        ocorr_mode: Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).</span>
 
-<span class="sd">                  Usually, a single datacolumns dictionary is used</span>
-<span class="sd">                  for all datasets. If necessary, one can define a</span>
-<span class="sd">                  list of dictionaries, one for each EB, with</span>
-<span class="sd">                  different setups per EB.</span>
+<span class="sd">        datacolumns: Dictionary defining the data types of existing columns. The format is:</span>
 
-<span class="sd">                  If no types are specified,</span>
-<span class="sd">                  {&#39;data&#39;:&#39;raw&#39;,&#39;corrected&#39;:&#39;regcal_contline&#39;}</span>
-<span class="sd">                  or {&#39;data&#39;:&#39;raw&#39;} will be assumed, depending on</span>
-<span class="sd">                  whether the corrected column exists or not.</span>
-<span class="sd">    specline_spws String indicating how the pipeline should determine whether a spw should</span>
-<span class="sd">                  be processed as a spectral line window or continuum. The default setting of </span>
-<span class="sd">                  &#39;auto&#39; will use defined heuristics to determine this definition. Accepted</span>
-<span class="sd">                  values are &#39;auto&#39;, &#39;none&#39; (no spws will be defined as spectral line), or </span>
-<span class="sd">                  a string of spw definitions in the CASA format</span>
-<span class="sd">                  example: specline_spws=&#39;2,3,4~9,23&#39;</span>
-<span class="sd">    parallel      Execute using CASA HPC functionality, if available.</span>
+<span class="sd">            {&#39;data&#39;: &#39;data type 1&#39;}</span>
+<span class="sd">        </span>
+<span class="sd">            or</span>
+<span class="sd">        </span>
+<span class="sd">            {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+<span class="sd">        </span>
+<span class="sd">            For ASDMs the data type can only be RAW and one</span>
+<span class="sd">            can only specify it for the data column.</span>
+<span class="sd">            For MSes one can define two different data types</span>
+<span class="sd">            for the DATA and CORRECTED_DATA columns and they</span>
+<span class="sd">            can be any of the known data types (RAW,</span>
+<span class="sd">            REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
+<span class="sd">            SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
+<span class="sd">            SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The</span>
+<span class="sd">            intent selection strings _ALL or _SCIENCE can be</span>
+<span class="sd">            skipped. In that case the task determines this</span>
+<span class="sd">            automatically by inspecting the existing intents</span>
+<span class="sd">            in the dataset.</span>
+<span class="sd">            Usually, a single datacolumns dictionary is used</span>
+<span class="sd">            for all datasets. If necessary, one can define a</span>
+<span class="sd">            list of dictionaries, one for each EB, with</span>
+<span class="sd">            different setups per EB.</span>
+<span class="sd">            If no types are specified,</span>
+<span class="sd">            {&#39;data&#39;:&#39;raw&#39;,&#39;corrected&#39;:&#39;regcal_contline&#39;}</span>
+<span class="sd">            or {&#39;data&#39;:&#39;raw&#39;} will be assumed, depending on</span>
+<span class="sd">            whether the corrected column exists or not.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        specline_spws: String indicating how the pipeline should determine whether a spw should be processed as a spectral line window or continuum. The default setting of</span>
+<span class="sd">            &#39;auto&#39; will use defined heuristics to determine this definition. Accepted</span>
+<span class="sd">            values are &#39;auto&#39;, &#39;none&#39; (no spws will be defined as spectral line), or</span>
+<span class="sd">            a string of spw definitions in the CASA format.</span>
+<span class="sd">            example: specline_spws=&#39;2, 3, 4~9, 23&#39;</span>
 
+<span class="sd">        parallel: Execute using CASA HPC functionality, if available.</span>
 
-<span class="sd">    1. Load an ASDM list in the ../rawdata subdirectory into the context.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e&#39;, &#39;../rawdata/uid_A002_x30a93d_X44e&#39;])</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Load an ASDM list in the ../rawdata subdirectory into the context:</span>
 
-<span class="sd">    2. Load an MS in the current directory into the context.</span>
+<span class="sd">        &gt;&gt;&gt; hifv_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e&#39;, &#39;../rawdata/uid_A002_x30a93d_X44e&#39;])</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_importdata (vis=[&#39;uid___A002_X30a93d_X43e.ms&#39;])</span>
+<span class="sd">        2. Load an MS in the current directory into the context:</span>
 
-<span class="sd">    3. Load a tarred ASDM in ../rawdata into the context.</span>
+<span class="sd">        &gt;&gt;&gt; hifv_importdata (vis=[&#39;uid___A002_X30a93d_X43e.ms&#39;])</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e.tar.gz&#39;])</span>
+<span class="sd">        3. Load a tarred ASDM in ../rawdata into the context:</span>
 
-<span class="sd">    4. Check the hifv_importdata inputs, then import the data</span>
+<span class="sd">        &gt;&gt;&gt; hifv_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e.tar.gz&#39;])</span>
 
-<span class="sd">    &gt;&gt;&gt; myvislist = [&#39;uid___A002_X30a93d_X43e.ms&#39;, &#39;uid_A002_x30a93d_X44e.ms&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; hifv_importdata(vis=myvislist)</span>
+<span class="sd">        4. Check the hifv_importdata inputs, then import the data:</span>
 
-<span class="sd">    5. Run with explicit setting of data column types:</span>
+<span class="sd">        &gt;&gt;&gt; myvislist = [&#39;uid___A002_X30a93d_X43e.ms&#39;, &#39;uid_A002_x30a93d_X44e.ms&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; hifv_importdata(vis=myvislist)</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_importdata(vis=[&#39;uid___A002_X30a93d_X43e_targets.ms&#39;], datacolumns={&#39;data&#39;: &#39;regcal_contline&#39;})</span>
-<span class="sd">    &gt;&gt;&gt; hifv_importdata(vis=[&#39;uid___A002_X30a93d_X43e_targets_line.ms&#39;], datacolumns={&#39;data&#39;: &#39;regcal_line&#39;, &#39;corrected&#39;: &#39;selfcal_line&#39;})</span>
+<span class="sd">        5. Run with explicit setting of data column types:</span>
 
+<span class="sd">        &gt;&gt;&gt; hifv_importdata(vis=[&#39;uid___A002_X30a93d_X43e_targets.ms&#39;], datacolumns={&#39;data&#39;: &#39;regcal_contline&#39;})</span>
+<span class="sd">        &gt;&gt;&gt; hifv_importdata(vis=[&#39;uid___A002_X30a93d_X43e_targets_line.ms&#39;], datacolumns={&#39;data&#39;: &#39;regcal_line&#39;, &#39;corrected&#39;: &#39;selfcal_line&#39;})</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,28 +145,30 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hifv_circfeedpolcal">
 <span class="sig-name descname"><span class="pre">hifv_circfeedpolcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dterm_solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leakage_poltype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbdkcross</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clipminmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_setjy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_circfeedpolcal.html#hifv_circfeedpolcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hifv_circfeedpolcal" title="Link to this definition"></a></dt>
-<dd><p>hifv_circfeedpolcal —- Perform polarization calibration for VLA circular feeds.</p>
-<p>Perform polarization calibration for VLA circular feeds.</p>
+<dd><p>Perform polarization calibration for VLA circular feeds.</p>
 <p>Only validated for VLA sky survey data in S-band continuum mode with 3C138
 or 3C286 as polarization angle. Requires that all polarization intents are
 properly set during observation.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>vis             List of input visibility data
-Dterm_solint    D-terms spectral averaging.  Example:  refantignore=’ea02,ea03’
-refantignore    String list of antennas to ignore
-leakage_poltype poltype to use in first polcal execution - blank string means use default heuristics
-mbdkcross       Run gaincal KCROSS grouped by baseband
-clipminmax      Acceptable range for leakage amplitudes, values outside will be flagged.
-refant          A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</p>
-<blockquote>
-<div><p>Example: refant = ‘ea01, ea02’</p>
-</div></blockquote>
-<p>run_setjy       Run setjy for amplitude/flux calibrator, default set to True.
-——— examples ———————————————————–</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input visibility data.</p></li>
+<li><p><strong>Dterm_solint</strong> – D-terms spectral averaging.  Example:  refantignore=’ea02,ea03’.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore.</p></li>
+<li><p><strong>leakage_poltype</strong> – poltype to use in first polcal execution - blank string means use default heuristics.</p></li>
+<li><p><strong>mbdkcross</strong> – Run gaincal KCROSS grouped by baseband.</p></li>
+<li><p><strong>clipminmax</strong> – Acceptable range for leakage amplitudes, values outside will be flagged.</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>. Example: refant = ‘ea01, ea02’</p></li>
+<li><p><strong>run_setjy</strong> – Run setjy for amplitude/flux calibrator, default set to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Basic circfeedpolcal task</p></li>
+<li><p>Basic circfeedpolcal task:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_circfeedpolcal</span><span class="p">()</span>
 </pre></div>

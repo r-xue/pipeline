@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,18 +145,21 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.vlassQLIP.h_import_calstate">
 <span class="sig-name descname"><span class="pre">h_import_calstate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_import_calstate.html#h_import_calstate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.vlassQLIP.h_import_calstate" title="Link to this definition"></a></dt>
-<dd><p>h_import_calstate —- Import a calibration state from disk</p>
+<dd><p>Import a calibration state from disk</p>
 <p>h_import_calstate clears and then recreates the pipeline calibration state
 based on the set of applycal calls given in the named file. The applycal
 statements are interpreted in additive fashion; for identically specified
 data selection targets, caltables specified in later statements will be added
 to the state created by earlier calls.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>filename</dt><dd><p>Name of the saved calibration state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the saved calibration state</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Import a calibration state from disk.</p></li>
 </ol>

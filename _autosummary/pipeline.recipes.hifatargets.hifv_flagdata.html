@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hifv_flagdata">
 <span class="sig-name descname"><span class="pre">hifv_flagdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scannumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseband</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgespw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileonline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_flagdata.html#hifv_flagdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hifv_flagdata" title="Link to this definition"></a></dt>
-<dd><p>hifv_flagdata —- Do basic deterministic flagging of a list of MeasurementSets</p>
+<dd><p>Do basic deterministic flagging of a list of MeasurementSets.</p>
 <p>The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:</p>
 <ul class="simple">
 <li><p>autocorrelation data flagging</p></li>
@@ -162,54 +158,45 @@
 <li><p>quack, shadow, and basebands</p></li>
 <li><p>Antenna not-on-source (ANOS)</p></li>
 </ul>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>specified in the h_init or hifv_importdata task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>autocorr</strong> – Flag autocorrelation data</p></li>
+<li><p><strong>shadow</strong> – Flag shadowed antennas</p></li>
+<li><p><strong>scan</strong> – Flag specified scans</p></li>
+<li><p><strong>scannumber</strong> – A string containing a  comma delimited list of scans to be flagged. example: ‘3,5,6’</p></li>
+<li><p><strong>quack</strong> – Quack scans</p></li>
+<li><p><strong>clip</strong> – Clip mode</p></li>
+<li><p><strong>baseband</strong> – Flag 20MHz of each edge of basebands</p></li>
+<li><p><strong>intents</strong> – A string containing a comma delimited list of intents against which the scans to be flagged are matched.
+example: <cite>‘*BANDPASS*’</cite></p></li>
+<li><p><strong>edgespw</strong> – Fraction of the baseline correlator TDM edge channels to be flagged.</p></li>
+<li><p><strong>fracspw</strong> – Fraction of baseline correlator edge channels to be flagged.</p></li>
+<li><p><strong>online</strong> – Apply the online flags.</p></li>
+<li><p><strong>fileonline</strong> – File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files
+are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p></li>
+<li><p><strong>template</strong> – Apply a flagging template.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging template for RFI, birdies, telluric lines, etc.  If the template flags files
+is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p></li>
+<li><p><strong>hm_tbuff</strong> – The time buffer computation heuristic</p></li>
+<li><p><strong>tbuff</strong> – List of time buffers (sec) to pad timerange in flag commands.</p></li>
+<li><p><strong>flagbackup</strong> – Backup pre-existing flags before applying new ones.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>autocorr      Flag autocorrelation data
-shadow        Flag shadowed antennas
-scan          Flag specified scans
-scannumber    A string containing a  comma delimited list of scans to be flagged.</p>
-<blockquote>
-<div><p>example: ‘3,5,6’</p>
-</div></blockquote>
-<p>quack         Quack scans
-clip          Clip mode
-baseband      Flag 20MHz of each edge of basebands
-intents       A string containing a comma delimited list of intents against</p>
-<blockquote>
-<div><p>which the scans to be flagged are matched.
-example: <cite>‘*BANDPASS*’</cite></p>
-</div></blockquote>
-<p>edgespw       Fraction of the baseline correlator TDM edge channels to be flagged.
-fracspw       Fraction of baseline correlator edge channels to be flagged
-online        Apply the online flags
-fileonline    File containing the online flags. These are computed by the</p>
-<blockquote>
-<div><p>h_init or hif_importdata data tasks. If the online flags files
-are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p>
-</div></blockquote>
-<p>template      Apply a flagging template
-filetemplate  The name of a text file that contains the flagging template</p>
-<blockquote>
-<div><p>for RFI, birdies, telluric lines, etc.  If the template flags files
-is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p>
-</div></blockquote>
-<p>hm_tbuff      The time buffer computation heuristic
-tbuff         List of time buffers (sec) to pad timerange in flag commands
-flagbackup    Backup pre-existing flags before applying new ones.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Do basic flagging on a MeasurementSet</p></li>
+<li><p>Do basic flagging on a MeasurementSet:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_flagdata</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>2. Do basic flagging on a MeasurementSet as well as flag pointing and
-atmosphere data</p>
+atmosphere data:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_flagdata</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="kc">True</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;*BANDPASS*&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

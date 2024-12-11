@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,8 +146,7 @@
 <span class="k">def</span> <span class="nf">hsdn_restoredata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_rasterscan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hsdn_restoredata ---- Restore flagged and calibration single dish data from a pipeline run</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restore flagged and calibration single dish data from a pipeline run.</span>
 
 <span class="sd">    The hsdn_restoredata task restores flagged and calibrated data from archived</span>
 <span class="sd">    ASDMs and pipeline flagging and calibration data products.</span>
@@ -195,70 +190,56 @@
 <span class="sd">    output MS already exists in the output directory, then the importasdm</span>
 <span class="sd">    conversion step is skipped, and the existing MS will be imported instead.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.</span>
+<span class="sd">            example: vis=[&#39;uid___A002_X30a93d_X43e&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: Name of output gain calibration tables. example: caltable=&#39;ngc5921.gcal&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        reffile: Path to a file containing scaling factors between beams. The format is equals to jyperk.csv with five fields:</span>
+<span class="sd">            MS name, beam name (instead of antenna name), spectral window id,</span>
+<span class="sd">            polarization string, and the scaling factor.</span>
+<span class="sd">            Example for the file is as follows:</span>
+<span class="sd">            #MS,Beam,Spwid,Polarization,Factor</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000</span>
+<span class="sd">            mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000</span>
+<span class="sd">            If no file name is specified or specified file doesn&#39;t exist,</span>
+<span class="sd">            all the factors are set to 1.0.</span>
+<span class="sd">            example: reffile=&#39;&#39;, reffile=&#39;nroscalefactor.csv&#39;</span>
 
-<span class="sd">    vis           List of raw visibility data files to be restored. Assumed to be</span>
-<span class="sd">                  in the directory specified by rawdata_dir.</span>
+<span class="sd">        products_dir: Name of the data products directory. Default: &#39;../products&#39;.</span>
+<span class="sd">            example: products_dir=&#39;myproductspath&#39;</span>
 
-<span class="sd">                  example: vis=[&#39;uid___A002_X30a93d_X43e&#39;]</span>
-<span class="sd">    caltable      Name of output gain calibration tables.</span>
+<span class="sd">        copytoraw: Copy calibration and flagging tables to raw data directory. Default: True.</span>
+<span class="sd">            example: copytoraw=False</span>
 
-<span class="sd">                  example: caltable=&#39;ngc5921.gcal&#39;</span>
-<span class="sd">    reffile       Path to a file containing scaling factors between beams.</span>
-<span class="sd">                  The format is equals to jyperk.csv with five fields:</span>
-<span class="sd">                  MS name, beam name (instead of antenna name), spectral window id,</span>
-<span class="sd">                  polarization string, and the scaling factor.</span>
-<span class="sd">                  Example for the file is as follows:</span>
+<span class="sd">        rawdata_dir: Name of the raw data directory. Default: &#39;../rawdata&#39;.</span>
+<span class="sd">            example: rawdata_dir=&#39;myrawdatapath&#39;</span>
 
-<span class="sd">                  #MS,Beam,Spwid,Polarization,Factor</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000</span>
-<span class="sd">                  mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000</span>
+<span class="sd">        hm_rasterscan: Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis (&#39;time&#39;) and direction analysis (&#39;direction&#39;), are available.</span>
+<span class="sd">            Default is &#39;time&#39;.</span>
 
-<span class="sd">                  If no file name is specified or specified file doesn&#39;t exist,</span>
-<span class="sd">                  all the factors are set to 1.0.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                  example: reffile=&#39;&#39;, reffile=&#39;nroscalefactor.csv&#39;</span>
-<span class="sd">    products_dir  Name of the data products directory.</span>
-<span class="sd">                  Default: &#39;../products&#39;</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Restore the pipeline results for a single ASDM in a single session</span>
 
-<span class="sd">                  example: products_dir=&#39;myproductspath&#39;</span>
-<span class="sd">    copytoraw     Copy calibration and flagging tables to raw data directory.</span>
-<span class="sd">                  Default: True</span>
-
-<span class="sd">                  example: copytoraw=False</span>
-<span class="sd">    rawdata_dir   Name of the raw data directory.</span>
-<span class="sd">                  Default: &#39;../rawdata&#39;</span>
-
-<span class="sd">                  example: rawdata_dir=&#39;myrawdatapath&#39;</span>
-<span class="sd">    hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,</span>
-<span class="sd">                  time-domain analysis (&#39;time&#39;) and direction analysis (&#39;direction&#39;), are available.</span>
-<span class="sd">                  Default is &#39;time&#39;.</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-
-<span class="sd">    1. Restore the pipeline results for a single ASDM in a single session</span>
-
-<span class="sd">    &gt;&gt;&gt; hsdn_restoredata (vis=[&#39;mg2-20181016165248-190320.ms&#39;], reffile=&#39;nroscalefactor.csv&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; hsdn_restoredata (vis=[&#39;mg2-20181016165248-190320.ms&#39;], reffile=&#39;nroscalefactor.csv&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

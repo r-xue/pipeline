@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,60 +145,51 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_fluxcalflag</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">appendlines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">applyflags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_fluxcalflag ---- Locate and flag line regions in solar system flux calibrators</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locate and flag line regions in solar system flux calibrators</span>
 
 <span class="sd">    Search the built-in solar system flux calibrator line catalog for overlaps with</span>
 <span class="sd">    the science spectral windows. Generate a list of line overlap regions and</span>
 <span class="sd">    flagging commands.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets defined in the pipeline context.</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        field: The list of field names or field ids for which the models are</span>
+<span class="sd">            to be set. Defaults to all fields with intent &#39;AMPLITUDE&#39;.</span>
+<span class="sd">            Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
+<span class="sd">            which the selected fields are matched. Defaults to all data</span>
+<span class="sd">            with amplitude intent.</span>
+<span class="sd">            Example: intent=&#39;AMPLITUDE&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                  The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                  MeasurementSets defined in the pipeline context.</span>
-<span class="sd">    field</span>
-<span class="sd">                  The list of field names or field ids for which the models are</span>
-<span class="sd">                  to be set. Defaults to all fields with intent &#39;AMPLITUDE&#39;.</span>
+<span class="sd">        spw: Spectral windows and channels for which bandpasses are</span>
+<span class="sd">            computed. Defaults to all science spectral windows.</span>
+<span class="sd">            Example: spw=&#39;11,13,15,17&#39;</span>
 
-<span class="sd">                  Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
-<span class="sd">    intent</span>
-<span class="sd">                  A string containing a comma delimited list of intents against</span>
-<span class="sd">                  which the selected fields are matched. Defaults to all data</span>
-<span class="sd">                  with amplitude intent.</span>
+<span class="sd">        threshold: If the fraction of a spectral window occupied by line regions</span>
+<span class="sd">            is greater than this threshold value, then flag the entire</span>
+<span class="sd">            spectral window.</span>
 
-<span class="sd">                  Example: intent=&#39;AMPLITUDE&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                  Spectral windows and channels for which bandpasses are</span>
-<span class="sd">                  computed. Defaults to all science spectral windows.</span>
+<span class="sd">        appendlines: Append user defined line regions to the line dictionary.</span>
 
-<span class="sd">                  Example: spw=&#39;11,13,15,17&#39;</span>
-<span class="sd">    threshold</span>
-<span class="sd">                  If the fraction of a spectral window occupied by line regions</span>
-<span class="sd">                  is greater than this threshold value, then flag the entire</span>
-<span class="sd">                  spectral window.</span>
-<span class="sd">    appendlines</span>
-<span class="sd">                  Append user defined line regions to the line dictionary.</span>
-<span class="sd">    linesfile</span>
-<span class="sd">                  Read in a file containing lines regions and append it to the</span>
-<span class="sd">                  builtin dictionary. Blank lines and comments beginning with #</span>
-<span class="sd">                  are skipped. The data is contained in 4 whitespace delimited</span>
-<span class="sd">                  fields containing the solar system object field name, e.g.</span>
-<span class="sd">                  &#39;Callisto&#39;, the molecular species name, e.g. &#39;13CO&#39;, and the</span>
-<span class="sd">                  starting and ending frequency in GHz.</span>
-<span class="sd">    applyflags</span>
-<span class="sd">                  Boolean for whether to apply the generated flag commands. (default True)</span>
+<span class="sd">        linesfile: Read in a file containing lines regions and append it to the</span>
+<span class="sd">            builtin dictionary. Blank lines and comments beginning with #</span>
+<span class="sd">            are skipped. The data is contained in 4 whitespace delimited</span>
+<span class="sd">            fields containing the solar system object field name, e.g.</span>
+<span class="sd">            &#39;Callisto&#39;, the molecular species name, e.g. &#39;13CO&#39;, and the</span>
+<span class="sd">            starting and ending frequency in GHz.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        applyflags: Boolean for whether to apply the generated flag commands. (default True)</span>
 
-<span class="sd">    1. Locate known lines in any solar system object flux calibrators:</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_fluxcalflag()</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Locate known lines in any solar system object flux calibrators:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifa_fluxcalflag()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

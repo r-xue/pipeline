@@ -85,10 +85,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -175,7 +171,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.h.cli.h_restoredata">
 <span class="sig-name descname"><span class="pre">h_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_restoredata.html#h_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.cli.h_restoredata" title="Link to this definition"></a></dt>
-<dd><p>h_restoredata —- Restore flags and calibration state from a pipeline run</p>
+<dd><p>Restore flags and calibration state from a pipeline run</p>
 <p>The h_restoredata restores flagged and calibrated data from archived ASDMs and
 pipeline flagging and calibration data products. Pending archive retrieval
 support h_restoredata assumes that the required products are available in the
@@ -210,50 +206,31 @@ session, e.g., uid___A001_X74_X29.session_3.caltables.tar.gz</p></li>
 <p>When importing the ASDM and converting it to a Measurement Set (MS), if the
 output MS already exists in the output directory, then the importasdm
 conversion step is skipped, and the existing MS will be imported instead.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           List of raw visibility data files to be restored. Assumed to</dt><dd><p>be in the directory specified by rawdata_dir.</p>
-<p>example: vis=[‘uid___A002_X30a93d_X43e’]</p>
-</dd>
-</dl>
-<p>session       List of sessions, one per visibility file.</p>
-<blockquote>
-<div><p>example: session=[‘session_3’]</p>
-</div></blockquote>
-<dl>
-<dt>products_dir  Path to the data products directory, used to copy calibration</dt><dd><p>products from. The parameter is effective only when
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
+Example: vis=[‘uid___A002_X30a93d_X43e’]</p></li>
+<li><p><strong>session</strong> – List of sessions, one per visibility file. Example: session=[‘session_3’]</p></li>
+<li><p><strong>products_dir</strong> – Path to the data products directory, used to copy calibration products from. The parameter is effective only when
 copytoraw=True. When copytoraw=False, calibration products in
-rawdata_dir will be used.</p>
-<p>example: products_dir=’/path/to/my/products’</p>
+rawdata_dir will be used.
+Example: products_dir=’/path/to/my/products’</p></li>
+<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from products_dir to rawdata_dir directory.
+Example: copytoraw=False</p></li>
+<li><p><strong>rawdata_dir</strong> – Path to the rawdata subdirectory. example: rawdata_dir=’/path/to/my/rawdata’</p></li>
+<li><p><strong>lazy</strong> – Use the lazy filler option. Example: lazy=True</p></li>
+<li><p><strong>bdfflags</strong> – Set the BDF flags. Example: bdfflags=False</p></li>
+<li><p><strong>ocorr_mode</strong> – Set correlation import mode. Example: ocorr_mode=’ca’</p></li>
+<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
+example: ocorr_mode=’Source Receiver’</p></li>
+</ul>
 </dd>
-<dt>copytoraw     Copy calibration and flagging tables from products_dir to</dt><dd><p>rawdata_dir directory.</p>
-<p>example: copytoraw=False</p>
-</dd>
-</dl>
-<p>rawdata_dir   Path to the rawdata subdirectory.</p>
-<blockquote>
-<div><p>example: rawdata_dir=’/path/to/my/rawdata’</p>
-</div></blockquote>
-<p>lazy          Use the lazy filler option</p>
-<blockquote>
-<div><p>example: lazy=True</p>
-</div></blockquote>
-<p>bdfflags      Set the BDF flags</p>
-<blockquote>
-<div><p>example: bdfflags=False</p>
-</div></blockquote>
-<p>ocorr_mode    Set correlation import mode</p>
-<blockquote>
-<div><p>example: ocorr_mode=’ca’</p>
-</div></blockquote>
-<dl>
-<dt>asis          Creates verbatim copies of the ASDM tables in the output MS.</dt><dd><p>The value given to this option must be a list of table names separated by space characters.</p>
-<p>example: ocorr_mode=’Source Receiver’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Restore the pipeline results for a single ASDM in a single session</p></li>
 </ol>

@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,30 +144,27 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.h_save.html#pipeline.cli.h_save">[docs]</a>
 <span class="k">def</span> <span class="nf">h_save</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_save ---- Save the pipeline state to disk</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the pipeline state to disk</span>
 
 <span class="sd">    h_save saves the current pipeline state to disk using a unique filename.</span>
 <span class="sd">    If no name is supplied one is generated automatically from a combination</span>
 <span class="sd">    of the root name, &#39;context&#39;, the current stage number, and a time stamp.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Name of the saved pipeline state. If filename is &#39;&#39; then a unique name will be generated computed several components: the</span>
+<span class="sd">            root, &#39;context&#39;, the current stage number, and the time stamp.</span>
 
-<span class="sd">    filename Name of the saved pipeline state. If filename is &#39;&#39; then</span>
-<span class="sd">             a unique name will be generated computed several components: the</span>
-<span class="sd">             root, &#39;context&#39;, the current stage number, and the time stamp.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Save the current state in the default file</span>
 
+<span class="sd">        &gt;&gt;&gt; h_save()</span>
 
-<span class="sd">    1. Save the current state in the default file</span>
+<span class="sd">        2. Save the current state to a file called &#39;savestate_1&#39;</span>
 
-<span class="sd">    &gt;&gt;&gt; h_save()</span>
-
-<span class="sd">    2. Save the current state to a file called &#39;savestate_1&#39;</span>
-
-<span class="sd">    &gt;&gt;&gt; h_save(filename=&#39;savestate_1&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; h_save(filename=&#39;savestate_1&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

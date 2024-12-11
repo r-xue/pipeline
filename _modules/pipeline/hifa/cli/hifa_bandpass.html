@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -151,9 +147,7 @@
                   <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_bandpass</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">maxchannels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">evenbpints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpnsols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">solnorm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_auto_fillgaps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_bandpass ---- Compute bandpass calibration solutions</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute bandpass calibration solutions</span>
 
 <span class="sd">    The hifa_bandpass task computes a bandpass solution for every specified</span>
 <span class="sd">    science spectral window. By default, a &#39;phaseup&#39; pre-calibration is</span>
@@ -163,187 +157,152 @@
 <span class="sd">    The hif_refant task may be used to pre-compute a prioritized list of</span>
 <span class="sd">    reference antennas.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;ngc5921.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: List of names for the output calibration tables. Defaults</span>
+<span class="sd">            to the standard pipeline naming convention.</span>
+<span class="sd">            Example: caltable=[&#39;ngc5921.gcal&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        field: The list of field names or field ids for which</span>
+<span class="sd">            bandpasses are computed. Set to field=&#39;&#39; by default,</span>
+<span class="sd">            which means the task will select all fields.</span>
+<span class="sd">            Example: field=&#39;3C279&#39;, field=&#39;3C279,M82&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                        List of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                        MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents</span>
+<span class="sd">            against which the selected fields are matched. Set to</span>
+<span class="sd">            intent=&#39;&#39; by default, which means the task will select</span>
+<span class="sd">            all data with the BANDPASS intent.</span>
+<span class="sd">            Example: intent=&#39;`*PHASE*`&#39;</span>
 
-<span class="sd">                        Example: vis=[&#39;ngc5921.ms&#39;]</span>
-<span class="sd">    caltable</span>
-<span class="sd">                        List of names for the output calibration tables. Defaults</span>
-<span class="sd">                        to the standard pipeline naming convention.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which</span>
+<span class="sd">            bandpasses are computed. Set to spw=&#39;&#39; by default, which</span>
+<span class="sd">            means the task will select all science spectral windows.</span>
+<span class="sd">            Example: spw=&#39;11,13,15,17&#39;</span>
 
-<span class="sd">                        Example: caltable=[&#39;ngc5921.gcal&#39;]</span>
-<span class="sd">    field</span>
-<span class="sd">                        The list of field names or field ids for which</span>
-<span class="sd">                        bandpasses are computed. Set to field=&#39;&#39; by default,</span>
-<span class="sd">                        which means the task will select all fields.</span>
+<span class="sd">        antenna: Set of data selection antenna IDs</span>
 
-<span class="sd">                        Example: field=&#39;3C279&#39;, field=&#39;3C279,M82&#39;</span>
-<span class="sd">    intent</span>
-<span class="sd">                        A string containing a comma delimited list of intents</span>
-<span class="sd">                        against which the selected fields are matched. Set to</span>
-<span class="sd">                        intent=&#39;&#39; by default, which means the task will select</span>
-<span class="sd">                        all data with the BANDPASS intent.</span>
+<span class="sd">        hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The</span>
+<span class="sd">            options are:</span>
 
-<span class="sd">                        Example: intent=&#39;`*PHASE*`&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                        The list of spectral windows and channels for which</span>
-<span class="sd">                        bandpasses are computed. Set to spw=&#39;&#39; by default, which</span>
-<span class="sd">                        means the task will select all science spectral windows.</span>
+<span class="sd">            - &#39;snr&#39;: compute solution required to achieve the specified SNR</span>
+<span class="sd">            - &#39;manual&#39;: use manual solution parameters</span>
+<span class="sd">            - &#39;&#39;: skip phaseup</span>
 
-<span class="sd">                        Example: spw=&#39;11,13,15,17&#39;</span>
-<span class="sd">    antenna</span>
-<span class="sd">                        Set of data selection antenna IDs</span>
-<span class="sd">    hm_phaseup</span>
-<span class="sd">                        The pre-bandpass solution phaseup gain heuristics. The</span>
-<span class="sd">                        options are:</span>
+<span class="sd">            Example: hm_phaseup=&#39;manual&#39;</span>
 
-<span class="sd">                        &#39;snr&#39;: compute solution required to achieve the specified SNR</span>
+<span class="sd">        phaseupsolint: The phase correction solution interval in CASA syntax.</span>
+<span class="sd">            Used when ``hm_phaseup`` = &#39;manual&#39; or as a default if</span>
+<span class="sd">            the ``hm_phaseup`` = &#39;snr&#39; heuristic computation fails.</span>
+<span class="sd">            Example: phaseupsolint=&#39;300s&#39;</span>
 
-<span class="sd">                        &#39;manual&#39;: use manual solution parameters</span>
+<span class="sd">        phaseupbw: Bandwidth to be used for phaseup. Used when</span>
+<span class="sd">            ``hm_phaseup`` = &#39;manual&#39;.</span>
 
-<span class="sd">                        &#39;&#39;: skip phaseup</span>
+<span class="sd">            Example:</span>
 
-<span class="sd">                        Example: hm_phaseup=&#39;manual&#39;</span>
-<span class="sd">    phaseupsolint</span>
-<span class="sd">                        The phase correction solution interval in CASA syntax.</span>
-<span class="sd">                        Used when ``hm_phaseup`` = &#39;manual&#39; or as a default if</span>
-<span class="sd">                        the ``hm_phaseup`` = &#39;snr&#39; heuristic computation fails.</span>
+<span class="sd">            - phaseupbw=&#39;&#39; to use entire bandpass</span>
+<span class="sd">            - phaseupbw=&#39;500MHz&#39; to use central 500MHz</span>
 
-<span class="sd">                        Example: phaseupsolint=&#39;300s&#39;</span>
-<span class="sd">    phaseupbw</span>
-<span class="sd">                        Bandwidth to be used for phaseup. Used when</span>
-<span class="sd">                        ``hm_phaseup`` = &#39;manual&#39;.</span>
+<span class="sd">        phaseupsnr: The required SNR for the phaseup solution. Used to calculate</span>
+<span class="sd">            the phaseup time solint, and only if</span>
+<span class="sd">            ``hm_phaseup`` = &#39;snr&#39;.</span>
+<span class="sd">            Example: phaseupsnr=10.0</span>
 
-<span class="sd">                        Example:</span>
+<span class="sd">        phaseupnsols: The minimum number of phaseup gain solutions. Used only</span>
+<span class="sd">            if ``hm_phaseup`` = &#39;snr&#39;.</span>
+<span class="sd">            Example: phaseupnsols=4</span>
 
-<span class="sd">                        phaseupbw=&#39;&#39; to use entire bandpass</span>
+<span class="sd">        hm_bandpass: The bandpass solution heuristics. The options are:</span>
+<span class="sd">            &#39;snr&#39;: compute the solution required to achieve the specified SNR</span>
+<span class="sd">            &#39;smoothed&#39;: simple &#39;smoothing&#39; i.e. spectral solint&gt;1chan</span>
+<span class="sd">            &#39;fixed&#39;: use the user defined parameters for all spws</span>
+<span class="sd">            Example: hm_bandpass=&#39;snr&#39;</span>
 
-<span class="sd">                        phaseupbw=&#39;500MHz&#39; to use central 500MHz</span>
-<span class="sd">    phaseupsnr</span>
-<span class="sd">                        The required SNR for the phaseup solution. Used to calculate</span>
-<span class="sd">                        the phaseup time solint, and only if</span>
-<span class="sd">                        ``hm_phaseup`` = &#39;snr&#39;.</span>
+<span class="sd">        solint: Time and channel solution intervals in CASA syntax.</span>
+<span class="sd">            Default is solint=&#39;inf&#39;, which is used when</span>
+<span class="sd">            ``hm_bandpass`` = &#39;fixed&#39;.</span>
+<span class="sd">            If ``hm_bandpass`` = &#39;snr&#39;, then the task will attempt</span>
+<span class="sd">            to compute and use an optimal SNR-based solint (and warn</span>
+<span class="sd">            if this solint is not good enough).</span>
+<span class="sd">            If ``hm_bandpass`` = &#39;smoothed&#39;, the task will override</span>
+<span class="sd">            the spectral solint with bandwidth/maxchannels.</span>
+<span class="sd">            Example: solint=&#39;int&#39;</span>
 
-<span class="sd">                        Example: phaseupsnr=10.0</span>
-<span class="sd">    phaseupnsols</span>
-<span class="sd">                        The minimum number of phaseup gain solutions. Used only</span>
-<span class="sd">                        if ``hm_phaseup`` = &#39;snr&#39;.</span>
+<span class="sd">        maxchannels: The bandpass solution &#39;smoothing&#39; factor in channels,</span>
+<span class="sd">            i.e. spectral solint will be set to bandwidth / maxchannels</span>
+<span class="sd">            Set to 0 for no smoothing. Used if</span>
+<span class="sd">            ``hm_bandpass`` = &#39;smoothed&#39;.</span>
+<span class="sd">            Example: maxchannels=240</span>
 
-<span class="sd">                        Example: phaseupnsols=4</span>
-<span class="sd">    hm_bandpass</span>
-<span class="sd">                        The bandpass solution heuristics. The options are:</span>
+<span class="sd">        evenbpints: Force the per spw frequency solint to be evenly divisible</span>
+<span class="sd">            into the spw bandpass if ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">            Example: evenbpints=False</span>
 
-<span class="sd">                        &#39;snr&#39;: compute the solution required to achieve the specified SNR</span>
+<span class="sd">        bpsnr: The required SNR for the bandpass solution. Used only if</span>
+<span class="sd">            ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">            Example: bpsnr=30.0</span>
 
-<span class="sd">                        &#39;smoothed&#39;: simple &#39;smoothing&#39; i.e. spectral solint&gt;1chan</span>
+<span class="sd">        minbpsnr: The minimum required SNR for the bandpass solution</span>
+<span class="sd">            when strong atmospheric lines exist in Tsys spectra.</span>
+<span class="sd">            Used only if ``hm_bandpass``=&#39;snr&#39;.</span>
+<span class="sd">            Example: minbpsnr=10.0</span>
 
-<span class="sd">                        &#39;fixed&#39;: use the user defined parameters for all spws</span>
+<span class="sd">        bpnsols: The minimum number of bandpass solutions. Used only if</span>
+<span class="sd">            ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">            Example: bpnsols=8</span>
 
-<span class="sd">                        Example: hm_bandpass=&#39;snr&#39;</span>
-<span class="sd">    solint</span>
-<span class="sd">                        Time and channel solution intervals in CASA syntax.</span>
-<span class="sd">                        Default is solint=&#39;inf&#39;, which is used when</span>
-<span class="sd">                        ``hm_bandpass`` = &#39;fixed&#39;.</span>
+<span class="sd">        combine: Data axes to combine for solving. Axes are &#39;&#39;, &#39;scan&#39;,</span>
+<span class="sd">            &#39;spw&#39;, &#39;field&#39; or any comma-separated combination.</span>
+<span class="sd">            Example: combine=&#39;scan,field&#39;</span>
 
-<span class="sd">                        If ``hm_bandpass`` = &#39;snr&#39;, then the task will attempt</span>
-<span class="sd">                        to compute and use an optimal SNR-based solint (and warn</span>
-<span class="sd">                        if this solint is not good enough).</span>
+<span class="sd">        refant: List of reference antenna names. Defaults to the</span>
+<span class="sd">            value(s) stored in the pipeline context. If undefined in</span>
+<span class="sd">            the pipeline context defaults to the CASA reference</span>
+<span class="sd">            antenna naming scheme.</span>
+<span class="sd">            Example: refant=&#39;DV06,DV07&#39;</span>
 
-<span class="sd">                        If ``hm_bandpass`` = &#39;smoothed&#39;, the task will override</span>
-<span class="sd">                        the spectral solint with bandwidth/maxchannels.</span>
+<span class="sd">        solnorm: Normalise the bandpass solution; defaults to True.</span>
+<span class="sd">            Example: solnorm=False</span>
 
-<span class="sd">                        Example: solint=&#39;int&#39;</span>
-<span class="sd">    maxchannels</span>
-<span class="sd">                        The bandpass solution &#39;smoothing&#39; factor in channels,</span>
-<span class="sd">                        i.e. spectral solint will be set to bandwidth / maxchannels</span>
-<span class="sd">                        Set to 0 for no smoothing. Used if</span>
-<span class="sd">                        ``hm_bandpass`` = &#39;smoothed&#39;.</span>
+<span class="sd">        minblperant: Minimum number of baselines required per antenna for</span>
+<span class="sd">            each solve. Antennas with fewer baselines are excluded</span>
+<span class="sd">            from solutions.</span>
+<span class="sd">            Example: minblperant=4</span>
 
-<span class="sd">                        Example: maxchannels=240</span>
-<span class="sd">    evenbpints</span>
-<span class="sd">                        Force the per spw frequency solint to be evenly divisible</span>
-<span class="sd">                        into the spw bandpass if ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">        minsnr: Solutions below this SNR are rejected in the phaseup and</span>
+<span class="sd">            bandpass solves.</span>
+<span class="sd">            Example: minsnr=3.0</span>
 
-<span class="sd">                        Example: evenbpints=False</span>
-<span class="sd">    bpsnr</span>
-<span class="sd">                        The required SNR for the bandpass solution. Used only if</span>
-<span class="sd">                        ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">        unregister_existing: Unregister all bandpass calibrations from the pipeline</span>
+<span class="sd">            context before registering the new bandpass calibrations</span>
+<span class="sd">            from this task. Defaults to False.</span>
+<span class="sd">            Example: unregister_existing=True</span>
 
-<span class="sd">                        Example: bpsnr=30.0</span>
-<span class="sd">    minbpsnr</span>
-<span class="sd">                        The minimum required SNR for the bandpass solution</span>
-<span class="sd">                        when strong atmospheric lines exist in Tsys spectra.</span>
-<span class="sd">                        Used only if ``hm_bandpass``=&#39;snr&#39;.</span>
+<span class="sd">        hm_auto_fillgaps: If True, then the ``hm_bandpass`` = &#39;snr&#39; or &#39;smoothed&#39;</span>
+<span class="sd">            modes, that solve bandpass per SpW, are performed with</span>
+<span class="sd">            CASA bandpass task parameter &#39;fillgaps&#39; set to a quarter</span>
+<span class="sd">            of the respective SpW bandwidth (in channels).</span>
+<span class="sd">            If False, then these bandpass solves will use</span>
+<span class="sd">            fillgaps=0.</span>
+<span class="sd">            The ``hm_bandpass`` = &#39;fixed&#39; mode is unaffected by</span>
+<span class="sd">            ``hm_auto_fillgaps`` and always uses fillgaps=0.</span>
 
-<span class="sd">                        Example: minbpsnr=10.0</span>
-<span class="sd">    bpnsols</span>
-<span class="sd">                        The minimum number of bandpass solutions. Used only if</span>
-<span class="sd">                        ``hm_bandpass`` = &#39;snr&#39;.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                        Example: bpnsols=8</span>
-<span class="sd">    combine</span>
-<span class="sd">                        Data axes to combine for solving. Axes are &#39;&#39;, &#39;scan&#39;,</span>
-<span class="sd">                        &#39;spw&#39;, &#39;field&#39; or any comma-separated combination.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Compute a channel bandpass for all visibility files in the pipeline</span>
+<span class="sd">        context using the CASA reference antenna determination scheme:</span>
 
-<span class="sd">                        Example: combine=&#39;scan,field&#39;</span>
-<span class="sd">    refant</span>
-<span class="sd">                        List of reference antenna names. Defaults to the</span>
-<span class="sd">                        value(s) stored in the pipeline context. If undefined in</span>
-<span class="sd">                        the pipeline context defaults to the CASA reference</span>
-<span class="sd">                        antenna naming scheme.</span>
+<span class="sd">        &gt;&gt;&gt; hifa_bandpass()</span>
 
-<span class="sd">                        Example: refant=&#39;DV06,DV07&#39;</span>
-<span class="sd">    solnorm</span>
-<span class="sd">                        Normalise the bandpass solution; defaults to True.</span>
+<span class="sd">        2. Same as the above but precompute a prioritized reference antenna list:</span>
 
-<span class="sd">                        Example: solnorm=False</span>
-<span class="sd">    minblperant</span>
-<span class="sd">                        Minimum number of baselines required per antenna for</span>
-<span class="sd">                        each solve. Antennas with fewer baselines are excluded</span>
-<span class="sd">                        from solutions.</span>
-
-<span class="sd">                        Example: minblperant=4</span>
-<span class="sd">    minsnr</span>
-<span class="sd">                        Solutions below this SNR are rejected in the phaseup and</span>
-<span class="sd">                        bandpass solves.</span>
-
-<span class="sd">                        Example: minsnr=3.0</span>
-<span class="sd">    unregister_existing</span>
-<span class="sd">                        Unregister all bandpass calibrations from the pipeline</span>
-<span class="sd">                        context before registering the new bandpass calibrations</span>
-<span class="sd">                        from this task. Defaults to False.</span>
-
-<span class="sd">                        Example: unregister_existing=True</span>
-<span class="sd">    hm_auto_fillgaps</span>
-<span class="sd">                        If True, then the ``hm_bandpass`` = &#39;snr&#39; or &#39;smoothed&#39;</span>
-<span class="sd">                        modes, that solve bandpass per SpW, are performed with</span>
-<span class="sd">                        CASA bandpass task parameter &#39;fillgaps&#39; set to a quarter</span>
-<span class="sd">                        of the respective SpW bandwidth (in channels).</span>
-
-<span class="sd">                        If False, then these bandpass solves will use</span>
-<span class="sd">                        fillgaps=0.</span>
-
-<span class="sd">                        The ``hm_bandpass`` = &#39;fixed&#39; mode is unaffected by</span>
-<span class="sd">                        ``hm_auto_fillgaps`` and always uses fillgaps=0.</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Compute a channel bandpass for all visibility files in the pipeline</span>
-<span class="sd">    context using the CASA reference antenna determination scheme:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_bandpass()</span>
-
-<span class="sd">    2. Same as the above but precompute a prioritized reference antenna list:</span>
-
-<span class="sd">    &gt;&gt;&gt; hif_refant()</span>
-<span class="sd">    &gt;&gt;&gt; hifa_bandpass()</span>
+<span class="sd">        &gt;&gt;&gt; hif_refant()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_bandpass()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

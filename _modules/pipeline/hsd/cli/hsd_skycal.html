@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -152,78 +148,63 @@
                  <span class="n">infiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hsd_skycal ---- Calibrate data</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calibrate data.</span>
 
 <span class="sd">    The hsd_skycal generates a caltable for sky calibration that stores</span>
 <span class="sd">    reference spectra, which is to be subtracted from on-source spectra to filter</span>
 <span class="sd">    out non-source contribution.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        calmode: Calibration mode. Available options are &#39;auto&#39; (default), &#39;ps&#39;, &#39;otf&#39;, and &#39;otfraster&#39;. When &#39;auto&#39; is set, the task will</span>
+<span class="sd">            use preset calibration mode that is determined by inspecting data.</span>
+<span class="sd">            &#39;ps&#39; mode is simple position switching using explicit reference</span>
+<span class="sd">            scans. Other two modes, &#39;otf&#39; and &#39;otfraster&#39;, will generate</span>
+<span class="sd">            reference data from scans at the edge of the map. Those modes</span>
+<span class="sd">            are intended for OTF observation and the former is defined for</span>
+<span class="sd">            generic scanning pattern such as Lissajous, while the latter is</span>
+<span class="sd">            specific use for raster scan.</span>
+<span class="sd">            options: &#39;auto&#39;, &#39;ps&#39;, &#39;otf&#39;, &#39;otfraster&#39;</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        fraction: Sub-parameter for calmode. Edge marking parameter for &#39;otf&#39; and &#39;otfraster&#39; mode. It specifies a number of OFF scans</span>
+<span class="sd">            as a fraction of total number of data points.</span>
+<span class="sd">            options: String style like &#39;20%&#39;, or float value less than 1.0.</span>
+<span class="sd">            For &#39;otfraster&#39; mode, you can also specify &#39;auto&#39;.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        noff: Sub-parameter for calmode. Edge marking parameter for &#39;otfraster&#39; mode. It is used to specify a number of OFF scans near edge directly</span>
+<span class="sd">            instead to specify it by fractional number by &#39;fraction&#39;. If it is</span>
+<span class="sd">            set, the value will come before setting by &#39;fraction&#39;.</span>
+<span class="sd">            options: any positive integer value</span>
 
-<span class="sd">    calmode       Calibration mode. Available options are &#39;auto&#39; (default),</span>
-<span class="sd">                  &#39;ps&#39;, &#39;otf&#39;, and &#39;otfraster&#39;. When &#39;auto&#39; is set, the task will</span>
-<span class="sd">                  use preset calibration mode that is determined by inspecting data.</span>
-<span class="sd">                  &#39;ps&#39; mode is simple position switching using explicit reference</span>
-<span class="sd">                  scans. Other two modes, &#39;otf&#39; and &#39;otfraster&#39;, will generate</span>
-<span class="sd">                  reference data from scans at the edge of the map. Those modes</span>
-<span class="sd">                  are intended for OTF observation and the former is defined for</span>
-<span class="sd">                  generic scanning pattern such as Lissajous, while the latter is</span>
-<span class="sd">                  specific use for raster scan.</span>
+<span class="sd">        width: Sub-parameter for calmode. Edge marking parameter for &#39;otf&#39; mode. It specifies pixel width with respect to a median spatial</span>
+<span class="sd">            separation between neighboring two data in time. Default will</span>
+<span class="sd">            be fine in most cases.</span>
+<span class="sd">            options: any float value</span>
 
-<span class="sd">                  options: &#39;auto&#39;, &#39;ps&#39;, &#39;otf&#39;, &#39;otfraster&#39;</span>
-<span class="sd">    fraction      Sub-parameter for calmode. Edge marking parameter for</span>
-<span class="sd">                  &#39;otf&#39; and &#39;otfraster&#39; mode. It specifies a number of OFF scans</span>
-<span class="sd">                  as a fraction of total number of data points.</span>
+<span class="sd">        elongated: Sub-parameter for calmode. Edge marking parameter for &#39;otf&#39; mode. Please set True only if observed area is elongated</span>
+<span class="sd">            in one direction.</span>
 
-<span class="sd">                  options: String style like &#39;20%&#39;, or float value less than 1.0.</span>
-<span class="sd">                  For &#39;otfraster&#39; mode, you can also specify &#39;auto&#39;.</span>
-<span class="sd">    noff          Sub-parameter for calmode. Edge marking parameter for &#39;otfraster&#39;</span>
-<span class="sd">                  mode. It is used to specify a number of OFF scans near edge directly</span>
-<span class="sd">                  instead to specify it by fractional number by &#39;fraction&#39;. If it is</span>
-<span class="sd">                  set, the value will come before setting by &#39;fraction&#39;.</span>
+<span class="sd">        parallel: Execute using CASA HPC functionality, if available. Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
+<span class="sd">            default: None (equivalent to &#39;automatic&#39;)</span>
 
-<span class="sd">                  options: any positive integer value</span>
-<span class="sd">    width         Sub-parameter for calmode. Edge marking parameter for &#39;otf&#39;</span>
-<span class="sd">                  mode. It specifies pixel width with respect to a median spatial</span>
-<span class="sd">                  separation between neighboring two data in time. Default will</span>
-<span class="sd">                  be fine in most cases.</span>
+<span class="sd">        infiles: List of data files. These must be a name of MeasurementSets that are registered to context via hsd_importdata task.</span>
+<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
 
-<span class="sd">                  options: any float value</span>
-<span class="sd">    elongated     Sub-parameter for calmode. Edge marking parameter for</span>
-<span class="sd">                  &#39;otf&#39; mode. Please set True only if observed area is elongated</span>
-<span class="sd">                  in one direction.</span>
+<span class="sd">        field: Data selection by field name.</span>
 
-<span class="sd">    parallel      Execute using CASA HPC functionality, if available.</span>
-<span class="sd">                  options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
-<span class="sd">                  default: None (equivalent to &#39;automatic&#39;)</span>
+<span class="sd">        spw: Data selection by spw. (defalut all spws) example: &#39;3,4&#39; (generate caltable for spw 3 and 4),</span>
+<span class="sd">            [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second)</span>
 
-<span class="sd">    infiles       List of data files. These must be a name of MeasurementSets that</span>
-<span class="sd">                  are registered to context via hsd_importdata task.</span>
+<span class="sd">        scan: Data selection by scan number. (default all scans) example: &#39;22,23&#39; (use scan 22 and 23 for calibration),</span>
+<span class="sd">            [&#39;22&#39;,&#39;24&#39;] (scan 22 for first data, 24 for second)</span>
 
-<span class="sd">                  example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
-<span class="sd">    field         Data selection by field name.</span>
-<span class="sd">    spw           Data selection by spw. (defalut all spws)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                  example: &#39;3,4&#39; (generate caltable for spw 3 and 4)</span>
-<span class="sd">                          [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second)</span>
-<span class="sd">    scan          Data selection by scan number. (default all scans)</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Generate caltables for all data managed by context.</span>
 
-<span class="sd">                  example: &#39;22,23&#39; (use scan 22 and 23 for calibration)</span>
-<span class="sd">                          [&#39;22&#39;,&#39;24&#39;] (scan 22 for first data, 24 for second)</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-
-<span class="sd">    1. Generate caltables for all data managed by context.</span>
-
-<span class="sd">    &gt;&gt;&gt; default(hsd_skycal)</span>
-<span class="sd">    &gt;&gt;&gt; hsd_skycal()</span>
-
+<span class="sd">        &gt;&gt;&gt; default(hsd_skycal)</span>
+<span class="sd">        &gt;&gt;&gt; hsd_skycal()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

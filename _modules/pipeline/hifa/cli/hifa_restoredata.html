@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,9 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_restoredata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restore flagged and calibration interferometry data from a pipeline run</span>
 
 <span class="sd">    The hifa_restoredata task restores flagged and calibrated MeasurementSets</span>
 <span class="sd">    from archived ASDMs and pipeline flagging and calibration data products.</span>
@@ -194,70 +188,56 @@
 <span class="sd">    output MS already exists in the output directory, then the importasdm</span>
 <span class="sd">    conversion step is skipped, and instead the existing MS will be imported.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of raw visibility data files to be restored.</span>
+<span class="sd">            Assumed to be in the directory specified by rawdata_dir.</span>
+<span class="sd">            Example: vis=[&#39;uid___A002_X30a93d_X43e&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        session: List of sessions one per visibility file.</span>
+<span class="sd">            Example: session=[&#39;session_3&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        products_dir: Name of the data products directory to copy calibration</span>
+<span class="sd">            products from.</span>
+<span class="sd">            Default: &#39;../products&#39;</span>
+<span class="sd">            The parameter is effective only when ``copytoraw`` = True.</span>
+<span class="sd">            When ``copytoraw`` = False, calibration products in</span>
+<span class="sd">            ``rawdata_dir`` will be used.</span>
+<span class="sd">            Example: products_dir=&#39;myproductspath&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                  List of raw visibility data files to be restored.</span>
-<span class="sd">                  Assumed to be in the directory specified by rawdata_dir.</span>
+<span class="sd">        copytoraw: Copy calibration and flagging tables from ``products_dir`` to</span>
+<span class="sd">            ``rawdata_dir`` directory.</span>
+<span class="sd">            Default: True. </span>
+<span class="sd">            Example: copytoraw=False</span>
 
-<span class="sd">                  Example: vis=[&#39;uid___A002_X30a93d_X43e&#39;]</span>
-<span class="sd">    session</span>
-<span class="sd">                  List of sessions one per visibility file.</span>
+<span class="sd">        rawdata_dir: Name of the raw data directory.</span>
+<span class="sd">            Default: &#39;../rawdata&#39;.</span>
+<span class="sd">            Example: rawdata_dir=&#39;myrawdatapath&#39;</span>
 
-<span class="sd">                  Example: session=[&#39;session_3&#39;]</span>
-<span class="sd">    products_dir</span>
-<span class="sd">                  Name of the data products directory to copy calibration</span>
-<span class="sd">                  products from.</span>
-<span class="sd">                  Default: &#39;../products&#39;</span>
+<span class="sd">        lazy: Use the lazy filler option.</span>
+<span class="sd">            Default: False.</span>
+<span class="sd">            Example: lazy=True</span>
 
-<span class="sd">                  The parameter is effective only when ``copytoraw`` = True.</span>
-<span class="sd">                  When ``copytoraw`` = False, calibration products in</span>
-<span class="sd">                  ``rawdata_dir`` will be used.</span>
+<span class="sd">        bdfflags: Set the BDF flags.</span>
+<span class="sd">            Default: True.</span>
+<span class="sd">            Example: bdfflags=False</span>
 
-<span class="sd">                  Example: products_dir=&#39;myproductspath&#39;</span>
-<span class="sd">    copytoraw</span>
-<span class="sd">                  Copy calibration and flagging tables from ``products_dir`` to</span>
-<span class="sd">                  ``rawdata_dir`` directory.</span>
-<span class="sd">                  Default: True</span>
+<span class="sd">        ocorr_mode: Set ocorr_mode.</span>
+<span class="sd">            Default: &#39;ca&#39;.</span>
+<span class="sd">            Example: ocorr_mode=&#39;ca&#39;</span>
 
-<span class="sd">                  Example: copytoraw=False</span>
-<span class="sd">    rawdata_dir</span>
-<span class="sd">                  Name of the raw data directory.</span>
-<span class="sd">                  Default: &#39;../rawdata&#39;</span>
+<span class="sd">        asis: Creates verbatim copies of the ASDM tables in the output MS.</span>
+<span class="sd">            The value given to this option must be a string containing a</span>
+<span class="sd">            list of table names separated by whitespace characters.</span>
+<span class="sd">            Default: &#39;SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing&#39;.</span>
+<span class="sd">            Example: asis=&#39;Source Receiver&#39;</span>
 
-<span class="sd">                  Example: rawdata_dir=&#39;myrawdatapath&#39;</span>
-<span class="sd">    lazy</span>
-<span class="sd">                  Use the lazy filler option.</span>
-<span class="sd">                  Default: False</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                  Example: lazy=True</span>
-<span class="sd">    bdfflags</span>
-<span class="sd">                  Set the BDF flags.</span>
-<span class="sd">                  Default: True</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Restore the pipeline results for a single ASDM in a single session:</span>
 
-<span class="sd">                  Example: bdfflags=False</span>
-<span class="sd">    ocorr_mode</span>
-<span class="sd">                  Set ocorr_mode.</span>
-<span class="sd">                  Default: &#39;ca&#39;</span>
-
-<span class="sd">                  Example: ocorr_mode=&#39;ca&#39;</span>
-<span class="sd">    asis</span>
-<span class="sd">                  Creates verbatim copies of the ASDM tables in the output MS.</span>
-<span class="sd">                  The value given to this option must be a string containing a</span>
-<span class="sd">                  list of table names separated by whitespace characters.</span>
-<span class="sd">                  Default: &#39;SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing&#39;</span>
-
-<span class="sd">                  Example: asis=&#39;Source Receiver&#39;</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Restore the pipeline results for a single ASDM in a single session:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_restoredata(vis=[&#39;uid___A002_X30a93d_X43e&#39;], session=[&#39;session_1&#39;], ocorr_mode=&#39;ca&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hifa_restoredata(vis=[&#39;uid___A002_X30a93d_X43e&#39;], session=[&#39;session_1&#39;], ocorr_mode=&#39;ca&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

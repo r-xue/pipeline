@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,8 +144,7 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.hifa_diffgaincal.html#pipeline.cli.hifa_diffgaincal">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_diffgaincal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_diffgaincal ---- Derive SpW phase offsets from differential gain calibrator.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive SpW phase offsets from differential gain calibrator.</span>
 
 <span class="sd">    This task creates the spectral window phase gain offset table used to allow</span>
 <span class="sd">    calibrating the &quot;on-source&quot; spectral setup with phase gains from a</span>
@@ -161,23 +156,18 @@
 <span class="sd">    occurring during the middle. Scan groups are combined while solving for SpW</span>
 <span class="sd">    offsets between &quot;reference&quot; and &quot;on-source&quot; spectral setups.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: [&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Derive SpW phase offsets from differential gain calibrator.</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                    The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                    MeasurementSets specified in the pipeline context.</span>
-
-<span class="sd">                    Example: [&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Derive SpW phase offsets from differential gain calibrator.</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_diffgaincal()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_diffgaincal()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

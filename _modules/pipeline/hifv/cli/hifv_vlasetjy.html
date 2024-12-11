@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,40 +146,40 @@
 <span class="k">def</span> <span class="nf">hifv_vlasetjy</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">reffreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scalebychan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standard</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets flux density scale and fills calibrator model to measurement set.</span>
 
-<span class="sd">    The hifv_vlasetjy task does an initial run of setjy on the vis</span>
+<span class="sd">    The hifv_vlasetjy task does an initial run of setjy on the vis.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        field: List of field names or ids.</span>
 
-<span class="sd">    standard -- Flux density standard</span>
-<span class="sd">    default: &#39;&#39;</span>
+<span class="sd">        intent: Observing intent of flux calibrators.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        spw: List of spectral window ids.</span>
 
-<span class="sd">    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets</span>
-<span class="sd">                  specified in the h_init or hifv_importdata task.</span>
-<span class="sd">    field         List of field names or ids.</span>
-<span class="sd">    intent        Observing intent of flux calibrators.</span>
-<span class="sd">    spw           List of spectral window ids.</span>
-<span class="sd">    model         File location for field model.</span>
-<span class="sd">    reffile       Path to file with fluxes for non-solar system calibrators.</span>
-<span class="sd">    fluxdensity   Specified flux density [I,Q,U,V]; -1 will lookup values</span>
-<span class="sd">    spix          Spectral index of fluxdensity.  Can be set when fluxdensity is not -1</span>
-<span class="sd">    reffreq       Reference frequency for spix.  Can be set when fluxdensity is not -1</span>
-<span class="sd">    scalebychan   Scale the flux density on a per channel basis or else on a per spw basis</span>
-<span class="sd">    standard      Flux density standard</span>
+<span class="sd">        model: File location for field model.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        reffile: Path to file with fluxes for non-solar system calibrators.</span>
 
+<span class="sd">        fluxdensity: Specified flux density [I,Q,U,V]; -1 will lookup values.</span>
 
-<span class="sd">    1. Initial run of setjy:</span>
+<span class="sd">        spix: Spectral index of fluxdensity.  Can be set when fluxdensity is not -1.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_vlasetjy()</span>
+<span class="sd">        reffreq: Reference frequency for spix.  Can be set when fluxdensity is not -1.</span>
 
+<span class="sd">        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis.</span>
+
+<span class="sd">        standard: Flux density standard.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Initial run of setjy:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifv_vlasetjy()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.vlassQLIP.hifa_antpos">
 <span class="sig-name descname"><span class="pre">hifa_antpos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_antpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antposfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_antpos.html#hifa_antpos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.vlassQLIP.hifa_antpos" title="Link to this definition"></a></dt>
-<dd><p>hifa_antpos —- Derive an antenna position calibration table</p>
+<dd><p>Derive an antenna position calibration table</p>
 <p>The hifa_antpos task corrects the antenna positions recorded in the ASDMs using
 updated antenna position calibration information determined after the
 observation was taken.</p>
@@ -171,43 +167,38 @@ generate other calibration tables, or permanently to generate calibrated
 visibilities for imaging.</p>
 <p>Note: the <code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> ‘online’ option will be implemented when the
 observing system provides an antenna position determination service.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>List of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘ngc5921.ms’]</p>
-</dd>
-<dt>caltable</dt><dd><p>List of names for the output calibration tables. Defaults
-to the standard pipeline naming convention.</p>
-<p>Example: caltable=[‘ngc5921.gcal’]</p>
-</dd>
-<dt>hm_antpos</dt><dd><p>Heuristics method for retrieving the antenna position
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘ngc5921.ms’]</p></li>
+<li><p><strong>caltable</strong> – List of names for the output calibration tables. Defaults
+to the standard pipeline naming convention.
+Example: caltable=[‘ngc5921.gcal’]</p></li>
+<li><p><strong>hm_antpos</strong> – Heuristics method for retrieving the antenna position
 corrections. The options are ‘online’ (not yet implemented),
-‘manual’, and ‘file’.</p>
-<p>Example: hm_antpos=’manual’</p>
-</dd>
-<dt>antenna</dt><dd><p>The list of antennas for which the positions are to be corrected
-if <code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘manual’.</p>
-<p>Example: antenna=’DV05,DV07’</p>
-</dd>
-<dt>offsets</dt><dd><p>The list of antenna offsets for each antenna in ‘antennas’.
+‘manual’, and ‘file’.
+Example: hm_antpos=’manual’</p></li>
+<li><p><strong>antenna</strong> – The list of antennas for which the positions are to be corrected
+if <code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘manual’.
+Example: antenna=’DV05,DV07’</p></li>
+<li><p><strong>offsets</strong> – The list of antenna offsets for each antenna in ‘antennas’.
 Each offset is a set of 3 floating point numbers separated by
-commas, specified in the ITRF frame.</p>
-<p>Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</p>
+commas, specified in the ITRF frame.
+Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</p></li>
+<li><p><strong>antposfile</strong> – The file(s) containing the antenna offsets. Used if
+<code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘file’.</p></li>
+<li><p><strong>threshold</strong> – Highlight antenna position offsets greater than this value in
+the weblog. Units are wavelengths and the default is 1.0.
+Example: threshold=1.0</p></li>
+</ul>
 </dd>
-<dt>antposfile</dt><dd><p>The file(s) containing the antenna offsets. Used if
-<code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘file’.</p>
-</dd>
-<dt>threshold</dt><dd><p>Highlight antenna position offsets greater than this value in
-the weblog. Units are wavelengths and the default is 1.0.</p>
-<p>Example: threshold=1.0</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Correct the position of antenna ‘DV05’ for all the visibility files in a
 single pipeline run:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_antpos</span><span class="p">(</span><span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;DV05&#39;</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">])</span>

@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -155,7 +151,7 @@
 
 
 <div class="viewcode-block" id="FittingFunction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FittingFunction.html#pipeline.hsd.heuristics.FittingFunction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FittingFunction.html#pipeline.hsd.heuristics.fitorder.FittingFunction">[docs]</a>
 <span class="k">class</span> <span class="nc">FittingFunction</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
@@ -169,7 +165,7 @@
 
 
 <div class="viewcode-block" id="get_fitting_function">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.get_fitting_function.html#pipeline.hsd.heuristics.get_fitting_function">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.get_fitting_function.html#pipeline.hsd.heuristics.fitorder.get_fitting_function">[docs]</a>
 <span class="k">def</span> <span class="nf">get_fitting_function</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FittingFunction</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get FittingFunction enum from name.</span>
 
@@ -192,7 +188,7 @@
 
 
 <div class="viewcode-block" id="is_polynomial_fit">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.is_polynomial_fit.html#pipeline.hsd.heuristics.is_polynomial_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.is_polynomial_fit.html#pipeline.hsd.heuristics.fitorder.is_polynomial_fit">[docs]</a>
 <span class="k">def</span> <span class="nf">is_polynomial_fit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">FittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if fitting function is polynomial.</span>
 
@@ -204,7 +200,7 @@
 
 
 <div class="viewcode-block" id="is_cubic_spline_fit">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.is_cubic_spline_fit.html#pipeline.hsd.heuristics.is_cubic_spline_fit">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.is_cubic_spline_fit.html#pipeline.hsd.heuristics.fitorder.is_cubic_spline_fit">[docs]</a>
 <span class="k">def</span> <span class="nf">is_cubic_spline_fit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">FittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if fitting function is cubic spline.</span>
 
@@ -216,7 +212,7 @@
 
 
 <div class="viewcode-block" id="FitOrderHeuristics">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.html#pipeline.hsd.heuristics.FitOrderHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">FitOrderHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine fitting order from a set of spectral data.</span>
@@ -224,7 +220,7 @@
     <span class="n">MaxDominantFreq</span> <span class="o">=</span> <span class="mi">15</span>
 
 <div class="viewcode-block" id="FitOrderHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.html#pipeline.hsd.heuristics.FitOrderHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.html#pipeline.hsd.heuristics.fitorder.FitOrderHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span> <span class="o">=</span> <span class="n">EdgeChannels</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine fitting order from a set of spectral data, data,</span>
@@ -312,7 +308,7 @@
 
 
 <div class="viewcode-block" id="MaskMakerNoLine">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.html#pipeline.hsd.heuristics.MaskMakerNoLine">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine">[docs]</a>
 <span class="k">class</span> <span class="nc">MaskMakerNoLine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate mask array.&quot;&quot;&quot;</span>
 
@@ -328,7 +324,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[(</span><span class="n">nchan</span><span class="o">-</span><span class="n">edge</span><span class="o">.</span><span class="n">right</span><span class="p">):]</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="MaskMakerNoLine.get_mask">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.html#pipeline.hsd.heuristics.MaskMakerNoLine.get_mask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.html#pipeline.hsd.heuristics.fitorder.MaskMakerNoLine.get_mask">[docs]</a>
     <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mask array.</span>
 
@@ -346,7 +342,7 @@
 
 
 <div class="viewcode-block" id="MaskMaker">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMaker.html#pipeline.hsd.heuristics.MaskMaker">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMaker.html#pipeline.hsd.heuristics.fitorder.MaskMaker">[docs]</a>
 <span class="k">class</span> <span class="nc">MaskMaker</span><span class="p">(</span><span class="n">MaskMakerNoLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate mask array. Lines are masked.&quot;&quot;&quot;</span>
 
@@ -364,7 +360,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
 
 <div class="viewcode-block" id="MaskMaker.get_mask">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMaker.html#pipeline.hsd.heuristics.MaskMaker.get_mask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.MaskMaker.html#pipeline.hsd.heuristics.fitorder.MaskMaker.get_mask">[docs]</a>
     <span class="k">def</span> <span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mask array.</span>
 
@@ -387,10 +383,10 @@
 
 
 <div class="viewcode-block" id="SwitchPolynomialWhenLargeMaskAtEdgeHeuristic">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.html#pipeline.hsd.heuristics.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic">[docs]</a>
 <span class="k">class</span> <span class="nc">SwitchPolynomialWhenLargeMaskAtEdgeHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <div class="viewcode-block" id="SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.html#pipeline.hsd.heuristics.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.html#pipeline.hsd.heuristics.fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nchan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">EdgeChannels</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">masklist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">FittingFunction</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform fitting function heuristics.</span>
 

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_calimage_cont.h_init">
 <span class="sig-name descname"><span class="pre">h_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loglevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotlevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weblog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_init.html#h_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_calimage_cont.h_init" title="Link to this definition"></a></dt>
-<dd><p>h_init —- Initialize the pipeline</p>
+<dd><p>Initialize the pipeline</p>
 <p>The h_init task initializes the pipeline.</p>
 <p>h_init  must be called before any other pipeline task. The pipeline
 can be initialized in one of two ways: by creating a new pipeline
@@ -157,15 +153,20 @@ state (h_init) or be loading a saved pipeline state (h_resume).</p>
 <p>h_init creates an empty pipeline context but does not load visibility data
 into the context. hif_importdata or hsd_importdata can be used to load data.</p>
 <p>The pipeline context is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>loglevel      Log level for pipeline messages. Log messages below this threshold will not be displayed.
-plotlevel     Toggle generation of detail plots in the web log. A level of ‘all’ generates</p>
-<blockquote>
-<div><p>all plots; ‘summary’ omits detail plots; ‘default’ generates all plots
-apart from for the hif_applycal task.</p>
-</div></blockquote>
-<p>weblog        Generate the web log</p>
-<p>——— examples ———————————————————–</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loglevel</strong> – Log level for pipeline messages. Log messages below this threshold will not be displayed.</p></li>
+<li><p><strong>plotlevel</strong> – Toggle generation of detail plots in the web log. A level of ‘all’ generates all plots; ‘summary’ omits detail plots; ‘default’ generates all plots
+apart from for the hif_applycal task.</p></li>
+<li><p><strong>weblog</strong> – Generate the web log</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Create the pipeline context</p></li>
 </ol>

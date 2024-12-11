@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,32 +145,30 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_calimage_cont.hifa_flagtargets">
 <span class="sig-name descname"><span class="pre">hifa_flagtargets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_flagtargets.html#hifa_flagtargets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_calimage_cont.hifa_flagtargets" title="Link to this definition"></a></dt>
-<dd><p>hifa_flagtargets —- Do science target flagging</p>
+<dd><p>Do science target flagging</p>
 <p>The hifa_flagtargets task performs basic flagging operations on a list of
 science target MeasurementSets, including:</p>
 <ul class="simple">
 <li><p>applying a flagging template</p></li>
 </ul>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list
-of MeasurementSets defined in the pipeline context.</p>
-</dd>
-<dt>template</dt><dd><p>Apply flagging templates; defaults to True.</p>
-</dd>
-<dt>filetemplate</dt><dd><p>The name of a text file that contains the flagging
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list
+of MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>template</strong> – Apply flagging templates; defaults to True.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging
 template for issues with the science target data etc.
 If the template flags files is undefined a name of the
-form ‘msname_flagtargetstemplate.txt’ is assumed.</p>
+form ‘msname_flagtargetstemplate.txt’ is assumed.</p></li>
+<li><p><strong>flagbackup</strong> – Back up any pre-existing flags; defaults to False.</p></li>
+</ul>
 </dd>
-<dt>flagbackup</dt><dd><p>Back up any pre-existing flags; defaults to False.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Do basic flagging on a science target MeasurementSet:</p></li>
 </ol>

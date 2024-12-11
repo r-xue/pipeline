@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -145,24 +141,23 @@
 <div class="viewcode-block" id="h_weblog">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.h_weblog.html#pipeline.cli.h_weblog">[docs]</a>
 <span class="k">def</span> <span class="nf">h_weblog</span><span class="p">(</span><span class="n">relpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_weblog ---- Open the pipeline weblog in a browser</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open the pipeline weblog in a browser</span>
 
 <span class="sd">    h_weblog opens the weblog in a new browser tab or window.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Args:</span>
+<span class="sd">        relpath: Relative path to the weblog index file. This file must be located</span>
+<span class="sd">            in a child directory of the CASA working directory. If relpath</span>
+<span class="sd">            is left unspecified, the most recent weblog will be located and</span>
+<span class="sd">            displayed.</span>
 
-<span class="sd">    relpath</span>
-<span class="sd">                Relative path to the weblog index file. This file must be located</span>
-<span class="sd">                in a child directory of the CASA working directory. If relpath</span>
-<span class="sd">                is left unspecified, the most recent weblog will be located and</span>
-<span class="sd">                displayed.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Open pipeline weblog in a browser:</span>
 
-<span class="sd">    1. Open pipeline weblog in a browser:</span>
-
-<span class="sd">    &gt;&gt;&gt; h_weblog()</span>
+<span class="sd">        &gt;&gt;&gt; h_weblog()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">show_weblog</span><span class="p">(</span><span class="n">index_path</span><span class="o">=</span><span class="n">relpath</span><span class="p">)</span></div>

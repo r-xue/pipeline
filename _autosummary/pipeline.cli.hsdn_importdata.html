@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,7 +144,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.cli.hsdn_importdata">
 <span class="sig-name descname"><span class="pre">hsdn_importdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_rasterscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nocopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createmms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsdn/cli/hsdn_importdata.html#hsdn_importdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.cli.hsdn_importdata" title="Link to this definition"></a></dt>
-<dd><p>hsdn_importdata —- Imports Nobeyama data into the single dish pipeline</p>
+<dd><p>Imports Nobeyama data into the single dish pipeline.</p>
 <p>Imports Nobeyama data into the single dish pipeline.
 The hsdn_importdata task loads the specified visibility data into the pipeline
 context unpacking and / or converting it as necessary.</p>
@@ -156,28 +152,24 @@ context unpacking and / or converting it as necessary.</p>
 convert an input ASDM input to an MS, then when the output MS already exists in
 the output directory, the importasdm conversion step is skipped, and the
 existing MS will be imported instead.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,</dt><dd><p>MSes, or tar files of MSes, If ASDM files are specified, they will be
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
 converted to MS format.
-example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
-</dd>
-<dt>session       List of sessions to which the visibility files belong. Defaults</dt><dd><p>to a single session containing all the visibility files, otherwise
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>session</strong> – List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise
 a session must be assigned to each vis file.
-example: session=[‘Session_1’, ‘Sessions_2’]</p>
-</dd>
-<dt>hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,</dt><dd><p>time-domain analysis (‘time’) and direction analysis (‘direction’), are available.
-Default is ‘time’.</p>
-</dd>
-<dt>datacolumns   Dictionary defining the data types of</dt><dd><p>existing columns. The format is:</p>
-<p>{‘data’: ‘data type 1’}
+example: session=[‘Session_1’, ‘Sessions_2’]</p></li>
+<li><p><strong>hm_rasterscan</strong> – Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis (‘time’) and direction analysis (‘direction’), are available.
+Default is ‘time’.</p></li>
+<li><p><strong>datacolumns</strong> – Dictionary defining the data types of existing columns. The format is:
+{‘data’: ‘data type 1’}
 or
-{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}</p>
-<p>For ASDMs the data type can only be RAW and one
-can only specify it for the data column.</p>
-<p>For MSes one can define two different data types
+{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}.
+For ASDMs the data type can only be RAW and one
+can only specify it for the data column.
+For MSes one can define two different data types
 for the DATA and CORRECTED_DATA columns and they
 can be any of the known data types (RAW,
 REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,
@@ -186,22 +178,25 @@ SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The
 intent selection strings _ALL or _SCIENCE can be
 skipped. In that case the task determines this
 automatically by inspecting the existing intents
-in the dataset.</p>
-<p>Usually, a single datacolumns dictionary is used
+in the dataset.
+Usually, a single datacolumns dictionary is used
 for all datasets. If necessary, one can define a
 list of dictionaries, one for each EB, with
-different setups per EB.</p>
-<p>If no type is specified, {‘data’:’raw’} will
-be assumed.</p>
-</dd>
-<dt>overwrite     Overwrite existing files on import.</dt><dd><p>When converting ASDM to MS, if overwrite=False and the MS already
+different setups per EB.
+If no type is specified, {‘data’:’raw’} will
+be assumed.</p></li>
+<li><p><strong>overwrite</strong> – Overwrite existing files on import. When converting ASDM to MS, if overwrite=False and the MS already
 exists in output directory, then this existing MS dataset will be used
-instead.</p>
+instead.</p></li>
+<li><p><strong>nocopy</strong> – Disable copying of MS to working directory.</p></li>
+<li><p><strong>createmms</strong> – Create an MMS</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>nocopy        Disable copying of MS to working directory.
-createmms     Create an MMS</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Load an ASDM list in the ../rawdata subdirectory into the context:</p></li>
 </ol>

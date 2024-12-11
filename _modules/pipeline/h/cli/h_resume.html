@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -147,29 +143,26 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.h_resume.html#pipeline.cli.h_resume">[docs]</a>
 <span class="k">def</span> <span class="nf">h_resume</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_resume ---- Restore a save pipeline state</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restore a saved pipeline state</span>
 
 <span class="sd">    h_resume restores a name pipeline state from disk, allowing a</span>
 <span class="sd">    suspended pipeline reduction session to be resumed.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filename: Name of the saved pipeline state. Setting filename to &#39;last&#39; restores the most recently saved pipeline state whose name</span>
+<span class="sd">            begins with &#39;context*&#39;.</span>
 
-<span class="sd">    filename Name of the saved pipeline state. Setting filename to &#39;last&#39;</span>
-<span class="sd">             restores the most recently saved pipeline state whose name</span>
-<span class="sd">             begins with &#39;context*&#39;.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Resume the last saved session</span>
 
+<span class="sd">        &gt;&gt;&gt; h_resume()</span>
 
-<span class="sd">    1. Resume the last saved session</span>
+<span class="sd">        2. Resume the named saved session</span>
 
-<span class="sd">    &gt;&gt;&gt; h_resume()</span>
-
-<span class="sd">    2. Resume the named saved session</span>
-
-<span class="sd">    &gt;&gt;&gt; h_resume(filename=&#39;context.s3.2012-02-13T10:49:11&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; h_resume(filename=&#39;context.s3.2012-02-13T10:49:11&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

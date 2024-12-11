@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,44 +145,41 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_calimage_cont.hifa_polcal">
 <span class="sig-name descname"><span class="pre">hifa_polcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minpacov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_chavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_polcal.html#hifa_polcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_calimage_cont.hifa_polcal" title="Link to this definition"></a></dt>
-<dd><p>hifa_polcal —- Derive instrumental polarization calibration for ALMA.</p>
+<dd><p>Derive instrumental polarization calibration for ALMA.</p>
 <p>Derive the instrumental polarization calibrations for ALMA using the
 polarization calibrators.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: [‘M32A.ms’, ‘M32B.ms’]</p>
-</dd>
-<dt>minpacov</dt><dd><p>Minimum Parallactic Angle Coverage (degrees) required for
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: [‘M32A.ms’, ‘M32B.ms’]</p></li>
+<li><p><strong>minpacov</strong> – Minimum Parallactic Angle Coverage (degrees) required for
 Q, U estimation in task polfromgain. This enables avoiding
 pathological cases of antennas with insufficient parallactic
 angle coverage which can yield spurious source polarization
 solutions or cause polfromgain to fail to find any
-solutions.</p>
-<p>Default: 30.0</p>
-</dd>
-<dt>solint_chavg</dt><dd><p>Channel averaging to include in solint for gaincal steps
+solutions.
+Default: 30.0</p></li>
+<li><p><strong>solint_chavg</strong> – Channel averaging to include in solint for gaincal steps
 producing cross-hand delay, cross-hand phase, and leakage
-(D-terms) solutions.</p>
-<p>Default: ‘5MHz’</p>
-</dd>
-<dt>vs_stats</dt><dd><p>List of visstat statistics to use for diagnostic comparison
+(D-terms) solutions.
+Default: ‘5MHz’</p></li>
+<li><p><strong>vs_stats</strong> – List of visstat statistics to use for diagnostic comparison
 between the concatenated session MS and individual MSes in
-that session after applying polarization calibration tables.</p>
-<p>Default: [‘min’,’max’,’mean’]</p>
-</dd>
-<dt>vs_thresh</dt><dd><p>Threshold to use in diagnostic comparison of visstat
+that session after applying polarization calibration tables.
+Default: [‘min’,’max’,’mean’]</p></li>
+<li><p><strong>vs_thresh</strong> – Threshold to use in diagnostic comparison of visstat
 statistics; relative differences larger than this threshold
-are reported in the CASA log.</p>
-<p>Default: 1e-3</p>
+are reported in the CASA log.
+Default: 1e-3</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Compute the polarization calibrations:</p></li>
 </ol>

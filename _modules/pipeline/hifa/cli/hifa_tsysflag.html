@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -155,9 +151,7 @@
                   <span class="n">flag_birdies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fb_sharps_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">flag_toomany</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmf1_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmef1_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">metric_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize_tsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_tsysflag ---- Flag deviant system temperatures for ALMA interferometry measurements.</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag deviant system temperatures for ALMA interferometry measurements.</span>
 
 <span class="sd">    This task flags all deviant system temperature measurements in the system</span>
 <span class="sd">    temperature calibration table by running a sequence of flagging tests, each</span>
@@ -187,86 +181,80 @@
 <span class="sd">       in a spw, if proportion of antennas that are already entirely flagged</span>
 <span class="sd">       in all timestamps exceeds a threshold.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input MeasurementSets (Not used).</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: List of input Tsys calibration tables.</span>
+<span class="sd">            Default: [] - Use the table currently stored in the pipeline context.</span>
+<span class="sd">            Example: caltable=[&#39;X132.ms.tsys.s2.tbl&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        flag_nmedian: True to flag Tsys spectra with high median value.</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                    List of input MeasurementSets (Not used).</span>
-<span class="sd">    caltable</span>
-<span class="sd">                    List of input Tsys calibration tables.</span>
+<span class="sd">        fnm_limit: Flag spectra with median value higher than fnm_limit * median</span>
+<span class="sd">            of this measure over all spectra.</span>
 
-<span class="sd">                    Default: [] - Use the table currently stored in the pipeline context.</span>
+<span class="sd">        fnm_byfield: Evaluate the nmedian metric separately for each field.</span>
 
-<span class="sd">                    Example: caltable=[&#39;X132.ms.tsys.s2.tbl&#39;]</span>
-<span class="sd">    flag_nmedian</span>
-<span class="sd">                    True to flag Tsys spectra with high median value.</span>
-<span class="sd">    fnm_limit</span>
-<span class="sd">                    Flag spectra with median value higher than fnm_limit * median</span>
-<span class="sd">                    of this measure over all spectra.</span>
-<span class="sd">    fnm_byfield</span>
-<span class="sd">                    Evaluate the nmedian metric separately for each field.</span>
-<span class="sd">    flag_derivative</span>
-<span class="sd">                    True to flag Tsys spectra with high median derivative.</span>
-<span class="sd">    fd_max_limit</span>
-<span class="sd">                    Flag spectra with median derivative higher than</span>
-<span class="sd">                    fd_max_limit * median of this measure over all spectra.</span>
-<span class="sd">    flag_edgechans</span>
-<span class="sd">                    True to flag edges of Tsys spectra.</span>
-<span class="sd">    fe_edge_limit</span>
-<span class="sd">                    Flag channels whose channel to channel difference &gt;</span>
-<span class="sd">                    fe_edge_limit * median across spectrum.</span>
-<span class="sd">    flag_fieldshape</span>
-<span class="sd">                    True to flag Tsys spectra with a radically different</span>
-<span class="sd">                    shape to those of the ff_refintent.</span>
-<span class="sd">    ff_refintent</span>
-<span class="sd">                    Data intent that provides the reference shape for</span>
-<span class="sd">                    &#39;flag_fieldshape&#39;.</span>
-<span class="sd">    ff_max_limit</span>
-<span class="sd">                    Flag Tsys spectra with &#39;fieldshape&#39; metric values &gt;</span>
-<span class="sd">                    ff_max_limit.</span>
-<span class="sd">    flag_birdies</span>
-<span class="sd">                    True to flag channels covering sharp spectral features.</span>
-<span class="sd">    fb_sharps_limit</span>
-<span class="sd">                    Flag channels bracketing a channel to channel</span>
-<span class="sd">                    difference &gt; fb_sharps_limit.</span>
-<span class="sd">    flag_toomany</span>
-<span class="sd">                    True to flag Tsys spectra for which a proportion of</span>
-<span class="sd">                    antennas for given timestamp and/or proportion of antennas that are</span>
-<span class="sd">                    entirely flagged in all timestamps exceeds their respective thresholds.</span>
-<span class="sd">    tmf1_limit</span>
-<span class="sd">                    Flag Tsys spectra for all antennas in a timestamp and spw if</span>
-<span class="sd">                    proportion of antennas already flagged in this timestamp and spw exceeds</span>
-<span class="sd">                    tmf1_limit.</span>
-<span class="sd">    tmef1_limit</span>
-<span class="sd">                    Flag Tsys spectra for all antennas and all timestamps</span>
-<span class="sd">                    in a spw, if proportion of antennas that are already entirely flagged</span>
-<span class="sd">                    in all timestamps exceeds tmef1_limit.</span>
-<span class="sd">    metric_order</span>
-<span class="sd">                    Order in which to evaluate the flagging metrics that are</span>
-<span class="sd">                    enabled. Disabled metrics are skipped.</span>
-<span class="sd">    normalize_tsys</span>
-<span class="sd">                    True to create a normalized Tsys table that is used to</span>
-<span class="sd">                    evaluate the Tsys flagging metrics. All newly found flags are also applied</span>
-<span class="sd">                    to the original Tsys caltable that continues to be used for subsequent</span>
-<span class="sd">                    calibration.</span>
-<span class="sd">    filetemplate</span>
-<span class="sd">                    The name of a text file that contains the manual Tsys flagging</span>
-<span class="sd">                    template. If the template flags file is undefined, a name of the form</span>
-<span class="sd">                    &#39;msname.flagtsystemplate.txt&#39; is assumed.</span>
+<span class="sd">        flag_derivative: True to flag Tsys spectra with high median derivative.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        fd_max_limit: Flag spectra with median derivative higher than</span>
+<span class="sd">            fd_max_limit * median of this measure over all spectra.</span>
 
-<span class="sd">    1. Flag Tsys measurements using currently recommended tests:</span>
+<span class="sd">        flag_edgechans: True to flag edges of Tsys spectra.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_tsysflag()</span>
+<span class="sd">        fe_edge_limit: Flag channels whose channel to channel difference &gt;</span>
+<span class="sd">            fe_edge_limit * median across spectrum.</span>
 
-<span class="sd">    2. Flag Tsys measurements using all recommended tests apart from that</span>
-<span class="sd">    using the &#39;fieldshape&#39; metric:</span>
+<span class="sd">        flag_fieldshape: True to flag Tsys spectra with a radically different</span>
+<span class="sd">            shape to those of the ff_refintent.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_tsysflag(flag_fieldshape=False)</span>
+<span class="sd">        ff_refintent: Data intent that provides the reference shape for</span>
+<span class="sd">            &#39;flag_fieldshape&#39;.</span>
+
+<span class="sd">        ff_max_limit: Flag Tsys spectra with &#39;fieldshape&#39; metric values &gt;</span>
+<span class="sd">            ff_max_limit.</span>
+
+<span class="sd">        flag_birdies: True to flag channels covering sharp spectral features.</span>
+
+<span class="sd">        fb_sharps_limit: Flag channels bracketing a channel to channel</span>
+<span class="sd">            difference &gt; fb_sharps_limit.</span>
+
+<span class="sd">        flag_toomany: True to flag Tsys spectra for which a proportion of</span>
+<span class="sd">            antennas for given timestamp and/or proportion of antennas that are</span>
+<span class="sd">            entirely flagged in all timestamps exceeds their respective thresholds.</span>
+
+<span class="sd">        tmf1_limit: Flag Tsys spectra for all antennas in a timestamp and spw if</span>
+<span class="sd">            proportion of antennas already flagged in this timestamp and spw exceeds</span>
+<span class="sd">            tmf1_limit.</span>
+
+<span class="sd">        tmef1_limit: Flag Tsys spectra for all antennas and all timestamps</span>
+<span class="sd">            in a spw, if proportion of antennas that are already entirely flagged</span>
+<span class="sd">            in all timestamps exceeds tmef1_limit.</span>
+
+<span class="sd">        metric_order: Order in which to evaluate the flagging metrics that are</span>
+<span class="sd">            enabled. Disabled metrics are skipped.</span>
+
+<span class="sd">        normalize_tsys: True to create a normalized Tsys table that is used to</span>
+<span class="sd">            evaluate the Tsys flagging metrics. All newly found flags are also applied</span>
+<span class="sd">            to the original Tsys caltable that continues to be used for subsequent</span>
+<span class="sd">            calibration.</span>
+
+<span class="sd">        filetemplate: The name of a text file that contains the manual Tsys flagging</span>
+<span class="sd">            template. If the template flags file is undefined, a name of the form</span>
+<span class="sd">            &#39;msname.flagtsystemplate.txt&#39; is assumed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Flag Tsys measurements using currently recommended tests:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifa_tsysflag()</span>
+
+<span class="sd">        2. Flag Tsys measurements using all recommended tests apart from that</span>
+<span class="sd">        using the &#39;fieldshape&#39; metric:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifa_tsysflag(flag_fieldshape=False)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

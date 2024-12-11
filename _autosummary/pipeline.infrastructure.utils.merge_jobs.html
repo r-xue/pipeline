@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -159,13 +155,13 @@ job Y, whereafter job X can be discarded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>jobs</strong> (a list of        <a class="reference internal" href="pipeline.infrastructure.casa_tasks.JobRequest.html#pipeline.infrastructure.casa_tasks.JobRequest" title="pipeline.infrastructure.jobrequest.JobRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobRequest</span></code></a>) – the job requests to merge</p></li>
+<li><p><strong>jobs</strong> (a list of        <a class="reference internal" href="pipeline.infrastructure.JobRequest.html#pipeline.infrastructure.JobRequest" title="pipeline.infrastructure.jobrequest.JobRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobRequest</span></code></a>) – the job requests to merge</p></li>
 <li><p><strong>task</strong> (a reference to a function on         :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>~pipeline.infrastructure.jobrequest.casa_tasks’) – the CASA task to recreate</p></li>
 <li><p><strong>ignore</strong> (<em>an iterable containing strings</em>) – the task arguments to ignore during hash creation</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of         <a class="reference internal" href="pipeline.infrastructure.casa_tasks.JobRequest.html#pipeline.infrastructure.casa_tasks.JobRequest" title="pipeline.infrastructure.jobrequest.JobRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobRequest</span></code></a></p>
+<dd class="field-even"><p>a list of         <a class="reference internal" href="pipeline.infrastructure.JobRequest.html#pipeline.infrastructure.JobRequest" title="pipeline.infrastructure.jobrequest.JobRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobRequest</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

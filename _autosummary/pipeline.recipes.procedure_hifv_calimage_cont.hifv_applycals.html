@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,64 +145,55 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_calimage_cont.hifv_applycals">
 <span class="sig-name descname"><span class="pre">hifv_applycals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applymode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagsum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagdetailedsum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gainmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_applycals.html#hifv_applycals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_calimage_cont.hifv_applycals" title="Link to this definition"></a></dt>
-<dd><p>hifv_applycals —- Apply calibration tables to measurement set</p>
+<dd><p>Apply calibration tables to input MeasurementSets.</p>
 <p>hifv_applycals applies the precomputed calibration tables stored in the pipeline
 context to the set of visibility files using predetermined field and
 spectral window maps and default values for the interpolation schemes.</p>
 <p>Users can interact with the pipeline calibration state using the tasks
 h_export_calstate and h_import_calstate.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returne</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis             The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>specified in the h_init or hifv_importdata task.</p>
-</dd>
-<dt>field           A string containing the list of field names or field ids to which</dt><dd><p>the calibration will be applied. Defaults to all fields in the pipeline
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>field</strong> – A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
 context.
-example: ‘3C279’, ‘3C279, M82’</p>
-</dd>
-<dt>intent          A string containing the list of intents against which the</dt><dd><p>selected fields will be matched. Defaults to all supported intents
+example: ‘3C279’, ‘3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing the list of intents against which the selected fields will be matched. Defaults to all supported intents
 in the pipeline context.
-example: <cite>‘*TARGET*’</cite></p>
+example: <cite>‘*TARGET*’</cite></p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline.
+example: ‘17’, ‘11, 15’</p></li>
+<li><p><strong>antenna</strong> – The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.</p></li>
+<li><p><strong>applymode</strong> – Calibration apply mode.</p>
+<ul>
+<li><p>‘calflag’: calibrate data and apply flags from solutions</p></li>
+<li><p>‘calflagstrict’: same as above except flag spws for which calibration is
+unavailable in one or more tables (instead of allowing them to pass
+uncalibrated and unflagged)</p></li>
+<li><p>‘trial’: report on flags from solutions, dataset entirely unchanged</p></li>
+<li><p>‘flagonly’: apply flags from solutions only, data not calibrated</p></li>
+<li><p>‘flagonlystrict’: same as above except flag spws for which calibration is
+unavailable in one or more tables</p></li>
+<li><p>‘calonly’: calibrate data only, flags from solutions NOT applied</p></li>
+</ul>
+</li>
+<li><p><strong>flagbackup</strong> – Backup the flags before the apply.</p></li>
+<li><p><strong>flagsum</strong> – Compute before and after flagging summary statistics.</p></li>
+<li><p><strong>flagdetailedsum</strong> – Compute detailed flagging statistics.</p></li>
+<li><p><strong>gainmap</strong> – Mode to map gainfields to scans.</p></li>
+</ul>
 </dd>
-<dt>spw             The list of spectral windows and channels to which the calibration</dt><dd><p>will be applied. Defaults to all science windows in the pipeline.
-example: ‘17’, ‘11, 15’</p>
-</dd>
-<dt>antenna         The selection of antennas to which the calibration will be applied.</dt><dd><p>Defaults to all antennas. Not currently supported.</p>
-</dd>
-<dt>applymode       Calibration apply mode</dt><dd><p>‘calflag’: calibrate data and apply flags from solutions
-‘calflagstrict’: same as above except flag spws for which calibration is</p>
-<blockquote>
-<div><p>unavailable in one or more tables (instead of allowing them to pass
-uncalibrated and unflagged)</p>
-</div></blockquote>
-<p>‘trial’: report on flags from solutions, dataset entirely unchanged
-‘flagonly’: apply flags from solutions only, data not calibrated
-‘flagonlystrict’: same as above except flag spws for which calibration is</p>
-<blockquote>
-<div><p>unavailable in one or more tables</p>
-</div></blockquote>
-<p>‘calonly’: calibrate data only, flags from solutions NOT applied</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>flagbackup      Backup the flags before the apply.
-flagsum         Compute before and after flagging summary statistics
-flagdetailedsum Compute detailed flagging statistics
-gainmap         Mode to map gainfields to scans.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Run the final applycals stage of the VLA CASA pipeline.</p></li>
+<li><p>Run the final applycals stage of the VLA CASA pipeline:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_applycals</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>——— issues ———————————————————–</p>
-<p>There is some discussion about the appropriate values of calwt. Given
-properly scaled data, the correct value should be the CASA default of True.
-However at the current time ALMA is suggesting that calwt be set to True for
-applying observatory calibrations, e.g. antenna positions, WVR, and system
-temperature corrections, and to False for applying instrument calibrations,
-e.g. bandpass, gain, and flux.</p>
 </dd></dl>
 
 </section>

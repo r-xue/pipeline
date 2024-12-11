@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hifa_tsysflagcontamination">
 <span class="sig-name descname"><span class="pre">hifa_tsysflagcontamination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_n_extreme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_detection_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagnostic_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continue_on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_tsysflagcontamination.html#hifa_tsysflagcontamination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hifa_tsysflagcontamination" title="Link to this definition"></a></dt>
-<dd><p>hifa_tsysflagcontamination —- Flag line contamination in ALMA interferometric Tsys caltables</p>
+<dd><p>Flag line contamination in ALMA interferometric Tsys caltables</p>
 <p>This task flags all line contamination detected through an analysis of the
 Tsys and bandpass caltables.</p>
 <p>The general idea for the detection algorithm is to discern features which
@@ -157,38 +153,32 @@ appear in the Tsys calibration tables of the scans taken in the vicinity
 of the source field in comparison with the Tsys calibration tables of the
 scans taken toward the bandpass. The bandpass scan should be clean of
 astrophysical line features.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>List of input MeasurementSets (Not used).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input MeasurementSets (Not used).</p></li>
+<li><p><strong>caltable</strong> – List of input Tsys calibration tables.
+Default: [] - Use the table currently stored in the pipeline context.
+Example: caltable=[‘X132.ms.tsys.s2.tbl’]</p></li>
+<li><p><strong>filetemplate</strong> – output file to which regions to flag will be written</p></li>
+<li><p><strong>logpath</strong> – output file to which heuristic log statements will be
+written</p></li>
+<li><p><strong>remove_n_extreme</strong> – expert parameter for contamination heuristic
+Default: 2</p></li>
+<li><p><strong>relative_detection_factor</strong> – expert parameter for contamination detection heuristic
+Default: 0.005</p></li>
+<li><p><strong>diagnostic_plots</strong> – create diagnostic plots for the line contamination heuristic
+Default: True</p></li>
+<li><p><strong>continue_on_failure</strong> – controls whether pipeline execution continues if a failure
+occurs in the underlying contamination detection heuristic.
+Default: True</p></li>
+</ul>
 </dd>
-<dt>caltable</dt><dd><p>List of input Tsys calibration tables.</p>
-<p>Default: [] - Use the table currently stored in the pipeline context.</p>
-<p>Example: caltable=[‘X132.ms.tsys.s2.tbl’]</p>
-</dd>
-<dt>filetemplate</dt><dd><p>output file to which regions to flag will be written</p>
-</dd>
-<dt>logpath</dt><dd><p>output file to which heuristic log statements will be
-written</p>
-</dd>
-<dt>remove_n_extreme</dt><dd><p>expert parameter for contamination heuristic</p>
-<p>Default: 2</p>
-</dd>
-<dt>relative_detection_factor</dt><dd><p>expert parameter for contamination detection heuristic</p>
-<p>Default: 0.005</p>
-</dd>
-<dt>diagnostic_plots</dt><dd><p>create diagnostic plots for the line contamination heuristic</p>
-<p>Default: True</p>
-</dd>
-<dt>continue_on_failure</dt><dd><p>controls whether pipeline execution continues if a failure
-occurs in the underlying contamination detection heuristic.</p>
-<p>Default: True</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Flag Tsys line contamination using currently recommended parameters:</p></li>
 </ol>

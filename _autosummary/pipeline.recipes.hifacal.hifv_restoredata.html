@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hifv_restoredata">
 <span class="sig-name descname"><span class="pre">hifv_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gainmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_restoredata.html#hifv_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hifv_restoredata" title="Link to this definition"></a></dt>
-<dd><p>hifv_restoredata —- Restore flagged and calibration interferometry data from a pipeline run</p>
+<dd><p>Restore flagged and calibration interferometry data from a pipeline run.</p>
 <p>The hifv_restoredata restores flagged and calibrated data from archived
 ASDMs and pipeline flagging and calibration data products.</p>
 <p>hifv_restoredata assumes that the ASDMs to be restored are present in the
@@ -184,45 +180,39 @@ e.g. uid___A001_X74_X29.session_3.caltables.tar.gz</p></li>
 <li><p>restores the final calibration tables for each MS</p></li>
 <li><p>applies the calibration tables to each MS</p></li>
 </ul>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,</dt><dd><p>MSes, or tar files of MSes, If ASDM files are specified, they will be
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
 converted  to MS format.
-example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
-</dd>
-<dt>session       List of sessions one per visibility file.</dt><dd><p>Example: session=[‘session_3’]</p>
-</dd>
-<dt>products_dir  Name of the data products directory to copy calibration</dt><dd><p>products from.
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>session</strong> – List of sessions one per visibility file. Example: session=[‘session_3’]</p></li>
+<li><p><strong>products_dir</strong> – Name of the data products directory to copy calibration products from.
 Default: ‘../products’
 The parameter is effective only when <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = True.
 When <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = False, calibration products in
 <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> will be used.
-example: products_dir=’myproductspath’</p>
-</dd>
-<dt>copytoraw     Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> to</dt><dd><p><code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> directory.
+example: products_dir=’myproductspath’</p></li>
+<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> to <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> directory.
 Default: True
-Example: copytoraw=False.</p>
+Example: copytoraw=False.</p></li>
+<li><p><strong>rawdata_dir</strong> – Name of the raw data directory. Default: ‘../rawdata’
+Example: rawdata_dir=’myrawdatapath’</p></li>
+<li><p><strong>lazy</strong> – Use the lazy filler option. Default: False</p></li>
+<li><p><strong>bdfflags</strong> – Set the BDF flags. Default: False</p></li>
+<li><p><strong>ocorr_mode</strong> – Correlation import mode. Default: ‘co’</p></li>
+<li><p><strong>gainmap</strong> – If True, map gainfields to a particular list of scans when applying calibration tables.
+Default: False</p></li>
+<li><p><strong>asis</strong> – List of tables to import asis. Default: ‘Receiver CalAtmosphere’</p></li>
+</ul>
 </dd>
-<dt>rawdata_dir   Name of the raw data directory.</dt><dd><p>Default: ‘../rawdata’
-Example: rawdata_dir=’myrawdatapath’</p>
-</dd>
-<dt>lazy          Use the lazy filler option.</dt><dd><p>Default: False</p>
-</dd>
-<dt>bdfflags      Set the BDF flags.</dt><dd><p>Default: False</p>
-</dd>
-<dt>ocorr_mode    Correlation import mode.</dt><dd><p>Default: ‘co’</p>
-</dd>
-<dt>gainmap       If True, map gainfields to a particular list of scans when</dt><dd><p>applying calibration tables.
-Default: False</p>
-</dd>
-<dt>asis          List of tables to import asis.</dt><dd><p>Default: ‘Receiver CalAtmosphere’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Restore the pipeline results for a single ASDM in a single session</p></li>
+<li><p>Restore the pipeline results for a single ASDM in a single session:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_restoredata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;myVLAsdm&#39;</span><span class="p">],</span> <span class="n">session</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;session_1&#39;</span><span class="p">],</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span><span class="p">)</span>
 </pre></div>

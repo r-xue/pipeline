@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,8 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hsd_imaging</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">infiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hsd_imaging ---- Generate single dish images</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate single dish images.</span>
 
 <span class="sd">    The hsd_imaging task generates single dish images per antenna as</span>
 <span class="sd">    well as combined image over whole antennas for each field and</span>
@@ -160,34 +155,32 @@
 
 <span class="sd">    Note that generated images are always in LSRK frame.</span>
 
-<span class="sd">    Output:</span>
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mode: Imaging mode controls imaging parameters in the task. Accepts either &quot;line&quot; (spectral line imaging) or &quot;ampcal&quot;</span>
+<span class="sd">            (image settings for amplitude calibrator).</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        restfreq: Rest frequency</span>
 
-<span class="sd">    mode          Imaging mode controls imaging parameters in the task.</span>
-<span class="sd">                  Accepts either &quot;line&quot; (spectral line imaging) or &quot;ampcal&quot;</span>
-<span class="sd">                  (image settings for amplitude calibrator)</span>
-<span class="sd">    restfreq      Rest frequency</span>
-<span class="sd">    infiles       List of data files. These must be a name of</span>
-<span class="sd">                  MeasurementSets that are registered to context via</span>
-<span class="sd">                  hsd_importdata task.</span>
-<span class="sd">                  example: vis=[&#39;uid___A002_X85c183_X36f.ms&#39;,</span>
-<span class="sd">                                &#39;uid___A002_X85c183_X60b.ms&#39;]</span>
-<span class="sd">    field         Data selection by field names or ids.</span>
-<span class="sd">                  example: &quot;`*Sgr*,M100`&quot;</span>
-<span class="sd">    spw           Data selection by spw ids.</span>
-<span class="sd">                  example: &quot;3,4&quot; (generate images for spw 3 and 4)</span>
+<span class="sd">        infiles: List of data files. These must be a name of MeasurementSets that are registered to context via</span>
+<span class="sd">            hsd_importdata task.</span>
+<span class="sd">            example: vis=[&#39;uid___A002_X85c183_X36f.ms&#39;,</span>
+<span class="sd">            &#39;uid___A002_X85c183_X60b.ms&#39;]</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        field: Data selection by field names or ids. example: &quot;`*Sgr*,M100`&quot;</span>
 
-<span class="sd">    1. Generate images with default settings and context</span>
+<span class="sd">        spw: Data selection by spw ids. example: &quot;3,4&quot; (generate images for spw 3 and 4)</span>
 
-<span class="sd">    &gt;&gt;&gt; hsd_imaging()</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    2. Generate images with amplitude calibrator and specific parameters</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Generate images with default settings and context</span>
 
-<span class="sd">    &gt;&gt;&gt; hsd_imaging(mode=&#39;ampcal&#39;, field=&#39;*Sgr*,M100&#39;, spw=&#39;17,19&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hsd_imaging()</span>
+
+<span class="sd">        2. Generate images with amplitude calibrator and specific parameters</span>
+
+<span class="sd">        &gt;&gt;&gt; hsd_imaging(mode=&#39;ampcal&#39;, field=&#39;*Sgr*,M100&#39;, spw=&#39;17,19&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

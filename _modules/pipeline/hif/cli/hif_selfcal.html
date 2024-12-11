@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -154,91 +150,90 @@
                 <span class="n">apply_cal_mode_default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rel_thresh_scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">dividing_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_all_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inf_EB_gaincal_combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_selfcal  ---- Determine and apply self-calibration with the science target data</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine and apply self-calibration with the science target data</span>
 
 <span class="sd">    Determine and apply self-calibration with the science target data</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            default = &quot;&quot;: use all MeasurementSets in the context</span>
 
-<span class="sd">    vis                     The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                            MeasurementSets specified in the h_init or hif_importdata task.</span>
-<span class="sd">                            default = &quot;&quot;: use all MeasurementSets in the context</span>
-<span class="sd">    field                   Select fields to image. Use field name(s) NOT id(s). Mosaics</span>
-<span class="sd">                            are assumed to have common source / field names.  If intent is</span>
-<span class="sd">                            specified only fields with data matching the intent will be</span>
-<span class="sd">                            selected. The fields will be selected from MeasurementSets in</span>
-<span class="sd">                            &quot;vis&quot;.</span>
-<span class="sd">                            default= &quot;&quot; Fields matching intent, one image per target source.</span>
-<span class="sd">    spw                     Select spectral windows to image.</span>
-<span class="sd">                            &quot;&quot;: Images will be computed for all science spectral windows.</span>
-<span class="sd">    contfile                Name of file to specify line-free frequency ranges for selfcal continuum imaging.</span>
-<span class="sd">                            default=&quot;cont.dat&quot;</span>
-<span class="sd">    apply                   Apply final selfcal solutions back to the input MeasurementSets.</span>
-<span class="sd">                            default = True</span>
-<span class="sd">    recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline</span>
-<span class="sd">                            context or json restore file.</span>
-<span class="sd">                            default = False</span>
-<span class="sd">    refantignore            string list to be ignored as reference antennas.</span>
-<span class="sd">                            example:  refantignore=&#39;ea02,ea03&#39;</span>
-<span class="sd">    restore_resources       Path to the restore resources from a standard run of hif_selfcal.</span>
-<span class="sd">                            hif_selfcal will automatically do an exhaustive search to lookup/extract/verify</span>
-<span class="sd">                            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred</span>
-<span class="sd">                            in selfcal.json, starting from working/, to products/ and rawdata/.</span>
-<span class="sd">                            If restore_resources is specified, this file path will be evaluated first</span>
-<span class="sd">                            before the pre-defined exhaustive search list.</span>
-<span class="sd">                            The value can be the file path of *auxproducts.tgz file or *selfcal.json file.</span>
-<span class="sd">    n_solints               number of solution intervals to attempt for self-calibration.</span>
-<span class="sd">                            default: 4</span>
-<span class="sd">    amplitude_selfcal       Attempt amplitude self-calibration following phase-only self-calibration;</span>
-<span class="sd">                            if median time between scans of a given target is &lt; 150s,</span>
-<span class="sd">                            solution intervals of 300s and inf will be attempted, otherwise just</span>
-<span class="sd">                            inf will be attempted.</span>
-<span class="sd">                            default = False</span>
-<span class="sd">    gaincal_minsnr          Minimum S/N for a solution to not be flagged by gaincal.</span>
-<span class="sd">                            default = 2.0</span>
-<span class="sd">    minsnr_to_proceed       Minimum estimated S/N on a per antenna basis to attempt self-calibration</span>
-<span class="sd">                            of a source.</span>
-<span class="sd">                            default = 3.0</span>
-<span class="sd">    delta_beam_thresh       Allowed fractional change in beam size for selfcalibration to accept</span>
-<span class="sd">                            results of a solution interval.</span>
-<span class="sd">                            default = 0.05</span>
-<span class="sd">    apply_cal_mode_default  Apply mode to use for applycal task</span>
-<span class="sd">                            during self-calibration; same options as applycal.</span>
-<span class="sd">                            default = &#39;calflag&#39;</span>
-<span class="sd">    rel_thresh_scaling      Scaling type to determine how clean thresholds</span>
-<span class="sd">                            per solution interval should be determined going from the starting</span>
-<span class="sd">                            clean threshold to 3.0 * RMS for the final solution interval.</span>
-<span class="sd">                            default=&#39;log10&#39;, options: &#39;linear&#39;, &#39;log10&#39;, or &#39;loge&#39; (natural log)</span>
-<span class="sd">    dividing_factor         Scaling factor</span>
-<span class="sd">                            to determine clean threshold for first self-calibration solution interval.</span>
-<span class="sd">                            Equivalent to (Peak S/N / dividing_factor) *RMS = First clean threshold;</span>
-<span class="sd">                            however, if (Peak S/N / dividing_factor) *RMS is &lt; 5.0; a value of 5.0</span>
-<span class="sd">                            is used for the first clean threshold.</span>
-<span class="sd">                            default = 40 for &lt; 8 GHz; 15 for &gt; 8 GHz</span>
-<span class="sd">    check_all_spws          If True, the S/N of mfs images created on a per-spectral-window basis will</span>
-<span class="sd">                            be compared at the initial stages final self-calibration.</span>
-<span class="sd">                            default=False</span>
-<span class="sd">    inf_EB_gaincal_combine  change gain solution combination parameters for the inf_EB solution interval.</span>
-<span class="sd">                            if True, the gaincal combine parameter will be set to &#39;scan,spw&#39;; if False,</span>
-<span class="sd">                            the gaincal combine parameter will be set to &#39;scan&#39;.</span>
-<span class="sd">                            default=False</span>
-<span class="sd">    parallel                Use MPI cluster where possible, default=&#39;automatic&#39;.</span>
-<span class="sd">                            options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+<span class="sd">        field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is</span>
+<span class="sd">            specified only fields with data matching the intent will be</span>
+<span class="sd">            selected. The fields will be selected from MeasurementSets in</span>
+<span class="sd">            &quot;vis&quot;.</span>
+<span class="sd">            default= &quot;&quot; Fields matching intent, one image per target source.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        spw: Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</span>
 
-<span class="sd">    1. Run self-calibration and apply solutions to all science targets and spws</span>
+<span class="sd">        contfile: Name of file to specify line-free frequency ranges for selfcal continuum imaging. default=&quot;cont.dat&quot;</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_selfcal()</span>
+<span class="sd">        apply: Apply final selfcal solutions back to the input MeasurementSets. default = True</span>
 
-<span class="sd">    2. Run self-calibration and apply solutions to a single science target</span>
+<span class="sd">        recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.</span>
+<span class="sd">            default = False</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_selfcal(field=&quot;3C279&quot;)</span>
+<span class="sd">        refantignore: string list to be ignored as reference antennas. example:  refantignore=&#39;ea02,ea03&#39;</span>
 
-<span class="sd">    3. Run self-calibration with a more relaxed allowed fractional change in the beam size for a solution interval to be successful</span>
+<span class="sd">        restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify</span>
+<span class="sd">            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred</span>
+<span class="sd">            in selfcal.json, starting from working/, to products/ and rawdata/.</span>
+<span class="sd">            If restore_resources is specified, this file path will be evaluated first</span>
+<span class="sd">            before the pre-defined exhaustive search list.</span>
+<span class="sd">            The value can be the file path of *auxproducts.tgz file or *selfcal.json file.</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_selfcal(delta_beam_thresh=0.15)</span>
+<span class="sd">        n_solints: number of solution intervals to attempt for self-calibration. default: 4</span>
+
+<span class="sd">        amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time between scans of a given target is &lt; 150s,</span>
+<span class="sd">            solution intervals of 300s and inf will be attempted, otherwise just</span>
+<span class="sd">            inf will be attempted.</span>
+<span class="sd">            default = False</span>
+
+<span class="sd">        gaincal_minsnr: Minimum S/N for a solution to not be flagged by gaincal. default = 2.0</span>
+
+<span class="sd">        minsnr_to_proceed: Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.</span>
+<span class="sd">            default = 3.0</span>
+
+<span class="sd">        delta_beam_thresh: Allowed fractional change in beam size for selfcalibration to accept results of a solution interval.</span>
+<span class="sd">            default = 0.05</span>
+
+<span class="sd">        apply_cal_mode_default: Apply mode to use for applycal task during self-calibration; same options as applycal.</span>
+<span class="sd">            default = &#39;calflag&#39;</span>
+
+<span class="sd">        rel_thresh_scaling: Scaling type to determine how clean thresholds per solution interval should be determined going from the starting</span>
+<span class="sd">            clean threshold to 3.0 * RMS for the final solution interval.</span>
+<span class="sd">            default=&#39;log10&#39;, options: &#39;linear&#39;, &#39;log10&#39;, or &#39;loge&#39; (natural log)</span>
+
+<span class="sd">        dividing_factor: Scaling factor to determine clean threshold for first self-calibration solution interval.</span>
+<span class="sd">            Equivalent to (Peak S/N / dividing_factor) *RMS = First clean threshold;</span>
+<span class="sd">            however, if (Peak S/N / dividing_factor) *RMS is &lt; 5.0; a value of 5.0</span>
+<span class="sd">            is used for the first clean threshold.</span>
+<span class="sd">            default = 40 for &lt; 8 GHz; 15 for &gt; 8 GHz</span>
+
+<span class="sd">        check_all_spws: If True, the S/N of mfs images created on a per-spectral-window basis will be compared at the initial stages final self-calibration.</span>
+<span class="sd">            default=False</span>
+
+<span class="sd">        inf_EB_gaincal_combine: change gain solution combination parameters for the inf_EB solution interval. if True, the gaincal combine parameter will be set to &#39;scan,spw&#39;; if False,</span>
+<span class="sd">            the gaincal combine parameter will be set to &#39;scan&#39;.</span>
+<span class="sd">            default=False</span>
+
+<span class="sd">        parallel: Use MPI cluster where possible, default=&#39;automatic&#39;. options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Run self-calibration and apply solutions to all science targets and spws</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal()</span>
+
+<span class="sd">        2. Run self-calibration and apply solutions to a single science target</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal(field=&quot;3C279&quot;)</span>
+
+<span class="sd">        3. Run self-calibration with a more relaxed allowed fractional change in the beam size for a solution interval to be successful</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal(delta_beam_thresh=0.15)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

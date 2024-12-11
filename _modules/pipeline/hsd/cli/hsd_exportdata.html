@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,9 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hsd_exportdata</span><span class="p">(</span><span class="n">pprfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">targetimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hsd_exportdata ---- Prepare single dish data for export</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare single dish data for export.</span>
 
 <span class="sd">    The hsd_exportdata task exports the data defined in the pipeline context</span>
 <span class="sd">    and exports it to the data products directory, converting and or packing</span>
@@ -163,30 +157,24 @@
 <span class="sd">    - a tar file per ASDM containing the final flags version and blparam</span>
 <span class="sd">    - a tar file containing the file web log</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template &#39;PPR_*.xml&#39;.</span>
+<span class="sd">            example: pprfile=[&#39;PPR_GRB021004.xml&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        targetimages: List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.</span>
+<span class="sd">            example: targetimages=[&#39;r_aqr.CM02.spw5.line0.XXYY.sd.im&#39;, &#39;r_aqr.CM02.spw5.XXYY.sd.cont.im&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        products_dir: Name of the data products subdirectory. Defaults to &#39;./&#39;. Example: products_dir=&#39;../products&#39;.</span>
 
-<span class="sd">    pprfile       Name of the pipeline processing request to be exported. Defaults</span>
-<span class="sd">                  to a file matching the template &#39;PPR_*.xml&#39;.</span>
-<span class="sd">                  example: pprfile=[&#39;PPR_GRB021004.xml&#39;]</span>
-<span class="sd">    targetimages  List of science target images to be exported. Defaults to all</span>
-<span class="sd">                  science target images recorded in the pipeline context.</span>
-<span class="sd">                  example: targetimages=[&#39;r_aqr.CM02.spw5.line0.XXYY.sd.im&#39;, &#39;r_aqr.CM02.spw5.XXYY.sd.cont.im&#39;]</span>
-<span class="sd">    products_dir  Name of the data products subdirectory. Defaults to &#39;./&#39;</span>
-<span class="sd">                  example: products_dir=&#39;../products&#39;</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Export the pipeline results for a single session to the data products</span>
+<span class="sd">        directory</span>
 
-
-<span class="sd">    1. Export the pipeline results for a single session to the data products</span>
-<span class="sd">    directory</span>
-
-<span class="sd">    &gt;&gt;&gt; !mkdir ../products</span>
-<span class="sd">    &gt;&gt;&gt; hsd_exportdata (products_dir=&#39;../products&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; !mkdir ../products</span>
+<span class="sd">        &gt;&gt;&gt; hsd_exportdata (products_dir=&#39;../products&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

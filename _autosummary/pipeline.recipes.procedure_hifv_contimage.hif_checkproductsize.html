@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hif_checkproductsize">
 <span class="sig-name descname"><span class="pre">hif_checkproductsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubesize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubelimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxproductsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_checkproductsize.html#hif_checkproductsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hif_checkproductsize" title="Link to this definition"></a></dt>
-<dd><p>hif_checkproductsize —- Check imaging product size</p>
+<dd><p>Check imaging product size</p>
 <p>Check interferometry imaging product size and try to mitigate to maximum
 allowed values. The task implements a mitigation cascade computing the largest
 cube size and tries to reduce it below a given limit by adjusting the <code class="docutils literal notranslate"><span class="pre">nbins</span></code>,
@@ -163,32 +159,31 @@ the image field is truncated around the phase center by forcing <code class="doc
 = <code class="docutils literal notranslate"><span class="pre">maximsize</span></code>.</p>
 <p>Note that mitigation for image pixel count and for the product size currently
 are mutually exclusive, with maximsize taking precedence if set.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis            The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-<dt>maxcubesize    Maximum allowed cube size in gigabytes (mitigation goal)</dt><dd><p>-1: automatic from performance parameters</p>
-</dd>
-<dt>maxcubelimit   Maximum allowed cube limit in gigabytes (mitigation failure</dt><dd><p>limit)
--1: automatic from performance parameters</p>
-</dd>
-<dt>maxproductsize Maximum allowed product size in gigabytes (mitigation goal and</dt><dd><p>failure limit)
--1: automatic from performance parameters</p>
-</dd>
-<dt>maximsize      Maximum allowed image count size (mitigation goal and hard</dt><dd><p>maximum).
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>maxcubesize</strong> – Maximum allowed cube size in gigabytes (mitigation goal) -1: automatic from performance parameters</p></li>
+<li><p><strong>maxcubelimit</strong> – Maximum allowed cube limit in gigabytes (mitigation failure limit)
+-1: automatic from performance parameters</p></li>
+<li><p><strong>maxproductsize</strong> – Maximum allowed product size in gigabytes (mitigation goal and failure limit)
+-1: automatic from performance parameters</p></li>
+<li><p><strong>maximsize</strong> – Maximum allowed image count size (mitigation goal and hard maximum).
 Parameter <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> must be even and divisible by 2,3,5,7 only.
 Note that <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> is disabled by default and cannot be set at
 the same time as <code class="docutils literal notranslate"><span class="pre">maxcubesize</span></code>, <code class="docutils literal notranslate"><span class="pre">maxcubelimit</span></code> and <code class="docutils literal notranslate"><span class="pre">maxproductsize</span></code>!
--1: disables mitigation for this parameter</p>
+-1: disables mitigation for this parameter</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>calcsb         Force (re-)calculation of sensitivities and beams
-parallel       Use MPI cluster where possible</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Basic call to check the product sizes using internal defaults</p></li>
 </ol>

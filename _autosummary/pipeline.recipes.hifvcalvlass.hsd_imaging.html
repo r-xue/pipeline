@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,38 +145,32 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass.hsd_imaging">
 <span class="sig-name descname"><span class="pre">hsd_imaging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_imaging.html#hsd_imaging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass.hsd_imaging" title="Link to this definition"></a></dt>
-<dd><p>hsd_imaging —- Generate single dish images</p>
+<dd><p>Generate single dish images.</p>
 <p>The hsd_imaging task generates single dish images per antenna as
 well as combined image over whole antennas for each field and
 spectral window. Image configuration (grid size, number of pixels,
 etc.) is automatically determined based on meta data such as
 antenna diameter, map extent, etc.</p>
 <p>Note that generated images are always in LSRK frame.</p>
-<p>Output:
-results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>mode          Imaging mode controls imaging parameters in the task.</dt><dd><p>Accepts either “line” (spectral line imaging) or “ampcal”
-(image settings for amplitude calibrator)</p>
-</dd>
-</dl>
-<p>restfreq      Rest frequency
-infiles       List of data files. These must be a name of</p>
-<blockquote>
-<div><p>MeasurementSets that are registered to context via
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> – Imaging mode controls imaging parameters in the task. Accepts either “line” (spectral line imaging) or “ampcal”
+(image settings for amplitude calibrator).</p></li>
+<li><p><strong>restfreq</strong> – Rest frequency</p></li>
+<li><p><strong>infiles</strong> – List of data files. These must be a name of MeasurementSets that are registered to context via
 hsd_importdata task.
-example: vis=[‘uid___A002_X85c183_X36f.ms’,</p>
-<blockquote>
-<div><p>‘uid___A002_X85c183_X60b.ms’]</p>
-</div></blockquote>
-</div></blockquote>
-<dl class="simple">
-<dt>field         Data selection by field names or ids.</dt><dd><p>example: “<cite>*Sgr*,M100</cite>”</p>
+example: vis=[‘uid___A002_X85c183_X36f.ms’,
+‘uid___A002_X85c183_X60b.ms’]</p></li>
+<li><p><strong>field</strong> – Data selection by field names or ids. example: “<cite>*Sgr*,M100</cite>”</p></li>
+<li><p><strong>spw</strong> – Data selection by spw ids. example: “3,4” (generate images for spw 3 and 4)</p></li>
+</ul>
 </dd>
-<dt>spw           Data selection by spw ids.</dt><dd><p>example: “3,4” (generate images for spw 3 and 4)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Generate images with default settings and context</p></li>
 </ol>

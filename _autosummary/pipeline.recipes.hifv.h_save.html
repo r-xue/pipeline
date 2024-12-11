@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,17 +145,20 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifv.h_save">
 <span class="sig-name descname"><span class="pre">h_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_save.html#h_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifv.h_save" title="Link to this definition"></a></dt>
-<dd><p>h_save —- Save the pipeline state to disk</p>
+<dd><p>Save the pipeline state to disk</p>
 <p>h_save saves the current pipeline state to disk using a unique filename.
 If no name is supplied one is generated automatically from a combination
 of the root name, ‘context’, the current stage number, and a time stamp.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>filename Name of the saved pipeline state. If filename is ‘’ then</dt><dd><p>a unique name will be generated computed several components: the
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the saved pipeline state. If filename is ‘’ then a unique name will be generated computed several components: the
 root, ‘context’, the current stage number, and the time stamp.</p>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Save the current state in the default file</p></li>
 </ol>

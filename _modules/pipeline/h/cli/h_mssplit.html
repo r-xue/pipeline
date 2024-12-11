@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,10 +146,7 @@
 <span class="k">def</span> <span class="nf">h_mssplit</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_mssplit ---- Select data from calibrated MS(s) to form new MS(s) for imaging</span>
-
-<span class="sd">    Select data from calibrated MS(s) to form new MS(s) for imaging</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select data from calibrated MS(s) to form new MS(s) for imaging</span>
 
 <span class="sd">    Create new MeasurementSets for imaging from the corrected column of the input</span>
 <span class="sd">    MeasurementSet. By default all science target data is copied to the new MS. The new</span>
@@ -161,41 +154,40 @@
 <span class="sd">    same source, field, and spw names and ids as it does in the parent MS.</span>
 
 <span class="sd">    The results object for the pipeline task is returned.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets to be transformed. Defaults to the list of MeasurementSets specified in the pipeline import data task.</span>
+<span class="sd">            default &#39;&#39;: Split all MeasurementSets in the context.</span>
+<span class="sd">            example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        outputvis: The list of output split MeasurementSets. The output list must be the same length as the input list and the output names must be different</span>
+<span class="sd">            from the input names.</span>
+<span class="sd">            default &#39;&#39;, The output name defaults to &lt;msrootname&gt;_split.ms</span>
+<span class="sd">            example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    vis           The list of input MeasurementSets to be transformed. Defaults to the</span>
-<span class="sd">                  list of MeasurementSets specified in the pipeline import data task.</span>
-<span class="sd">                  default &#39;&#39;: Split all MeasurementSets in the context.</span>
-<span class="sd">                  example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    outputvis     The list of output split MeasurementSets. The output list must</span>
-<span class="sd">                  be the same length as the input list and the output names must be different</span>
-<span class="sd">                  from the input names.</span>
-<span class="sd">                  default &#39;&#39;, The output name defaults to &lt;msrootname&gt;_split.ms</span>
-<span class="sd">                  example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    field         Set of data selection field names or ids, \&#39;\&#39; for all</span>
-<span class="sd">    intent        Select intents to split</span>
-<span class="sd">                  default: &#39;&#39;, All data is selected.</span>
-<span class="sd">                  example: &#39;TARGET&#39;</span>
-<span class="sd">    spw           Select spectral windows to split.</span>
-<span class="sd">                  default: &#39;&#39;, All spws are selected</span>
-<span class="sd">                  example: &#39;9&#39;, &#39;9,13,15&#39;</span>
-<span class="sd">    datacolumn    Select spectral windows to split. The standard CASA options are supported.</span>
-<span class="sd">                  example: &#39;corrected&#39;, &#39;model&#39;</span>
-<span class="sd">    chanbin       The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16.</span>
-<span class="sd">                  example: 2, 4</span>
-<span class="sd">    timebin       The time binning factor. &#39;0s&#39; for no binning</span>
-<span class="sd">                  example: &#39;10s&#39; for 10 second binning</span>
-<span class="sd">    replace       If a split was performed delete the parent MS and remove it from the context.</span>
+<span class="sd">        field: Set of data selection field names or ids, &#39;&#39; for all</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        intent: Select intents to split default: &#39;&#39;, All data is selected.</span>
+<span class="sd">            example: &#39;TARGET&#39;</span>
 
+<span class="sd">        spw: Select spectral windows to split. default: &#39;&#39;, All spws are selected</span>
+<span class="sd">            example: &#39;9&#39;, &#39;9,13,15&#39;</span>
 
+<span class="sd">        datacolumn: Select spectral windows to split. The standard CASA options are supported. example: &#39;corrected&#39;, &#39;model&#39;</span>
 
-<span class="sd">    1. Create a 4X channel smoothed output MS from the input MS</span>
+<span class="sd">        chanbin: The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16. example: 2, 4</span>
 
-<span class="sd">    &gt;&gt;&gt; h_mssplit(chanbin=4)</span>
+<span class="sd">        timebin: The time binning factor. &#39;0s&#39; for no binning example: &#39;10s&#39; for 10 second binning</span>
 
+<span class="sd">        replace: If a split was performed delete the parent MS and remove it from the context.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Create a 4X channel smoothed output MS from the input MS</span>
+
+<span class="sd">        &gt;&gt;&gt; h_mssplit(chanbin=4)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

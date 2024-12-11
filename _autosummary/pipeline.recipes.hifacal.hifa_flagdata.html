@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hifa_flagdata">
 <span class="sig-name descname"><span class="pre">hifa_flagdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scannumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgespw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspwfps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partialpol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowtrans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mintransrepspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mintransnonrepspws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileonline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_flagdata.html#hifa_flagdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hifa_flagdata" title="Link to this definition"></a></dt>
-<dd><p>hifa_flagdata —- Do metadata based flagging of a list of MeasurementSets.</p>
+<dd><p>Do metadata based flagging of a list of MeasurementSets.</p>
 <p>The hifa_flagdata data performs basic flagging operations on a list of
 measurements including:</p>
 <ul class="simple">
@@ -180,89 +176,68 @@ both sides of the spectral window, and thus are always flagged on both sides
 in order to achieve 1875 MHz bandwidth (in effect, they are flagged by
 62.5 MHz on each side), and thus no warning is generated.</p></li>
 </ul>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list of
-MeasurementSets defined in the pipeline context.</p>
-</dd>
-<dt>autocorr</dt><dd><p>Flag autocorrelation data.</p>
-</dd>
-<dt>shadow</dt><dd><p>Flag shadowed antennas.</p>
-</dd>
-<dt>tolerance</dt><dd><p>Amount of antenna shadowing tolerated, in meters. A positive number
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>autocorr</strong> – Flag autocorrelation data.</p></li>
+<li><p><strong>shadow</strong> – Flag shadowed antennas.</p></li>
+<li><p><strong>tolerance</strong> – Amount of antenna shadowing tolerated, in meters. A positive number
 allows antennas to overlap in projection. A negative number forces antennas
 apart in projection. Zero implies a distance of radius_1+radius_2 between
-antenna centers.</p>
-</dd>
-<dt>scan</dt><dd><p>Flag a list of specified scans.</p>
-</dd>
-<dt>scannumber</dt><dd><p>A string containing a comma delimited list of scans to be
-flagged.</p>
-<p>Example: scannumber=’3,5,6’</p>
-</dd>
-<dt>intents</dt><dd><p>A string containing a comma delimited list of intents against
-which the scans to be flagged are matched.</p>
-<p>Example: intents=’<cite>*BANDPASS*</cite>’</p>
-</dd>
-<dt>edgespw</dt><dd><p>Flag the edge spectral window channels.</p>
-</dd>
-<dt>fracspw</dt><dd><p>Fraction of channels to flag at both edges of TDM spectral windows.</p>
-</dd>
-<dt>fracspwfps</dt><dd><p>Fraction of channels to flag at both edges of ACA TDM
+antenna centers.</p></li>
+<li><p><strong>scan</strong> – Flag a list of specified scans.</p></li>
+<li><p><strong>scannumber</strong> – A string containing a comma delimited list of scans to be
+flagged.
+Example: scannumber=’3,5,6’</p></li>
+<li><p><strong>intents</strong> – A string containing a comma delimited list of intents against
+which the scans to be flagged are matched.
+Example: intents=’<cite>*BANDPASS*</cite>’</p></li>
+<li><p><strong>edgespw</strong> – Flag the edge spectral window channels.</p></li>
+<li><p><strong>fracspw</strong> – Fraction of channels to flag at both edges of TDM spectral windows.</p></li>
+<li><p><strong>fracspwfps</strong> – Fraction of channels to flag at both edges of ACA TDM
 spectral windows that were created with the earlier (original)
-implementation of the frequency profile synthesis (FPS) algorithm.</p>
-</dd>
-<dt>online</dt><dd><p>Apply the online flags.</p>
-</dd>
-<dt>partialpol</dt><dd><p>Identify integrations in multi-polarisation data where part
+implementation of the frequency profile synthesis (FPS) algorithm.</p></li>
+<li><p><strong>online</strong> – Apply the online flags.</p></li>
+<li><p><strong>partialpol</strong> – Identify integrations in multi-polarisation data where part
 of the polarization products are already flagged, and flag the other
-polarization products in those integrations.</p>
-</dd>
-<dt>lowtrans</dt><dd><p>Flag spectral windows for which a significant fraction of
+polarization products in those integrations.</p></li>
+<li><p><strong>lowtrans</strong> – Flag spectral windows for which a significant fraction of
 the channels have atmospheric transmission below the
-threshold (<code class="docutils literal notranslate"><span class="pre">mintransrepspw</span></code>, <code class="docutils literal notranslate"><span class="pre">mintransnonrepspws</span></code>).</p>
-</dd>
-<dt>mintransnonrepspws</dt><dd><p>This atmospheric transmissivity threshold is used to flag
+threshold (<code class="docutils literal notranslate"><span class="pre">mintransrepspw</span></code>, <code class="docutils literal notranslate"><span class="pre">mintransnonrepspws</span></code>).</p></li>
+<li><p><strong>mintransnonrepspws</strong> – This atmospheric transmissivity threshold is used to flag
 a non-representative science spectral window when more than 60% of
-its channels have a transmissivity below this level.</p>
-</dd>
-<dt>mintransrepspw</dt><dd><p>This atmospheric transmissivity threshold is used to flag the
+its channels have a transmissivity below this level.</p></li>
+<li><p><strong>mintransrepspw</strong> – This atmospheric transmissivity threshold is used to flag the
 representative science spectral window when more than 60% of its channels
-have a transmissivity below this level.</p>
-</dd>
-<dt>fileonline</dt><dd><p>File containing the online flags. These are computed by the
+have a transmissivity below this level.</p></li>
+<li><p><strong>fileonline</strong> – File containing the online flags. These are computed by the
 h_init or hif_importdata data tasks. If the online flags files
-are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p>
-</dd>
-<dt>template</dt><dd><p>Apply flagging templates</p>
-</dd>
-<dt>filetemplate</dt><dd><p>The name of a text file that contains the flagging template
+are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p></li>
+<li><p><strong>template</strong> – Apply flagging templates</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging template
 for RFI, birdies, telluric lines, etc. If the template flags files
-is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p>
-</dd>
-<dt>hm_tbuff</dt><dd><p>The heuristic for computing the default time interval padding
+is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p></li>
+<li><p><strong>hm_tbuff</strong> – The heuristic for computing the default time interval padding
 parameter. The options are ‘halfint’ and ‘manual’. In ‘halfint’ mode tbuff
 is set to half the maximum of the median integration time of the science
 and calibrator target observations. The value of 0.048 seconds is
 subtracted from the lower time limit to accommodate the behavior of the
-ALMA Control system.</p>
-</dd>
-<dt>tbuff</dt><dd><p>The time in seconds used to pad flagging command time
+ALMA Control system.</p></li>
+<li><p><strong>tbuff</strong> – The time in seconds used to pad flagging command time
 intervals if <code class="docutils literal notranslate"><span class="pre">hm_tbuff</span></code> = ‘manual’. The default in
-manual mode is no flagging.</p>
+manual mode is no flagging.</p></li>
+<li><p><strong>qa0</strong> – QA0 flags.</p></li>
+<li><p><strong>qa2</strong> – QA2 flags.</p></li>
+<li><p><strong>flagbackup</strong> – Back up any pre-existing flags.</p></li>
+</ul>
 </dd>
-<dt>qa0</dt><dd><p>QA0 flags.</p>
-</dd>
-<dt>qa2</dt><dd><p>QA2 flags.</p>
-</dd>
-<dt>flagbackup</dt><dd><p>Back up any pre-existing flags.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Do basic flagging on a MeasurementSet:</p></li>
 </ol>

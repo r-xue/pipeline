@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,33 +145,30 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.vlassQLIP.hifv_fluxboot">
 <span class="sig-name descname"><span class="pre">hifv_fluxboot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_fluxboot.html#hifv_fluxboot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.vlassQLIP.hifv_fluxboot" title="Link to this definition"></a></dt>
-<dd><p>hifv_fluxboot —- Fluxboot</p>
+<dd><p>Fluxboot</p>
 <p>Determine flux density bootstrapping for gain calibrators relative to flux calibrator.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>specified in the h_init or hifv_importdata task.</p>
-</dd>
-</dl>
-<p>caltable      String name of the flagged caltable
-fitorder      Polynomial order of the spectral fitting for valid flux densities</p>
-<blockquote>
-<div><p>with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>caltable</strong> – String name of the flagged caltable.</p></li>
+<li><p><strong>fitorder</strong> – Polynomial order of the spectral fitting for valid flux densities with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
 fractional bandwidth and receiver bands present in the observation.
 An override value of 1,2,3 or 4 may be specified by the user.
 Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
-If no determination can be made by the heuristics, a fitorder of 1 will be used.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>refantignore  String list of antennas to ignore</dt><dd><p>Example:  refantignore=’ea02,ea03’</p>
+If no determination can be made by the heuristics, a fitorder of 1 will be used.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore Example:  refantignore=’ea02, ea03’</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.
+Example: refant = ‘ea01, ea02’</p></li>
+</ul>
 </dd>
-<dt>refant        A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</dt><dd><p>Example: refant = ‘ea01, ea02’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>VLA CASA pipeline flux density bootstrapping.</p></li>
+<li><p>VLA CASA pipeline flux density bootstrapping:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_fluxboot</span><span class="p">()</span>
 </pre></div>

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,54 +145,44 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifv.hifa_importdata">
 <span class="sig-name descname"><span class="pre">hifa_importdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_caldevice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nocopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createmms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minparang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_importdata.html#hifa_importdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifv.hifa_importdata" title="Link to this definition"></a></dt>
-<dd><p>hifa_importdata —- Imports data into the interferometry pipeline</p>
+<dd><p>Imports data into the interferometry pipeline</p>
 <p>The hifa_importdata task loads the specified visibility data into the pipeline
 context unpacking and / or converting it as necessary.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> input parameter is set to False and the task is asked
 to convert an input ASDM input to an MS, then when the output MS already
 exists in the output directory, the importasdm conversion step is skipped,
 and the existing MS will be imported instead.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>List of visibility data files. These may be ASDMs, tar
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar
 files of ASDMs, MSes, or tar files of MSes. If ASDM files
-are specified, they will be converted to MS format.</p>
-<p>Example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
-</dd>
-<dt>session</dt><dd><p>List of session names, one for each visibility dataset,
-used to group the MSes into sessions.</p>
-<p>Example: session=[‘session_1’, ‘session_2’]</p>
-</dd>
-<dt>asis</dt><dd><p>Creates verbatim copies of the ASDM tables in the output MS.
+are specified, they will be converted to MS format.
+Example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>session</strong> – List of session names, one for each visibility dataset,
+used to group the MSes into sessions.
+Example: session=[‘session_1’, ‘session_2’]</p></li>
+<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS.
 The value given to this option must be a list of table names
-separated by space characters.</p>
-</dd>
-<dt>process_caldevice</dt><dd><p>Import the caldevice table from the ASDM.</p>
-</dd>
-<dt>overwrite</dt><dd><p>Overwrite existing files on import; defaults to False.
+separated by space characters.</p></li>
+<li><p><strong>process_caldevice</strong> – Import the caldevice table from the ASDM.</p></li>
+<li><p><strong>overwrite</strong> – Overwrite existing files on import; defaults to False.
 When converting ASDM to MS, if overwrite=False and the MS
 already exists in the output directory, then this existing
-MS dataset will be used instead.</p>
-<p>Example: overwrite=True</p>
-</dd>
-<dt>nocopy</dt><dd><p>Disable copying of MS to working directory; defaults to
-False.</p>
-<p>Example: nocopy=True</p>
-</dd>
-<dt>bdfflags</dt><dd><p>Apply BDF flags on import.</p>
-</dd>
-<dt>datacolumns</dt><dd><p>Dictionary defining the data types of existing columns.
-The format is:</p>
-<p>{‘data’: ‘data type 1’}</p>
-<p>or</p>
-<p>{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}</p>
-<p>For ASDMs the data type can only be RAW and one
-can only specify it for the data column.</p>
-<p>For MSes one can define two different data types
+MS dataset will be used instead.
+Example: overwrite=True</p></li>
+<li><p><strong>nocopy</strong> – Disable copying of MS to working directory; defaults to
+False.
+Example: nocopy=True</p></li>
+<li><p><strong>bdfflags</strong> – Apply BDF flags on import.</p></li>
+<li><p><strong>datacolumns</strong> – Dictionary defining the data types of existing columns.
+The format is:
+{‘data’: ‘data type 1’}
+or
+{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}.
+For ASDMs the data type can only be RAW and one
+can only specify it for the data column.
+For MSes one can define two different data types
 for the DATA and CORRECTED_DATA columns and they
 can be any of the known data types (RAW,
 REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,
@@ -205,32 +191,30 @@ SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The
 intent selection strings _ALL or _SCIENCE can be
 skipped. In that case the task determines this
 automatically by inspecting the existing intents
-in the dataset.</p>
-<p>Usually, a single datacolumns dictionary is used
+in the dataset.
+Usually, a single datacolumns dictionary is used
 for all datasets. If necessary, one can define a
 list of dictionaries, one for each EB, with
-different setups per EB.</p>
-<p>If no types are specified,
+different setups per EB.
+If no types are specified,
 {‘data’:’raw’,’corrected’:’regcal_contline’}
 or {‘data’:’raw’} will be assumed, depending on
-whether the corrected column exists or not.</p>
-</dd>
-<dt>lazy</dt><dd><p>Use the lazy filler import.</p>
-</dd>
-<dt>dbservice</dt><dd><p>Use the online flux catalog.</p>
-</dd>
-<dt>ocorr_mode</dt><dd><p>ALMA default set to ca.</p>
-</dd>
-<dt>createmms</dt><dd><p>Create an MMS.</p>
-</dd>
-<dt>minparang</dt><dd><p>Minimum required parallactic angle range for polarisation
+whether the corrected column exists or not.</p></li>
+<li><p><strong>lazy</strong> – Use the lazy filler import.</p></li>
+<li><p><strong>dbservice</strong> – Use the online flux catalog.</p></li>
+<li><p><strong>ocorr_mode</strong> – ALMA default set to ca.</p></li>
+<li><p><strong>createmms</strong> – Create an MMS.</p></li>
+<li><p><strong>minparang</strong> – Minimum required parallactic angle range for polarisation
 calibrator, in degrees. The default of 0.0 is used for
-non-polarisation processing.</p>
+non-polarisation processing.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+</ul>
 </dd>
-<dt>parallel</dt><dd><p>Execute using CASA HPC functionality, if available.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Load an ASDM list in the ../rawdata subdirectory into the context:</p></li>
 </ol>

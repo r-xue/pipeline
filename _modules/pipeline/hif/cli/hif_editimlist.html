@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -188,90 +184,122 @@
                    <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">vlass_plane_reject_ms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_editimlist ---- Add to a list of images to be produced with hif_makeimages()</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add to a list of images to be produced with hif_makeimages()</span>
 
 <span class="sd">    Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.</span>
 <span class="sd">    Many of the hif_editimlist() inputs map directly to tclean parameters.</span>
 
 <span class="sd">    The results object for the pipeline task is returned.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        imagename: Prefix for output image names.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        search_radius_arcsec: Size of the field finding beam search radius in arcsec.</span>
 
-<span class="sd">    imagename              Prefix for output image names.</span>
-<span class="sd">    search_radius_arcsec   Size of the field finding beam search radius in arcsec.</span>
-<span class="sd">    cell                   Image X and Y cell size(s) with units or pixels per beam.</span>
-<span class="sd">                           Single value same for both. \&#39;&lt;number&gt;ppb\&#39; for pixels per beam.</span>
-<span class="sd">                           Compute cell size based on the UV coverage of all the fields</span>
-<span class="sd">                           to be imaged and use a 5 pix per beam sampling.</span>
-<span class="sd">                           The pix per beam specification uses the above default cell size</span>
-<span class="sd">                           (&#39;5ppb&#39;) and scales it accordingly.</span>
-<span class="sd">                           example: [&#39;0.5arcsec&#39;, &#39;0.5arcsec&#39;] &#39;3ppb&#39;</span>
-<span class="sd">    cfcache                Convolution function cache directory name</span>
-<span class="sd">    conjbeams              Use conjugate frequency in tclean for wideband A-terms.</span>
-<span class="sd">    cyclefactor            Controls the depth of clean in minor cycles based on PSF.</span>
-<span class="sd">    cycleniter             Controls max number of minor cycle iterations in a single major cycle.</span>
-<span class="sd">    nmajor                 Controls the maximum number of major cycles to evaluate.</span>
-<span class="sd">    datatype               Data type(s) to image. The default &#39;&#39; selects the best</span>
-<span class="sd">                           available data type (e.g. selfcal over regcal) with</span>
-<span class="sd">                           an automatic fallback to the next available data type.</span>
-<span class="sd">                           With the ``datatype`` parameter of &#39;regcal&#39; or &#39;selfcal&#39;, one</span>
-<span class="sd">                           can force the use of only given data type(s).</span>
-<span class="sd">                           Note that this parameter is only for non-VLASS data when the datacolumn</span>
-<span class="sd">                           is not explictly set by user or imaging heuristics.</span>
-<span class="sd">    datacolumn             Data column to image; this will take precedence over the datatype parameter.</span>
-<span class="sd">    deconvolver            Minor cycle algorithm (multiscale or mtmfs)</span>
-<span class="sd">    editmode               The edit mode of the task (&#39;add&#39; or &#39;replace&#39;). Defaults to &#39;add&#39;.</span>
-<span class="sd">    field                  Set of data selection field names or ids.</span>
-<span class="sd">    imaging_mode           Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</span>
-<span class="sd">    imsize                 Image X and Y size(s) in pixels or PB level (single fields), \&#39;\&#39; for default. Single value same for both. \&#39;&lt;number&gt;pb\&#39; for PB level.</span>
-<span class="sd">    intent                 Set of data selection intents</span>
-<span class="sd">    gridder                Name of the gridder to use with tclean</span>
-<span class="sd">    mask                   Used to declare whether to use a predefined mask for tclean.</span>
-<span class="sd">    pbmask                 Used to declare primary beam gain level for cleaning with primary beam mask (usemask=&#39;pb&#39;), used only for VLASS-SE-CONT imaging mode.</span>
-<span class="sd">    nbin                   Channel binning factor.</span>
-<span class="sd">    nchan                  Number of channels, -1 = all</span>
-<span class="sd">    niter                  The max total number of minor cycle iterations allowed for tclean</span>
-<span class="sd">    nterms                 Number of Taylor coefficients in the spectral model</span>
-<span class="sd">    parameter_file         keyword=value text file as alternative method of input parameters</span>
-<span class="sd">    pblimit                PB gain level at which to cut off normalizations</span>
-<span class="sd">    phasecenter            The default phase center is set to the mean of the field</span>
-<span class="sd">                           directions of all fields that are to be image together.</span>
-<span class="sd">                           example: 0, &#39;J2000 19h30m00 -40d00m00&#39;</span>
-<span class="sd">    reffreq                Reference frequency of the output image coordinate system</span>
-<span class="sd">    restfreq               List of rest frequencies or a rest frequency in a string for output image.</span>
-<span class="sd">    robust                 Briggs robustness parameter for tclean</span>
-<span class="sd">    scales                 The scales for multi-scale imaging.</span>
-<span class="sd">    specmode               Spectral gridding type (mfs, cont, cube, \&#39;\&#39; for default)</span>
-<span class="sd">    spw                    Set of data selection spectral window/channels, \&#39;\&#39; for all</span>
-<span class="sd">    start                  First channel for frequency mode images.</span>
-<span class="sd">                           Starts at first input channel of the spw.</span>
-<span class="sd">                           example: &#39;22.3GHz&#39;</span>
-<span class="sd">    stokes                 Stokes Planes to make</span>
-<span class="sd">    sensitivity            Theoretical sensitivity (override internal calculation)</span>
-<span class="sd">    threshold              Stopping threshold (number in units of Jy, or string)</span>
-<span class="sd">    nsigma                 Multiplicative factor for rms-based threshold stopping</span>
-<span class="sd">    uvtaper                Used to set a uv-taper during clean.</span>
-<span class="sd">    uvrange                Set of data selection uv ranges, \&#39;\&#39; for all.</span>
-<span class="sd">    width                  Channel width</span>
-<span class="sd">    vlass_plane_reject_ms  Only used for the &#39;VLASS-SE-CUBE&#39; imaging mode. default: True</span>
-<span class="sd">                           If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)</span>
-<span class="sd">                           If False, do not perform flagging-based VLASS Coarse Cube plane rejection.</span>
-<span class="sd">                           If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.</span>
-<span class="sd">                           The optional keys are:</span>
-<span class="sd">                           - exclude_spw, default: &#39;&#39;</span>
-<span class="sd">                              Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.</span>
-<span class="sd">                           - flagpct_thresh, default: 0.9</span>
-<span class="sd">                              Flagging percentage threshold per field for the plane rejection.</span>
-<span class="sd">                           - nfield_thresh: default: 12 </span>
-<span class="sd">                              A minimal number of fields above the flagging percentage threshold is required for the plane rejection.</span>
+<span class="sd">        cell: Image X and Y cell size(s) with units or pixels per beam. Single value same for both. &#39;&lt;number&gt;ppb&#39; for pixels per beam.</span>
+<span class="sd">            Compute cell size based on the UV coverage of all the fields</span>
+<span class="sd">            to be imaged and use a 5 pix per beam sampling.</span>
+<span class="sd">            The pix per beam specification uses the above default cell size</span>
+<span class="sd">            (&#39;5ppb&#39;) and scales it accordingly.</span>
+<span class="sd">            example: [&#39;0.5arcsec&#39;, &#39;0.5arcsec&#39;] &#39;3ppb&#39;</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        cfcache: Convolution function cache directory name</span>
 
+<span class="sd">        conjbeams: Use conjugate frequency in tclean for wideband A-terms.</span>
 
+<span class="sd">        cyclefactor: Controls the depth of clean in minor cycles based on PSF.</span>
 
+<span class="sd">        cycleniter: Controls max number of minor cycle iterations in a single major cycle.</span>
+
+<span class="sd">        nmajor: Controls the maximum number of major cycles to evaluate.</span>
+
+<span class="sd">        datatype: Data type(s) to image. The default &#39;&#39; selects the best available data type (e.g. selfcal over regcal) with</span>
+<span class="sd">            an automatic fallback to the next available data type.</span>
+<span class="sd">            With the ``datatype`` parameter of &#39;regcal&#39; or &#39;selfcal&#39;, one</span>
+<span class="sd">            can force the use of only given data type(s).</span>
+<span class="sd">            Note that this parameter is only for non-VLASS data when the datacolumn</span>
+<span class="sd">            is not explictly set by user or imaging heuristics.</span>
+
+<span class="sd">        datacolumn: Data column to image; this will take precedence over the datatype parameter.</span>
+
+<span class="sd">        deconvolver: Minor cycle algorithm (multiscale or mtmfs)</span>
+
+<span class="sd">        editmode: The edit mode of the task (&#39;add&#39; or &#39;replace&#39;). Defaults to &#39;add&#39;.</span>
+
+<span class="sd">        field: Set of data selection field names or ids.</span>
+
+<span class="sd">        imaging_mode: Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</span>
+
+<span class="sd">        imsize: Image X and Y size(s) in pixels or PB level (single fields), &#39;&#39; for default. Single value same for both. &#39;&lt;number&gt;pb&#39; for PB level.</span>
+
+<span class="sd">        intent: Set of data selection intents</span>
+
+<span class="sd">        gridder: Name of the gridder to use with tclean</span>
+
+<span class="sd">        mask: Used to declare whether to use a predefined mask for tclean.</span>
+
+<span class="sd">        pbmask: Used to declare primary beam gain level for cleaning with primary beam mask (usemask=&#39;pb&#39;), used only for VLASS-SE-CONT imaging mode.</span>
+
+<span class="sd">        nbin: Channel binning factor.</span>
+
+<span class="sd">        nchan: Number of channels, -1 = all</span>
+
+<span class="sd">        niter: The max total number of minor cycle iterations allowed for tclean</span>
+
+<span class="sd">        nterms: Number of Taylor coefficients in the spectral model</span>
+
+<span class="sd">        parameter_file: keyword=value text file as alternative method of input parameters</span>
+
+<span class="sd">        pblimit: PB gain level at which to cut off normalizations</span>
+
+<span class="sd">        phasecenter: The default phase center is set to the mean of the field directions of all fields that are to be image together.</span>
+<span class="sd">            example: 0, &#39;J2000 19h30m00 -40d00m00&#39;</span>
+
+<span class="sd">        reffreq: Reference frequency of the output image coordinate system</span>
+
+<span class="sd">        restfreq: List of rest frequencies or a rest frequency in a string for output image.</span>
+
+<span class="sd">        robust: Briggs robustness parameter for tclean</span>
+
+<span class="sd">        scales: The scales for multi-scale imaging.</span>
+
+<span class="sd">        specmode: Spectral gridding type (mfs, cont, cube, &#39;&#39; for default)</span>
+
+<span class="sd">        spw: Set of data selection spectral window/channels, &#39;&#39; for all</span>
+
+<span class="sd">        start: First channel for frequency mode images. Starts at first input channel of the spw.</span>
+<span class="sd">            example: &#39;22.3GHz&#39;</span>
+
+<span class="sd">        stokes: Stokes Planes to make</span>
+
+<span class="sd">        sensitivity: Theoretical sensitivity (override internal calculation)</span>
+
+<span class="sd">        threshold: Stopping threshold (number in units of Jy, or string)</span>
+
+<span class="sd">        nsigma: Multiplicative factor for rms-based threshold stopping</span>
+
+<span class="sd">        uvtaper: Used to set a uv-taper during clean.</span>
+
+<span class="sd">        uvrange: Set of data selection uv ranges, &#39;&#39; for all.</span>
+
+<span class="sd">        width: Channel width</span>
+
+<span class="sd">        vlass_plane_reject_ms: Only used for the &#39;VLASS-SE-CUBE&#39; imaging mode. default: True If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)</span>
+<span class="sd">            If False, do not perform flagging-based VLASS Coarse Cube plane rejection.</span>
+<span class="sd">            If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.</span>
+<span class="sd">            The optional keys are:</span>
+
+<span class="sd">            - exclude_spw, default: &#39;&#39;</span>
+<span class="sd">              Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.</span>
+<span class="sd">            - flagpct_thresh, default: 0.9</span>
+<span class="sd">              Flagging percentage threshold per field for the plane rejection.</span>
+<span class="sd">            - nfield_thresh: default: 12</span>
+<span class="sd">              A minimal number of fields above the flagging percentage threshold is required for the plane rejection.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>

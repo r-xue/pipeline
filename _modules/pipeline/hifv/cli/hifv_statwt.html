@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,40 +145,31 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifv_statwt</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_modelcol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">statwtmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_statwt ---- Compute statistical weights and write them to measurement set</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute statistical weights and write them to measurement set.</span>
 
-<span class="sd">    Compute statistical weights and write them to measurement set</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
 
+<span class="sd">        datacolumn: Data column used to compute weights. Supported values are &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot;</span>
+<span class="sd">            (case insensitive, minimum match supported).</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">        overwrite_modelcol: Always write the model column, even if it already exists.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        statwtmode: Sets the weighting parameters for general VLA (&#39;VLA&#39;) or VLASS Single Epoch (&#39;VLASS-SE&#39;) use case. Note that the &#39;VLASS-SE&#39;</span>
+<span class="sd">            mode is meant to be used with datacolumn=&#39;residual_data&#39;.</span>
+<span class="sd">            Default is &#39;VLA&#39;.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets</span>
-<span class="sd">                       specified in the h_init or hifv_importdata task.</span>
-<span class="sd">    datacolumn         Data column used to compute weights. Supported values are</span>
-<span class="sd">                       &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot;</span>
-<span class="sd">                       (case insensitive, minimum match supported).</span>
-<span class="sd">    overwrite_modelcol Always write the model column, even if it already exists</span>
-<span class="sd">    statwtmode         Sets the weighting parameters for general VLA (&#39;VLA&#39;) or VLASS</span>
-<span class="sd">                       Single Epoch (&#39;VLASS-SE&#39;) use case. Note that the &#39;VLASS-SE&#39;</span>
-<span class="sd">                       mode is meant to be used with datacolumn=&#39;residual_data&#39;.</span>
-<span class="sd">                       Default is &#39;VLA&#39;.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Statistical weighting of the visibilities:</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        &gt;&gt;&gt; hifv_statwt()</span>
 
+<span class="sd">        2. Statistical weighting of the visibilities in the Very Large Array Sky Survey Single Epoch use case:</span>
 
-<span class="sd">    1. Statistical weighting of the visibilities:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifv_statwt()</span>
-
-<span class="sd">    2. Statistical weighting of the visibilities in the Very Large Array Sky Survey Single Epoch use case:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifv_statwt(mode=&#39;vlass-se&#39;, datacolumn=&#39;residual_data&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; hifv_statwt(mode=&#39;vlass-se&#39;, datacolumn=&#39;residual_data&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

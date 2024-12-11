@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,32 +145,31 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hifv_priorcals">
 <span class="sig-name descname"><span class="pre">hifv_priorcals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_tec_maps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_tec_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_gaincurves</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_opcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_rqcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_antpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_swpowcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swpow_spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ant_pos_time_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_priorcals.html#hifv_priorcals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hifv_priorcals" title="Link to this definition"></a></dt>
-<dd><p>hifv_priorcals —- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</p>
-<p>Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.
-——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis                  List of visibility data files. These may be ASDMs, tar files of ASDMs,</dt><dd><p>MSes, or tar files of MSes, If ASDM files are specified, they will be
+<dd><p>Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
 converted  to MS format.
-example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>show_tec_maps</strong> – Plot tec maps.</p></li>
+<li><p><strong>apply_tec_correction</strong> – Apply tec correction.</p></li>
+<li><p><strong>apply_gaincurves</strong> – Apply gain curves correction, default True.</p></li>
+<li><p><strong>apply_opcal</strong> – Apply opacities correction, default True.</p></li>
+<li><p><strong>apply_rqcal</strong> – Apply requantizer gains correction, default True.</p></li>
+<li><p><strong>apply_antpos</strong> – Apply antenna position corrections, default True.</p></li>
+<li><p><strong>apply_swpowcal</strong> – Apply switched power table, default False.  If set True, <code class="docutils literal notranslate"><span class="pre">apply_rqcal</span></code> is ignored and no requantizer gain correction will be applied.</p></li>
+<li><p><strong>swpow_spw</strong> – Spectral-window(s) for plotting: “” ==&gt;all, spw=”6, 14”</p></li>
+<li><p><strong>ant_pos_time_limit</strong> – Antenna position time limit in days, default to 150 days.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>show_tec_maps        Plot tec maps
-apply_tec_correction Apply tec correction
-apply_gaincurves     Apply gain curves correction, default True
-apply_opcal          Apply opacities correction, default True
-apply_rqcal          Apply requantizer gains correction, default True
-apply_antpos         Apply antenna position corrections, default True.
-apply_swpowcal       Apply switched power table, default False.  If set True,</p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">apply_rqcal</span></code> is ignored and no requantizer gain correction will be applied.</p>
-</div></blockquote>
-<p>swpow_spw            Spectral-window(s) for plotting: “” ==&gt;all, spw=”6,14”
-ant_pos_time_limit   Antenna position time limit in days, default to 150 days
-——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Run gaincurves, opacities, requantizer gains and antenna position corrections.</p></li>
+<li><p>Run gaincurves, opacities, requantizer gains and antenna position corrections:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_priorcals</span><span class="p">()</span>
 </pre></div>

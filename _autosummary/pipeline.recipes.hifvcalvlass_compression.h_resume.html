@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,16 +145,19 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.h_resume">
 <span class="sig-name descname"><span class="pre">h_resume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_resume.html#h_resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.h_resume" title="Link to this definition"></a></dt>
-<dd><p>h_resume —- Restore a save pipeline state</p>
+<dd><p>Restore a saved pipeline state</p>
 <p>h_resume restores a name pipeline state from disk, allowing a
 suspended pipeline reduction session to be resumed.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>filename Name of the saved pipeline state. Setting filename to ‘last’</dt><dd><p>restores the most recently saved pipeline state whose name
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the saved pipeline state. Setting filename to ‘last’ restores the most recently saved pipeline state whose name
 begins with ‘context*’.</p>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Resume the last saved session</p></li>
 </ol>

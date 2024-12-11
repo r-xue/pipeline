@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,44 +146,38 @@
 <span class="k">def</span> <span class="nf">hifv_selfcal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">selfcalmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_modelcol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_selfcal ---- Perform phase-only self-calibration, per scan row, on VLASS SE images</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform phase-only self-calibration, per scan row, on VLASS SE images.</span>
 
-<span class="sd">    Perform phase-only self-calibration, per scan row, on VLASS SE images</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
 
-<span class="sd">    Output:</span>
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        refantignore: String list of antennas to ignore.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        combine: Data axes which to combine for solve.</span>
+<span class="sd">            Options: &#39;&#39;,&#39;obs&#39;,&#39;scan&#39;,&#39;spw&#39;,field&#39;, or any</span>
+<span class="sd">            comma-separated combination in a single string</span>
+<span class="sd">            Example: combine=&#39;scan,spw&#39; - Extend solutions</span>
+<span class="sd">            over scan boundaries (up to the solint), and</span>
+<span class="sd">            combine spws for solving.</span>
+<span class="sd">            In selfcalmode=&#39;VLASS-SE&#39; use the default value.</span>
 
-<span class="sd">    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets</span>
-<span class="sd">                       specified in the h_init or hifv_importdata task.</span>
-<span class="sd">    refantignore       String list of antennas to ignore</span>
-<span class="sd">    combine            Data axes which to combine for solve</span>
-<span class="sd">                       Options: &#39;&#39;,&#39;obs&#39;,&#39;scan&#39;,&#39;spw&#39;,field&#39;, or any</span>
-<span class="sd">                       comma-separated combination in a single string</span>
+<span class="sd">        selfcalmode: Heuristics mode selection. Known modes are &#39;VLASS&#39; and &#39;VLASS-SE&#39;. Default value is &#39;VLASS&#39;.</span>
 
-<span class="sd">                       Example: combine=&#39;scan,spw&#39; - Extend solutions</span>
-<span class="sd">                       over scan boundaries (up to the solint), and</span>
-<span class="sd">                       combine spws for solving.</span>
+<span class="sd">        refantmode: Reference antenna mode.</span>
 
-<span class="sd">                       In selfcalmode=&#39;VLASS-SE&#39; use the default value.</span>
-<span class="sd">    selfcalmode        Heuristics mode selection. Known modes are &#39;VLASS&#39; and &#39;VLASS-SE&#39;.</span>
-<span class="sd">                       Default value is &#39;VLASS&#39;.</span>
-<span class="sd">    refantmode         Reference antenna mode</span>
-<span class="sd">    overwrite_modelcol Always write the model column, even if it already exists</span>
+<span class="sd">        overwrite_modelcol: Always write the model column, even if it already exists.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Basic selfcal task:</span>
 
-<span class="sd">    1. Basic selfcal task</span>
+<span class="sd">        &gt;&gt;&gt; hifv_selfcal()</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_selfcal()</span>
+<span class="sd">        2. VLASS-SE selfcal usage:</span>
 
-<span class="sd">    2. VLASS-SE selfcal usage</span>
-
-<span class="sd">    &gt;&gt;&gt; hifv_selfcal(selfcalmode=&#39;VLASS-SE&#39;, combine=&#39;field,spw&#39;)</span>
-
+<span class="sd">        &gt;&gt;&gt; hifv_selfcal(selfcalmode=&#39;VLASS-SE&#39;, combine=&#39;field, spw&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

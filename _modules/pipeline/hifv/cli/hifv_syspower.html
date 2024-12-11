@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,35 +145,33 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifv_syspower</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antexclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">do_not_apply</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_syspower ---- Determine amount of gain compression affecting VLA data below Ku-band</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine amount of gain compression affecting VLA data below Ku-band.</span>
 
-<span class="sd">    Determine amount of gain compression affecting VLA data below Ku-band</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input visibility data.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">        clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        antexclude: dictionary in the format of: </span>
+<span class="sd">            </span>
+<span class="sd">            {&#39;L&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
+<span class="sd">            &#39;X&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
+<span class="sd">            &#39;S&#39;: {&#39;ea12&#39;: {&#39;usemedian&#39;: False}, &#39;ea22&#39;: {&#39;usemedian&#39;: False}}}</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">            If antexclude is specified with &#39;usemedian&#39;: False, the template values are replaced with 1.0.</span>
+<span class="sd">            If &#39;usemedian&#39;: True, the template values are replaced with the median of the good antennas.</span>
 
-<span class="sd">    vis              List of input visibility data</span>
-<span class="sd">    clip_sp_template Acceptable range for Pdiff data; data are clipped outside this range and flagged</span>
-<span class="sd">    antexclude       dictionary in the format of:</span>
-<span class="sd">                     {&#39;L&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
-<span class="sd">                      &#39;X&#39;: {&#39;ea02&#39;: {&#39;usemedian&#39;: True}, &#39;ea03&#39;: {&#39;usemedian&#39;: False}},</span>
-<span class="sd">                      &#39;S&#39;: {&#39;ea12&#39;: {&#39;usemedian&#39;: False}, &#39;ea22&#39;: {&#39;usemedian&#39;: False}}}</span>
-<span class="sd">                     If antexclude is specified with &#39;usemedian&#39;: False, the template values are replaced with 1.0.</span>
-<span class="sd">                     If &#39;usemedian&#39;: True, the template values are replaced with the median of the good antennas.</span>
-<span class="sd">    apply            Apply task results to RQ table</span>
-<span class="sd">    do_not_apply     csv string of band names to not apply. Example: &#39;L,X,S&#39;</span>
+<span class="sd">        apply: Apply task results to RQ table.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        do_not_apply: csv string of band names to not apply. Example: &#39;L,X,S&#39;</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    1. Basic syspower task</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Basic syspower task:</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_syspower()</span>
-
+<span class="sd">        &gt;&gt;&gt; hifv_syspower()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

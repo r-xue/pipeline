@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hsd_flagdata">
 <span class="sig-name descname"><span class="pre">hsd_flagdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scannumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgespw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspwfps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileonline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepointing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incompleteraster</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_flagdata.html#hsd_flagdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hsd_flagdata" title="Link to this definition"></a></dt>
-<dd><p>hsd_flagdata —- Do basic flagging of a list of MeasurementSets</p>
+<dd><p>Do basic flagging of a list of MeasurementSets.</p>
 <p>The hsd_flagdata data performs basic flagging operations on a list of
 MeasurementSets including:</p>
 <ul class="simple">
@@ -159,66 +155,46 @@ MeasurementSets including:</p>
 <li><p>scan-based flagging by intent or scan number</p></li>
 <li><p>edge channel flagging</p></li>
 </ul>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis              The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>defined in the pipeline context.</p>
-</dd>
-</dl>
-<p>autocorr         Flag autocorrelation data.
-shadow           Flag shadowed antennas.
-scan             Flag a list of scans and intents specified by scannumber and intents.
-scannumber       A string containing a comma delimited list of scans to be</p>
-<blockquote>
-<div><p>flagged.</p>
-</div></blockquote>
-<dl>
-<dt>intents          A string containing a comma delimited list of intents against</dt><dd><p>which the scans to be flagged are matched.</p>
-<p>example: <cite>‘*BANDPASS*’</cite></p>
-</dd>
-</dl>
-<p>edgespw          Flag the edge spectral window channels.
-fracspw          Fraction of the baseline correlator TDM edge channels to be flagged.
-fracspwfps       Fraction of the ACS correlator TDM edge channels to be flagged.
-online           Apply the online flags.
-fileonline       File containing the online flags. These are computed by the</p>
-<blockquote>
-<div><p>h_init or hif_importdata data tasks. If the online flags files
-are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p>
-</div></blockquote>
-<p>template         Apply a flagging template.
-filetemplate     The name of a text file that contains the flagging template</p>
-<blockquote>
-<div><p>for RFI, birdies, telluric lines, etc.  If the template flags files
-is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p>
-</div></blockquote>
-<p>pointing         Apply a flagging template for pointing flag.
-filepointing     The name of a text file that contains the flagging template</p>
-<blockquote>
-<div><p>for pointing flag. If the template flags files is undefined a name of
-the form ‘msname.flagpointing.txt’ is assumed.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>incompleteraster Apply commands to flag incomplete raster sequence.</dt><dd><p>If this is False, relevant commands in filepointing are
-simply commented out.</p>
-</dd>
-<dt>hm_tbuff         The heuristic for computing the default time interval padding parameter.</dt><dd><p>The options are ‘halfint’ and ‘manual’. In ‘halfint’ mode tbuff is set to
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>autocorr</strong> – Flag autocorrelation data.</p></li>
+<li><p><strong>shadow</strong> – Flag shadowed antennas.</p></li>
+<li><p><strong>scan</strong> – Flag a list of scans and intents specified by scannumber and intents.</p></li>
+<li><p><strong>scannumber</strong> – A string containing a comma delimited list of scans to be flagged.</p></li>
+<li><p><strong>intents</strong> – A string containing a comma delimited list of intents against which the scans to be flagged are matched.
+Example: <cite>‘*BANDPASS*’</cite>.</p></li>
+<li><p><strong>edgespw</strong> – Flag the edge spectral window channels.</p></li>
+<li><p><strong>fracspw</strong> – Fraction of the baseline correlator TDM edge channels to be flagged.</p></li>
+<li><p><strong>fracspwfps</strong> – Fraction of the ACS correlator TDM edge channels to be flagged.</p></li>
+<li><p><strong>online</strong> – Apply the online flags.</p></li>
+<li><p><strong>fileonline</strong> – File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files
+are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p></li>
+<li><p><strong>template</strong> – Apply a flagging template.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging template for RFI, birdies, telluric lines, etc.  If the template flags files
+is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p></li>
+<li><p><strong>pointing</strong> – Apply a flagging template for pointing flag.</p></li>
+<li><p><strong>filepointing</strong> – The name of a text file that contains the flagging template for pointing flag. If the template flags files is undefined a name of
+the form ‘msname.flagpointing.txt’ is assumed.</p></li>
+<li><p><strong>incompleteraster</strong> – Apply commands to flag incomplete raster sequence. If this is False, relevant commands in filepointing are
+simply commented out.</p></li>
+<li><p><strong>hm_tbuff</strong> – The heuristic for computing the default time interval padding parameter. The options are ‘halfint’ and ‘manual’. In ‘halfint’ mode tbuff is set to
 half the maximum of the median integration time of the science and calibrator target
-observations.</p>
+observations.</p></li>
+<li><p><strong>tbuff</strong> – The time in seconds used to pad flagging command time intervals if hm_tbuff=’manual’.</p></li>
+<li><p><strong>qa0</strong> – QA0 flags</p></li>
+<li><p><strong>qa2</strong> – QA2 flags</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. Options: ‘automatic’, ‘true’, ‘false’, True, False.
+Default: None (equivalent to ‘automatic’).</p></li>
+<li><p><strong>flagbackup</strong> – Back up any pre-existing flags before applying new ones.</p></li>
+</ul>
 </dd>
-<dt>tbuff            The time in seconds used to pad flagging command time intervals if</dt><dd><p>hm_tbuff=’manual’.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>qa0              QA0 flags
-qa2              QA2 flags
-parallel         Execute using CASA HPC functionality, if available.</p>
-<blockquote>
-<div><p>options: ‘automatic’, ‘true’, ‘false’, True, False
-default: None (equivalent to ‘automatic’)</p>
-</div></blockquote>
-<p>flagbackup       Back up any pre-existing flags before applying new ones.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Do basic flagging on a MeasurementSet</p></li>
 </ol>

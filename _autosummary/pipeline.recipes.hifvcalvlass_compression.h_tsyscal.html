@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,21 +145,22 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.h_tsyscal">
 <span class="sig-name descname"><span class="pre">h_tsyscal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chantol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_tsyscal.html#h_tsyscal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.h_tsyscal" title="Link to this definition"></a></dt>
-<dd><p>h_tsyscal —- Derive a Tsys calibration table</p>
+<dd><p>Derive a Tsys calibration table</p>
 <p>Derive the Tsys calibration for list of ALMA MeasurementSets.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           List of input visibility files.</dt><dd><p>example: vis=[‘ngc5921.ms’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input visibility files. example: vis=[‘ngc5921.ms’]</p></li>
+<li><p><strong>caltable</strong> – Name of output gain calibration tables. example: caltable=’ngc5921.gcal’</p></li>
+<li><p><strong>chantol</strong> – The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).
+example: chantol=5</p></li>
+</ul>
 </dd>
-<dt>caltable      Name of output gain calibration tables.</dt><dd><p>example: caltable=’ngc5921.gcal’</p>
-</dd>
-<dt>chantol       The tolerance in channels for mapping atmospheric calibration</dt><dd><p>windows (TDM) to science windows (FDM or TDM).
-example: chantol=5</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Standard call</p></li>
 </ol>

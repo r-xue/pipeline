@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,49 +145,43 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.hif_refant">
 <span class="sig-name descname"><span class="pre">hif_refant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_refant.html#hif_refant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.hif_refant" title="Link to this definition"></a></dt>
-<dd><p>hif_refant —- Select the best reference antennas</p>
+<dd><p>Select the best reference antennas</p>
 <p>The hif_refant task selects a list of reference antennas and stores them
 in the pipeline context in priority order.</p>
 <p>The priority order is determined by a weighted combination of scores derived
 by the antenna selection heuristics. In manual mode the reference antennas
 can be set by hand.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>in the pipeline context.
-example: [‘M31.ms’]</p>
-</dd>
-<dt>field         The comma delimited list of field names or field ids for which flagging</dt><dd><p>scores are computed if hm_refant=’automatic’ and  flagging = True
-example: ‘’ (Default to fields with the specified intents), ‘3C279’, ‘3C279,M82’</p>
-</dd>
-<dt>spw           A string containing the comma delimited list of spectral window ids for</dt><dd><p>which flagging scores are computed if hm_refant=’automatic’ and  flagging = True.
-example: ‘’ (all spws observed with the specified intents), ‘11,13,15,17’</p>
-</dd>
-<dt>intent        A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched. Defaults to all supported
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
+example: [‘M31.ms’]</p></li>
+<li><p><strong>field</strong> – The comma delimited list of field names or field ids for which flagging scores are computed if hm_refant=’automatic’ and  flagging = True
+example: ‘’ (Default to fields with the specified intents), ‘3C279’, ‘3C279,M82’</p></li>
+<li><p><strong>spw</strong> – A string containing the comma delimited list of spectral window ids for which flagging scores are computed if hm_refant=’automatic’ and  flagging = True.
+example: ‘’ (all spws observed with the specified intents), ‘11,13,15,17’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to all supported
 intents.
-example: ‘BANDPASS’, ‘AMPLITUDE,BANDPASS,PHASE,POLARIZATION’</p>
-</dd>
-<dt>hm_refant     The heuristics method or mode for selection the reference</dt><dd><p>antenna. The options are ‘manual’ and ‘automatic. In manual
+example: ‘BANDPASS’, ‘AMPLITUDE,BANDPASS,PHASE,POLARIZATION’</p></li>
+<li><p><strong>hm_refant</strong> – The heuristics method or mode for selection the reference antenna. The options are ‘manual’ and ‘automatic. In manual
 mode a user supplied reference antenna refant is supplied.
-In ‘automatic’ mode the antennas are selected automatically.</p>
+In ‘automatic’ mode the antennas are selected automatically.</p></li>
+<li><p><strong>refant</strong> – The user supplied reference antenna for hm_refant=’manual’. If no antenna list is supplied an empty list is returned.
+example: ‘DV05’</p></li>
+<li><p><strong>geometry</strong> – Score antenna by proximity to the center of the array. This option is quick as only the ANTENNA table must be read.
+Parameter is available when <a href="#id1"><span class="problematic" id="id2">``</span></a>hm_refant``=’automatic’.</p></li>
+<li><p><strong>flagging</strong> – Score antennas by percentage of unflagged data.  This option requires computing flagging statistics.
+Parameter is available when <a href="#id3"><span class="problematic" id="id4">``</span></a>hm_refant``=’automatic’.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. options: ‘automatic’, ‘true’, ‘false’, True, False
+default: None (equivalent to False)</p></li>
+<li><p><strong>refantignore</strong> – string list to be ignored as reference antennas. example:  refantignore=’ea02,ea03’</p></li>
+</ul>
 </dd>
-<dt>refant        The user supplied reference antenna for hm_refant=’manual’. If</dt><dd><p>no antenna list is supplied an empty list is returned.
-example: ‘DV05’</p>
-</dd>
-<dt>geometry      Score antenna by proximity to the center of the array. This</dt><dd><p>option is quick as only the ANTENNA table must be read.
-Parameter is available when <a href="#id1"><span class="problematic" id="id2">``</span></a>hm_refant``=’automatic’.</p>
-</dd>
-<dt>flagging      Score antennas by percentage of unflagged data.  This option</dt><dd><p>requires computing flagging statistics.
-Parameter is available when <a href="#id3"><span class="problematic" id="id4">``</span></a>hm_refant``=’automatic’.</p>
-</dd>
-<dt>parallel      Execute using CASA HPC functionality, if available.</dt><dd><p>options: ‘automatic’, ‘true’, ‘false’, True, False
-default: None (equivalent to False)</p>
-</dd>
-<dt>refantignore  string list to be ignored as reference antennas.</dt><dd><p>example:  refantignore=’ea02,ea03’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Compute the references antennas to be used for bandpass and gain calibration.</p></li>
 </ol>

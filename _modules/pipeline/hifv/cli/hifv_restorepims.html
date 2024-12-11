@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,28 +145,20 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifv_restorepims</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reimaging_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_restorepims ---- Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</span>
 
-<span class="sd">    Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input visibility data.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">        reimaging_resources: file path of reimaging_resources.tgz from the SE imaging product.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Basic restorepims task:</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
-
-<span class="sd">    vis                 List of input visibility data</span>
-<span class="sd">    reimaging_resources file path of reimaging_resources.tgz from the SE imaging product</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-
-<span class="sd">    1. Basic restorepims task</span>
-
-<span class="sd">    &gt;&gt;&gt; hifv_restorepims()</span>
-
+<span class="sd">        &gt;&gt;&gt; hifv_restorepims()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

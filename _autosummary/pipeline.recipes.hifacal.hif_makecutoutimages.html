@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,24 +145,25 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hif_makecutoutimages">
 <span class="sig-name descname"><span class="pre">hif_makecutoutimages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetblc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsettrc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makecutoutimages.html#hif_makecutoutimages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hif_makecutoutimages" title="Link to this definition"></a></dt>
-<dd><p>hif_makecutoutimages —- Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images</p>
+<dd><p>Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images</p>
 <p>Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           List of visibility data files.</dt><dd><p>These may be ASDMs, tar files of ASDMs, MSs,
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs,
 or tar files of MSs.
 If ASDM files are specified, they will be converted to
-MS format.</p>
-<p>example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
+MS format.
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>offsetblc</strong> – -x and -y offsets to the bottom lower corner (blc) in arcseconds</p></li>
+<li><p><strong>offsettrc</strong> – +x and +y offsets to the top right corner (trc) in arcseconds</p></li>
+</ul>
 </dd>
-<dt>offsetblc     -x and -y offsets to the bottom lower corner (blc)</dt><dd><p>in arcseconds</p>
-</dd>
-<dt>offsettrc     +x and +y offsets to the top right corner (trc)</dt><dd><p>in arcseconds</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Basic makecutoutimages task</p></li>
 </ol>

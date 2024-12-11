@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,65 +145,52 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifv.hsd_skycal">
 <span class="sig-name descname"><span class="pre">hsd_skycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elongated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_skycal.html#hsd_skycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifv.hsd_skycal" title="Link to this definition"></a></dt>
-<dd><p>hsd_skycal —- Calibrate data</p>
+<dd><p>Calibrate data.</p>
 <p>The hsd_skycal generates a caltable for sky calibration that stores
 reference spectra, which is to be subtracted from on-source spectra to filter
 out non-source contribution.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>calmode       Calibration mode. Available options are ‘auto’ (default),</dt><dd><p>‘ps’, ‘otf’, and ‘otfraster’. When ‘auto’ is set, the task will
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calmode</strong> – Calibration mode. Available options are ‘auto’ (default), ‘ps’, ‘otf’, and ‘otfraster’. When ‘auto’ is set, the task will
 use preset calibration mode that is determined by inspecting data.
 ‘ps’ mode is simple position switching using explicit reference
 scans. Other two modes, ‘otf’ and ‘otfraster’, will generate
 reference data from scans at the edge of the map. Those modes
 are intended for OTF observation and the former is defined for
 generic scanning pattern such as Lissajous, while the latter is
-specific use for raster scan.</p>
-<p>options: ‘auto’, ‘ps’, ‘otf’, ‘otfraster’</p>
-</dd>
-<dt>fraction      Sub-parameter for calmode. Edge marking parameter for</dt><dd><p>‘otf’ and ‘otfraster’ mode. It specifies a number of OFF scans
-as a fraction of total number of data points.</p>
-<p>options: String style like ‘20%’, or float value less than 1.0.
-For ‘otfraster’ mode, you can also specify ‘auto’.</p>
-</dd>
-<dt>noff          Sub-parameter for calmode. Edge marking parameter for ‘otfraster’</dt><dd><p>mode. It is used to specify a number of OFF scans near edge directly
+specific use for raster scan.
+options: ‘auto’, ‘ps’, ‘otf’, ‘otfraster’</p></li>
+<li><p><strong>fraction</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ and ‘otfraster’ mode. It specifies a number of OFF scans
+as a fraction of total number of data points.
+options: String style like ‘20%’, or float value less than 1.0.
+For ‘otfraster’ mode, you can also specify ‘auto’.</p></li>
+<li><p><strong>noff</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otfraster’ mode. It is used to specify a number of OFF scans near edge directly
 instead to specify it by fractional number by ‘fraction’. If it is
-set, the value will come before setting by ‘fraction’.</p>
-<p>options: any positive integer value</p>
-</dd>
-<dt>width         Sub-parameter for calmode. Edge marking parameter for ‘otf’</dt><dd><p>mode. It specifies pixel width with respect to a median spatial
+set, the value will come before setting by ‘fraction’.
+options: any positive integer value</p></li>
+<li><p><strong>width</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ mode. It specifies pixel width with respect to a median spatial
 separation between neighboring two data in time. Default will
-be fine in most cases.</p>
-<p>options: any float value</p>
+be fine in most cases.
+options: any float value</p></li>
+<li><p><strong>elongated</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ mode. Please set True only if observed area is elongated
+in one direction.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. Options: ‘automatic’, ‘true’, ‘false’, True, False.
+default: None (equivalent to ‘automatic’)</p></li>
+<li><p><strong>infiles</strong> – List of data files. These must be a name of MeasurementSets that are registered to context via hsd_importdata task.
+example: vis=[‘X227.ms’, ‘X228.ms’]</p></li>
+<li><p><strong>field</strong> – Data selection by field name.</p></li>
+<li><p><strong>spw</strong> – Data selection by spw. (defalut all spws) example: ‘3,4’ (generate caltable for spw 3 and 4),
+[‘0’,’2’] (spw 0 for first data, 2 for second)</p></li>
+<li><p><strong>scan</strong> – Data selection by scan number. (default all scans) example: ‘22,23’ (use scan 22 and 23 for calibration),
+[‘22’,’24’] (scan 22 for first data, 24 for second)</p></li>
+</ul>
 </dd>
-<dt>elongated     Sub-parameter for calmode. Edge marking parameter for</dt><dd><p>‘otf’ mode. Please set True only if observed area is elongated
-in one direction.</p>
-</dd>
-<dt>parallel      Execute using CASA HPC functionality, if available.</dt><dd><p>options: ‘automatic’, ‘true’, ‘false’, True, False
-default: None (equivalent to ‘automatic’)</p>
-</dd>
-<dt>infiles       List of data files. These must be a name of MeasurementSets that</dt><dd><p>are registered to context via hsd_importdata task.</p>
-<p>example: vis=[‘X227.ms’, ‘X228.ms’]</p>
-</dd>
-</dl>
-<p>field         Data selection by field name.
-spw           Data selection by spw. (defalut all spws)</p>
-<blockquote>
-<div><dl class="simple">
-<dt>example: ‘3,4’ (generate caltable for spw 3 and 4)</dt><dd><p>[‘0’,’2’] (spw 0 for first data, 2 for second)</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>scan          Data selection by scan number. (default all scans)</p>
-<blockquote>
-<div><dl class="simple">
-<dt>example: ‘22,23’ (use scan 22 and 23 for calibration)</dt><dd><p>[‘22’,’24’] (scan 22 for first data, 24 for second)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-</div></blockquote>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Generate caltables for all data managed by context.</p></li>
 </ol>

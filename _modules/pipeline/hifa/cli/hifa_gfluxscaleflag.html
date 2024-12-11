@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,9 +146,7 @@
 <span class="k">def</span> <span class="nf">hifa_gfluxscaleflag</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">antnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmantint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antblnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">antblpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relaxed_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_gfluxscaleflag ---- Flag the flux, diffgain, phase calibrators and check source</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag the flux, diffgain, phase calibrators and check source</span>
 
 <span class="sd">    This task computes the flagging heuristics on the flux, diffgain, and phase</span>
 <span class="sd">    calibrators and the check source, by calling hif_correctedampflag which</span>
@@ -176,97 +170,79 @@
 <span class="sd">    is the standard data flagging score, which depends on the fraction of data</span>
 <span class="sd">    flagged.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;M51.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
+<span class="sd">            which the selected fields are matched. If undefined (default), it</span>
+<span class="sd">            will select all data with the AMPLITUDE, PHASE, and CHECK intents,</span>
+<span class="sd">            except for one case: if one of the AMPLITUDE intent fields was also</span>
+<span class="sd">            used for BANDPASS, then this task will select only data with PHASE</span>
+<span class="sd">            and CHECK intents.</span>
+<span class="sd">            Example: intent=&#39;`*PHASE*`&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        phaseupsolint: The phase correction solution interval in CASA syntax.</span>
+<span class="sd">            Example: phaseupsolint=&#39;300s&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                   The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                   MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        solint: Time and channel solution intervals in CASA syntax.</span>
+<span class="sd">            Example: solint=&#39;inf,10ch&#39;, solint=&#39;inf&#39;</span>
 
-<span class="sd">                   Example: vis=[&#39;M51.ms&#39;]</span>
-<span class="sd">    intent</span>
-<span class="sd">                   A string containing a comma delimited list of intents against</span>
-<span class="sd">                   which the selected fields are matched. If undefined (default), it</span>
-<span class="sd">                   will select all data with the AMPLITUDE, PHASE, and CHECK intents,</span>
-<span class="sd">                   except for one case: if one of the AMPLITUDE intent fields was also</span>
-<span class="sd">                   used for BANDPASS, then this task will select only data with PHASE</span>
-<span class="sd">                   and CHECK intents.</span>
+<span class="sd">        minsnr: Solutions below this SNR are rejected.</span>
 
-<span class="sd">                   Example: intent=&#39;`*PHASE*`&#39;</span>
-<span class="sd">    phaseupsolint</span>
-<span class="sd">                   The phase correction solution interval in CASA syntax.</span>
+<span class="sd">        refant: Reference antenna names. Defaults to the value(s) stored in the</span>
+<span class="sd">            pipeline context. If undefined in the pipeline context defaults to</span>
+<span class="sd">            the CASA reference antenna naming scheme.</span>
+<span class="sd">            Example: refant=&#39;DV01&#39;, refant=&#39;DV06,DV07&#39;</span>
 
-<span class="sd">                   Example: phaseupsolint=&#39;300s&#39;</span>
-<span class="sd">    solint</span>
-<span class="sd">                   Time and channel solution intervals in CASA syntax.</span>
+<span class="sd">        antnegsig: Lower sigma threshold for identifying outliers as a result of</span>
+<span class="sd">            bad antennas within individual timestamps.</span>
+<span class="sd">            Example: antnegsig=4.0</span>
 
-<span class="sd">                   Example: solint=&#39;inf,10ch&#39;, solint=&#39;inf&#39;</span>
-<span class="sd">    minsnr</span>
-<span class="sd">                   Solutions below this SNR are rejected.</span>
-<span class="sd">    refant</span>
-<span class="sd">                   Reference antenna names. Defaults to the value(s) stored in the</span>
-<span class="sd">                   pipeline context. If undefined in the pipeline context defaults to</span>
-<span class="sd">                   the CASA reference antenna naming scheme.</span>
+<span class="sd">        antpossig: Upper sigma threshold for identifying outliers as a result of</span>
+<span class="sd">            bad antennas within individual timestamps.</span>
+<span class="sd">            Example: antpossig=4.6</span>
 
-<span class="sd">                   Example: refant=&#39;DV01&#39;, refant=&#39;DV06,DV07&#39;</span>
-<span class="sd">    antnegsig</span>
-<span class="sd">                   Lower sigma threshold for identifying outliers as a result of</span>
-<span class="sd">                   bad antennas within individual timestamps.</span>
+<span class="sd">        tmantint: Threshold for maximum fraction of timestamps that are allowed to</span>
+<span class="sd">            contain outliers.</span>
+<span class="sd">            Example: tmantint=0.063</span>
 
-<span class="sd">                   Example: antnegsig=4.0</span>
-<span class="sd">    antpossig</span>
-<span class="sd">                   Upper sigma threshold for identifying outliers as a result of</span>
-<span class="sd">                   bad antennas within individual timestamps.</span>
+<span class="sd">        tmint: Threshold for maximum fraction of &quot;outlier timestamps&quot; over</span>
+<span class="sd">            &quot;total timestamps&quot; that a baseline may be a part of.</span>
+<span class="sd">            Example: tmint=0.085</span>
 
-<span class="sd">                   Example: antpossig=4.6</span>
-<span class="sd">    tmantint</span>
-<span class="sd">                   Threshold for maximum fraction of timestamps that are allowed to</span>
-<span class="sd">                   contain outliers.</span>
+<span class="sd">        tmbl: Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all</span>
+<span class="sd">            baselines&quot; that an antenna may be a part of.</span>
+<span class="sd">            Example: tmbl=0.175</span>
 
-<span class="sd">                   Example: tmantint=0.063</span>
-<span class="sd">    tmint</span>
-<span class="sd">                   Threshold for maximum fraction of &quot;outlier timestamps&quot; over</span>
-<span class="sd">                   &quot;total timestamps&quot; that a baseline may be a part of.</span>
+<span class="sd">        antblnegsig: Lower sigma threshold for identifying outliers as a result of</span>
+<span class="sd">            &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all</span>
+<span class="sd">            timestamps.</span>
+<span class="sd">            Example: antblnegsig=3.4</span>
 
-<span class="sd">                   Example: tmint=0.085</span>
-<span class="sd">    tmbl</span>
-<span class="sd">                   Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all</span>
-<span class="sd">                   baselines&quot; that an antenna may be a part of.</span>
+<span class="sd">        antblpossig: Threshold for identifying outliers as a result of</span>
+<span class="sd">            &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all</span>
+<span class="sd">            timestamps.</span>
+<span class="sd">            Example: antblpossig=3.2</span>
 
-<span class="sd">                   Example: tmbl=0.175</span>
-<span class="sd">    antblnegsig</span>
-<span class="sd">                   Lower sigma threshold for identifying outliers as a result of</span>
-<span class="sd">                   &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all</span>
-<span class="sd">                   timestamps.</span>
+<span class="sd">        relaxed_factor: Relaxed value to set the threshold scaling factor to under</span>
+<span class="sd">            certain conditions (see task description).</span>
+<span class="sd">            Example: relaxed_factor=2.0</span>
 
-<span class="sd">                   Example: antblnegsig=3.4</span>
-<span class="sd">    antblpossig</span>
-<span class="sd">                   Threshold for identifying outliers as a result of</span>
-<span class="sd">                   &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all</span>
-<span class="sd">                   timestamps.</span>
+<span class="sd">        niter: Maximum number of times to iterate on evaluation of flagging</span>
+<span class="sd">            heuristics. If an iteration results in no new flags, then subsequent</span>
+<span class="sd">            iterations are skipped.</span>
+<span class="sd">            Example: niter=2</span>
 
-<span class="sd">                   Example: antblpossig=3.2</span>
-<span class="sd">    relaxed_factor</span>
-<span class="sd">                   Relaxed value to set the threshold scaling factor to under</span>
-<span class="sd">                   certain conditions (see task description).</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                   Example: relaxed_factor=2.0</span>
-<span class="sd">    niter</span>
-<span class="sd">                   Maximum number of times to iterate on evaluation of flagging</span>
-<span class="sd">                   heuristics. If an iteration results in no new flags, then subsequent</span>
-<span class="sd">                   iterations are skipped.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. run with recommended settings to create flux scale calibration with flagging</span>
+<span class="sd">        using recommended thresholds:</span>
 
-<span class="sd">                   Example: niter=2</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. run with recommended settings to create flux scale calibration with flagging</span>
-<span class="sd">    using recommended thresholds:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_gfluxscaleflag()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_gfluxscaleflag()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

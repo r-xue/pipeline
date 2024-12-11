@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,31 +145,24 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifv_vlassmasking</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_ql_database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_vlassmasking ---- Create clean masks for VLASS Single Epoch (SE) images</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create clean masks for VLASS Single Epoch (SE) images.</span>
 
-<span class="sd">    Create clean masks for VLASS SE images</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">        vlass_ql_database: vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        maskingmode: maskingmode options are vlass-se-tier-1 or vlass-se-tier-2.</span>
 
+<span class="sd">        catalog_search_size: catalog_search_size in units of degrees</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    vis                 The list of input MeasurementSets. Defaults to the list of MeasurementSets</span>
-<span class="sd">                        specified in the h_init or hifv_importdata task.</span>
-<span class="sd">    vlass_ql_database   vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits</span>
-<span class="sd">    maskingmode         maskingmode options are vlass-se-tier-1 or vlass-se-tier-2</span>
-<span class="sd">    catalog_search_size catalog_search_size in units of degrees</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Basic vlassmasking task:</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-
-<span class="sd">    1. Basic vlassmasking task</span>
-
-<span class="sd">    &gt;&gt;&gt; hifv_vlassmasking()</span>
-
+<span class="sd">        &gt;&gt;&gt; hifv_vlassmasking()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hsd.hifa_imageprecheck">
 <span class="sig-name descname"><span class="pre">hifa_imageprecheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_angular_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_imageprecheck.html#hifa_imageprecheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hsd.hifa_imageprecheck" title="Link to this definition"></a></dt>
-<dd><p>hifa_imageprecheck —- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p>
+<dd><p>Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p>
 <p>In this task, the representative source and the spw containing the representative
 frequency selected by the PI in the OT are used to calculate the synthesized beam
 and to make sensitivity estimates for the aggregate bandwidth and representative
@@ -159,24 +155,24 @@ is available, it defaults to the first target and center of first spw in the dat
 (e.g. pre-Cycle 5 data does not have this information available). The best Briggs
 robust parameter to achieve the PI’s desired angular resolution is chosen
 automatically. See the User’s guide for further details.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis                              The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
 ‘’: use all MeasurementSets in the context
-Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>desired_angular_resolution</strong> – User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
+‘’: automatic from performance parameters (default).
+Example: ‘1.0arcsec’</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams; defaults to False</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+</ul>
 </dd>
-<dt>desired_angular_resolution       User specified angular resolution goal string. When this</dt><dd><p>parameter is set, uvtapering may be performed.
-‘’: automatic from performance parameters (default)
-Example: ‘1.0arcsec’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>calcsb                           Force (re-)calculation of sensitivities and beams; defaults to False
-parallel                         Use MPI cluster where possible</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>run with recommended settings to perform checks prior to imaging:</p></li>
 </ol>

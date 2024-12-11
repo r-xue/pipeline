@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,8 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_bpsolint</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minphaseupints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">evenbpints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">bpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minbpnchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute optimal bandpass calibration solution intervals</span>
 
 <span class="sd">    The optimal bandpass phaseup time and frequency solution intervals required</span>
 <span class="sd">    to achieve the required signal-to-noise ratio is estimated based on nominal</span>
@@ -217,85 +212,70 @@
 <span class="sd">      order to preserve enough frequency intervals to capture the atmospheric</span>
 <span class="sd">      line.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        field: The list of field names of sources to be used for</span>
+<span class="sd">            signal-to-noise estimation. Defaults to all fields with the</span>
+<span class="sd">            standard intent.</span>
+<span class="sd">            example: field=&#39;3C279&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
+<span class="sd">            which the selected fields are matched. Defaults to</span>
+<span class="sd">            &#39;BANDPASS&#39;.</span>
+<span class="sd">            example: intent=&#39;PHASE&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                   The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                   MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which gain</span>
+<span class="sd">            solutions are computed. Defaults to all the science spectral</span>
+<span class="sd">            windows for which there are both &#39;intent&#39; and TARGET intents.</span>
+<span class="sd">            example: spw=&#39;13,15&#39;</span>
 
-<span class="sd">                   example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
-<span class="sd">    field</span>
-<span class="sd">                   The list of field names of sources to be used for</span>
-<span class="sd">                   signal-to-noise estimation. Defaults to all fields with the</span>
-<span class="sd">                   standard intent.</span>
+<span class="sd">        phaseupsnr: The required phase-up gain time interval solution</span>
+<span class="sd">            signal-to-noise.</span>
+<span class="sd">            example: phaseupsnr=10.0</span>
 
-<span class="sd">                   example: field=&#39;3C279&#39;</span>
-<span class="sd">    intent</span>
-<span class="sd">                   A string containing a comma delimited list of intents against</span>
-<span class="sd">                   which the selected fields are matched. Defaults to</span>
-<span class="sd">                   &#39;BANDPASS&#39;.</span>
+<span class="sd">        minphaseupints: The minimum number of time intervals in the phase-up gain</span>
+<span class="sd">            solution.</span>
+<span class="sd">            example: minphaseupints=4</span>
 
-<span class="sd">                   example: intent=&#39;PHASE&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                   The list of spectral windows and channels for which gain</span>
-<span class="sd">                   solutions are computed. Defaults to all the science spectral</span>
-<span class="sd">                   windows for which there are both &#39;intent&#39; and TARGET intents.</span>
+<span class="sd">        evenbpints: Use a bandpass frequency solint that is an integer divisor of</span>
+<span class="sd">            the spw bandwidth, to prevent the occurrence of one narrower</span>
+<span class="sd">            fractional frequency interval.</span>
 
-<span class="sd">                   example: spw=&#39;13,15&#39;</span>
-<span class="sd">    phaseupsnr</span>
-<span class="sd">                   The required phase-up gain time interval solution</span>
-<span class="sd">                   signal-to-noise.</span>
+<span class="sd">        bpsnr: The required bandpass frequency interval solution</span>
+<span class="sd">            signal-to-noise.</span>
+<span class="sd">            example: bpsnr=30.0</span>
 
-<span class="sd">                   example: phaseupsnr=10.0</span>
-<span class="sd">    minphaseupints</span>
-<span class="sd">                   The minimum number of time intervals in the phase-up gain</span>
-<span class="sd">                   solution.</span>
+<span class="sd">        minbpsnr: The minimum required bandpass frequency interval solution</span>
+<span class="sd">            signal-to-noise when strong atmospheric lines exist in Tsys</span>
+<span class="sd">            spectra.</span>
+<span class="sd">            example: minbpsnr=10.0</span>
 
-<span class="sd">                   example: minphaseupints=4</span>
-<span class="sd">    evenbpints</span>
-<span class="sd">                   Use a bandpass frequency solint that is an integer divisor of</span>
-<span class="sd">                   the spw bandwidth, to prevent the occurrence of one narrower</span>
-<span class="sd">                   fractional frequency interval.</span>
-<span class="sd">    bpsnr</span>
-<span class="sd">                   The required bandpass frequency interval solution</span>
-<span class="sd">                   signal-to-noise.</span>
+<span class="sd">        minbpnchan: The minimum number of frequency intervals in the bandpass</span>
+<span class="sd">            solution.</span>
+<span class="sd">            example: minbpnchan=16</span>
 
-<span class="sd">                   example: bpsnr=30.0</span>
-<span class="sd">    minbpsnr</span>
-<span class="sd">                   The minimum required bandpass frequency interval solution</span>
-<span class="sd">                   signal-to-noise when strong atmospheric lines exist in Tsys</span>
-<span class="sd">                   spectra.</span>
+<span class="sd">        hm_nantennas: The heuristics for determines the number of antennas to use</span>
+<span class="sd">            in the signal-to-noise estimate. The options are &#39;all&#39; and</span>
+<span class="sd">            &#39;unflagged&#39;. The &#39;unflagged&#39; options is not currently</span>
+<span class="sd">            supported.</span>
+<span class="sd">            example: hm_nantennas=&#39;unflagged&#39;</span>
 
-<span class="sd">                   example: minbpsnr=10.0</span>
-<span class="sd">    minbpnchan</span>
-<span class="sd">                   The minimum number of frequency intervals in the bandpass</span>
-<span class="sd">                   solution.</span>
+<span class="sd">        maxfracflagged: The maximum fraction of an antenna that can be flagged before</span>
+<span class="sd">            it is excluded from the signal-to-noise estimate.</span>
+<span class="sd">            example: maxfracflagged=0.80</span>
 
-<span class="sd">                   example: minbpnchan=16</span>
-<span class="sd">    hm_nantennas</span>
-<span class="sd">                   The heuristics for determines the number of antennas to use</span>
-<span class="sd">                   in the signal-to-noise estimate. The options are &#39;all&#39; and</span>
-<span class="sd">                   &#39;unflagged&#39;. The &#39;unflagged&#39; options is not currently</span>
-<span class="sd">                   supported.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                   example: hm_nantennas=&#39;unflagged&#39;</span>
-<span class="sd">    maxfracflagged</span>
-<span class="sd">                   The maximum fraction of an antenna that can be flagged before</span>
-<span class="sd">                   it is excluded from the signal-to-noise estimate.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Estimate the phaseup gain time interval and the bandpass frequency</span>
+<span class="sd">        interval required to match the desired signal-to-noise for bandpass</span>
+<span class="sd">        solutions:</span>
 
-<span class="sd">                   example: maxfracflagged=0.80</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Estimate the phaseup gain time interval and the bandpass frequency</span>
-<span class="sd">    interval required to match the desired signal-to-noise for bandpass</span>
-<span class="sd">    solutions:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_bpsolint()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_bpsolint()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,63 +145,44 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hif_makeimages">
 <span class="sig-name descname"><span class="pre">hif_makeimages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_sidelobethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_noisethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_lownoisethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_negativethreshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_minbeamfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_growiterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_dogrowprune</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_minpercentchange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_fastnoise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_perchanweightdensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_npixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cyclefactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_minpsffraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_maxpsffraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cleaning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tlimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drcorrect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masklimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleancontranges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_mosweight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_on_export</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vlass_plane_reject_im</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makeimages.html#hif_makeimages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hif_makeimages" title="Link to this definition"></a></dt>
-<dd><p>hif_makeimages —- Compute clean map</p>
+<dd><p>Compute clean map</p>
 <p>Compute clean results from a list of specified targets.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis                     The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-</dl>
-<p>target_list             Dictionary specifying targets to be imaged; blank will read list from context
-hm_masking              Clean masking mode. Options are ‘centralregion’, ‘auto’,</p>
-<blockquote>
-<div><p>‘manual’ and ‘none’</p>
-</div></blockquote>
-<p>hm_sidelobethreshold    sidelobethreshold * the max sidelobe level
-hm_noisethreshold       noisethreshold * rms in residual image
-hm_lownoisethreshold    lownoisethreshold * rms in residual image
-hm_negativethreshold    negativethreshold * rms in residual image
-hm_minbeamfrac          Minimum beam fraction for pruning
-hm_growiterations       Number of binary dilation iterations for growing the mask
-hm_dogrowprune          Do pruning on the grow mask</p>
-<blockquote>
-<div><p>Defaults to ‘’ to enable the automatic heuristics calculation.
-Can be set to True or False manually.</p>
-</div></blockquote>
-<p>hm_minpercentchange     Mask size change threshold
-hm_fastnoise            Faster noise calculation for automask or nsigma stopping</p>
-<blockquote>
-<div><p>Defaults to ‘’ to enable the automatic heuristics calculation.
-Can be set to True or False manually.</p>
-</div></blockquote>
-<p>hm_nsigma               Multiplicative factor for rms-based threshold stopping
-hm_perchanweightdensity Calculate the weight density for each channel independently</p>
-<blockquote>
-<div><p>Defaults to ‘’ to enable the automatic heuristics calculation.
-Can be set to True or False manually.</p>
-</div></blockquote>
-<p>hm_npixels              Number of pixels to determine uv-cell size for super-uniform weighting
-hm_cyclefactor          Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold
-hm_minpsffraction       PSF fraction that marks the max depth of cleaning in the minor cycle
-hm_maxpsffraction       PSF fraction that marks the minimum depth of cleaning in the minor cycle
-hm_weighting            Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
-hm_cleaning             Pipeline cleaning mode
-tlimit                  Times the sensitivity limit for cleaning
-drcorrect               Override the default heuristics-based DR correction (for ALMA data only)
-masklimit               Times good mask pixels for cleaning
-cleancontranges         Clean continuum frequency ranges in cubes
-calcsb                  Force (re-)calculation of sensitivities and beams
-hm_mosweight            Mosaic weighting</p>
-<blockquote>
-<div><p>Defaults to ‘’ to enable the automatic heuristics calculation.
-Can be set to True or False manually.</p>
-</div></blockquote>
-<dl>
-<dt>overwrite_on_export     Replace existing image products when h/hifa/hifv_exportdata is</dt><dd><p>called.
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>target_list</strong> – Dictionary specifying targets to be imaged; blank will read list from context</p></li>
+<li><p><strong>hm_masking</strong> – Clean masking mode. Options are ‘centralregion’, ‘auto’, ‘manual’ and ‘none’</p></li>
+<li><p><strong>hm_sidelobethreshold</strong> – sidelobethreshold * the max sidelobe level</p></li>
+<li><p><strong>hm_noisethreshold</strong> – noisethreshold * rms in residual image</p></li>
+<li><p><strong>hm_lownoisethreshold</strong> – lownoisethreshold * rms in residual image</p></li>
+<li><p><strong>hm_negativethreshold</strong> – negativethreshold * rms in residual image</p></li>
+<li><p><strong>hm_minbeamfrac</strong> – Minimum beam fraction for pruning</p></li>
+<li><p><strong>hm_growiterations</strong> – Number of binary dilation iterations for growing the mask</p></li>
+<li><p><strong>hm_dogrowprune</strong> – Do pruning on the grow mask. Defaults to ‘’ to enable the automatic heuristics calculation.
+Can be set to True or False manually.</p></li>
+<li><p><strong>hm_minpercentchange</strong> – Mask size change threshold</p></li>
+<li><p><strong>hm_fastnoise</strong> – Faster noise calculation for automask or nsigma stopping. Defaults to ‘’ to enable the automatic heuristics calculation.
+Can be set to True or False manually.</p></li>
+<li><p><strong>hm_nsigma</strong> – Multiplicative factor for rms-based threshold stopping</p></li>
+<li><p><strong>hm_perchanweightdensity</strong> – Calculate the weight density for each channel independently. Defaults to ‘’ to enable the automatic heuristics calculation.
+Can be set to True or False manually.</p></li>
+<li><p><strong>hm_npixels</strong> – Number of pixels to determine uv-cell size for super-uniform weighting</p></li>
+<li><p><strong>hm_cyclefactor</strong> – Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold</p></li>
+<li><p><strong>hm_minpsffraction</strong> – PSF fraction that marks the max depth of cleaning in the minor cycle</p></li>
+<li><p><strong>hm_maxpsffraction</strong> – PSF fraction that marks the minimum depth of cleaning in the minor cycle</p></li>
+<li><p><strong>hm_weighting</strong> – Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</p></li>
+<li><p><strong>hm_cleaning</strong> – Pipeline cleaning mode</p></li>
+<li><p><strong>tlimit</strong> – Times the sensitivity limit for cleaning</p></li>
+<li><p><strong>drcorrect</strong> – Override the default heuristics-based DR correction (for ALMA data only)</p></li>
+<li><p><strong>masklimit</strong> – Times good mask pixels for cleaning</p></li>
+<li><p><strong>cleancontranges</strong> – Clean continuum frequency ranges in cubes</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>hm_mosweight</strong> – Mosaic weighting Defaults to ‘’ to enable the automatic heuristics calculation.
+Can be set to True or False manually.</p></li>
+<li><p><strong>overwrite_on_export</strong> – Replace existing image products when h/hifa/hifv_exportdata is called.
 If False, images that would have the same FITS name on export,
 are amended to include a version number.  For example, if
 oussid.J1248-4559_ph.spw21.mfs.I.pbcor.fits would already be
@@ -213,32 +190,30 @@ exported by a previous call to hif_makeimags, then
 ‘oussid.J1248-4559_ph.spw21.mfs.I.pbcor.v2.fits’ would also be
 exported to the products/ directory. The first exported
 product retains the same name.  Additional products start
-counting with ‘v2’, ‘v3’, etc.</p>
-</dd>
-<dt>vlass_plane_reject_im   Only used for the ‘VLASS-SE-CUBE’ imaging mode. default: True</dt><dd><p>If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
-If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
+counting with ‘v2’, ‘v3’, etc.</p></li>
+<li><p><strong>vlass_plane_reject_im</strong> – Only used for the ‘VLASS-SE-CUBE’ imaging mode.</p>
+<p>Default: True</p>
+<p>If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)</p>
+<p>If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
 If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
-The optional keys could be:
-- exclude_spw, default: ‘’</p>
-<blockquote>
-<div><p>Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.</p>
-</div></blockquote>
+The optional keys could be:</p>
 <ul class="simple">
-<li><dl class="simple">
-<dt>flagpct_thresh, default: 0.8</dt><dd><p>The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.</p>
-</dd>
-</dl>
+<li><p>exclude_spw, default: ‘’
+Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.</p></li>
+<li><p>flagpct_thresh, default: 0.8
+The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.</p></li>
+<li><p>beamdev_thresh: default: 0.2
+Threshold for the fractional beam deviation from the expected value required for the plane rejection.</p></li>
+</ul>
 </li>
-<li><dl class="simple">
-<dt>beamdev_thresh: default: 0.2</dt><dd><p>Threshold for the fractional beam deviation from the expected value required for the plane rejection.</p>
-</dd>
-</dl>
-</li>
+<li><p><strong>parallel</strong> – Clean images using MPI cluster</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
 </dl>
-<p>parallel                Clean images using MPI cluster</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Compute clean results for all imaging targets defined in a previous hif_makeimlist or hif_editimlist call:</p></li>
 </ol>

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.hifv_mstransform">
 <span class="sig-name descname"><span class="pre">hifv_mstransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputvis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputvis_for_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timebin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omit_contline_ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_mstransform.html#hifv_mstransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.hifv_mstransform" title="Link to this definition"></a></dt>
-<dd><p>hifv_mstransform —- Create new MeasurementSets for science target imaging</p>
+<dd><p>Create new MeasurementSets for science target imaging</p>
 <p>Create new MeasurementSets for imaging from the corrected column of the input
 MeasurementSet via calling mstransform with all data selection parameters.
 By default, all science target data is copied to the new MS(s). The
@@ -159,60 +155,50 @@ have the same source, field, and spw names and ids as it does in the parent MS.<
 will end in targets_cont.ms. If there are spws that have been detected or specified as
 spectral line spws in the input MeasurementSet, an MS for science target line imaging
 will also be produced, which will end in _targets.ms.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis                 The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-<dt>outputvis           The list of output transformed MeasurementSets to be used for</dt><dd><p>continuum imaging. The output list must be the same length as the input
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>outputvis</strong> – The list of output transformed MeasurementSets to be used for continuum imaging. The output list must be the same length as the input
 list. The default output name defaults to
-&lt;msrootname&gt;_targets_cont.ms</p>
-<dl class="simple">
-<dt>Examples: ‘ngc5921.ms’,</dt><dd><p>[‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-</dl>
-</dd>
-<dt>outputvis_for_line  The list of output transformed MeasurementSets to be used for</dt><dd><p>line imaging. The output list must be the same length as the input
+&lt;msrootname&gt;_targets_cont.ms
+Examples: ‘ngc5921.ms’,
+[‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>outputvis_for_line</strong> – The list of output transformed MeasurementSets to be used for line imaging. The output list must be the same length as the input
 list. The default output name defaults to
-&lt;msrootname&gt;_targets.ms</p>
-<dl class="simple">
-<dt>Examples: ‘ngc5921.ms’,</dt><dd><p>[‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-</dl>
-</dd>
-<dt>field               Select fields name(s) or id(s) to transform. Only fields with</dt><dd><p>data matching the intent will be selected.</p>
-<p>Examples: ‘3C279’, ‘Centaurus*’, ‘3C279,J1427-421’</p>
-</dd>
-<dt>intent              Select intents for which associated fields will be imaged.</dt><dd><p>By default only TARGET data is selected.</p>
-<p>Examples: ‘PHASE,BANDPASS’</p>
-</dd>
-<dt>spw                 Select spectral window/channels to include for continuum imaging. By default all</dt><dd><p>science spws for which the specified intent is valid are
-selected.</p>
-</dd>
-<dt>spw_line            Select spectral window/channels to include for line imaging.</dt><dd><p>If specified, these will override the default, which
+&lt;msrootname&gt;_targets.ms
+Examples: ‘ngc5921.ms’,
+[‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>field</strong> – Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
+Examples: ‘3C279’, ‘Centaurus*’, ‘3C279,J1427-421’</p></li>
+<li><p><strong>intent</strong> – Select intents for which associated fields will be imaged. By default only TARGET data is selected.
+Examples: ‘PHASE, BANDPASS’</p></li>
+<li><p><strong>spw</strong> – Select spectral window/channels to include for continuum imaging. By default all science spws for which the specified intent is valid are
+selected.</p></li>
+<li><p><strong>spw_line</strong> – Select spectral window/channels to include for line imaging. If specified, these will override the default, which
 is to use the spws identified as specline_windows in hifv_importdata
-or hifv_restoredata.</p>
+or hifv_restoredata.</p></li>
+<li><p><strong>chanbin</strong> – Width (bin) of input channels to average to form an output channel. If chanbin &gt; 1 then chanaverage is automatically
+switched to True.</p></li>
+<li><p><strong>timebin</strong> – Bin width for time averaging. If timebin &gt; 0s then timeaverage is automatically switched to True.</p></li>
+<li><p><strong>omit_contline_ms</strong> – If True, don’t make the contline ms (_targets.ms). Only make cont MS (_targets_cont.ms). Default is False.</p></li>
+</ul>
 </dd>
-<dt>chanbin             Width (bin) of input channels to average to form an output</dt><dd><p>channel. If chanbin &gt; 1 then chanaverage is automatically
-switched to True.</p>
-</dd>
-<dt>timebin             Bin width for time averaging. If timebin &gt; 0s then</dt><dd><p>timeaverage is automatically switched to True.</p>
-</dd>
-<dt>omit_contline_ms    If True, don’t make the contline ms (_targets.ms). Only make</dt><dd><p>cont MS (_targets_cont.ms). Default is False.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Create a science target MS from the corrected column in the input MS.</p></li>
+<li><p>Create a science target MS from the corrected column in the input MS:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_mstransform</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>2. Make a phase and bandpass calibrator targets MS from the corrected
-column in the input MS.</p>
+column in the input MS:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_mstransform</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE,BANDPASS&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

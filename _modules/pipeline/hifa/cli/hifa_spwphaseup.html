@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -151,9 +147,7 @@
                     <span class="n">minfracmaxbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">samebb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasesnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bwedgefrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">unregister_existing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_spwphaseup ---- Compute phase calibration spw map and per spw phase offsets</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute phase calibration spw map and per spw phase offsets</span>
 
 <span class="sd">    The spw map for phase calibration is computed. Phase offsets as a function of</span>
 <span class="sd">    spectral window are computed using high signal-to-noise calibration observations.</span>
@@ -222,116 +216,96 @@
 <span class="sd">    on a per-spw basis does not reach specific thresholds, then issue a warning and reduced</span>
 <span class="sd">    QA score, with thresholds at ``phasesnr`` *0.75 (blue), *0.5 (yellow) and *0.33 (red).</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: The list of output calibration tables. Defaults to the standard</span>
+<span class="sd">            pipeline naming convention.</span>
+<span class="sd">            Example: caltable=[&#39;M82.gcal&#39;, &#39;M82B.gcal&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        field: The list of field names or field ids for which phase offset solutions</span>
+<span class="sd">            are to be computed. Defaults to all fields with the default intent.</span>
+<span class="sd">            Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                        The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                        MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
+<span class="sd">            which the selected fields are matched. Defaults to the BANDPASS</span>
+<span class="sd">            observations.</span>
+<span class="sd">            Example: intent=&#39;PHASE&#39;</span>
 
-<span class="sd">                        Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
-<span class="sd">    caltable</span>
-<span class="sd">                        The list of output calibration tables. Defaults to the standard</span>
-<span class="sd">                        pipeline naming convention.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which gain solutions are</span>
+<span class="sd">            computed. Defaults to all the science spectral windows.</span>
+<span class="sd">            Example: spw=&#39;13,15&#39;</span>
 
-<span class="sd">                        Example: caltable=[&#39;M82.gcal&#39;, &#39;M82B.gcal&#39;]</span>
-<span class="sd">    field</span>
-<span class="sd">                        The list of field names or field ids for which phase offset solutions</span>
-<span class="sd">                        are to be computed. Defaults to all fields with the default intent.</span>
+<span class="sd">        hm_spwmapmode: The spectral window mapping mode. The options are: &#39;auto&#39;,</span>
+<span class="sd">            &#39;combine&#39;, &#39;simple&#39;, and &#39;default&#39;. In &#39;auto&#39; mode hifa_spwphaseup</span>
+<span class="sd">            estimates the SNR of the phase calibrator observations and uses these</span>
+<span class="sd">            estimates to choose between &#39;combine&#39; mode (low SNR) and &#39;default&#39; mode</span>
+<span class="sd">            (high SNR). In combine mode all spectral windows are combined and mapped to</span>
+<span class="sd">            one spectral window. In &#39;simple&#39; mode narrow spectral windows are mapped to</span>
+<span class="sd">            wider ones using an algorithm defined by &#39;maxnarrowbw&#39;, &#39;minfracmaxbw&#39;, and</span>
+<span class="sd">            &#39;samebb&#39;. In &#39;default&#39; mode the spectral window map defaults to the</span>
+<span class="sd">            standard one to one mapping.</span>
+<span class="sd">            Example: hm_spwmapmode=&#39;combine&#39;</span>
 
-<span class="sd">                        Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
-<span class="sd">    intent</span>
-<span class="sd">                        A string containing a comma delimited list of intents against</span>
-<span class="sd">                        which the selected fields are matched. Defaults to the BANDPASS</span>
-<span class="sd">                        observations.</span>
+<span class="sd">        maxnarrowbw: The maximum bandwidth defining narrow spectral windows. Values</span>
+<span class="sd">            must be in CASA compatible frequency units.</span>
+<span class="sd">            Example: maxnarrowbw=&#39;&#39;</span>
 
-<span class="sd">                        Example: intent=&#39;PHASE&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                        The list of spectral windows and channels for which gain solutions are</span>
-<span class="sd">                        computed. Defaults to all the science spectral windows.</span>
+<span class="sd">        minfracmaxbw: The minimum fraction of the maximum bandwidth in the set of</span>
+<span class="sd">            spws to use for matching.</span>
+<span class="sd">            Example: minfracmaxbw=0.75</span>
 
-<span class="sd">                        Example: spw=&#39;13,15&#39;</span>
-<span class="sd">    hm_spwmapmode</span>
-<span class="sd">                        The spectral window mapping mode. The options are: &#39;auto&#39;,</span>
-<span class="sd">                        &#39;combine&#39;, &#39;simple&#39;, and &#39;default&#39;. In &#39;auto&#39; mode hifa_spwphaseup</span>
-<span class="sd">                        estimates the SNR of the phase calibrator observations and uses these</span>
-<span class="sd">                        estimates to choose between &#39;combine&#39; mode (low SNR) and &#39;default&#39; mode</span>
-<span class="sd">                        (high SNR). In combine mode all spectral windows are combined and mapped to</span>
-<span class="sd">                        one spectral window. In &#39;simple&#39; mode narrow spectral windows are mapped to</span>
-<span class="sd">                        wider ones using an algorithm defined by &#39;maxnarrowbw&#39;, &#39;minfracmaxbw&#39;, and</span>
-<span class="sd">                        &#39;samebb&#39;. In &#39;default&#39; mode the spectral window map defaults to the</span>
-<span class="sd">                        standard one to one mapping.</span>
+<span class="sd">        samebb: Match within the same baseband if possible.</span>
+<span class="sd">            Example: samebb=False</span>
 
-<span class="sd">                        Example: hm_spwmapmode=&#39;combine&#39;</span>
-<span class="sd">    maxnarrowbw</span>
-<span class="sd">                        The maximum bandwidth defining narrow spectral windows. Values</span>
-<span class="sd">                        must be in CASA compatible frequency units.</span>
+<span class="sd">        phasesnr: The required gaincal solution signal-to-noise.</span>
+<span class="sd">            Example: phaseupsnr=20.0</span>
 
-<span class="sd">                        Example: maxnarrowbw=&#39;&#39;</span>
-<span class="sd">    minfracmaxbw</span>
-<span class="sd">                        The minimum fraction of the maximum bandwidth in the set of</span>
-<span class="sd">                        spws to use for matching.</span>
+<span class="sd">        bwedgefrac: The fraction of the bandwidth edges that is flagged.</span>
+<span class="sd">            Example: bwedgefrac=0.0</span>
 
-<span class="sd">                        Example: minfracmaxbw=0.75</span>
-<span class="sd">    samebb</span>
-<span class="sd">                        Match within the same baseband if possible.</span>
+<span class="sd">        hm_nantennas: The heuristics for determines the number of antennas to use</span>
+<span class="sd">            in the signal-to-noise estimate. The options are &#39;all&#39; and &#39;unflagged&#39;.</span>
+<span class="sd">            The &#39;unflagged&#39; options is not currently supported.</span>
+<span class="sd">            Example: hm_nantennas=&#39;unflagged&#39;</span>
 
-<span class="sd">                        Example: samebb=False</span>
-<span class="sd">    phasesnr</span>
-<span class="sd">                        The required gaincal solution signal-to-noise.</span>
+<span class="sd">        maxfracflagged: The maximum fraction of an antenna that can be flagged</span>
+<span class="sd">            before it is excluded from the signal-to-noise estimate.</span>
+<span class="sd">            Example: maxfracflagged=0.80</span>
 
-<span class="sd">                        Example: phaseupsnr=20.0</span>
-<span class="sd">    bwedgefrac</span>
-<span class="sd">                        The fraction of the bandwidth edges that is flagged.</span>
+<span class="sd">        combine: Data axes to combine for solving. Options are &#39;&#39;, &#39;scan&#39;, &#39;spw&#39;,</span>
+<span class="sd">            &#39;field&#39; or any comma-separated combination.</span>
+<span class="sd">            Example: combine=&#39;&#39;</span>
 
-<span class="sd">                        Example: bwedgefrac=0.0</span>
-<span class="sd">    hm_nantennas</span>
-<span class="sd">                        The heuristics for determines the number of antennas to use</span>
-<span class="sd">                        in the signal-to-noise estimate. The options are &#39;all&#39; and &#39;unflagged&#39;.</span>
-<span class="sd">                        The &#39;unflagged&#39; options is not currently supported.</span>
+<span class="sd">        refant: Reference antenna name(s) in priority order. Defaults to most recent</span>
+<span class="sd">            values set in the pipeline context.  If no reference antenna is defined in</span>
+<span class="sd">            the pipeline context the CASA defaults are used.</span>
+<span class="sd">            Example: refant=&#39;DV01&#39;, refant=&#39;DV05,DV07&#39;</span>
 
-<span class="sd">                        Example: hm_nantennas=&#39;unflagged&#39;</span>
-<span class="sd">    maxfracflagged</span>
-<span class="sd">                        The maximum fraction of an antenna that can be flagged</span>
-<span class="sd">                        before it is excluded from the signal-to-noise estimate.</span>
+<span class="sd">        minblperant: Minimum number of baselines required per antenna for each solve.</span>
+<span class="sd">            Antennas with fewer baselines are excluded from solutions.</span>
+<span class="sd">            Example: minblperant=2</span>
 
-<span class="sd">                        Example: maxfracflagged=0.80</span>
-<span class="sd">    combine</span>
-<span class="sd">                        Data axes to combine for solving. Options are &#39;&#39;, &#39;scan&#39;, &#39;spw&#39;,</span>
-<span class="sd">                        &#39;field&#39; or any comma-separated combination.</span>
+<span class="sd">        minsnr: Solutions below this SNR are rejected.</span>
 
-<span class="sd">                        Example: combine=&#39;&#39;</span>
-<span class="sd">    refant</span>
-<span class="sd">                        Reference antenna name(s) in priority order. Defaults to most recent</span>
-<span class="sd">                        values set in the pipeline context.  If no reference antenna is defined in</span>
-<span class="sd">                        the pipeline context the CASA defaults are used.</span>
+<span class="sd">        unregister_existing: Unregister previous spwphaseup calibrations from the pipeline context</span>
+<span class="sd">            before registering the new calibrations from this task.</span>
 
-<span class="sd">                        Example: refant=&#39;DV01&#39;, refant=&#39;DV05,DV07&#39;</span>
-<span class="sd">    minblperant</span>
-<span class="sd">                        Minimum number of baselines required per antenna for each solve.</span>
-<span class="sd">                        Antennas with fewer baselines are excluded from solutions.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                        Example: minblperant=2</span>
-<span class="sd">    minsnr</span>
-<span class="sd">                        Solutions below this SNR are rejected.</span>
-<span class="sd">    unregister_existing</span>
-<span class="sd">                        Unregister previous spwphaseup calibrations from the pipeline context</span>
-<span class="sd">                        before registering the new calibrations from this task.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Compute the default spectral window map and the per spectral window phase</span>
+<span class="sd">        offsets:</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        &gt;&gt;&gt; hifa_spwphaseup()</span>
 
-<span class="sd">    1. Compute the default spectral window map and the per spectral window phase</span>
-<span class="sd">    offsets:</span>
+<span class="sd">        2. Compute the default spectral window map and the per spectral window phase</span>
+<span class="sd">        offsets set the spectral window mapping mode to &#39;simple&#39;:</span>
 
-<span class="sd">    &gt;&gt;&gt; hifa_spwphaseup()</span>
-
-<span class="sd">    2. Compute the default spectral window map and the per spectral window phase</span>
-<span class="sd">    offsets set the spectral window mapping mode to &#39;simple&#39;:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_spwphaseup(hm_spwmapmode=&#39;simple&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hifa_spwphaseup(hm_spwmapmode=&#39;simple&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

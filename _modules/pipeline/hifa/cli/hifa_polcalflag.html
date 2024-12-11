@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,32 +144,25 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.hifa_polcalflag.html#pipeline.cli.hifa_polcalflag">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_polcalflag</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_polcalflag ---- Flag polarization calibrators</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag polarization calibrators</span>
 
 <span class="sd">    This task flags corrected visibility outliers in the polarization calibrator</span>
 <span class="sd">    data using the hif_correctedampflag heuristics.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Run with recommended settings to flag visibility outliers in the</span>
+<span class="sd">        polarization calibrator data:</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                  The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                  MeasurementSets specified in the h_init or hif_importdata task.</span>
-<span class="sd">                  &#39;&#39;: use all MeasurementSets in the context</span>
-
-<span class="sd">                  Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Run with recommended settings to flag visibility outliers in the</span>
-<span class="sd">    polarization calibrator data:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_polcalflag()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_polcalflag()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

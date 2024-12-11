@@ -92,10 +92,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -182,99 +178,85 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_editimlist">
 <span class="sig-name descname"><span class="pre">hif_editimlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imagename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_radius_arcsec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfcache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjbeams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cyclefactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleniter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmajor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deconvolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imaging_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nterms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pblimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scales</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vlass_plane_reject_ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_editimlist.html#hif_editimlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_editimlist" title="Link to this definition"></a></dt>
-<dd><p>hif_editimlist —- Add to a list of images to be produced with hif_makeimages()</p>
+<dd><p>Add to a list of images to be produced with hif_makeimages()</p>
 <p>Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.
 Many of the hif_editimlist() inputs map directly to tclean parameters.</p>
 <p>The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>imagename              Prefix for output image names.
-search_radius_arcsec   Size of the field finding beam search radius in arcsec.
-cell                   Image X and Y cell size(s) with units or pixels per beam.</p>
-<blockquote>
-<div><p>Single value same for both. ‘&lt;number&gt;ppb’ for pixels per beam.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>imagename</strong> – Prefix for output image names.</p></li>
+<li><p><strong>search_radius_arcsec</strong> – Size of the field finding beam search radius in arcsec.</p></li>
+<li><p><strong>cell</strong> – Image X and Y cell size(s) with units or pixels per beam. Single value same for both. ‘&lt;number&gt;ppb’ for pixels per beam.
 Compute cell size based on the UV coverage of all the fields
 to be imaged and use a 5 pix per beam sampling.
 The pix per beam specification uses the above default cell size
 (‘5ppb’) and scales it accordingly.
-example: [‘0.5arcsec’, ‘0.5arcsec’] ‘3ppb’</p>
-</div></blockquote>
-<p>cfcache                Convolution function cache directory name
-conjbeams              Use conjugate frequency in tclean for wideband A-terms.
-cyclefactor            Controls the depth of clean in minor cycles based on PSF.
-cycleniter             Controls max number of minor cycle iterations in a single major cycle.
-nmajor                 Controls the maximum number of major cycles to evaluate.
-datatype               Data type(s) to image. The default ‘’ selects the best</p>
-<blockquote>
-<div><p>available data type (e.g. selfcal over regcal) with
+example: [‘0.5arcsec’, ‘0.5arcsec’] ‘3ppb’</p></li>
+<li><p><strong>cfcache</strong> – Convolution function cache directory name</p></li>
+<li><p><strong>conjbeams</strong> – Use conjugate frequency in tclean for wideband A-terms.</p></li>
+<li><p><strong>cyclefactor</strong> – Controls the depth of clean in minor cycles based on PSF.</p></li>
+<li><p><strong>cycleniter</strong> – Controls max number of minor cycle iterations in a single major cycle.</p></li>
+<li><p><strong>nmajor</strong> – Controls the maximum number of major cycles to evaluate.</p></li>
+<li><p><strong>datatype</strong> – Data type(s) to image. The default ‘’ selects the best available data type (e.g. selfcal over regcal) with
 an automatic fallback to the next available data type.
 With the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter of ‘regcal’ or ‘selfcal’, one
 can force the use of only given data type(s).
 Note that this parameter is only for non-VLASS data when the datacolumn
-is not explictly set by user or imaging heuristics.</p>
-</div></blockquote>
-<p>datacolumn             Data column to image; this will take precedence over the datatype parameter.
-deconvolver            Minor cycle algorithm (multiscale or mtmfs)
-editmode               The edit mode of the task (‘add’ or ‘replace’). Defaults to ‘add’.
-field                  Set of data selection field names or ids.
-imaging_mode           Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.
-imsize                 Image X and Y size(s) in pixels or PB level (single fields), ‘’ for default. Single value same for both. ‘&lt;number&gt;pb’ for PB level.
-intent                 Set of data selection intents
-gridder                Name of the gridder to use with tclean
-mask                   Used to declare whether to use a predefined mask for tclean.
-pbmask                 Used to declare primary beam gain level for cleaning with primary beam mask (usemask=’pb’), used only for VLASS-SE-CONT imaging mode.
-nbin                   Channel binning factor.
-nchan                  Number of channels, -1 = all
-niter                  The max total number of minor cycle iterations allowed for tclean
-nterms                 Number of Taylor coefficients in the spectral model
-parameter_file         keyword=value text file as alternative method of input parameters
-pblimit                PB gain level at which to cut off normalizations
-phasecenter            The default phase center is set to the mean of the field</p>
-<blockquote>
-<div><p>directions of all fields that are to be image together.
-example: 0, ‘J2000 19h30m00 -40d00m00’</p>
-</div></blockquote>
-<p>reffreq                Reference frequency of the output image coordinate system
-restfreq               List of rest frequencies or a rest frequency in a string for output image.
-robust                 Briggs robustness parameter for tclean
-scales                 The scales for multi-scale imaging.
-specmode               Spectral gridding type (mfs, cont, cube, ‘’ for default)
-spw                    Set of data selection spectral window/channels, ‘’ for all
-start                  First channel for frequency mode images.</p>
-<blockquote>
-<div><p>Starts at first input channel of the spw.
-example: ‘22.3GHz’</p>
-</div></blockquote>
-<p>stokes                 Stokes Planes to make
-sensitivity            Theoretical sensitivity (override internal calculation)
-threshold              Stopping threshold (number in units of Jy, or string)
-nsigma                 Multiplicative factor for rms-based threshold stopping
-uvtaper                Used to set a uv-taper during clean.
-uvrange                Set of data selection uv ranges, ‘’ for all.
-width                  Channel width
-vlass_plane_reject_ms  Only used for the ‘VLASS-SE-CUBE’ imaging mode. default: True</p>
-<blockquote>
-<div><p>If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)
+is not explictly set by user or imaging heuristics.</p></li>
+<li><p><strong>datacolumn</strong> – Data column to image; this will take precedence over the datatype parameter.</p></li>
+<li><p><strong>deconvolver</strong> – Minor cycle algorithm (multiscale or mtmfs)</p></li>
+<li><p><strong>editmode</strong> – The edit mode of the task (‘add’ or ‘replace’). Defaults to ‘add’.</p></li>
+<li><p><strong>field</strong> – Set of data selection field names or ids.</p></li>
+<li><p><strong>imaging_mode</strong> – Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</p></li>
+<li><p><strong>imsize</strong> – Image X and Y size(s) in pixels or PB level (single fields), ‘’ for default. Single value same for both. ‘&lt;number&gt;pb’ for PB level.</p></li>
+<li><p><strong>intent</strong> – Set of data selection intents</p></li>
+<li><p><strong>gridder</strong> – Name of the gridder to use with tclean</p></li>
+<li><p><strong>mask</strong> – Used to declare whether to use a predefined mask for tclean.</p></li>
+<li><p><strong>pbmask</strong> – Used to declare primary beam gain level for cleaning with primary beam mask (usemask=’pb’), used only for VLASS-SE-CONT imaging mode.</p></li>
+<li><p><strong>nbin</strong> – Channel binning factor.</p></li>
+<li><p><strong>nchan</strong> – Number of channels, -1 = all</p></li>
+<li><p><strong>niter</strong> – The max total number of minor cycle iterations allowed for tclean</p></li>
+<li><p><strong>nterms</strong> – Number of Taylor coefficients in the spectral model</p></li>
+<li><p><strong>parameter_file</strong> – keyword=value text file as alternative method of input parameters</p></li>
+<li><p><strong>pblimit</strong> – PB gain level at which to cut off normalizations</p></li>
+<li><p><strong>phasecenter</strong> – The default phase center is set to the mean of the field directions of all fields that are to be image together.
+example: 0, ‘J2000 19h30m00 -40d00m00’</p></li>
+<li><p><strong>reffreq</strong> – Reference frequency of the output image coordinate system</p></li>
+<li><p><strong>restfreq</strong> – List of rest frequencies or a rest frequency in a string for output image.</p></li>
+<li><p><strong>robust</strong> – Briggs robustness parameter for tclean</p></li>
+<li><p><strong>scales</strong> – The scales for multi-scale imaging.</p></li>
+<li><p><strong>specmode</strong> – Spectral gridding type (mfs, cont, cube, ‘’ for default)</p></li>
+<li><p><strong>spw</strong> – Set of data selection spectral window/channels, ‘’ for all</p></li>
+<li><p><strong>start</strong> – First channel for frequency mode images. Starts at first input channel of the spw.
+example: ‘22.3GHz’</p></li>
+<li><p><strong>stokes</strong> – Stokes Planes to make</p></li>
+<li><p><strong>sensitivity</strong> – Theoretical sensitivity (override internal calculation)</p></li>
+<li><p><strong>threshold</strong> – Stopping threshold (number in units of Jy, or string)</p></li>
+<li><p><strong>nsigma</strong> – Multiplicative factor for rms-based threshold stopping</p></li>
+<li><p><strong>uvtaper</strong> – Used to set a uv-taper during clean.</p></li>
+<li><p><strong>uvrange</strong> – Set of data selection uv ranges, ‘’ for all.</p></li>
+<li><p><strong>width</strong> – Channel width</p></li>
+<li><p><strong>vlass_plane_reject_ms</strong> – Only used for the ‘VLASS-SE-CUBE’ imaging mode. default: True If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)
 If False, do not perform flagging-based VLASS Coarse Cube plane rejection.
 If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
-The optional keys are:
-- exclude_spw, default: ‘’</p>
-<blockquote>
-<div><p>Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.</p>
-</div></blockquote>
-<ul class="simple">
-<li><dl class="simple">
-<dt>flagpct_thresh, default: 0.9</dt><dd><p>Flagging percentage threshold per field for the plane rejection.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>nfield_thresh: default: 12</dt><dd><p>A minimal number of fields above the flagging percentage threshold is required for the plane rejection.</p>
-</dd>
-</dl>
+The optional keys are:</p>
+<ul>
+<li><p>exclude_spw, default: ‘’
+Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.</p></li>
+<li><p>flagpct_thresh, default: 0.9
+Flagging percentage threshold per field for the plane rejection.</p></li>
+<li><p>nfield_thresh: default: 12
+A minimal number of fields above the flagging percentage threshold is required for the plane rejection.</p></li>
+</ul>
 </li>
 </ul>
-</div></blockquote>
-<p>——— examples ———————————————————–</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p>Examples:</p>
 </dd></dl>
 
 </section>

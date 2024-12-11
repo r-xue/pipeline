@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,28 +145,30 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifatargets.hifv_syspower">
 <span class="sig-name descname"><span class="pre">hifv_syspower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_sp_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antexclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_not_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_syspower.html#hifv_syspower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifatargets.hifv_syspower" title="Link to this definition"></a></dt>
-<dd><p>hifv_syspower —- Determine amount of gain compression affecting VLA data below Ku-band</p>
-<p>Determine amount of gain compression affecting VLA data below Ku-band</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>vis              List of input visibility data
-clip_sp_template Acceptable range for Pdiff data; data are clipped outside this range and flagged
-antexclude       dictionary in the format of:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>{‘L’: {‘ea02’: {‘usemedian’: True}, ‘ea03’: {‘usemedian’: False}},</dt><dd><p>‘X’: {‘ea02’: {‘usemedian’: True}, ‘ea03’: {‘usemedian’: False}},
+<dd><p>Determine amount of gain compression affecting VLA data below Ku-band.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>vis</strong> – List of input visibility data.</p></li>
+<li><p><strong>clip_sp_template</strong> – Acceptable range for Pdiff data; data are clipped outside this range and flagged.</p></li>
+<li><p><strong>antexclude</strong> – dictionary in the format of:</p>
+<p>{‘L’: {‘ea02’: {‘usemedian’: True}, ‘ea03’: {‘usemedian’: False}},
+‘X’: {‘ea02’: {‘usemedian’: True}, ‘ea03’: {‘usemedian’: False}},
 ‘S’: {‘ea12’: {‘usemedian’: False}, ‘ea22’: {‘usemedian’: False}}}</p>
-</dd>
-</dl>
 <p>If antexclude is specified with ‘usemedian’: False, the template values are replaced with 1.0.
 If ‘usemedian’: True, the template values are replaced with the median of the good antennas.</p>
-</div></blockquote>
-<p>apply            Apply task results to RQ table
-do_not_apply     csv string of band names to not apply. Example: ‘L,X,S’</p>
-<p>——— examples ———————————————————–</p>
+</li>
+<li><p><strong>apply</strong> – Apply task results to RQ table.</p></li>
+<li><p><strong>do_not_apply</strong> – csv string of band names to not apply. Example: ‘L,X,S’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Basic syspower task</p></li>
+<li><p>Basic syspower task:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_syspower</span><span class="p">()</span>
 </pre></div>

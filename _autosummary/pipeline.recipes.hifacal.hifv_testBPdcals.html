@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,28 +145,24 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hifv_testBPdcals">
 <span class="sig-name descname"><span class="pre">hifv_testBPdcals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weakbp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doflagundernspwlimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_testBPdcals.html#hifv_testBPdcals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hifv_testBPdcals" title="Link to this definition"></a></dt>
-<dd><p>hifv_testBPdcals —- Runs initial delay and bandpass calibration to setup for RFI flagging</p>
-<p>Runs initial delay and bandpass calibration to setup for RFI flagging</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.
-——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis                  The list of input MeasurementSets. Defaults to the list of MeasurementSets</dt><dd><p>specified in the h_init or hifv_importdata task.</p>
+<dd><p>Runs initial delay and bandpass calibration to setup for RFI flagging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>weakbp</strong> – Activate weak bandpass heuristics.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore Example:  refantignore=’ea02, ea03’</p></li>
+<li><p><strong>doflagundernspwlimit</strong> – If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>. Example: refant = ‘ea01, ea02’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>weakbp               Activate weak bandpass heuristics
-refantignore         String list of antennas to ignore</p>
-<blockquote>
-<div><p>Example:  refantignore=’ea02,ea03’</p>
-</div></blockquote>
-<p>doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
-refant               A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</p>
-<blockquote>
-<div><p>Example: refant = ‘ea01, ea02’</p>
-</div></blockquote>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Initial delay calibration to set up heuristic flagging.</p></li>
+<li><p>Initial delay calibration to set up heuristic flagging:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_testBPdcals</span><span class="p">()</span>
 </pre></div>

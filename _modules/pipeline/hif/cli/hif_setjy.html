@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -151,85 +147,66 @@
               <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normfluxes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">spix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scalebychan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">standard</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_setjy ---- Fill the model column with calibrated visibilities</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fill the model column with calibrated visibilities</span>
 
 <span class="sd">    Fills the model column with the model visibilities.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</span>
 
-<span class="sd">    Output</span>
+<span class="sd">        field: The list of field names or field ids for which the models are to be set. Defaults to all fields with intent &#39;`*AMPLITUDE*`&#39;.</span>
+<span class="sd">            example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to all data</span>
+<span class="sd">            with amplitude intent.</span>
+<span class="sd">            example: intent=&#39;`*AMPLITUDE*`&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        spw: The list of spectral windows and channels for which bandpasses are computed. Defaults to all science spectral windows.</span>
+<span class="sd">            example: spw=&#39;11,13,15,17&#39;</span>
 
-<span class="sd">    vis           The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                  MeasurementSets defined in the pipeline context.</span>
-<span class="sd">    field         The list of field names or field ids for which the models are</span>
-<span class="sd">                  to be set. Defaults to all fields with intent &#39;`*AMPLITUDE*`&#39;.</span>
+<span class="sd">        model: Model image for setting model visibilities. Not fully supported.</span>
+<span class="sd">            example: see details in help for CASA setjy task</span>
 
-<span class="sd">                  example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
-<span class="sd">    intent        A string containing a comma delimited list of intents against</span>
-<span class="sd">                  which the selected fields are matched. Defaults to all data</span>
-<span class="sd">                  with amplitude intent.</span>
+<span class="sd">        reffile: Path to a file containing flux densities for calibrators unknown to CASA. Values given in this file take precedence over the CASA-derived</span>
+<span class="sd">            values for all calibrators except solar system calibrators. By default the</span>
+<span class="sd">            path is set to the CSV file created by h_importdata, consisting of</span>
+<span class="sd">            catalogue fluxes extracted from the ASDM.</span>
+<span class="sd">            example: reffile=&#39;&#39;, reffile=&#39;working/flux.csv&#39;</span>
 
-<span class="sd">                  example: intent=&#39;`*AMPLITUDE*`&#39;</span>
-<span class="sd">    spw           The list of spectral windows and channels for which bandpasses are</span>
-<span class="sd">                  computed. Defaults to all science spectral windows.</span>
+<span class="sd">        normfluxes: Normalize lookup fluxes.</span>
 
-<span class="sd">                  example: spw=&#39;11,13,15,17&#39;</span>
-<span class="sd">    model         Model image for setting model visibilities. Not fully</span>
-<span class="sd">                  supported.</span>
+<span class="sd">        reffreq: The reference frequency for spix, given with units. Provided to avoid division by zero. If the flux density is being scaled by spectral</span>
+<span class="sd">            index, then reffreq must be set to whatever reference frequency is correct</span>
+<span class="sd">            for the given fluxdensity and spix. It cannot be determined from vis. On</span>
+<span class="sd">            the other hand, if spix is 0, then any positive frequency can be used and</span>
+<span class="sd">            will be ignored.</span>
+<span class="sd">            example: reffreq=&#39;86.0GHz&#39;, reffreq=&#39;4.65e9Hz&#39;</span>
 
-<span class="sd">                  example: see details in help for CASA setjy task</span>
-<span class="sd">    reffile       Path to a file containing flux densities for calibrators unknown to</span>
-<span class="sd">                  CASA. Values given in this file take precedence over the CASA-derived</span>
-<span class="sd">                  values for all calibrators except solar system calibrators. By default the</span>
-<span class="sd">                  path is set to the CSV file created by h_importdata, consisting of</span>
-<span class="sd">                  catalogue fluxes extracted from the ASDM.</span>
+<span class="sd">        fluxdensity: Specified flux density [I,Q,U,V] in Jy. Uses [1,0,0,0] flux density for unrecognized sources, and standard flux densities for</span>
+<span class="sd">            ones recognized by &#39;standard&#39;, including 3C286, 3C48, 3C147, and several</span>
+<span class="sd">            planets, moons, and asteroids.</span>
+<span class="sd">            example: [3.06,0.0,0.0,0.0]</span>
 
-<span class="sd">                  example: reffile=&#39;&#39;, reffile=&#39;working/flux.csv&#39;</span>
-<span class="sd">    normfluxes    Normalize lookup fluxes.</span>
-<span class="sd">    reffreq       The reference frequency for spix, given with units. Provided to</span>
-<span class="sd">                  avoid division by zero. If the flux density is being scaled by spectral</span>
-<span class="sd">                  index, then reffreq must be set to whatever reference frequency is correct</span>
-<span class="sd">                  for the given fluxdensity and spix. It cannot be determined from vis. On</span>
-<span class="sd">                  the other hand, if spix is 0, then any positive frequency can be used and</span>
-<span class="sd">                  will be ignored.</span>
+<span class="sd">        spix: Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix Only used if fluxdensity is being used. If fluxdensity is positive, and</span>
+<span class="sd">            spix is nonzero, then reffreq must be set too. It is applied in the same</span>
+<span class="sd">            way to all polarizations, and does not account for Faraday rotation or</span>
+<span class="sd">            depolarization.</span>
 
-<span class="sd">                  example: reffreq=&#39;86.0GHz&#39;, reffreq=&#39;4.65e9Hz&#39;</span>
-<span class="sd">    fluxdensity   Specified flux density [I,Q,U,V] in Jy. Uses [1,0,0,0]</span>
-<span class="sd">                  flux density for unrecognized sources, and standard flux densities for</span>
-<span class="sd">                  ones recognized by &#39;standard&#39;, including 3C286, 3C48, 3C147, and several</span>
-<span class="sd">                  planets, moons, and asteroids.</span>
+<span class="sd">        scalebychan: This determines whether the fluxdensity set in the model is calculated on a per channel basis. If False then only one fluxdensity</span>
+<span class="sd">            value is calculated per spw.</span>
 
-<span class="sd">                  example: [3.06,0.0,0.0,0.0]</span>
-<span class="sd">    spix          Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix</span>
-<span class="sd">                  Only used if fluxdensity is being used. If fluxdensity is positive, and</span>
-<span class="sd">                  spix is nonzero, then reffreq must be set too. It is applied in the same</span>
-<span class="sd">                  way to all polarizations, and does not account for Faraday rotation or</span>
-<span class="sd">                  depolarization.</span>
-<span class="sd">    scalebychan   This determines whether the fluxdensity set in the model is</span>
-<span class="sd">                  calculated on a per channel basis. If False then only one fluxdensity</span>
-<span class="sd">                  value is calculated per spw.</span>
-<span class="sd">    standard      Flux density standard, used if fluxdensity[0] less than 0.0. The</span>
-<span class="sd">                  options are: &#39;Baars&#39;,&#39;Perley 90&#39;,&#39;Perley-Taylor 95&#39;, &#39;Perley-Taylor 99&#39;,</span>
-<span class="sd">                  &#39;Perley-Butler 2010&#39; and &#39;Butler-JPL-Horizons 2010&#39;.</span>
+<span class="sd">        standard: Flux density standard, used if fluxdensity[0] less than 0.0. The options are: &#39;Baars&#39;,&#39;Perley 90&#39;,&#39;Perley-Taylor 95&#39;, &#39;Perley-Taylor 99&#39;,</span>
+<span class="sd">            &#39;Perley-Butler 2010&#39; and &#39;Butler-JPL-Horizons 2010&#39;.</span>
+<span class="sd">            default: &#39;Butler-JPL-Horizons 2012&#39; for solar system object</span>
+<span class="sd">            &#39;Perley-Butler 2010&#39; otherwise</span>
 
-<span class="sd">                  default: &#39;Butler-JPL-Horizons 2012&#39; for solar system object</span>
-<span class="sd">                                           &#39;Perley-Butler 2010&#39; otherwise</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Set the model flux densities for all the amplitude calibrators:</span>
 
-
-<span class="sd">    1. Set the model flux densities for all the amplitude calibrators:</span>
-
-<span class="sd">    &gt;&gt;&gt; hif_setjy()</span>
-
-<span class="sd">    --------- issues -----------------------------------------------------------</span>
-
-<span class="sd">    Support for the setjy spix parameter needs to be added.</span>
+<span class="sd">        &gt;&gt;&gt; hif_setjy()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

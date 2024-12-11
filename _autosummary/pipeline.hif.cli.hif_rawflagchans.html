@@ -92,10 +92,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -182,7 +178,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_rawflagchans">
 <span class="sig-name descname"><span class="pre">hif_rawflagchans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_hilo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhl_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhl_minsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_bad_quadrant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_hilo_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_antenna_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_baseline_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_rawflagchans.html#hif_rawflagchans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_rawflagchans" title="Link to this definition"></a></dt>
-<dd><p>hif_rawflagchans —- Flag deviant baseline/channels in raw data</p>
+<dd><p>Flag deviant baseline/channels in raw data</p>
 <p>hif_rawflagchans flags deviant baseline/channels in the raw data.</p>
 <p>The flagging views used are derived from the raw data for the specified
 intent - default is BANDPASS.</p>
@@ -210,47 +206,39 @@ Failing that, entire baseline/quadrants may be flagged if their
 fraction of suspect points exceeds <code class="docutils literal notranslate"><span class="pre">fbq_baseline_frac_limit</span></code>.
 Suspect points are not flagged unless as part of a bad antenna or
 baseline quadrant.</p>
-<p>Output</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>vis                     List of input MeasurementSets.</p>
-<blockquote>
-<div><p>default: [] - Use the MeasurementSets currently known to the pipeline
-context.</p>
-</div></blockquote>
-<dl>
-<dt>spw                     The list of spectral windows and channels to which the calibration</dt><dd><p>will be applied. Defaults to all science windows in the pipeline
-context.</p>
-<p>example: spw=’17’, spw=’11, 15’</p>
-</dd>
-<dt>intent                  A string containing the list of intents to be checked for antennas</dt><dd><p>with deviant gains. The default is blank, which causes the task to select
-the ‘BANDPASS’ intent.</p>
-<p>example: intent=’<cite>*BANDPASS*</cite>’</p>
-</dd>
-<dt>flag_hilo               True to flag channel/baseline data further from the view</dt><dd><p>median than fhl_limit * MAD.</p>
-</dd>
-<dt>fhl_limit               If flag_hilo is True then flag channel/baseline data</dt><dd><p>further from the view median than fhl_limit * MAD.</p>
-</dd>
-<dt>fhl_minsample           Do no flagging if the view median and MAD are derived</dt><dd><p>from fewer than fhl_minsample view pixels.</p>
-</dd>
-<dt>flag_bad_quadrant       True to search for and flag bad antenna quadrants</dt><dd><p>and baseline quadrants. Here a /’quadrant/’ is one
-quarter of the channel axis.</p>
-</dd>
-<dt>fbq_hilo_limit          If flag_bad_quadrant is True then channel/baselines further</dt><dd><p>from the view median than fbq_hilo_limit * MAD will be noted as
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline
+context.</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
+context.
+example: spw=’17’, spw=’11, 15’</p></li>
+<li><p><strong>intent</strong> – A string containing the list of intents to be checked for antennas with deviant gains. The default is blank, which causes the task to select
+the ‘BANDPASS’ intent.
+example: intent=’<cite>*BANDPASS*</cite>’</p></li>
+<li><p><strong>flag_hilo</strong> – True to flag channel/baseline data further from the view median than fhl_limit * MAD.</p></li>
+<li><p><strong>fhl_limit</strong> – If flag_hilo is True then flag channel/baseline data further from the view median than fhl_limit * MAD.</p></li>
+<li><p><strong>fhl_minsample</strong> – Do no flagging if the view median and MAD are derived from fewer than fhl_minsample view pixels.</p></li>
+<li><p><strong>flag_bad_quadrant</strong> – True to search for and flag bad antenna quadrants and baseline quadrants. Here a /’quadrant/’ is one
+quarter of the channel axis.</p></li>
+<li><p><strong>fbq_hilo_limit</strong> – If flag_bad_quadrant is True then channel/baselines further from the view median than fbq_hilo_limit * MAD will be noted as
 ‘suspect’. If there are enough of them to indicate that an antenna or
 baseline quadrant is bad then all channel/baselines in that quadrant will
-be flagged.</p>
-</dd>
-<dt>fbq_antenna_frac_limit  If flag_bad_quadrant is True and the fraction of</dt><dd><p>suspect channel/baselines in a particular antenna/quadrant exceeds
+be flagged.</p></li>
+<li><p><strong>fbq_antenna_frac_limit</strong> – If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular antenna/quadrant exceeds
 fbq_antenna_frac_limit then all data for that antenna/quadrant will
-be flagged.</p>
-</dd>
-<dt>fbq_baseline_frac_limit If flag_bad_quadrant is True and the fraction of</dt><dd><p>suspect channel/baselines in a particular baseline/quadrant exceeds
+be flagged.</p></li>
+<li><p><strong>fbq_baseline_frac_limit</strong> – If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular baseline/quadrant exceeds
 fbq_baseline_frac_limit then all data for that baseline/quadrant will
-be flagged.</p>
+be flagged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Flag bad quadrants and wild outliers, default method:</p></li>
 </ol>

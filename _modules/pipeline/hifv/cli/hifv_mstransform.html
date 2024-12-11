@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,9 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifv_mstransform</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis_for_line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw_line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">omit_contline_ms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_mstransform ---- Create new MeasurementSets for science target imaging</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create new MeasurementSets for science target imaging</span>
 
 <span class="sd">    Create new MeasurementSets for imaging from the corrected column of the input</span>
 <span class="sd">    MeasurementSet via calling mstransform with all data selection parameters.</span>
@@ -164,66 +158,55 @@
 <span class="sd">    spectral line spws in the input MeasurementSet, an MS for science target line imaging</span>
 <span class="sd">    will also be produced, which will end in _targets.ms.</span>
 
-<span class="sd">    Output</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        outputvis: The list of output transformed MeasurementSets to be used for continuum imaging. The output list must be the same length as the input</span>
+<span class="sd">            list. The default output name defaults to</span>
+<span class="sd">            &lt;msrootname&gt;_targets_cont.ms</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;,</span>
+<span class="sd">            [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        outputvis_for_line: The list of output transformed MeasurementSets to be used for line imaging. The output list must be the same length as the input</span>
+<span class="sd">            list. The default output name defaults to</span>
+<span class="sd">            &lt;msrootname&gt;_targets.ms</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;,</span>
+<span class="sd">            [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    vis                 The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                        MeasurementSets specified in the h_init or hif_importdata task.</span>
-<span class="sd">                        &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">        field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.</span>
+<span class="sd">            Examples: &#39;3C279&#39;, &#39;Centaurus*&#39;, &#39;3C279,J1427-421&#39;</span>
 
-<span class="sd">                        Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    outputvis           The list of output transformed MeasurementSets to be used for</span>
-<span class="sd">                        continuum imaging. The output list must be the same length as the input</span>
-<span class="sd">                        list. The default output name defaults to</span>
-<span class="sd">                        &lt;msrootname&gt;_targets_cont.ms</span>
+<span class="sd">        intent: Select intents for which associated fields will be imaged. By default only TARGET data is selected.</span>
+<span class="sd">            Examples: &#39;PHASE, BANDPASS&#39;</span>
 
-<span class="sd">                        Examples: &#39;ngc5921.ms&#39;,</span>
-<span class="sd">                            [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    outputvis_for_line  The list of output transformed MeasurementSets to be used for</span>
-<span class="sd">                        line imaging. The output list must be the same length as the input</span>
-<span class="sd">                        list. The default output name defaults to</span>
-<span class="sd">                        &lt;msrootname&gt;_targets.ms</span>
+<span class="sd">        spw: Select spectral window/channels to include for continuum imaging. By default all science spws for which the specified intent is valid are</span>
+<span class="sd">            selected.</span>
 
-<span class="sd">                        Examples: &#39;ngc5921.ms&#39;,</span>
-<span class="sd">                                    [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    field               Select fields name(s) or id(s) to transform. Only fields with</span>
-<span class="sd">                        data matching the intent will be selected.</span>
+<span class="sd">        spw_line: Select spectral window/channels to include for line imaging. If specified, these will override the default, which</span>
+<span class="sd">            is to use the spws identified as specline_windows in hifv_importdata</span>
+<span class="sd">            or hifv_restoredata.</span>
 
-<span class="sd">                        Examples: &#39;3C279&#39;, &#39;Centaurus*&#39;, &#39;3C279,J1427-421&#39;</span>
-<span class="sd">    intent              Select intents for which associated fields will be imaged.</span>
-<span class="sd">                        By default only TARGET data is selected.</span>
+<span class="sd">        chanbin: Width (bin) of input channels to average to form an output channel. If chanbin &gt; 1 then chanaverage is automatically</span>
+<span class="sd">            switched to True.</span>
 
-<span class="sd">                        Examples: &#39;PHASE,BANDPASS&#39;</span>
-<span class="sd">    spw                 Select spectral window/channels to include for continuum imaging. By default all</span>
-<span class="sd">                        science spws for which the specified intent is valid are</span>
-<span class="sd">                        selected.</span>
-<span class="sd">    spw_line            Select spectral window/channels to include for line imaging.</span>
-<span class="sd">                        If specified, these will override the default, which</span>
-<span class="sd">                        is to use the spws identified as specline_windows in hifv_importdata</span>
-<span class="sd">                        or hifv_restoredata.</span>
-<span class="sd">    chanbin             Width (bin) of input channels to average to form an output</span>
-<span class="sd">                        channel. If chanbin &gt; 1 then chanaverage is automatically</span>
-<span class="sd">                        switched to True.</span>
-<span class="sd">    timebin             Bin width for time averaging. If timebin &gt; 0s then</span>
-<span class="sd">                        timeaverage is automatically switched to True.</span>
-<span class="sd">    omit_contline_ms    If True, don&#39;t make the contline ms (_targets.ms). Only make</span>
-<span class="sd">                        cont MS (_targets_cont.ms). Default is False.</span>
-<span class="sd">                        </span>
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        timebin: Bin width for time averaging. If timebin &gt; 0s then timeaverage is automatically switched to True.</span>
 
+<span class="sd">        omit_contline_ms: If True, don&#39;t make the contline ms (_targets.ms). Only make cont MS (_targets_cont.ms). Default is False.</span>
 
-<span class="sd">    1. Create a science target MS from the corrected column in the input MS.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_mstransform()</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Create a science target MS from the corrected column in the input MS:</span>
 
-<span class="sd">    2. Make a phase and bandpass calibrator targets MS from the corrected</span>
-<span class="sd">    column in the input MS.</span>
+<span class="sd">        &gt;&gt;&gt; hifv_mstransform()</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_mstransform(intent=&#39;PHASE,BANDPASS&#39;)</span>
+<span class="sd">        2. Make a phase and bandpass calibrator targets MS from the corrected</span>
+<span class="sd">        column in the input MS:</span>
 
+<span class="sd">        &gt;&gt;&gt; hifv_mstransform(intent=&#39;PHASE,BANDPASS&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

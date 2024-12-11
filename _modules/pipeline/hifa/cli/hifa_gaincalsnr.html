@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,9 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hifa_gaincalsnr</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasesnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bwedgefrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifa_gaincalsnr ---- Compute gaincal signal-to-noise ratios per spw</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute gaincal signal-to-noise ratios per spw</span>
 
 <span class="sd">    The gaincal solution signal-to-noise is determined as follows:</span>
 
@@ -197,59 +191,47 @@
 <span class="sd">    - The QA score is based on how many signal-to-noise estimates greater than</span>
 <span class="sd">      the requested signal-to-noise ratio can be computed.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">            MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
 
-<span class="sd">        results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        field: The list of field names of sources to be used for signal to noise</span>
+<span class="sd">            estimation. Defaults to all fields with the standard intent.</span>
+<span class="sd">            Example: field=&#39;3C279&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against which</span>
+<span class="sd">            the selected fields are matched. Defaults to &#39;PHASE&#39;.</span>
+<span class="sd">            Example: intent=&#39;BANDPASS&#39;</span>
 
-<span class="sd">    vis</span>
-<span class="sd">                   The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                   MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which gain solutions are</span>
+<span class="sd">            computed. Defaults to all the science spectral windows for which there are</span>
+<span class="sd">            both &#39;intent&#39; and TARGET intents.</span>
+<span class="sd">            Example: spw=&#39;13,15&#39;</span>
 
-<span class="sd">                   Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
-<span class="sd">    field</span>
-<span class="sd">                   The list of field names of sources to be used for signal to noise</span>
-<span class="sd">                   estimation. Defaults to all fields with the standard intent.</span>
+<span class="sd">        phasesnr: The required gaincal solution signal to noise.</span>
+<span class="sd">            Example: phasesnr=20.0</span>
 
-<span class="sd">                   Example: field=&#39;3C279&#39;</span>
-<span class="sd">    intent</span>
-<span class="sd">                   A string containing a comma delimited list of intents against which</span>
-<span class="sd">                   the selected fields are matched. Defaults to &#39;PHASE&#39;.</span>
+<span class="sd">        bwedgefrac: The fraction of the bandwidth edges that is flagged.</span>
+<span class="sd">            Example: bwedgefrac=0.0</span>
 
-<span class="sd">                   Example: intent=&#39;BANDPASS&#39;</span>
-<span class="sd">    spw</span>
-<span class="sd">                   The list of spectral windows and channels for which gain solutions are</span>
-<span class="sd">                   computed. Defaults to all the science spectral windows for which there are</span>
-<span class="sd">                   both &#39;intent&#39; and TARGET intents.</span>
+<span class="sd">        hm_nantennas: The heuristics for determines the number of antennas to use</span>
+<span class="sd">            in the signal to noise estimate. The options are &#39;all&#39; and &#39;unflagged&#39;.</span>
+<span class="sd">            The &#39;unflagged&#39; options is not currently supported.</span>
+<span class="sd">            Example: hm_nantennas=&#39;unflagged&#39;</span>
 
-<span class="sd">                   Example: spw=&#39;13,15&#39;</span>
-<span class="sd">    phasesnr</span>
-<span class="sd">                   The required gaincal solution signal to noise.</span>
+<span class="sd">        maxfracflagged: The maximum fraction of an antenna that can be flagged</span>
+<span class="sd">            before it is excluded from the signal to noise estimate.</span>
+<span class="sd">            Example: maxfracflagged=0.80</span>
 
-<span class="sd">                   Example: phasesnr=20.0</span>
-<span class="sd">    bwedgefrac</span>
-<span class="sd">                   The fraction of the bandwidth edges that is flagged.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">                   Example: bwedgefrac=0.0</span>
-<span class="sd">    hm_nantennas</span>
-<span class="sd">                   The heuristics for determines the number of antennas to use</span>
-<span class="sd">                   in the signal to noise estimate. The options are &#39;all&#39; and &#39;unflagged&#39;.</span>
-<span class="sd">                   The &#39;unflagged&#39; options is not currently supported.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Estimate the per scan gaincal solution sensitivities and signal to noise</span>
+<span class="sd">        ratios for all the science spectral windows:</span>
 
-<span class="sd">                   Example: hm_nantennas=&#39;unflagged&#39;</span>
-<span class="sd">    maxfracflagged</span>
-<span class="sd">                   The maximum fraction of an antenna that can be flagged</span>
-<span class="sd">                   before it is excluded from the signal to noise estimate.</span>
-
-<span class="sd">                   Example: maxfracflagged=0.80</span>
-
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
-
-<span class="sd">    1. Estimate the per scan gaincal solution sensitivities and signal to noise</span>
-<span class="sd">    ratios for all the science spectral windows:</span>
-
-<span class="sd">    &gt;&gt;&gt; hifa_gaincalsnr()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_gaincalsnr()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##########################################################################</span>

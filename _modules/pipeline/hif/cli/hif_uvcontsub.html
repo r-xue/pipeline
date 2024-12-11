@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,9 +144,7 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.hif_uvcontsub.html#pipeline.cli.hif_uvcontsub">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hif_uvcontsub</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fitorder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_uvcontsub ---- Fit and subtract continuum from the data</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit and subtract continuum from the data</span>
 
 <span class="sd">    hif_uvcontsub fits the continuum for the frequency ranges given in the cont.dat</span>
 <span class="sd">    file, subtracts that fit from the uv data and generates a new set of MSes</span>
@@ -158,50 +152,47 @@
 <span class="sd">    for all science targets and spws. If a fit is impossible, the corresponding</span>
 <span class="sd">    data selection is not written to the output line MS.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        field: The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.</span>
+<span class="sd">            Examples: &#39;3C279&#39;, &#39;3C279,M82&#39;</span>
 
-<span class="sd">    vis           The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                  MeasurementSets specified in the h_init or hif_importdata task.</span>
-<span class="sd">                  &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">        intent: A string containing a comma delimited list of intents against which the selected fields are matched.</span>
+<span class="sd">            &#39;&#39;: Defaults to all data with TARGET intent.</span>
 
-<span class="sd">                  Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
-<span class="sd">    field         The list of field names or field ids for which UV continuum</span>
-<span class="sd">                  fits are computed. Defaults to all fields.</span>
-<span class="sd">                  Examples: &#39;3C279&#39;, &#39;3C279,M82&#39;</span>
-<span class="sd">    intent        A string containing a comma delimited list of intents against</span>
-<span class="sd">                  which the selected fields are matched.</span>
-<span class="sd">                  &#39;&#39;: Defaults to all data with TARGET intent.</span>
-<span class="sd">    spw           The list of spectral windows and channels for which uv</span>
-<span class="sd">                  continuum fits are computed.</span>
-<span class="sd">                  &#39;&#39;, Defaults to all science spectral windows.</span>
-<span class="sd">                  Example: &#39;11,13,15,17&#39;</span>
-<span class="sd">    fitorder      Polynomial order for the continuum fits per source and spw.</span>
-<span class="sd">                  Defaults to {} which means fit order 1 for all sources and</span>
-<span class="sd">                  spws. If an explicit dictionary is given then all unspecified</span>
-<span class="sd">                  selections still default to 1.</span>
-<span class="sd">                  Example: {&#39;3C279&#39;: {&#39;15&#39;: 1, &#39;17&#39;: 2}, &#39;M82&#39;: {&#39;13&#39;: 2}}</span>
-<span class="sd">    parallel      Execute using CASA HPC functionality, if available.</span>
+<span class="sd">        spw: The list of spectral windows and channels for which uv continuum fits are computed.</span>
+<span class="sd">            &#39;&#39;, Defaults to all science spectral windows.</span>
+<span class="sd">            Example: &#39;11,13,15,17&#39;</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        fitorder: Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and</span>
+<span class="sd">            spws. If an explicit dictionary is given then all unspecified</span>
+<span class="sd">            selections still default to 1.</span>
+<span class="sd">            Example: {&#39;3C279&#39;: {&#39;15&#39;: 1, &#39;17&#39;: 2}, &#39;M82&#39;: {&#39;13&#39;: 2}}</span>
 
-<span class="sd">    1. Fit and subtract continuum for all science targets and spws</span>
+<span class="sd">        parallel: Execute using CASA HPC functionality, if available.</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_uvcontsub()</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    2. Fit and subtract continuum only for a subsect of fields</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Fit and subtract continuum for all science targets and spws</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_uvcontsub(field=&#39;3C279,M82&#39;</span>
+<span class="sd">        &gt;&gt;&gt; hif_uvcontsub()</span>
 
-<span class="sd">    3. Fit and subtract continuum only for a subsect of spws</span>
+<span class="sd">        2. Fit and subtract continuum only for a subsect of fields</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_uvcontsub(spw=&#39;11,13&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hif_uvcontsub(field=&#39;3C279,M82&#39;</span>
 
-<span class="sd">    4. Override automatic fit order choice</span>
+<span class="sd">        3. Fit and subtract continuum only for a subsect of spws</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_uvcontsub(fitorder={&#39;3C279&#39;: {&#39;15&#39;: 1, &#39;17&#39;: 2}, &#39;M82&#39;: {&#39;13&#39;: 2}})</span>
+<span class="sd">        &gt;&gt;&gt; hif_uvcontsub(spw=&#39;11,13&#39;)</span>
 
+<span class="sd">        4. Override automatic fit order choice</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_uvcontsub(fitorder={&#39;3C279&#39;: {&#39;15&#39;: 1, &#39;17&#39;: 2}, &#39;M82&#39;: {&#39;13&#39;: 2}})</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

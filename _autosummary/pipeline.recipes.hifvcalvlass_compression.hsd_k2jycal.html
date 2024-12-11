@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,34 +145,28 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.hsd_k2jycal">
 <span class="sig-name descname"><span class="pre">hsd_k2jycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_k2jycal.html#hsd_k2jycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.hsd_k2jycal" title="Link to this definition"></a></dt>
-<dd><p>hsd_k2jycal —- Derive Kelvin to Jy calibration tables</p>
+<dd><p>Derive Kelvin to Jy calibration tables.</p>
 <p>Derive the Kelvin to Jy calibration for list of MeasurementSets.</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<p>dbservice     Whether or not accessing Jy/K DB to retrieve conversion factors.
-endpoint      Which endpoints to use for query</p>
-<blockquote>
-<div><p>options: ‘asdm’, ‘model-fit’, ‘interpolation’</p>
-</div></blockquote>
-<dl>
-<dt>reffile       Path to a file containing Jy/K factors for science data, which</dt><dd><p>must be provided by associating calibrator reduction or the observatory
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbservice</strong> – Whether or not accessing Jy/K DB to retrieve conversion factors.</p></li>
+<li><p><strong>endpoint</strong> – Which endpoints to use for query. Options: ‘asdm’, ‘model-fit’, ‘interpolation’.</p></li>
+<li><p><strong>reffile</strong> – Path to a file containing Jy/K factors for science data, which must be provided by associating calibrator reduction or the observatory
 measurements. Jy/K factor must take into account all efficiencies, i.e.,
 it must be a direct conversion factor from Ta* to Jy. The file must be
 in either MS-based or session-based format. The MS-based format must
 be in an CSV format with five fields: MS name, antenna name, spectral
 window id, polarization string, and Jy/K conversion factor. Example for
-the file is as follows:</p>
-<blockquote>
-<div><p>MS,Antenna,Spwid,Polarization,Factor
+the file is as follows:
+MS,Antenna,Spwid,Polarization,Factor
 uid___A002_X316307_X6f.ms,CM03,5,XX,10.0
 uid___A002_X316307_X6f.ms,CM03,5,YY,12.0
 uid___A002_X316307_X6f.ms,PM04,5,XX,2.0
-uid___A002_X316307_X6f.ms,PM04,5,YY,5.0</p>
-</div></blockquote>
-<p>The first line in the above example is a header which may or may not
-exist. Example for the session-based format is as follows:</p>
-<blockquote>
-<div><p>#OUSID=XXXXXX
+uid___A002_X316307_X6f.ms,PM04,5,YY,5.0
+The first line in the above example is a header which may or may not
+exist. Example for the session-based format is as follows:
+#OUSID=XXXXXX
 #OBJECT=Uranus
 #FLUXJY=yy,zz,aa
 #FLUXFREQ=YY,ZZ,AA
@@ -191,9 +181,8 @@ Antenna,BandCenter(MHz),BandWidth(MHz),POL,Factor
 2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,500.0,I,90.0
 2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,1000.0,I,110.0
 2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,500.0,I,90.0
-2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,1000.0,I,110.0</p>
-</div></blockquote>
-<p>Lines starting with ‘#’ are meta data and header.
+2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,1000.0,I,110.0
+Lines starting with ‘#’ are meta data and header.
 The header must exist. The factor to apply is identified by matching the
 session ID, antenna name, frequency and polarization of data in each line of
 the file. Note the observation date is supplementary information and not used
@@ -203,19 +192,19 @@ example, if science observation of session 1 contains the antenna PM04, Jy/K
 factor for ANONYMOUS antenna will be applied since there is no measurement for
 PM04 in session 1.
 If no file name is specified or specified file doesn’t exist, all Jy/K factors
-are set to 1.0.</p>
-<p>example: reffile=’’, reffile=’working/jyperk.csv’</p>
+are set to 1.0.
+example: reffile=’’, reffile=’working/jyperk.csv’</p></li>
+<li><p><strong>infiles</strong> – List of input MeasurementSets.
+example: vis=’ngc5921.ms’</p></li>
+<li><p><strong>caltable</strong> – Name of output gain calibration tables.
+example: caltable=’ngc5921.gcal’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>infiles       List of input MeasurementSets.</p>
-<blockquote>
-<div><p>example: vis=’ngc5921.ms’</p>
-</div></blockquote>
-<p>caltable      Name of output gain calibration tables.</p>
-<blockquote>
-<div><p>example: caltable=’ngc5921.gcal’</p>
-</div></blockquote>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Compute the Kevin to Jy calibration tables for a list of MeasurementSets:</p></li>
 </ol>

@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,9 +145,7 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">hif_antpos</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_antpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antposfile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_antpos ---- Derive an antenna position calibration table</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive an antenna position calibration table</span>
 
 <span class="sd">    Derive the antenna position calibration for list of MeasurementSets.</span>
 
@@ -176,51 +170,39 @@
 <span class="sd">    generate other calibration tables, or permanently to generate calibrated</span>
 <span class="sd">    visibilities for imaging.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input visibility files. example: [&#39;ngc5921.ms&#39;]</span>
 
-<span class="sd">    Output</span>
+<span class="sd">        caltable: Name of output gain calibration tables. example: [&#39;ngc5921.gcal&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        hm_antpos: Heuristics method for retrieving the antenna position corrections. The options are &#39;online&#39; (not yet implemented), &#39;manual&#39;,</span>
+<span class="sd">            and &#39;file&#39;.</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        antenna: The list of antennas for which the positions are to be corrected. Available when hm_antpos=&#39;manual&#39;.</span>
+<span class="sd">            example: antenna=&#39;DV05,DV07&#39;</span>
 
-<span class="sd">    vis           List of input visibility files.</span>
-<span class="sd">                  example: [&#39;ngc5921.ms&#39;]</span>
-<span class="sd">    caltable      Name of output gain calibration tables.</span>
-<span class="sd">                  example: [&#39;ngc5921.gcal&#39;]</span>
-<span class="sd">    hm_antpos     Heuristics method for retrieving the antenna position</span>
-<span class="sd">                  corrections. The options are &#39;online&#39; (not yet implemented), &#39;manual&#39;,</span>
-<span class="sd">                  and &#39;file&#39;.</span>
-<span class="sd">    antenna       The list of antennas for which the positions are to be corrected.</span>
-<span class="sd">                  Available when hm_antpos=&#39;manual&#39;.</span>
-<span class="sd">                  example: antenna=&#39;DV05,DV07&#39;</span>
-<span class="sd">    offsets       The list of antenna offsets for each antenna in &#39;antennas&#39;. Each</span>
-<span class="sd">                  offset is a set of 3 floating point numbers separated by commas, specified</span>
-<span class="sd">                  in the ITRF frame. Available when hm_antpos=&#39;manual&#39;.</span>
-<span class="sd">                  example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</span>
-<span class="sd">    antposfile    The file(s) containing the antenna offsets. Used if hm_antpos</span>
-<span class="sd">                  is &#39;file&#39;.</span>
-<span class="sd">                  example: &#39;antennapos.csv&#39;</span>
+<span class="sd">        offsets: The list of antenna offsets for each antenna in &#39;antennas&#39;. Each offset is a set of 3 floating point numbers separated by commas, specified</span>
+<span class="sd">            in the ITRF frame. Available when hm_antpos=&#39;manual&#39;.</span>
+<span class="sd">            example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        antposfile: The file(s) containing the antenna offsets. Used if hm_antpos is &#39;file&#39;.</span>
+<span class="sd">            example: &#39;antennapos.csv&#39;</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Correct the position of antenna 5 for all the visibility files in a single</span>
+<span class="sd">        pipeline run:</span>
 
-<span class="sd">    1. Correct the position of antenna 5 for all the visibility files in a single</span>
-<span class="sd">    pipeline run:</span>
+<span class="sd">        &gt;&gt;&gt; hif_antpos(antenna=&#39;DV05&#39;, offsets=[0.01, 0.02, 0.03])</span>
 
-<span class="sd">    &gt;&gt;&gt; hif_antpos(antenna=&#39;DV05&#39;, offsets=[0.01, 0.02, 0.03])</span>
+<span class="sd">        2. Correct the position of antennas for all the visibility files in a single</span>
+<span class="sd">        pipeline run using antenna positions files on disk. These files are assumed</span>
+<span class="sd">        to conform to a default naming scheme if ``antposfile`` is unspecified by the</span>
+<span class="sd">        user:</span>
 
-<span class="sd">    2. Correct the position of antennas for all the visibility files in a single</span>
-<span class="sd">    pipeline run using antenna positions files on disk. These files are assumed</span>
-<span class="sd">    to conform to a default naming scheme if ``antposfile`` is unspecified by the</span>
-<span class="sd">    user:</span>
-
-<span class="sd">    &gt;&gt;&gt; hif_antpos(hm_antpos=&#39;file&#39;, antposfile=&#39;myantposfile.csv&#39;)</span>
-
-<span class="sd">    --------- issues -----------------------------------------------------------</span>
-
-<span class="sd">    The hm_antpos &#39;online&#39; option will be implemented when the observing system</span>
-<span class="sd">    provides an antenna position determination service.</span>
+<span class="sd">        &gt;&gt;&gt; hif_antpos(hm_antpos=&#39;file&#39;, antposfile=&#39;myantposfile.csv&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

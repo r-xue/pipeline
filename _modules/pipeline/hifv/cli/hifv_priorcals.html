@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,37 +146,38 @@
 <span class="k">def</span> <span class="nf">hifv_priorcals</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_tec_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_tec_correction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_gaincurves</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_opcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_rqcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">apply_antpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_swpowcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swpow_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ant_pos_time_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hifv_priorcals ---- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</span>
 
-<span class="sd">    Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
+<span class="sd">            converted  to MS format.</span>
+<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">        show_tec_maps: Plot tec maps.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        apply_tec_correction: Apply tec correction.</span>
 
-<span class="sd">    vis                  List of visibility data files. These may be ASDMs, tar files of ASDMs,</span>
-<span class="sd">                         MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
-<span class="sd">                         converted  to MS format.</span>
-<span class="sd">                         example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
-<span class="sd">    show_tec_maps        Plot tec maps</span>
-<span class="sd">    apply_tec_correction Apply tec correction</span>
-<span class="sd">    apply_gaincurves     Apply gain curves correction, default True</span>
-<span class="sd">    apply_opcal          Apply opacities correction, default True</span>
-<span class="sd">    apply_rqcal          Apply requantizer gains correction, default True</span>
-<span class="sd">    apply_antpos         Apply antenna position corrections, default True.</span>
-<span class="sd">    apply_swpowcal       Apply switched power table, default False.  If set True,</span>
-<span class="sd">                         ``apply_rqcal`` is ignored and no requantizer gain correction will be applied.</span>
-<span class="sd">    swpow_spw            Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6,14&quot;</span>
-<span class="sd">    ant_pos_time_limit   Antenna position time limit in days, default to 150 days</span>
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        apply_gaincurves: Apply gain curves correction, default True.</span>
 
+<span class="sd">        apply_opcal: Apply opacities correction, default True.</span>
 
-<span class="sd">    1. Run gaincurves, opacities, requantizer gains and antenna position corrections.</span>
+<span class="sd">        apply_rqcal: Apply requantizer gains correction, default True.</span>
 
-<span class="sd">    &gt;&gt;&gt; hifv_priorcals()</span>
+<span class="sd">        apply_antpos: Apply antenna position corrections, default True.</span>
 
+<span class="sd">        apply_swpowcal: Apply switched power table, default False.  If set True, ``apply_rqcal`` is ignored and no requantizer gain correction will be applied.</span>
+
+<span class="sd">        swpow_spw: Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6, 14&quot;</span>
+
+<span class="sd">        ant_pos_time_limit: Antenna position time limit in days, default to 150 days.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Run gaincurves, opacities, requantizer gains and antenna position corrections:</span>
+
+<span class="sd">        &gt;&gt;&gt; hifv_priorcals()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

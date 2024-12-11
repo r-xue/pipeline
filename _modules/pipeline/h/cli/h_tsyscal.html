@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,31 +145,25 @@
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span> <span class="nf">h_tsyscal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chantol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    h_tsyscal ---- Derive a Tsys calibration table</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive a Tsys calibration table</span>
 
 <span class="sd">    Derive the Tsys calibration for list of ALMA MeasurementSets.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: List of input visibility files. example: vis=[&#39;ngc5921.ms&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        caltable: Name of output gain calibration tables. example: caltable=&#39;ngc5921.gcal&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        chantol: The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).</span>
+<span class="sd">            example: chantol=5</span>
 
-<span class="sd">    vis           List of input visibility files.</span>
-<span class="sd">                  example: vis=[&#39;ngc5921.ms&#39;]</span>
-<span class="sd">    caltable      Name of output gain calibration tables.</span>
-<span class="sd">                  example: caltable=&#39;ngc5921.gcal&#39;</span>
-<span class="sd">    chantol       The tolerance in channels for mapping atmospheric calibration</span>
-<span class="sd">                  windows (TDM) to science windows (FDM or TDM).</span>
-<span class="sd">                  example: chantol=5</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Standard call</span>
 
-<span class="sd">    1. Standard call</span>
-
-<span class="sd">    &gt;&gt;&gt; h_tsyscal()</span>
+<span class="sd">        &gt;&gt;&gt; h_tsyscal()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

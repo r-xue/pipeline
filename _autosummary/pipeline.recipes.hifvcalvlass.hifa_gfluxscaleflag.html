@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass.hifa_gfluxscaleflag">
 <span class="sig-name descname"><span class="pre">hifa_gfluxscaleflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmantint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxed_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_gfluxscaleflag.html#hifa_gfluxscaleflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass.hifa_gfluxscaleflag" title="Link to this definition"></a></dt>
-<dd><p>hifa_gfluxscaleflag —- Flag the flux, diffgain, phase calibrators and check source</p>
+<dd><p>Flag the flux, diffgain, phase calibrators and check source</p>
 <p>This task computes the flagging heuristics on the flux, diffgain, and phase
 calibrators and the check source, by calling hif_correctedampflag which
 looks for outlier visibility points by statistically examining the scalar
@@ -170,78 +166,65 @@ flagging heuristics have been run and applied. If no points were flagged,
 the ‘after’ plots are not generated or displayed. The score for this stage
 is the standard data flagging score, which depends on the fraction of data
 flagged.</p>
-<p>Output:</p>
-<blockquote>
-<div><p>results – The results object for the pipeline task is returned.</p>
-</div></blockquote>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis</dt><dd><p>The list of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘M51.ms’]</p>
-</dd>
-<dt>intent</dt><dd><p>A string containing a comma delimited list of intents against
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘M51.ms’]</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against
 which the selected fields are matched. If undefined (default), it
 will select all data with the AMPLITUDE, PHASE, and CHECK intents,
 except for one case: if one of the AMPLITUDE intent fields was also
 used for BANDPASS, then this task will select only data with PHASE
-and CHECK intents.</p>
-<p>Example: intent=’<cite>*PHASE*</cite>’</p>
-</dd>
-<dt>phaseupsolint</dt><dd><p>The phase correction solution interval in CASA syntax.</p>
-<p>Example: phaseupsolint=’300s’</p>
-</dd>
-<dt>solint</dt><dd><p>Time and channel solution intervals in CASA syntax.</p>
-<p>Example: solint=’inf,10ch’, solint=’inf’</p>
-</dd>
-<dt>minsnr</dt><dd><p>Solutions below this SNR are rejected.</p>
-</dd>
-<dt>refant</dt><dd><p>Reference antenna names. Defaults to the value(s) stored in the
+and CHECK intents.
+Example: intent=’<cite>*PHASE*</cite>’</p></li>
+<li><p><strong>phaseupsolint</strong> – The phase correction solution interval in CASA syntax.
+Example: phaseupsolint=’300s’</p></li>
+<li><p><strong>solint</strong> – Time and channel solution intervals in CASA syntax.
+Example: solint=’inf,10ch’, solint=’inf’</p></li>
+<li><p><strong>minsnr</strong> – Solutions below this SNR are rejected.</p></li>
+<li><p><strong>refant</strong> – Reference antenna names. Defaults to the value(s) stored in the
 pipeline context. If undefined in the pipeline context defaults to
-the CASA reference antenna naming scheme.</p>
-<p>Example: refant=’DV01’, refant=’DV06,DV07’</p>
-</dd>
-<dt>antnegsig</dt><dd><p>Lower sigma threshold for identifying outliers as a result of
-bad antennas within individual timestamps.</p>
-<p>Example: antnegsig=4.0</p>
-</dd>
-<dt>antpossig</dt><dd><p>Upper sigma threshold for identifying outliers as a result of
-bad antennas within individual timestamps.</p>
-<p>Example: antpossig=4.6</p>
-</dd>
-<dt>tmantint</dt><dd><p>Threshold for maximum fraction of timestamps that are allowed to
-contain outliers.</p>
-<p>Example: tmantint=0.063</p>
-</dd>
-<dt>tmint</dt><dd><p>Threshold for maximum fraction of “outlier timestamps” over
-“total timestamps” that a baseline may be a part of.</p>
-<p>Example: tmint=0.085</p>
-</dd>
-<dt>tmbl</dt><dd><p>Initial threshold for maximum fraction of “bad baselines” over “all
-baselines” that an antenna may be a part of.</p>
-<p>Example: tmbl=0.175</p>
-</dd>
-<dt>antblnegsig</dt><dd><p>Lower sigma threshold for identifying outliers as a result of
+the CASA reference antenna naming scheme.
+Example: refant=’DV01’, refant=’DV06,DV07’</p></li>
+<li><p><strong>antnegsig</strong> – Lower sigma threshold for identifying outliers as a result of
+bad antennas within individual timestamps.
+Example: antnegsig=4.0</p></li>
+<li><p><strong>antpossig</strong> – Upper sigma threshold for identifying outliers as a result of
+bad antennas within individual timestamps.
+Example: antpossig=4.6</p></li>
+<li><p><strong>tmantint</strong> – Threshold for maximum fraction of timestamps that are allowed to
+contain outliers.
+Example: tmantint=0.063</p></li>
+<li><p><strong>tmint</strong> – Threshold for maximum fraction of “outlier timestamps” over
+“total timestamps” that a baseline may be a part of.
+Example: tmint=0.085</p></li>
+<li><p><strong>tmbl</strong> – Initial threshold for maximum fraction of “bad baselines” over “all
+baselines” that an antenna may be a part of.
+Example: tmbl=0.175</p></li>
+<li><p><strong>antblnegsig</strong> – Lower sigma threshold for identifying outliers as a result of
 “bad baselines” and/or “bad antennas” within baselines, across all
-timestamps.</p>
-<p>Example: antblnegsig=3.4</p>
-</dd>
-<dt>antblpossig</dt><dd><p>Threshold for identifying outliers as a result of
+timestamps.
+Example: antblnegsig=3.4</p></li>
+<li><p><strong>antblpossig</strong> – Threshold for identifying outliers as a result of
 “bad baselines” and/or “bad antennas” within baselines, across all
-timestamps.</p>
-<p>Example: antblpossig=3.2</p>
-</dd>
-<dt>relaxed_factor</dt><dd><p>Relaxed value to set the threshold scaling factor to under
-certain conditions (see task description).</p>
-<p>Example: relaxed_factor=2.0</p>
-</dd>
-<dt>niter</dt><dd><p>Maximum number of times to iterate on evaluation of flagging
+timestamps.
+Example: antblpossig=3.2</p></li>
+<li><p><strong>relaxed_factor</strong> – Relaxed value to set the threshold scaling factor to under
+certain conditions (see task description).
+Example: relaxed_factor=2.0</p></li>
+<li><p><strong>niter</strong> – Maximum number of times to iterate on evaluation of flagging
 heuristics. If an iteration results in no new flags, then subsequent
-iterations are skipped.</p>
-<p>Example: niter=2</p>
+iterations are skipped.
+Example: niter=2</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. run with recommended settings to create flux scale calibration with flagging
 using recommended thresholds:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_gfluxscaleflag</span><span class="p">()</span>

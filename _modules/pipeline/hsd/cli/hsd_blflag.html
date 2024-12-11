@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -163,9 +159,7 @@
                  <span class="n">infiles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hsd_blflag ---- Flag spectra based on predefined criteria of single dish pipeline</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flag spectra based on predefined criteria of single dish pipeline.</span>
 
 <span class="sd">    Data are flagged based on several flagging rules. Available rules are:</span>
 <span class="sd">    expected rms, calculated rms, and running mean of both pre-fit and</span>
@@ -174,72 +168,74 @@
 <span class="sd">    In addition, the heuristics script creates many plots for each stage.</span>
 <span class="sd">    Those plots are included in the weblog.</span>
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        iteration: Number of iterations to perform sigma clipping to calculate threshold value of flagging.</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned.</span>
+<span class="sd">        edge: Number of channels to be dropped from the edge. The value must be a list of integer with length of one or</span>
+<span class="sd">            two. If list length is one, same number will be applied</span>
+<span class="sd">            both side of the band.</span>
+<span class="sd">            example: [10,20], [10]</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        flag_tsys: Activate (True) or deactivate (False) Tsys flag.</span>
 
-<span class="sd">    iteration     Number of iterations to perform sigma clipping to</span>
-<span class="sd">                  calculate threshold value of flagging.</span>
-<span class="sd">    edge          Number of channels to be dropped from the edge.</span>
-<span class="sd">                  The value must be a list of integer with length of one or</span>
-<span class="sd">                  		     two. If list length is one, same number will be applied</span>
-<span class="sd">                  both side of the band.</span>
+<span class="sd">        tsys_thresh: Threshold value for Tsys flag.</span>
 
-<span class="sd">                  example: [10,20], [10]</span>
-<span class="sd">    flag_tsys     Activate (True) or deactivate (False) Tsys flag.</span>
-<span class="sd">    tsys_thresh   Threshold value for Tsys flag.</span>
-<span class="sd">    flag_prfre    Activate (True) or deactivate (False) flag by expected</span>
-<span class="sd">                  rms of pre-fit spectra.</span>
-<span class="sd">    prfre_thresh  Threshold value for flag by expected rms of pre-fit</span>
-<span class="sd">                  spectra.</span>
-<span class="sd">    flag_pofre    Activate (True) or deactivate (False) flag by expected</span>
-<span class="sd">                  rms of post-fit spectra.</span>
-<span class="sd">    pofre_thresh  Threshold value for flag by expected rms of post-fit</span>
-<span class="sd">                  spectra.</span>
-<span class="sd">    flag_prfr     Activate (True) or deactivate (False) flag by rms of</span>
-<span class="sd">                  pre-fit spectra.</span>
-<span class="sd">    prfr_thresh   Threshold value for flag by rms of pre-fit spectra.</span>
-<span class="sd">    flag_pofr     Activate (True) or deactivate (False) flag by rms of</span>
-<span class="sd">                  post-fit spectra.</span>
-<span class="sd">    pofr_thresh   Threshold value for flag by rms of post-fit spectra.</span>
-<span class="sd">    flag_prfrm    Activate (True) or deactivate (False) flag by running</span>
-<span class="sd">                  mean of pre-fit spectra.</span>
-<span class="sd">    prfrm_thresh  Threshold value for flag by running mean of pre-fit</span>
-<span class="sd">                  spectra.</span>
-<span class="sd">    prfrm_nmean   Number of channels for running mean of pre-fit spectra.</span>
-<span class="sd">    flag_pofrm    Activate (True) or deactivate (False) flag by running</span>
-<span class="sd">                  mean of post-fit spectra.</span>
-<span class="sd">    pofrm_thresh  Threshold value for flag by running mean of post-fit</span>
-<span class="sd">                  spectra.</span>
-<span class="sd">    pofrm_nmean   Number of channels for running mean of post-fit spectra.</span>
-<span class="sd">    plotflag      True to plot result of data flagging.</span>
-<span class="sd">    parallel      Execute using CASA HPC functionality, if available.</span>
-<span class="sd">                  options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
-<span class="sd">                  default: None (equivalent to &#39;automatic&#39;)</span>
-<span class="sd">    infiles       ASDM or MS files to be processed. This parameter behaves</span>
-<span class="sd">                  as data selection parameter. The name specified by</span>
-<span class="sd">                  infiles must be registered to context before you run</span>
-<span class="sd">                  hsd_blflag.</span>
-<span class="sd">    antenna       Data selection by antenna names or ids.</span>
-<span class="sd">                  example: &#39;PM03,PM04&#39;</span>
-<span class="sd">                           &#39;&#39; (all antennas)</span>
-<span class="sd">    field         Data selection by field names or ids.</span>
-<span class="sd">                  example: &#39;`*Sgr*,M100`&#39;</span>
-<span class="sd">                           &#39;&#39; (all fields)</span>
-<span class="sd">    spw           Data selection by spw ids.</span>
-<span class="sd">                  example: &#39;3,4&#39; (spw 3 and 4)</span>
-<span class="sd">                           &#39;&#39; (all spws)</span>
-<span class="sd">    pol           Data selection by polarizations.</span>
-<span class="sd">                  example: &#39;XX,YY&#39; (correlation XX and YY)</span>
-<span class="sd">                           &#39;&#39; (all polarizations)</span>
+<span class="sd">        flag_prfre: Activate (True) or deactivate (False) flag by expected rms of pre-fit spectra.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">        prfre_thresh: Threshold value for flag by expected rms of pre-fit spectra.</span>
 
-<span class="sd">    1. flagging with all rules</span>
+<span class="sd">        flag_pofre: Activate (True) or deactivate (False) flag by expected rms of post-fit spectra.</span>
 
-<span class="sd">    &gt;&gt;&gt; hsd_blflag()</span>
+<span class="sd">        pofre_thresh: Threshold value for flag by expected rms of post-fit spectra.</span>
+
+<span class="sd">        flag_prfr: Activate (True) or deactivate (False) flag by rms of pre-fit spectra.</span>
+
+<span class="sd">        prfr_thresh: Threshold value for flag by rms of pre-fit spectra.</span>
+
+<span class="sd">        flag_pofr: Activate (True) or deactivate (False) flag by rms of post-fit spectra.</span>
+
+<span class="sd">        pofr_thresh: Threshold value for flag by rms of post-fit spectra.</span>
+
+<span class="sd">        flag_prfrm: Activate (True) or deactivate (False) flag by running mean of pre-fit spectra.</span>
+
+<span class="sd">        prfrm_thresh: Threshold value for flag by running mean of pre-fit spectra.</span>
+
+<span class="sd">        prfrm_nmean: Number of channels for running mean of pre-fit spectra.</span>
+
+<span class="sd">        flag_pofrm: Activate (True) or deactivate (False) flag by running mean of post-fit spectra.</span>
+
+<span class="sd">        pofrm_thresh: Threshold value for flag by running mean of post-fit spectra.</span>
+
+<span class="sd">        pofrm_nmean: Number of channels for running mean of post-fit spectra.</span>
+
+<span class="sd">        plotflag: True to plot result of data flagging.</span>
+
+<span class="sd">        parallel: Execute using CASA HPC functionality, if available. Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
+<span class="sd">            Default: None (equivalent to &#39;automatic&#39;)</span>
+
+<span class="sd">        infiles: ASDM or MS files to be processed. This parameter behaves as data selection parameter. The name specified by</span>
+<span class="sd">            infiles must be registered to context before you run</span>
+<span class="sd">            hsd_blflag.</span>
+
+<span class="sd">        antenna: Data selection by antenna names or ids. example: &#39;PM03,PM04&#39;,</span>
+<span class="sd">            &#39;&#39; (all antennas).</span>
+
+<span class="sd">        field: Data selection by field names or ids. example: &#39;`*Sgr*,M100`&#39;,</span>
+<span class="sd">            &#39;&#39; (all fields).</span>
+
+<span class="sd">        spw: Data selection by spw ids. example: &#39;3,4&#39; (spw 3 and 4),</span>
+<span class="sd">            &#39;&#39; (all spws).</span>
+
+<span class="sd">        pol: Data selection by polarizations. example: &#39;XX,YY&#39; (correlation XX and YY),</span>
+<span class="sd">            &#39;&#39; (all polarizations).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. flagging with all rules</span>
+
+<span class="sd">        &gt;&gt;&gt; hsd_blflag()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

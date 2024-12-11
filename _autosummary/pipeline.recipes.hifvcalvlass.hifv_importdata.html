@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,44 +145,34 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass.hifv_importdata">
 <span class="sig-name descname"><span class="pre">hifv_importdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nocopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createmms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specline_spws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_importdata.html#hifv_importdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass.hifv_importdata" title="Link to this definition"></a></dt>
-<dd><p>hifv_importdata —- Imports data into the VLA pipeline</p>
+<dd><p>Imports data into the VLA pipeline.</p>
 <p>The hifv_importdata task loads the specified visibility data into the pipeline
 context unpacking and / or converting it as necessary.</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,</dt><dd><p>MSes, or tar files of MSes, If ASDM files are specified, they will be
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
 converted  to MS format.
-example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
-</dd>
-<dt>session       List of sessions to which the visibility files belong. Defaults</dt><dd><p>to a single session containing all the visibility files, otherwise
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>session</strong> – List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise
 a session must be assigned to each vis file.
-example: session=[‘Session_1’, ‘Sessions_2’]</p>
-</dd>
-<dt>asis          Creates verbatim copies of the ASDM tables in the output MS.</dt><dd><p>The value given to this option must be a list of table names
+example: session=[‘Session_1’, ‘Sessions_2’]</p></li>
+<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names
 separated by space characters.
 examples: ‘Receiver CalAtmosphere’
-‘Receiver’, ‘’</p>
-</dd>
-</dl>
-<p>overwrite     Overwrite existing files on import.
-nocopy        When importing an MS, disable copying of the MS to the working directory.
-createmms     Create a multi-MeasurementSet (‘true’) ready for parallel</p>
-<blockquote>
-<div><p>processing, or a standard MeasurementSet (‘false’). The default setting
-(‘automatic’) creates an MMS if running in a cluster environment.</p>
-</div></blockquote>
-<dl>
-<dt>ocorr_mode    Read in cross- and auto-correlation data(ca), cross-</dt><dd><p>correlation data only (co), or autocorrelation data only (ao).</p>
-</dd>
-<dt>datacolumns   Dictionary defining the data types of</dt><dd><p>existing columns. The format is:</p>
-<p>{‘data’: ‘data type 1’}
-or
-{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}</p>
+‘Receiver’, ‘’</p></li>
+<li><p><strong>overwrite</strong> – Overwrite existing files on import.</p></li>
+<li><p><strong>nocopy</strong> – When importing an MS, disable copying of the MS to the working directory.</p></li>
+<li><p><strong>createmms</strong> – Create a multi-MeasurementSet (‘true’) ready for parallel processing, or a standard MeasurementSet (‘false’). The default setting
+(‘automatic’) creates an MMS if running in a cluster environment.</p></li>
+<li><p><strong>ocorr_mode</strong> – Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).</p></li>
+<li><p><strong>datacolumns</strong> – Dictionary defining the data types of existing columns. The format is:</p>
+<p>{‘data’: ‘data type 1’}</p>
+<p>or</p>
+<p>{‘data’: ‘data type 1’, ‘corrected’: ‘data type 2’}</p>
 <p>For ASDMs the data type can only be RAW and one
-can only specify it for the data column.</p>
-<p>For MSes one can define two different data types
+can only specify it for the data column.
+For MSes one can define two different data types
 for the DATA and CORRECTED_DATA columns and they
 can be any of the known data types (RAW,
 REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,
@@ -195,45 +181,49 @@ SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The
 intent selection strings _ALL or _SCIENCE can be
 skipped. In that case the task determines this
 automatically by inspecting the existing intents
-in the dataset.</p>
-<p>Usually, a single datacolumns dictionary is used
+in the dataset.
+Usually, a single datacolumns dictionary is used
 for all datasets. If necessary, one can define a
 list of dictionaries, one for each EB, with
-different setups per EB.</p>
-<p>If no types are specified,
+different setups per EB.
+If no types are specified,
 {‘data’:’raw’,’corrected’:’regcal_contline’}
 or {‘data’:’raw’} will be assumed, depending on
 whether the corrected column exists or not.</p>
-</dd>
-<dt>specline_spws String indicating how the pipeline should determine whether a spw should</dt><dd><p>be processed as a spectral line window or continuum. The default setting of
+</li>
+<li><p><strong>specline_spws</strong> – String indicating how the pipeline should determine whether a spw should be processed as a spectral line window or continuum. The default setting of
 ‘auto’ will use defined heuristics to determine this definition. Accepted
 values are ‘auto’, ‘none’ (no spws will be defined as spectral line), or
-a string of spw definitions in the CASA format
-example: specline_spws=’2,3,4~9,23’</p>
+a string of spw definitions in the CASA format.
+example: specline_spws=’2, 3, 4~9, 23’</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>parallel      Execute using CASA HPC functionality, if available.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
-<li><p>Load an ASDM list in the ../rawdata subdirectory into the context.</p></li>
+<li><p>Load an ASDM list in the ../rawdata subdirectory into the context:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_importdata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/uid___A002_X30a93d_X43e&#39;</span><span class="p">,</span> <span class="s1">&#39;../rawdata/uid_A002_x30a93d_X44e&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>Load an MS in the current directory into the context.</p></li>
+<li><p>Load an MS in the current directory into the context:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_importdata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;uid___A002_X30a93d_X43e.ms&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li><p>Load a tarred ASDM in ../rawdata into the context.</p></li>
+<li><p>Load a tarred ASDM in ../rawdata into the context:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_importdata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/uid___A002_X30a93d_X43e.tar.gz&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
-<li><p>Check the hifv_importdata inputs, then import the data</p></li>
+<li><p>Check the hifv_importdata inputs, then import the data:</p></li>
 </ol>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">myvislist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;uid___A002_X30a93d_X43e.ms&#39;</span><span class="p">,</span> <span class="s1">&#39;uid_A002_x30a93d_X44e.ms&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_importdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">myvislist</span><span class="p">)</span>

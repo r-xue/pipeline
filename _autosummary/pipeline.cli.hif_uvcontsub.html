@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,37 +144,37 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.cli.hif_uvcontsub">
 <span class="sig-name descname"><span class="pre">hif_uvcontsub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_uvcontsub.html#hif_uvcontsub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.cli.hif_uvcontsub" title="Link to this definition"></a></dt>
-<dd><p>hif_uvcontsub —- Fit and subtract continuum from the data</p>
+<dd><p>Fit and subtract continuum from the data</p>
 <p>hif_uvcontsub fits the continuum for the frequency ranges given in the cont.dat
 file, subtracts that fit from the uv data and generates a new set of MSes
 containing the continuum subtracted (i.e. line) data. The fit is attempted
 for all science targets and spws. If a fit is impossible, the corresponding
 data selection is not written to the output line MS.</p>
-<p>results – The results object for the pipeline task is returned</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-<dt>field         The list of field names or field ids for which UV continuum</dt><dd><p>fits are computed. Defaults to all fields.
-Examples: ‘3C279’, ‘3C279,M82’</p>
-</dd>
-<dt>intent        A string containing a comma delimited list of intents against</dt><dd><p>which the selected fields are matched.
-‘’: Defaults to all data with TARGET intent.</p>
-</dd>
-<dt>spw           The list of spectral windows and channels for which uv</dt><dd><p>continuum fits are computed.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.
+Examples: ‘3C279’, ‘3C279,M82’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched.
+‘’: Defaults to all data with TARGET intent.</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which uv continuum fits are computed.
 ‘’, Defaults to all science spectral windows.
-Example: ‘11,13,15,17’</p>
-</dd>
-<dt>fitorder      Polynomial order for the continuum fits per source and spw.</dt><dd><p>Defaults to {} which means fit order 1 for all sources and
+Example: ‘11,13,15,17’</p></li>
+<li><p><strong>fitorder</strong> – Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
 spws. If an explicit dictionary is given then all unspecified
 selections still default to 1.
-Example: {‘3C279’: {‘15’: 1, ‘17’: 2}, ‘M82’: {‘13’: 2}}</p>
+Example: {‘3C279’: {‘15’: 1, ‘17’: 2}, ‘M82’: {‘13’: 2}}</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>parallel      Execute using CASA HPC functionality, if available.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Fit and subtract continuum for all science targets and spws</p></li>
 </ol>

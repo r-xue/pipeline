@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifacal.hif_setmodels">
 <span class="sig-name descname"><span class="pre">hif_setmodels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normfluxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebychan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_setmodels.html#hif_setmodels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifacal.hif_setmodels" title="Link to this definition"></a></dt>
-<dd><p>hif_setmodels —- Set calibrator source models</p>
+<dd><p>Set calibrator source models</p>
 <p>Set model fluxes values for calibrator reference and transfer sources using lookup
 values. By default the reference sources are the flux calibrators and the transfer
 sources are the bandpass, phase, and check source calibrators. Reference sources
@@ -162,36 +158,34 @@ set to True.</p>
 This file is usually created in the importdata stage. The file is in
 ‘csv’ format and contains the following comma delimited columns.</p>
 <p>vis,fieldid,spwid,I,Q,U,V,pix,comment</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis           The list of input MeasurementSets. Defaults to the list of</dt><dd><p>MeasurementSets specified in the pipeline context.</p>
-<p>example: [‘M32A.ms’, ‘M32B.ms’]</p>
-</dd>
-<dt>reference     A string containing a comma delimited list of  field names</dt><dd><p>defining the reference calibrators. Defaults to field names with
-intent ‘AMPLITUDE’.</p>
-<p>example: ‘M82,3C273’</p>
-</dd>
-<dt>refintent     A string containing a comma delimited list of intents</dt><dd><p>used to select the reference calibrators. Defaults to ‘AMPLITUDE’.</p>
-<p>example: ‘BANDPASS’</p>
-</dd>
-<dt>transfer      A string containing a comma delimited list of  field names</dt><dd><p>defining the transfer calibrators. Defaults to field names with
-intent ‘’.</p>
-<p>example: ‘J1328+041,J1206+30’</p>
-</dd>
-<dt>transintent   A string containing a comma delimited list of intents</dt><dd><p>defining the transfer calibrators. Defaults to ‘BANDPASS,PHASE,CHECK’.
-‘’ stands for no transfer sources.</p>
-<p>example: ‘PHASE’</p>
-</dd>
-<dt>reffile       The reference file containing a lookup table of point source models</dt><dd><p>This file currently defaults to ‘flux.csv’ in the working directory. This
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.
+example: [‘M32A.ms’, ‘M32B.ms’]</p></li>
+<li><p><strong>reference</strong> – A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with
+intent ‘AMPLITUDE’.
+example: ‘M82,3C273’</p></li>
+<li><p><strong>refintent</strong> – A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to ‘AMPLITUDE’.
+example: ‘BANDPASS’</p></li>
+<li><p><strong>transfer</strong> – A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with
+intent ‘’.
+example: ‘J1328+041,J1206+30’</p></li>
+<li><p><strong>transintent</strong> – A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to ‘BANDPASS,PHASE,CHECK’.
+‘’ stands for no transfer sources.
+example: ‘PHASE’</p></li>
+<li><p><strong>reffile</strong> – The reference file containing a lookup table of point source models This file currently defaults to ‘flux.csv’ in the working directory. This
 file must conform to the standard pipeline ‘flux.csv’ format
-example: ‘myfluxes.csv’</p>
+example: ‘myfluxes.csv’</p></li>
+<li><p><strong>normfluxes</strong> – Normalize the transfer source flux densities.</p></li>
+<li><p><strong>scalebychan</strong> – Scale the flux density on a per channel basis or else on a per spw basis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>normfluxes    Normalize the transfer source flux densities.
-scalebychan   Scale the flux density on a per channel basis or else on a per spw basis</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Set model fluxes for the flux, bandpass, phase, and check sources.</p></li>
 </ol>

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_contimage.hsd_exportdata">
 <span class="sig-name descname"><span class="pre">hsd_exportdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pprfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_exportdata.html#hsd_exportdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_contimage.hsd_exportdata" title="Link to this definition"></a></dt>
-<dd><p>hsd_exportdata —- Prepare single dish data for export</p>
+<dd><p>Prepare single dish data for export.</p>
 <p>The hsd_exportdata task exports the data defined in the pipeline context
 and exports it to the data products directory, converting and or packing
 it as necessary.</p>
@@ -159,20 +155,21 @@ it as necessary.</p>
 <li><p>a tar file per ASDM containing the final flags version and blparam</p></li>
 <li><p>a tar file containing the file web log</p></li>
 </ul>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>pprfile       Name of the pipeline processing request to be exported. Defaults</dt><dd><p>to a file matching the template ‘PPR_*.xml’.
-example: pprfile=[‘PPR_GRB021004.xml’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pprfile</strong> – Name of the pipeline processing request to be exported. Defaults to a file matching the template ‘PPR_*.xml’.
+example: pprfile=[‘PPR_GRB021004.xml’]</p></li>
+<li><p><strong>targetimages</strong> – List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
+example: targetimages=[‘r_aqr.CM02.spw5.line0.XXYY.sd.im’, ‘r_aqr.CM02.spw5.XXYY.sd.cont.im’]</p></li>
+<li><p><strong>products_dir</strong> – Name of the data products subdirectory. Defaults to ‘./’. Example: products_dir=’../products’.</p></li>
+</ul>
 </dd>
-<dt>targetimages  List of science target images to be exported. Defaults to all</dt><dd><p>science target images recorded in the pipeline context.
-example: targetimages=[‘r_aqr.CM02.spw5.line0.XXYY.sd.im’, ‘r_aqr.CM02.spw5.XXYY.sd.cont.im’]</p>
-</dd>
-<dt>products_dir  Name of the data products subdirectory. Defaults to ‘./’</dt><dd><p>example: products_dir=’../products’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Export the pipeline results for a single session to the data products
 directory</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !mkdir ../products

@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,44 +145,38 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.h_mssplit">
 <span class="sig-name descname"><span class="pre">h_mssplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputvis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timebin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_mssplit.html#h_mssplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.h_mssplit" title="Link to this definition"></a></dt>
-<dd><p>h_mssplit —- Select data from calibrated MS(s) to form new MS(s) for imaging</p>
-<p>Select data from calibrated MS(s) to form new MS(s) for imaging</p>
+<dd><p>Select data from calibrated MS(s) to form new MS(s) for imaging</p>
 <p>Create new MeasurementSets for imaging from the corrected column of the input
 MeasurementSet. By default all science target data is copied to the new MS. The new
 MeasurementSet is not re-indexed to the selected data in the new MS will have the
 same source, field, and spw names and ids as it does in the parent MS.</p>
 <p>The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis           The list of input MeasurementSets to be transformed. Defaults to the</dt><dd><p>list of MeasurementSets specified in the pipeline import data task.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets to be transformed. Defaults to the list of MeasurementSets specified in the pipeline import data task.
 default ‘’: Split all MeasurementSets in the context.
-example: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</dd>
-<dt>outputvis     The list of output split MeasurementSets. The output list must</dt><dd><p>be the same length as the input list and the output names must be different
+example: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>outputvis</strong> – The list of output split MeasurementSets. The output list must be the same length as the input list and the output names must be different
 from the input names.
 default ‘’, The output name defaults to &lt;msrootname&gt;_split.ms
-example: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+example: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>field</strong> – Set of data selection field names or ids, ‘’ for all</p></li>
+<li><p><strong>intent</strong> – Select intents to split default: ‘’, All data is selected.
+example: ‘TARGET’</p></li>
+<li><p><strong>spw</strong> – Select spectral windows to split. default: ‘’, All spws are selected
+example: ‘9’, ‘9,13,15’</p></li>
+<li><p><strong>datacolumn</strong> – Select spectral windows to split. The standard CASA options are supported. example: ‘corrected’, ‘model’</p></li>
+<li><p><strong>chanbin</strong> – The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16. example: 2, 4</p></li>
+<li><p><strong>timebin</strong> – The time binning factor. ‘0s’ for no binning example: ’10s’ for 10 second binning</p></li>
+<li><p><strong>replace</strong> – If a split was performed delete the parent MS and remove it from the context.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>field         Set of data selection field names or ids, ‘’ for all
-intent        Select intents to split</p>
-<blockquote>
-<div><p>default: ‘’, All data is selected.
-example: ‘TARGET’</p>
-</div></blockquote>
-<dl class="simple">
-<dt>spw           Select spectral windows to split.</dt><dd><p>default: ‘’, All spws are selected
-example: ‘9’, ‘9,13,15’</p>
-</dd>
-<dt>datacolumn    Select spectral windows to split. The standard CASA options are supported.</dt><dd><p>example: ‘corrected’, ‘model’</p>
-</dd>
-<dt>chanbin       The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16.</dt><dd><p>example: 2, 4</p>
-</dd>
-<dt>timebin       The time binning factor. ‘0s’ for no binning</dt><dd><p>example: ’10s’ for 10 second binning</p>
-</dd>
-</dl>
-<p>replace       If a split was performed delete the parent MS and remove it from the context.</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Create a 4X channel smoothed output MS from the input MS</p></li>
 </ol>

@@ -54,10 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
@@ -150,9 +146,7 @@
 <span class="k">def</span> <span class="nf">hif_setmodels</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">normfluxes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scalebychan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    hif_setmodels ---- Set calibrator source models</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set calibrator source models</span>
 
 <span class="sd">    Set model fluxes values for calibrator reference and transfer sources using lookup</span>
 <span class="sd">    values. By default the reference sources are the flux calibrators and the transfer</span>
@@ -171,49 +165,40 @@
 <span class="sd">    vis,fieldid,spwid,I,Q,U,V,pix,comment</span>
 
 
-<span class="sd">    Output:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.</span>
+<span class="sd">            example: [&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]</span>
 
-<span class="sd">    results -- The results object for the pipeline task is returned</span>
+<span class="sd">        reference: A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with</span>
+<span class="sd">            intent &#39;AMPLITUDE&#39;.</span>
+<span class="sd">            example: &#39;M82,3C273&#39;</span>
 
-<span class="sd">    --------- parameter descriptions ---------------------------------------------</span>
+<span class="sd">        refintent: A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to &#39;AMPLITUDE&#39;.</span>
+<span class="sd">            example: &#39;BANDPASS&#39;</span>
 
-<span class="sd">    vis           The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">                  MeasurementSets specified in the pipeline context.</span>
+<span class="sd">        transfer: A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with</span>
+<span class="sd">            intent &#39;&#39;.</span>
+<span class="sd">            example: &#39;J1328+041,J1206+30&#39;</span>
 
-<span class="sd">                  example: [&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]</span>
-<span class="sd">    reference     A string containing a comma delimited list of  field names</span>
-<span class="sd">                  defining the reference calibrators. Defaults to field names with</span>
-<span class="sd">                  intent &#39;AMPLITUDE&#39;.</span>
+<span class="sd">        transintent: A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to &#39;BANDPASS,PHASE,CHECK&#39;.</span>
+<span class="sd">            &#39;&#39; stands for no transfer sources.</span>
+<span class="sd">            example: &#39;PHASE&#39;</span>
 
-<span class="sd">                  example: &#39;M82,3C273&#39;</span>
-<span class="sd">    refintent     A string containing a comma delimited list of intents</span>
-<span class="sd">                  used to select the reference calibrators. Defaults to &#39;AMPLITUDE&#39;.</span>
+<span class="sd">        reffile: The reference file containing a lookup table of point source models This file currently defaults to &#39;flux.csv&#39; in the working directory. This</span>
+<span class="sd">            file must conform to the standard pipeline &#39;flux.csv&#39; format</span>
+<span class="sd">            example: &#39;myfluxes.csv&#39;</span>
 
-<span class="sd">                  example: &#39;BANDPASS&#39;</span>
-<span class="sd">    transfer      A string containing a comma delimited list of  field names</span>
-<span class="sd">                  defining the transfer calibrators. Defaults to field names with</span>
-<span class="sd">                  intent &#39;&#39;.</span>
+<span class="sd">        normfluxes: Normalize the transfer source flux densities.</span>
 
-<span class="sd">                  example: &#39;J1328+041,J1206+30&#39;</span>
-<span class="sd">    transintent   A string containing a comma delimited list of intents</span>
-<span class="sd">                  defining the transfer calibrators. Defaults to &#39;BANDPASS,PHASE,CHECK&#39;.</span>
-<span class="sd">                  &#39;&#39; stands for no transfer sources.</span>
+<span class="sd">        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis</span>
 
-<span class="sd">                  example: &#39;PHASE&#39;</span>
-<span class="sd">    reffile       The reference file containing a lookup table of point source models</span>
-<span class="sd">                  This file currently defaults to &#39;flux.csv&#39; in the working directory. This</span>
-<span class="sd">                  file must conform to the standard pipeline &#39;flux.csv&#39; format</span>
-<span class="sd">                  example: &#39;myfluxes.csv&#39;</span>
-<span class="sd">    normfluxes    Normalize the transfer source flux densities.</span>
-<span class="sd">    scalebychan   Scale the flux density on a per channel basis or else on a per spw basis</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
 
-<span class="sd">    --------- examples -----------------------------------------------------------</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Set model fluxes for the flux, bandpass, phase, and check sources.</span>
 
-
-<span class="sd">    1. Set model fluxes for the flux, bandpass, phase, and check sources.</span>
-
-<span class="sd">    &gt;&gt;&gt; hif_setmodels()</span>
-
+<span class="sd">        &gt;&gt;&gt; hif_setmodels()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

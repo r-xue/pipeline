@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -149,7 +145,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.recipes.procedure_hifv_calimage_cont.h_exportdata">
 <span class="sig-name descname"><span class="pre">h_exportdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imaging_products_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exportmses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pprfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calintents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_exportdata.html#h_exportdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.procedure_hifv_calimage_cont.h_exportdata" title="Link to this definition"></a></dt>
-<dd><p>h_exportdata —- Prepare interferometry data for export</p>
+<dd><p>Prepare interferometry data for export</p>
 <p>The hif_exportdata task exports the data defined in the pipeline context
 and exports it to the data products directory, converting and or
 packing it as necessary.</p>
@@ -166,39 +162,33 @@ packing it as necessary.</p>
 </ul>
 <p>Returns</p>
 <p>The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl class="simple">
-<dt>vis                   List of visibility data files for which flagging and calibration</dt><dd><p>information will be exported. Defaults to the list maintained in the
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
 pipeline context.
-example: vis=[‘X227.ms’, ‘X228.ms’]</p>
+example: vis=[‘X227.ms’, ‘X228.ms’]</p></li>
+<li><p><strong>session</strong> – List of sessions one per visibility file. Defaults to a single virtual session containing all the visibility files in vis.
+example: session=[‘session1’, ‘session2’]</p></li>
+<li><p><strong>imaging_products_only</strong> – Export the science target image products only</p></li>
+<li><p><strong>exportmses</strong> – Export MeasurementSets defined in vis instead of flags, caltables, and calibration instructions.
+example: exportmses = True</p></li>
+<li><p><strong>pprfile</strong> – Name of the pipeline processing request to be exported. Defaults to a file matching the template ‘PPR_*.xml’.
+example: pprfile=[‘PPR_GRB021004.xml’]</p></li>
+<li><p><strong>calintents</strong> – List of calibrator image types to be exported. Defaults to all standard calibrator intents ‘BANDPASS’, ‘PHASE’, ‘FLUX’
+example: calintents=’PHASE’</p></li>
+<li><p><strong>calimages</strong> – List of calibrator images to be exported. Defaults to all calibrator images recorded in the pipeline context.
+example: calimages=[‘3C454.3.bandpass’, ‘3C279.phase’]</p></li>
+<li><p><strong>targetimages</strong> – List of science target images to be exported. Science target images recorded in the pipeline context.
+example: targetimages=[‘NGC3256.band3’, ‘NGC3256.band6’]</p></li>
+<li><p><strong>products_dir</strong> – Name of the data products subdirectory. example: products_dir=’../products’</p></li>
+</ul>
 </dd>
-<dt>session               session – List of sessions one per visibility file. Defaults</dt><dd><p>to a single virtual session containing all the visibility files in vis.
-example: session=[‘session1’, ‘session2’]</p>
-</dd>
-</dl>
-<p>imaging_products_only Export the science target image products only
-exportmses            Export MeasurementSets defined in vis instead of flags,</p>
-<blockquote>
-<div><p>caltables, and calibration instructions.
-example: exportmses = True</p>
-</div></blockquote>
-<dl class="simple">
-<dt>pprfile               Name of the pipeline processing request to be exported. Defaults</dt><dd><p>to a file matching the template ‘PPR_*.xml’.
-example: pprfile=[‘PPR_GRB021004.xml’]</p>
-</dd>
-<dt>calintents            calintents – List of calibrator image types to be exported. Defaults to</dt><dd><p>all standard calibrator intents ‘BANDPASS’, ‘PHASE’, ‘FLUX’
-example: calintents=’PHASE’</p>
-</dd>
-<dt>calimages             List of calibrator images to be exported. Defaults to all</dt><dd><p>calibrator images recorded in the pipeline context.
-example: calimages=[‘3C454.3.bandpass’, ‘3C279.phase’]</p>
-</dd>
-<dt>targetimages          List of science target images to be exported.</dt><dd><p>Science target images recorded in the pipeline context.
-example: targetimages=[‘NGC3256.band3’, ‘NGC3256.band6’]</p>
-</dd>
-<dt>products_dir          Name of the data products subdirectory.</dt><dd><p>example: products_dir=’../products’</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <p>1. Export the pipeline results for a single session to the data products
 directory</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !mkdir ../products
@@ -211,15 +201,6 @@ only the gain calibrator images be saved.</p>
 &gt;&gt;&gt; hif_exportdata (products_dir=&#39;../products&#39;, calintents=&#39;*PHASE*&#39;)
 </pre></div>
 </div>
-<p>——— issues ———————————————————–</p>
-<p>Support for merging the calibration state information into the pipeline
-context / results structure and retrieving it still needs to be added.</p>
-<p>Support for merging the clean results into the pipeline context / results
-structure and retrieving it still needs to be added.</p>
-<p>Support for creating the final pipeline results entity still needs to
-be added.</p>
-<p>Session information is not currently handled by the pipeline context.
-By default all ASDMs are combined into one session.</p>
 </dd></dl>
 
 </section>

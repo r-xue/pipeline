@@ -57,10 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">TaskRef (create_docs.py)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../_taskdocs/taskdocs.html">List of Heuristics Tasks (Pipeline 2023)</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
@@ -148,36 +144,33 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.cli.hif_transformimagedata">
 <span class="sig-name descname"><span class="pre">hif_transformimagedata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputvis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chanbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timebin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_pointing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modify_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_transformimagedata.html#hif_transformimagedata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.cli.hif_transformimagedata" title="Link to this definition"></a></dt>
-<dd><p>hif_transformimagedata —- Extract fields for the desired VLASS image to a new MS and reset weights if desired</p>
+<dd><p>Extract fields for the desired VLASS image to a new MS and reset weights if desired</p>
 <p>Extract fields for the desired VLASS image to a new MS and reset weights if desired</p>
-<p>Output:</p>
-<p>results – The results object for the pipeline task is returned.</p>
-<p>——— parameter descriptions ———————————————</p>
-<dl>
-<dt>vis            List of visibility data files. These may be ASDMs, tar files of ASDMs,</dt><dd><p>MSs, or tar files of MSs, If ASDM files are specified, they will be
-converted  to MS format.</p>
-<p>example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
+converted  to MS format.
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>outputvis</strong> – The output MeasurementSet.</p></li>
+<li><p><strong>field</strong> – Set of data selection field names or ids, ‘’ for all.</p></li>
+<li><p><strong>intent</strong> – Set of data selection intents, ‘’ for all.</p></li>
+<li><p><strong>spw</strong> – Set of data selection spectral window ids ‘’ for all.</p></li>
+<li><p><strong>datacolumn</strong> – Select spectral windows to split. The standard CASA options are supported
+example: ‘data’, ‘model’</p></li>
+<li><p><strong>chanbin</strong> – Bin width for channel averaging.</p></li>
+<li><p><strong>timebin</strong> – Bin width for time averaging.</p></li>
+<li><p><strong>replace</strong> – If a split was performed delete the parent MS and remove it from the context. example: True or False</p></li>
+<li><p><strong>clear_pointing</strong> – Clear the pointing table.</p></li>
+<li><p><strong>modify_weights</strong> – Re-initialize the weights.</p></li>
+<li><p><strong>wtmode</strong> – optional weight initialization mode when modify_weights=True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
 </dd>
 </dl>
-<p>outputvis      The output MeasurementSet.
-field          Set of data selection field names or ids, ‘’ for all.
-intent         Set of data selection intents, ‘’ for all.
-spw            Set of data selection spectral window ids ‘’ for all.
-datacolumn     Select spectral windows to split. The standard CASA options are</p>
-<blockquote>
-<div><p>supported</p>
-<p>example: ‘data’, ‘model’</p>
-</div></blockquote>
-<p>chanbin        Bin width for channel averaging.
-timebin        Bin width for time averaging.
-replace        If a split was performed delete the parent MS and remove it from the context.</p>
-<blockquote>
-<div><p>example: True or False</p>
-</div></blockquote>
-<p>clear_pointing Clear the pointing table.
-modify_weights Re-initialize the weights.
-wtmode         optional weight initialization mode when modify_weights=True</p>
-<p>——— examples ———————————————————–</p>
+<p class="rubric">Examples</p>
 <ol class="arabic simple">
 <li><p>Basic transformimagedata task</p></li>
 </ol>
