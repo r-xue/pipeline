@@ -231,7 +231,7 @@ latex_use_modindex = True
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    ('_taskdocs/taskdocs', 'taskdocs.tex',
+    ('latex', 'taskdocs.tex',
      'Pipeline Tasks Reference Manual',
      'pipeline team', 'manual'),
 ]
