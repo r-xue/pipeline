@@ -160,7 +160,7 @@
 
 
 <div class="viewcode-block" id="Scan">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.Scan.html#pipeline.domain.Scan">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.scan.Scan.html#pipeline.domain.scan.Scan">[docs]</a>
 <span class="k">class</span> <span class="nc">Scan</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Scan is a logical representation of a single scan.</span>
@@ -337,7 +337,7 @@
         <span class="k">return</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
 
 <div class="viewcode-block" id="Scan.exposure_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.Scan.html#pipeline.domain.Scan.exposure_time">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.scan.Scan.html#pipeline.domain.scan.Scan.exposure_time">[docs]</a>
     <span class="k">def</span> <span class="nf">exposure_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return exposure time for this Scan for given spectral window ID.</span>
@@ -352,7 +352,7 @@
 
 
 <div class="viewcode-block" id="Scan.mean_interval">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.Scan.html#pipeline.domain.Scan.mean_interval">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.scan.Scan.html#pipeline.domain.scan.Scan.mean_interval">[docs]</a>
     <span class="k">def</span> <span class="nf">mean_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the &quot;mean&quot; sub-scan integration time for given spectral window ID.</span>
