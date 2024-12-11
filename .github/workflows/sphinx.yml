@@ -22,7 +22,8 @@ jobs:
         environment-file: pipe1669.yaml
         channel-priority: strict
         use-only-tar-bz2: true
-        show-channel-urls: true        
+        show-channel-urls: true
+        miniforge-version: latest
     - run: conda info
     - run: conda list
     - run: conda config --show
