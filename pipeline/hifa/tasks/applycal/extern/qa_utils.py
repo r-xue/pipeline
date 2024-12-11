@@ -95,46 +95,18 @@ def getSpecSetup(myms, spwlist = [], intentlist = ['*BANDPASS*', '*FLUX*', '*PHA
             spwsetup['fieldid'][intent] = list(msmd.fieldsforintent(intent,asnames=False))
 
         spwsetup['antids'] = msmd.antennasforscan(scan = spwsetup['scan'][intentlist[0]][0])
-        spwsetup['antnames'] = np.array(msmd.antennanames(spwsetup['antids']))
-        spwsetup['spwnames'] = np.array(msmd.namesforspws(spwlist))
-        spwsetup['fdmspws'] = msmd.fdmspws()
-        spwsetup['tdmspws'] = msmd.tdmspws()
-
-        #Read in antenna positions
-        with casa_tools.TableReader(f'{myms}/ANTENNA') as tb:
-            position = tb.getcol('POSITION')
-        medpos = np.median(position, axis=1)
-        centerdist = np.sqrt((position[0,:]-medpos[0])**2+(position[2,:]-medpos[2])**2)
-        spwsetup['antpos'] = position
-        spwsetup['antcenterdist'] = centerdist
 
         #Get SPW info
-        nchanperbb = [0, 0, 0, 0]
         for spwid in spwlist:
             spwsetup[spwid] = {}
             #Get SPW information: frequencies of each channel, etc.
             chanfreqs = msmd.chanfreqs(spw=spwid)
             nchan = len(chanfreqs)
-            fcenter = (chanfreqs[nchan//2-1]+chanfreqs[nchan//2])/2.
-            chansep = (chanfreqs[-1]-chanfreqs[0])/(nchan-1)
             spwsetup[spwid]['chanfreqs'] = chanfreqs
             spwsetup[spwid]['nchan'] = nchan
-            spwsetup[spwid]['fcenter'] = fcenter
-            spwsetup[spwid]['chansep'] = chansep
-            # spwsetup[spwid]['Nave'] = aU.onlineChannelAveraging(myms, spwid, msmd)
-            spwsetup[spwid]['Nave'] = onlineChannelAveraging(msmd, spwid)
             #Get data descriptor for each SPW
             spwsetup[spwid]['ddi'] = msmd.datadescids(spw=spwid)[0]
             spwsetup[spwid]['npol'] = msmd.ncorrforpol(msmd.polidfordatadesc(spwsetup[spwid]['ddi']))
-            #Get baseband for each SPW
-            spwsetup[spwid]['BB'] = int(msmd.baseband(spwid))
-            spwsetup[spwid]['BBname'] = 'BB_'+str(spwsetup[spwid]['BB'])
-            spwsetup[spwid]['istdm'] = (spwid in spwsetup['tdmspws'])
-            spwsetup[spwid]['nchan_high'] = nchan*5
-            spwsetup[spwid]['chansep_high'] = chansep/5.
-            spwsetup[spwid]['chanfreqs_high']  = chanfreqs[0] + (chansep/5.)*np.arange(nchan*5)
-            spwsetup[spwid]['fcenter_high'] = (spwsetup[spwid]['chanfreqs_high'][nchan//2-1]+spwsetup[spwid]['chanfreqs_high'][nchan//2])/2.
-            nchanperbb[spwsetup[spwid]['BB'] - 1] += spwsetup[spwid]['nchan']
 
         #Save SPW setup in buffer folder
         if (bfolder is not None):
