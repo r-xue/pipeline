@@ -7,40 +7,40 @@ import pipeline.h.cli.utils as utils
 def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffile=None, fluxdensity=None, spix=None,
                   reffreq=None, scalebychan=None, standard=None):
 
-    """
-    hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set
+    """Sets flux density scale and fills calibrator model to measurement set.
 
-    The hifv_vlasetjy task does an initial run of setjy on the vis
+    The hifv_vlasetjy task does an initial run of setjy on the vis.
 
-    Output:
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    results -- The results object for the pipeline task is returned.
+        field: List of field names or ids.
 
-    standard -- Flux density standard
-    default: ''
+        intent: Observing intent of flux calibrators.
 
-    --------- parameter descriptions ---------------------------------------------
+        spw: List of spectral window ids.
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    field         List of field names or ids.
-    intent        Observing intent of flux calibrators.
-    spw           List of spectral window ids.
-    model         File location for field model.
-    reffile       Path to file with fluxes for non-solar system calibrators.
-    fluxdensity   Specified flux density [I,Q,U,V]; -1 will lookup values
-    spix          Spectral index of fluxdensity.  Can be set when fluxdensity is not -1
-    reffreq       Reference frequency for spix.  Can be set when fluxdensity is not -1
-    scalebychan   Scale the flux density on a per channel basis or else on a per spw basis
-    standard      Flux density standard
+        model: File location for field model.
 
-    --------- examples -----------------------------------------------------------
+        reffile: Path to file with fluxes for non-solar system calibrators.
 
+        fluxdensity: Specified flux density [I,Q,U,V]; -1 will lookup values.
 
-    1. Initial run of setjy:
+        spix: Spectral index of fluxdensity.  Can be set when fluxdensity is not -1.
 
-    >>> hifv_vlasetjy()
+        reffreq: Reference frequency for spix.  Can be set when fluxdensity is not -1.
 
+        scalebychan: Scale the flux density on a per channel basis or else on a per spw basis.
+
+        standard: Flux density standard.
+
+    Returns:
+        The results object for the pipeline task is returned.
+
+    Examples:
+        1. Initial run of setjy:
+
+        >>> hifv_vlasetjy()
 
     """
 

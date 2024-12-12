@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
-    """
-    hsd_imaging ---- Generate single dish images
+    """Generate single dish images.
 
     The hsd_imaging task generates single dish images per antenna as
     well as combined image over whole antennas for each field and
@@ -17,34 +16,32 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
     Note that generated images are always in LSRK frame.
 
-    Output:
-    results -- The results object for the pipeline task is returned.
+    Args:
+        mode: Imaging mode controls imaging parameters in the task. Accepts either "line" (spectral line imaging) or "ampcal"
+            (image settings for amplitude calibrator).
 
-    --------- parameter descriptions ---------------------------------------------
+        restfreq: Rest frequency
 
-    mode          Imaging mode controls imaging parameters in the task.
-                  Accepts either "line" (spectral line imaging) or "ampcal"
-                  (image settings for amplitude calibrator)
-    restfreq      Rest frequency
-    infiles       List of data files. These must be a name of
-                  MeasurementSets that are registered to context via
-                  hsd_importdata task.
-                  example: vis=['uid___A002_X85c183_X36f.ms',
-                                'uid___A002_X85c183_X60b.ms']
-    field         Data selection by field names or ids.
-                  example: "`*Sgr*,M100`"
-    spw           Data selection by spw ids.
-                  example: "3,4" (generate images for spw 3 and 4)
+        infiles: List of data files. These must be a name of MeasurementSets that are registered to context via
+            hsd_importdata task.
+            example: vis=['uid___A002_X85c183_X36f.ms',
+            'uid___A002_X85c183_X60b.ms']
 
-    --------- examples -----------------------------------------------------------
+        field: Data selection by field names or ids. example: "`*Sgr*,M100`"
 
-    1. Generate images with default settings and context
+        spw: Data selection by spw ids. example: "3,4" (generate images for spw 3 and 4)
 
-    >>> hsd_imaging()
+    Returns:
+        The results object for the pipeline task is returned.
 
-    2. Generate images with amplitude calibrator and specific parameters
+    Examples:
+        1. Generate images with default settings and context
 
-    >>> hsd_imaging(mode='ampcal', field='*Sgr*,M100', spw='17,19')
+        >>> hsd_imaging()
+
+        2. Generate images with amplitude calibrator and specific parameters
+
+        >>> hsd_imaging(mode='ampcal', field='*Sgr*,M100', spw='17,19')
 
     """
 
