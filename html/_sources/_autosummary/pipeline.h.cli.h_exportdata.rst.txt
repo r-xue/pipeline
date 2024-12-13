@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_exportdata
 ============================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_exportdata
 
-.. autofunction:: h_exportdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

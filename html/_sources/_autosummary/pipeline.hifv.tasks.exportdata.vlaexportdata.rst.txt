@@ -9,14 +9,6 @@ pipeline.hifv.tasks.exportdata.vlaexportdata
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      fitsname
-   
    
 
    

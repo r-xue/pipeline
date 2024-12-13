@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_mstransform
 ===================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_mstransform
 
-.. autofunction:: hifv_mstransform
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

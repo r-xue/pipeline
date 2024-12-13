@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_diffgaincal
 ===================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_diffgaincal
 
-.. autofunction:: hifa_diffgaincal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

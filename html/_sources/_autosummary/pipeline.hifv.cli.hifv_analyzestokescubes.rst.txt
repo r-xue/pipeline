@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_analyzestokescubes
 ==========================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_analyzestokescubes
 
-.. autofunction:: hifv_analyzestokescubes
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

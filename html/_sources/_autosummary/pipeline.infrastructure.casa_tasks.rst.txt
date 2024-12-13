@@ -61,7 +61,6 @@ pipeline.infrastructure.casa\_tasks
       sdcal
       sdimaging
       setjy
-      signature
       split
       statwt
       tclean
@@ -83,7 +82,6 @@ pipeline.infrastructure.casa\_tasks
       :nosignatures:
    
       CasaTasks
-      JobRequest
    
    
 

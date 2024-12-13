@@ -29,8 +29,6 @@ pipeline.hsd.tasks.common.observatory\_policy
       :nosignatures:
    
       ALMAImagingPolicy
-      Context
-      MeasurementSet
       NROImagingPolicy
       ObservatoryImagingPolicy
    

@@ -1,6 +1,23 @@
 pipeline.hsdn.cli.hsdn\_restoredata
 ===================================
 
-.. currentmodule:: pipeline.hsdn.cli
+.. automodule:: pipeline.hsdn.cli.hsdn_restoredata
 
-.. autofunction:: hsdn_restoredata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

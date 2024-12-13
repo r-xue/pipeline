@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_bandpass
 ==============================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_bandpass
 
-.. autofunction:: hif_bandpass
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

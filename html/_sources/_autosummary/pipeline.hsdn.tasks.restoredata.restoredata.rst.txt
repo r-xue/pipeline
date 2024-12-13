@@ -20,12 +20,9 @@ pipeline.hsdn.tasks.restoredata.restoredata
       :template: custom-class-template.rst
       :nosignatures:
    
-      ApplycalResults
-      Context
       NRORestoreData
       NRORestoreDataInputs
       NRORestoreDataResults
-      ResultsList
    
    
 

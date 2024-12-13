@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_polcal
 ==============================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_polcal
 
-.. autofunction:: hifa_polcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

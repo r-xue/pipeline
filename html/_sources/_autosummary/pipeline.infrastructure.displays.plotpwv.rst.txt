@@ -16,14 +16,10 @@ pipeline.infrastructure.displays.plotpwv
       :nosignatures:
    
       MAD
-      RescaleXAxisTimeTicks
       getObservatoryName
-      mjd_seconds_to_datetime
       plotPWV
       readPWVFromASDM_CALATMOSPHERE
       readPWVFromMS
-      splev
-      splrep
    
    
 

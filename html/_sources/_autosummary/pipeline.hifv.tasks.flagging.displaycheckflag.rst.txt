@@ -9,15 +9,6 @@ pipeline.hifv.tasks.flagging.displaycheckflag
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      griddata
-      make_axes_locatable
-   
    
 
    

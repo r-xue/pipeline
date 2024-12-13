@@ -29,9 +29,6 @@ pipeline.hsd.tasks.baselineflag.worker
       :nosignatures:
    
       BLFlagTableContainer
-      DataTable
-      DataType
-      MeasurementSet
       SDBLFlagWorker
       SDBLFlagWorkerInputs
       SDBLFlagWorkerResults

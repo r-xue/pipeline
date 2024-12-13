@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_gaincalsnr
 ==================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_gaincalsnr
 
-.. autofunction:: hifa_gaincalsnr
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

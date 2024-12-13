@@ -1,6 +1,23 @@
 pipeline.hifv.heuristics.uvrange
 ================================
 
-.. currentmodule:: pipeline.hifv.heuristics
+.. automodule:: pipeline.hifv.heuristics.uvrange
 
-.. autofunction:: uvrange
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

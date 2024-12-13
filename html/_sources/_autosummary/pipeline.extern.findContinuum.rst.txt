@@ -74,7 +74,6 @@ pipeline.extern.findContinuum
       gauss_kern
       gaussianBeamOffset
       gaussianBeamResponse
-      gaussian_filter
       getDateObs
       getEquinox
       getFieldnameFromPipelineImageName
@@ -122,7 +121,6 @@ pipeline.extern.findContinuum
       parseFrequencyArgument
       parseFrequencyArgumentToGHz
       parseFrequencyArgumentToHz
-      percentileofscore
       pickAutoTrimChannels
       pickNarrow
       pickNarrowString
@@ -150,7 +148,6 @@ pipeline.extern.findContinuum
       readViewerOutputFile
       recalcMomDiffSNR
       rejectNarrowInnerWindowsChannels
-      reload
       removeIfNecessary
       removeInitialQuadraticIfNeeded
       removeNaNs
@@ -165,8 +162,6 @@ pipeline.extern.findContinuum
       round_half_up
       runFindContinuum
       sanitizeNames
-      scipy_nanmean
-      scoreatpercentile
       setYLimitsAvoidingEdgeChannels
       sigmaCorrectionFactor
       smooth
@@ -197,23 +192,6 @@ pipeline.extern.findContinuum
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      attool
-      iatool
-      metool
-      msmdtool
-      mstool
-      qatool
-      rgtool
-      synthesismaskhandler
-      tbtool
    
    
 

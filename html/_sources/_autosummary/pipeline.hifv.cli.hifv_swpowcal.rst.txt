@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_swpowcal
 ================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_swpowcal
 
-.. autofunction:: hifv_swpowcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

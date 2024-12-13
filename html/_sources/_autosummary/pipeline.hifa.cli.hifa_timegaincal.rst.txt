@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_timegaincal
 ===================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_timegaincal
 
-.. autofunction:: hifa_timegaincal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

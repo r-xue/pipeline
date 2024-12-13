@@ -19,7 +19,6 @@ pipeline.h.tasks.common.atmutil
       calc_transmission
       get_altitude
       get_dry_opacity
-      get_logger
       get_median_elevation
       get_representative_elevation
       get_spw_spec

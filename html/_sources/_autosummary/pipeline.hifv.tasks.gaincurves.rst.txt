@@ -13,15 +13,6 @@ pipeline.hifv.tasks.gaincurves
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      GainCurves
-   
    
 
    

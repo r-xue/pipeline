@@ -20,9 +20,6 @@ pipeline.domain.fluxmeasurement
       :template: custom-class-template.rst
       :nosignatures:
    
-      Decimal
-      FluxDensity
-      FluxDensityUnits
       FluxMeasurement
    
    

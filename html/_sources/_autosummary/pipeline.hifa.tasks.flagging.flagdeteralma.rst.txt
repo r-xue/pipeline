@@ -15,9 +15,7 @@ pipeline.hifa.tasks.flagging.flagdeteralma
       :toctree:
       :nosignatures:
    
-      channel_ranges
       convert_params_to_commands
-      getMedianPWV
       get_airmass_for_alma_scan
       get_elevation_for_alma_scan
       get_partialpol_flag_cmd_params
@@ -36,14 +34,9 @@ pipeline.hifa.tasks.flagging.flagdeteralma
       :template: custom-class-template.rst
       :nosignatures:
    
-      AltAz
-      EarthLocation
       FlagDeterALMA
       FlagDeterALMAInputs
       FlagDeterALMAResults
-      MeasurementSet
-      SkyCoord
-      Time
    
    
 

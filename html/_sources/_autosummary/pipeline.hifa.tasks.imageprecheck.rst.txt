@@ -13,15 +13,6 @@ pipeline.hifa.tasks.imageprecheck
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      ImagePreCheck
-   
    
 
    

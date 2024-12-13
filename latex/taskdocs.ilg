@@ -1,7 +1,7 @@
 This is makeindex, version 2.15 [TeX Live 2022/dev] (kpathsea + Thai support).
 Scanning style file ./python.ist.......done (7 attributes redefined, 0 ignored).
-Scanning input file taskdocs.idx....done (135 entries accepted, 0 rejected).
-Sorting entries....done (1039 comparisons).
-Generating output file taskdocs.ind....done (172 lines written, 0 warnings).
+Scanning input file taskdocs.idx....done (246 entries accepted, 0 rejected).
+Sorting entries.....done (2119 comparisons).
+Generating output file taskdocs.ind....done (388 lines written, 0 warnings).
 Output written in taskdocs.ind.
 Transcript written in taskdocs.ilg.

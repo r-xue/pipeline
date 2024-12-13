@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_lock\_refant
 ====================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_lock_refant
 
-.. autofunction:: hifa_lock_refant
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

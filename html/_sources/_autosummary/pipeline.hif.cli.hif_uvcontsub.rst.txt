@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_uvcontsub
 ===============================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_uvcontsub
 
-.. autofunction:: hif_uvcontsub
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

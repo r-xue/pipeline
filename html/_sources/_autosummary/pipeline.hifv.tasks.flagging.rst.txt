@@ -13,19 +13,6 @@ pipeline.hifv.tasks.flagging
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Checkflag
-      FlagDeterVLA
-      Flagcal
-      Flagtargetsdata
-      Targetflag
-   
    
 
    

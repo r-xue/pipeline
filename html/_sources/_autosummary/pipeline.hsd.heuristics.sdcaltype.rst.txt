@@ -22,7 +22,6 @@ pipeline.hsd.heuristics.sdcaltype
    
       AsdmCalibrationTypeHeuristics
       CalibrationTypeHeuristics
-      DataTypeHeuristics
       DefaultCalibrationTypeHeuristics
       MsCalibrationTypeHeuristics
    

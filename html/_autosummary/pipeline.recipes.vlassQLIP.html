@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.recipes.vlassQLIP.h_applycal" href="pipeline.recipes.vlassQLIP.h_applycal.html" />
+    <link rel="next" title="pipeline.recipes.vlassQLIP.vlassQLIP" href="pipeline.recipes.vlassQLIP.vlassQLIP.html" />
     <link rel="prev" title="pipeline.recipes.recipe_converter.to_procedure" href="pipeline.recipes.recipe_converter.to_procedure.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
@@ -46,25 +46,21 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#full-list">Full List</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -98,67 +94,38 @@
 </li>
 </ul>
 </li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -168,7 +135,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
           <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
           <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
       <li class="breadcrumb-item active">pipeline.recipes.vlassQLIP</li>
@@ -186,342 +153,6 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_applycal.html#pipeline.recipes.vlassQLIP.h_applycal" title="pipeline.recipes.vlassQLIP.h_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_applycal</span></code></a></p></td>
-<td><p>Apply the calibration(s) to the data</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_export_calstate.html#pipeline.recipes.vlassQLIP.h_export_calstate" title="pipeline.recipes.vlassQLIP.h_export_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_export_calstate</span></code></a></p></td>
-<td><p>Save the pipeline calibration state to disk</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_exportdata.html#pipeline.recipes.vlassQLIP.h_exportdata" title="pipeline.recipes.vlassQLIP.h_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_exportdata</span></code></a></p></td>
-<td><p>Prepare interferometry data for export</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_import_calstate.html#pipeline.recipes.vlassQLIP.h_import_calstate" title="pipeline.recipes.vlassQLIP.h_import_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_import_calstate</span></code></a></p></td>
-<td><p>Import a calibration state from disk</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_importdata.html#pipeline.recipes.vlassQLIP.h_importdata" title="pipeline.recipes.vlassQLIP.h_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_importdata</span></code></a></p></td>
-<td><p>Imports data into the interferometry pipeline</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_init.html#pipeline.recipes.vlassQLIP.h_init" title="pipeline.recipes.vlassQLIP.h_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code></a></p></td>
-<td><p>Initialize the pipeline</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_mssplit.html#pipeline.recipes.vlassQLIP.h_mssplit" title="pipeline.recipes.vlassQLIP.h_mssplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_mssplit</span></code></a></p></td>
-<td><p>Select data from calibrated MS(s) to form new MS(s) for imaging</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_restoredata.html#pipeline.recipes.vlassQLIP.h_restoredata" title="pipeline.recipes.vlassQLIP.h_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_restoredata</span></code></a></p></td>
-<td><p>Restore flags and calibration state from a pipeline run</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_resume.html#pipeline.recipes.vlassQLIP.h_resume" title="pipeline.recipes.vlassQLIP.h_resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code></a></p></td>
-<td><p>Restore a saved pipeline state</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_save.html#pipeline.recipes.vlassQLIP.h_save" title="pipeline.recipes.vlassQLIP.h_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code></a></p></td>
-<td><p>Save the pipeline state to disk</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_show_calstate.html#pipeline.recipes.vlassQLIP.h_show_calstate" title="pipeline.recipes.vlassQLIP.h_show_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_show_calstate</span></code></a></p></td>
-<td><p>Show the current pipeline calibration state</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_tsyscal.html#pipeline.recipes.vlassQLIP.h_tsyscal" title="pipeline.recipes.vlassQLIP.h_tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_tsyscal</span></code></a></p></td>
-<td><p>Derive a Tsys calibration table</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.h_weblog.html#pipeline.recipes.vlassQLIP.h_weblog" title="pipeline.recipes.vlassQLIP.h_weblog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_weblog</span></code></a></p></td>
-<td><p>Open the pipeline weblog in a browser</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_analyzealpha.html#pipeline.recipes.vlassQLIP.hif_analyzealpha" title="pipeline.recipes.vlassQLIP.hif_analyzealpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_analyzealpha</span></code></a></p></td>
-<td><p>Extract spectral index from intensity peak in VLA/VLASS images</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_antpos.html#pipeline.recipes.vlassQLIP.hif_antpos" title="pipeline.recipes.vlassQLIP.hif_antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_antpos</span></code></a></p></td>
-<td><p>Derive an antenna position calibration table</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_applycal.html#pipeline.recipes.vlassQLIP.hif_applycal" title="pipeline.recipes.vlassQLIP.hif_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_applycal</span></code></a></p></td>
-<td><p>Apply the calibration(s) to the data</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_bandpass.html#pipeline.recipes.vlassQLIP.hif_bandpass" title="pipeline.recipes.vlassQLIP.hif_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_bandpass</span></code></a></p></td>
-<td><p>Compute bandpass calibration solutions</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_checkproductsize.html#pipeline.recipes.vlassQLIP.hif_checkproductsize" title="pipeline.recipes.vlassQLIP.hif_checkproductsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_checkproductsize</span></code></a></p></td>
-<td><p>Check imaging product size</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_correctedampflag.html#pipeline.recipes.vlassQLIP.hif_correctedampflag" title="pipeline.recipes.vlassQLIP.hif_correctedampflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code></a></p></td>
-<td><p>Flag corrected - model amplitudes based on calibrators.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_editimlist.html#pipeline.recipes.vlassQLIP.hif_editimlist" title="pipeline.recipes.vlassQLIP.hif_editimlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_editimlist</span></code></a></p></td>
-<td><p>Add to a list of images to be produced with hif_makeimages()</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_findcont.html#pipeline.recipes.vlassQLIP.hif_findcont" title="pipeline.recipes.vlassQLIP.hif_findcont"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_findcont</span></code></a></p></td>
-<td><p>Find continuum frequency ranges</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_gaincal.html#pipeline.recipes.vlassQLIP.hif_gaincal" title="pipeline.recipes.vlassQLIP.hif_gaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_gaincal</span></code></a></p></td>
-<td><p>Determine temporal gains from calibrator observations</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_lowgainflag.html#pipeline.recipes.vlassQLIP.hif_lowgainflag" title="pipeline.recipes.vlassQLIP.hif_lowgainflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_lowgainflag</span></code></a></p></td>
-<td><p>Flag antennas with low or high gain</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_makecutoutimages.html#pipeline.recipes.vlassQLIP.hif_makecutoutimages" title="pipeline.recipes.vlassQLIP.hif_makecutoutimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makecutoutimages</span></code></a></p></td>
-<td><p>Cutout central 1 sq.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_makeimages.html#pipeline.recipes.vlassQLIP.hif_makeimages" title="pipeline.recipes.vlassQLIP.hif_makeimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimages</span></code></a></p></td>
-<td><p>Compute clean map</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_makeimlist.html#pipeline.recipes.vlassQLIP.hif_makeimlist" title="pipeline.recipes.vlassQLIP.hif_makeimlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makeimlist</span></code></a></p></td>
-<td><p>Compute list of clean images to be produced</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_makermsimages.html#pipeline.recipes.vlassQLIP.hif_makermsimages" title="pipeline.recipes.vlassQLIP.hif_makermsimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_makermsimages</span></code></a></p></td>
-<td><p>Create RMS images for VLASS data.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_mstransform.html#pipeline.recipes.vlassQLIP.hif_mstransform" title="pipeline.recipes.vlassQLIP.hif_mstransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_mstransform</span></code></a></p></td>
-<td><p>Create new MeasurementSets for science target imaging</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_rawflagchans.html#pipeline.recipes.vlassQLIP.hif_rawflagchans" title="pipeline.recipes.vlassQLIP.hif_rawflagchans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_rawflagchans</span></code></a></p></td>
-<td><p>Flag deviant baseline/channels in raw data</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_refant.html#pipeline.recipes.vlassQLIP.hif_refant" title="pipeline.recipes.vlassQLIP.hif_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_refant</span></code></a></p></td>
-<td><p>Select the best reference antennas</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_selfcal.html#pipeline.recipes.vlassQLIP.hif_selfcal" title="pipeline.recipes.vlassQLIP.hif_selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_selfcal</span></code></a></p></td>
-<td><p>Determine and apply self-calibration with the science target data</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_setjy.html#pipeline.recipes.vlassQLIP.hif_setjy" title="pipeline.recipes.vlassQLIP.hif_setjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setjy</span></code></a></p></td>
-<td><p>Fill the model column with calibrated visibilities</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_setmodels.html#pipeline.recipes.vlassQLIP.hif_setmodels" title="pipeline.recipes.vlassQLIP.hif_setmodels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_setmodels</span></code></a></p></td>
-<td><p>Set calibrator source models</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_transformimagedata.html#pipeline.recipes.vlassQLIP.hif_transformimagedata" title="pipeline.recipes.vlassQLIP.hif_transformimagedata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_transformimagedata</span></code></a></p></td>
-<td><p>Extract fields for the desired VLASS image to a new MS and reset weights if desired</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hif_uvcontsub.html#pipeline.recipes.vlassQLIP.hif_uvcontsub" title="pipeline.recipes.vlassQLIP.hif_uvcontsub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hif_uvcontsub</span></code></a></p></td>
-<td><p>Fit and subtract continuum from the data</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_antpos.html#pipeline.recipes.vlassQLIP.hifa_antpos" title="pipeline.recipes.vlassQLIP.hifa_antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_antpos</span></code></a></p></td>
-<td><p>Derive an antenna position calibration table</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_bandpass.html#pipeline.recipes.vlassQLIP.hifa_bandpass" title="pipeline.recipes.vlassQLIP.hifa_bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpass</span></code></a></p></td>
-<td><p>Compute bandpass calibration solutions</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_bandpassflag.html#pipeline.recipes.vlassQLIP.hifa_bandpassflag" title="pipeline.recipes.vlassQLIP.hifa_bandpassflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bandpassflag</span></code></a></p></td>
-<td><p>Bandpass calibration flagging</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_bpsolint.html#pipeline.recipes.vlassQLIP.hifa_bpsolint" title="pipeline.recipes.vlassQLIP.hifa_bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_bpsolint</span></code></a></p></td>
-<td><p>Compute optimal bandpass calibration solution intervals</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_diffgaincal.html#pipeline.recipes.vlassQLIP.hifa_diffgaincal" title="pipeline.recipes.vlassQLIP.hifa_diffgaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_diffgaincal</span></code></a></p></td>
-<td><p>Derive SpW phase offsets from differential gain calibrator.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_exportdata.html#pipeline.recipes.vlassQLIP.hifa_exportdata" title="pipeline.recipes.vlassQLIP.hifa_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_exportdata</span></code></a></p></td>
-<td><p>Prepare interferometry data for export</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_flagdata.html#pipeline.recipes.vlassQLIP.hifa_flagdata" title="pipeline.recipes.vlassQLIP.hifa_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagdata</span></code></a></p></td>
-<td><p>Do metadata based flagging of a list of MeasurementSets.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_flagtargets.html#pipeline.recipes.vlassQLIP.hifa_flagtargets" title="pipeline.recipes.vlassQLIP.hifa_flagtargets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_flagtargets</span></code></a></p></td>
-<td><p>Do science target flagging</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_fluxcalflag.html#pipeline.recipes.vlassQLIP.hifa_fluxcalflag" title="pipeline.recipes.vlassQLIP.hifa_fluxcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_fluxcalflag</span></code></a></p></td>
-<td><p>Locate and flag line regions in solar system flux calibrators</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_gaincalsnr.html#pipeline.recipes.vlassQLIP.hifa_gaincalsnr" title="pipeline.recipes.vlassQLIP.hifa_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gaincalsnr</span></code></a></p></td>
-<td><p>Compute gaincal signal-to-noise ratios per spw</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_gfluxscale.html#pipeline.recipes.vlassQLIP.hifa_gfluxscale" title="pipeline.recipes.vlassQLIP.hifa_gfluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscale</span></code></a></p></td>
-<td><p>Derive flux density scales from standard calibrators</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_gfluxscaleflag.html#pipeline.recipes.vlassQLIP.hifa_gfluxscaleflag" title="pipeline.recipes.vlassQLIP.hifa_gfluxscaleflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_gfluxscaleflag</span></code></a></p></td>
-<td><p>Flag the flux, diffgain, phase calibrators and check source</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_imageprecheck.html#pipeline.recipes.vlassQLIP.hifa_imageprecheck" title="pipeline.recipes.vlassQLIP.hifa_imageprecheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_imageprecheck</span></code></a></p></td>
-<td><p>Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_importdata.html#pipeline.recipes.vlassQLIP.hifa_importdata" title="pipeline.recipes.vlassQLIP.hifa_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_importdata</span></code></a></p></td>
-<td><p>Imports data into the interferometry pipeline</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_lock_refant.html#pipeline.recipes.vlassQLIP.hifa_lock_refant" title="pipeline.recipes.vlassQLIP.hifa_lock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_lock_refant</span></code></a></p></td>
-<td><p>Lock reference antenna list</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_polcal.html#pipeline.recipes.vlassQLIP.hifa_polcal" title="pipeline.recipes.vlassQLIP.hifa_polcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcal</span></code></a></p></td>
-<td><p>Derive instrumental polarization calibration for ALMA.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_polcalflag.html#pipeline.recipes.vlassQLIP.hifa_polcalflag" title="pipeline.recipes.vlassQLIP.hifa_polcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_polcalflag</span></code></a></p></td>
-<td><p>Flag polarization calibrators</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_renorm.html#pipeline.recipes.vlassQLIP.hifa_renorm" title="pipeline.recipes.vlassQLIP.hifa_renorm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_renorm</span></code></a></p></td>
-<td><p>ALMA renormalization task</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_restoredata.html#pipeline.recipes.vlassQLIP.hifa_restoredata" title="pipeline.recipes.vlassQLIP.hifa_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_restoredata</span></code></a></p></td>
-<td><p>Restore flagged and calibration interferometry data from a pipeline run</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_session_refant.html#pipeline.recipes.vlassQLIP.hifa_session_refant" title="pipeline.recipes.vlassQLIP.hifa_session_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_session_refant</span></code></a></p></td>
-<td><p>Select best reference antenna for session(s)</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_spwphaseup.html#pipeline.recipes.vlassQLIP.hifa_spwphaseup" title="pipeline.recipes.vlassQLIP.hifa_spwphaseup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_spwphaseup</span></code></a></p></td>
-<td><p>Compute phase calibration spw map and per spw phase offsets</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_targetflag.html#pipeline.recipes.vlassQLIP.hifa_targetflag" title="pipeline.recipes.vlassQLIP.hifa_targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_targetflag</span></code></a></p></td>
-<td><p>Flag target source outliers</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_timegaincal.html#pipeline.recipes.vlassQLIP.hifa_timegaincal" title="pipeline.recipes.vlassQLIP.hifa_timegaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_timegaincal</span></code></a></p></td>
-<td><p>Determine temporal gains from calibrator observations</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_tsysflag.html#pipeline.recipes.vlassQLIP.hifa_tsysflag" title="pipeline.recipes.vlassQLIP.hifa_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflag</span></code></a></p></td>
-<td><p>Flag deviant system temperatures for ALMA interferometry measurements.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_tsysflagcontamination.html#pipeline.recipes.vlassQLIP.hifa_tsysflagcontamination" title="pipeline.recipes.vlassQLIP.hifa_tsysflagcontamination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_tsysflagcontamination</span></code></a></p></td>
-<td><p>Flag line contamination in ALMA interferometric Tsys caltables</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_unlock_refant.html#pipeline.recipes.vlassQLIP.hifa_unlock_refant" title="pipeline.recipes.vlassQLIP.hifa_unlock_refant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_unlock_refant</span></code></a></p></td>
-<td><p>Unlock reference antenna list</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_wvrgcal.html#pipeline.recipes.vlassQLIP.hifa_wvrgcal" title="pipeline.recipes.vlassQLIP.hifa_wvrgcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcal</span></code></a></p></td>
-<td><p>Generate a gain table based on Water Vapor Radiometer data, and calculate a QA score based on its effect on the interferometric data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifa_wvrgcalflag.html#pipeline.recipes.vlassQLIP.hifa_wvrgcalflag" title="pipeline.recipes.vlassQLIP.hifa_wvrgcalflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifa_wvrgcalflag</span></code></a></p></td>
-<td><p>Generate a gain table based on Water Vapor Radiometer data, interpolating over antennas with bad radiometers.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_analyzestokescubes.html#pipeline.recipes.vlassQLIP.hifv_analyzestokescubes" title="pipeline.recipes.vlassQLIP.hifv_analyzestokescubes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_analyzestokescubes</span></code></a></p></td>
-<td><p>Characterize stokes IQUV flux densities as a function of frequency for VLASS Coarse Cube (CC) images.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_applycals.html#pipeline.recipes.vlassQLIP.hifv_applycals" title="pipeline.recipes.vlassQLIP.hifv_applycals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_applycals</span></code></a></p></td>
-<td><p>Apply calibration tables to input MeasurementSets.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_checkflag.html#pipeline.recipes.vlassQLIP.hifv_checkflag" title="pipeline.recipes.vlassQLIP.hifv_checkflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_checkflag</span></code></a></p></td>
-<td><p>Run RFI flagging using flagdata in various modes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_circfeedpolcal.html#pipeline.recipes.vlassQLIP.hifv_circfeedpolcal" title="pipeline.recipes.vlassQLIP.hifv_circfeedpolcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_circfeedpolcal</span></code></a></p></td>
-<td><p>Perform polarization calibration for VLA circular feeds.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_exportdata.html#pipeline.recipes.vlassQLIP.hifv_exportdata" title="pipeline.recipes.vlassQLIP.hifv_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_exportdata</span></code></a></p></td>
-<td><p>Prepare and export interferometry and imaging data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_exportvlassdata.html#pipeline.recipes.vlassQLIP.hifv_exportvlassdata" title="pipeline.recipes.vlassQLIP.hifv_exportvlassdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_exportvlassdata</span></code></a></p></td>
-<td><p>Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_finalcals.html#pipeline.recipes.vlassQLIP.hifv_finalcals" title="pipeline.recipes.vlassQLIP.hifv_finalcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_finalcals</span></code></a></p></td>
-<td><p>Compute final gain calibration tables.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_fixpointing.html#pipeline.recipes.vlassQLIP.hifv_fixpointing" title="pipeline.recipes.vlassQLIP.hifv_fixpointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_fixpointing</span></code></a></p></td>
-<td><p>Base fixpointing task</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_flagcal.html#pipeline.recipes.vlassQLIP.hifv_flagcal" title="pipeline.recipes.vlassQLIP.hifv_flagcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagcal</span></code></a></p></td>
-<td><p>Flagcal task.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_flagdata.html#pipeline.recipes.vlassQLIP.hifv_flagdata" title="pipeline.recipes.vlassQLIP.hifv_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagdata</span></code></a></p></td>
-<td><p>Do basic deterministic flagging of a list of MeasurementSets.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_flagtargetsdata.html#pipeline.recipes.vlassQLIP.hifv_flagtargetsdata" title="pipeline.recipes.vlassQLIP.hifv_flagtargetsdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_flagtargetsdata</span></code></a></p></td>
-<td><p>Apply a flagtemplate to target data prior to running imaging pipeline tasks.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_fluxboot.html#pipeline.recipes.vlassQLIP.hifv_fluxboot" title="pipeline.recipes.vlassQLIP.hifv_fluxboot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_fluxboot</span></code></a></p></td>
-<td><p>Fluxboot</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_gaincurves.html#pipeline.recipes.vlassQLIP.hifv_gaincurves" title="pipeline.recipes.vlassQLIP.hifv_gaincurves"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_gaincurves</span></code></a></p></td>
-<td><p>Runs gencal in gc mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_hanning.html#pipeline.recipes.vlassQLIP.hifv_hanning" title="pipeline.recipes.vlassQLIP.hifv_hanning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_hanning</span></code></a></p></td>
-<td><p>Hanning smoothing on a dataset.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_importdata.html#pipeline.recipes.vlassQLIP.hifv_importdata" title="pipeline.recipes.vlassQLIP.hifv_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_importdata</span></code></a></p></td>
-<td><p>Imports data into the VLA pipeline.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_mstransform.html#pipeline.recipes.vlassQLIP.hifv_mstransform" title="pipeline.recipes.vlassQLIP.hifv_mstransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_mstransform</span></code></a></p></td>
-<td><p>Create new MeasurementSets for science target imaging</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_opcal.html#pipeline.recipes.vlassQLIP.hifv_opcal" title="pipeline.recipes.vlassQLIP.hifv_opcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_opcal</span></code></a></p></td>
-<td><p>Runs gencal in opac mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_pbcor.html#pipeline.recipes.vlassQLIP.hifv_pbcor" title="pipeline.recipes.vlassQLIP.hifv_pbcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_pbcor</span></code></a></p></td>
-<td><p>Apply primary beam correction to VLA and VLASS images.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_plotsummary.html#pipeline.recipes.vlassQLIP.hifv_plotsummary" title="pipeline.recipes.vlassQLIP.hifv_plotsummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_plotsummary</span></code></a></p></td>
-<td><p>Create pipeline summary plots.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_priorcals.html#pipeline.recipes.vlassQLIP.hifv_priorcals" title="pipeline.recipes.vlassQLIP.hifv_priorcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_priorcals</span></code></a></p></td>
-<td><p>Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_restoredata.html#pipeline.recipes.vlassQLIP.hifv_restoredata" title="pipeline.recipes.vlassQLIP.hifv_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_restoredata</span></code></a></p></td>
-<td><p>Restore flagged and calibration interferometry data from a pipeline run.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_restorepims.html#pipeline.recipes.vlassQLIP.hifv_restorepims" title="pipeline.recipes.vlassQLIP.hifv_restorepims"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_restorepims</span></code></a></p></td>
-<td><p>Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_rqcal.html#pipeline.recipes.vlassQLIP.hifv_rqcal" title="pipeline.recipes.vlassQLIP.hifv_rqcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_rqcal</span></code></a></p></td>
-<td><p>Runs gencal in rq mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_selfcal.html#pipeline.recipes.vlassQLIP.hifv_selfcal" title="pipeline.recipes.vlassQLIP.hifv_selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_selfcal</span></code></a></p></td>
-<td><p>Perform phase-only self-calibration, per scan row, on VLASS SE images.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_semiFinalBPdcals.html#pipeline.recipes.vlassQLIP.hifv_semiFinalBPdcals" title="pipeline.recipes.vlassQLIP.hifv_semiFinalBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_semiFinalBPdcals</span></code></a></p></td>
-<td><p>Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_solint.html#pipeline.recipes.vlassQLIP.hifv_solint" title="pipeline.recipes.vlassQLIP.hifv_solint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_solint</span></code></a></p></td>
-<td><p>Determines different solution intervals.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_statwt.html#pipeline.recipes.vlassQLIP.hifv_statwt" title="pipeline.recipes.vlassQLIP.hifv_statwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_statwt</span></code></a></p></td>
-<td><p>Compute statistical weights and write them to measurement set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_swpowcal.html#pipeline.recipes.vlassQLIP.hifv_swpowcal" title="pipeline.recipes.vlassQLIP.hifv_swpowcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_swpowcal</span></code></a></p></td>
-<td><p>Runs gencal in swpow mode.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_syspower.html#pipeline.recipes.vlassQLIP.hifv_syspower" title="pipeline.recipes.vlassQLIP.hifv_syspower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_syspower</span></code></a></p></td>
-<td><p>Determine amount of gain compression affecting VLA data below Ku-band.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_targetflag.html#pipeline.recipes.vlassQLIP.hifv_targetflag" title="pipeline.recipes.vlassQLIP.hifv_targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_targetflag</span></code></a></p></td>
-<td><p>Targetflag</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_tecmaps.html#pipeline.recipes.vlassQLIP.hifv_tecmaps" title="pipeline.recipes.vlassQLIP.hifv_tecmaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_tecmaps</span></code></a></p></td>
-<td><p>Base tecmaps task</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_testBPdcals.html#pipeline.recipes.vlassQLIP.hifv_testBPdcals" title="pipeline.recipes.vlassQLIP.hifv_testBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_testBPdcals</span></code></a></p></td>
-<td><p>Runs initial delay and bandpass calibration to setup for RFI flagging.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_vlasetjy.html#pipeline.recipes.vlassQLIP.hifv_vlasetjy" title="pipeline.recipes.vlassQLIP.hifv_vlasetjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_vlasetjy</span></code></a></p></td>
-<td><p>Sets flux density scale and fills calibrator model to measurement set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hifv_vlassmasking.html#pipeline.recipes.vlassQLIP.hifv_vlassmasking" title="pipeline.recipes.vlassQLIP.hifv_vlassmasking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hifv_vlassmasking</span></code></a></p></td>
-<td><p>Create clean masks for VLASS Single Epoch (SE) images.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_applycal.html#pipeline.recipes.vlassQLIP.hsd_applycal" title="pipeline.recipes.vlassQLIP.hsd_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code></a></p></td>
-<td><p>Apply the calibration(s) to the data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_atmcor.html#pipeline.recipes.vlassQLIP.hsd_atmcor" title="pipeline.recipes.vlassQLIP.hsd_atmcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code></a></p></td>
-<td><p>Apply offline ATM correction to the data.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_baseline.html#pipeline.recipes.vlassQLIP.hsd_baseline" title="pipeline.recipes.vlassQLIP.hsd_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code></a></p></td>
-<td><p>Detect and validate spectral lines, subtract baseline by masking detected lines.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_blflag.html#pipeline.recipes.vlassQLIP.hsd_blflag" title="pipeline.recipes.vlassQLIP.hsd_blflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code></a></p></td>
-<td><p>Flag spectra based on predefined criteria of single dish pipeline.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_exportdata.html#pipeline.recipes.vlassQLIP.hsd_exportdata" title="pipeline.recipes.vlassQLIP.hsd_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code></a></p></td>
-<td><p>Prepare single dish data for export.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_flagdata.html#pipeline.recipes.vlassQLIP.hsd_flagdata" title="pipeline.recipes.vlassQLIP.hsd_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code></a></p></td>
-<td><p>Do basic flagging of a list of MeasurementSets.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_imaging.html#pipeline.recipes.vlassQLIP.hsd_imaging" title="pipeline.recipes.vlassQLIP.hsd_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code></a></p></td>
-<td><p>Generate single dish images.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_importdata.html#pipeline.recipes.vlassQLIP.hsd_importdata" title="pipeline.recipes.vlassQLIP.hsd_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code></a></p></td>
-<td><p>Imports data into the single dish pipeline.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_k2jycal.html#pipeline.recipes.vlassQLIP.hsd_k2jycal" title="pipeline.recipes.vlassQLIP.hsd_k2jycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code></a></p></td>
-<td><p>Derive Kelvin to Jy calibration tables.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_restoredata.html#pipeline.recipes.vlassQLIP.hsd_restoredata" title="pipeline.recipes.vlassQLIP.hsd_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code></a></p></td>
-<td><p>Restore flagged and calibration single dish data from a pipeline run.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_skycal.html#pipeline.recipes.vlassQLIP.hsd_skycal" title="pipeline.recipes.vlassQLIP.hsd_skycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code></a></p></td>
-<td><p>Calibrate data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsd_tsysflag.html#pipeline.recipes.vlassQLIP.hsd_tsysflag" title="pipeline.recipes.vlassQLIP.hsd_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code></a></p></td>
-<td><p>Flag deviant system temperature measurements.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsdn_exportdata.html#pipeline.recipes.vlassQLIP.hsdn_exportdata" title="pipeline.recipes.vlassQLIP.hsdn_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_exportdata</span></code></a></p></td>
-<td><p>Prepare single dish data for export.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsdn_importdata.html#pipeline.recipes.vlassQLIP.hsdn_importdata" title="pipeline.recipes.vlassQLIP.hsdn_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_importdata</span></code></a></p></td>
-<td><p>Imports Nobeyama data into the single dish pipeline.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.hsdn_restoredata.html#pipeline.recipes.vlassQLIP.hsdn_restoredata" title="pipeline.recipes.vlassQLIP.hsdn_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsdn_restoredata</span></code></a></p></td>
-<td><p>Restore flagged and calibration single dish data from a pipeline run.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.recipes.vlassQLIP.vlassQLIP.html#pipeline.recipes.vlassQLIP.vlassQLIP" title="pipeline.recipes.vlassQLIP.vlassQLIP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vlassQLIP</span></code></a></p></td>
 <td><p></p></td>
 </tr>
@@ -534,7 +165,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.recipes.recipe_converter.to_procedure.html" class="btn btn-neutral float-left" title="pipeline.recipes.recipe_converter.to_procedure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.recipes.vlassQLIP.h_applycal.html" class="btn btn-neutral float-right" title="pipeline.recipes.vlassQLIP.h_applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.recipes.vlassQLIP.vlassQLIP.html" class="btn btn-neutral float-right" title="pipeline.recipes.vlassQLIP.vlassQLIP" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

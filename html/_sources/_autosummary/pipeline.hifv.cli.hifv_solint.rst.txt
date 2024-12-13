@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_solint
 ==============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_solint
 
-.. autofunction:: hifv_solint
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

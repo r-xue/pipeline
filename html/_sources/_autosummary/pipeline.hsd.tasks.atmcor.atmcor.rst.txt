@@ -9,17 +9,6 @@ pipeline.hsd.tasks.atmcor.atmcor
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      generate_ms
-      inspect_reduction_group
-      merge_reduction_group
-      relative_path
-   
    
 
    
@@ -32,8 +21,6 @@ pipeline.hsd.tasks.atmcor.atmcor
       :nosignatures:
    
       ATMModelParam
-      Context
-      DataType
       HpcSDATMCorrection
       SDATMCorrectionInputs
       SDATMCorrectionResults

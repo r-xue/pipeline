@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_show\_calstate
 ================================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_show_calstate
 
-.. autofunction:: h_show_calstate
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

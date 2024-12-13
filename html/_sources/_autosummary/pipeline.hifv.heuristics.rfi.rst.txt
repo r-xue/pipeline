@@ -33,7 +33,6 @@ pipeline.hifv.heuristics.rfi
       :nosignatures:
    
       RflagDevHeuristic
-      VLAScanHeuristics
    
    
 

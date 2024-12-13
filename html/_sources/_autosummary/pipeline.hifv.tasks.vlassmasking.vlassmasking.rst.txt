@@ -9,16 +9,6 @@ pipeline.hifv.tasks.vlassmasking.vlassmasking
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      edit_pybdsf_islands
-      mask_from_catalog
-      run_bdsf
-   
    
 
    

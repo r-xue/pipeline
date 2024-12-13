@@ -1,33 +1,30 @@
 pipeline.hifv.tasks.testBPdcals
 ===============================
 
-.. currentmodule:: pipeline.hifv.tasks
-
-.. autoclass:: testBPdcals
-   :members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members: __call__, __add__, __mul__
+.. automodule:: pipeline.hifv.tasks.testBPdcals
 
    
    
-   .. rubric:: Methods
+   .. rubric:: Module attributes
 
    .. autosummary::
-      :nosignatures:
+      :toctree:
    
-      ~testBPdcals.analyse
-      ~testBPdcals.execute
-      ~testBPdcals.prepare
+      is_multi_vis_task
    
    
 
    
    
-   .. rubric:: Attributes
+   
 
-   .. autosummary::
-   
-      ~testBPdcals.is_multi_vis_task
    
    
+   
+
+   
+   
+   
+
+
+

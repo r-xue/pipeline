@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_flagcal
 ===============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_flagcal
 
-.. autofunction:: hifv_flagcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

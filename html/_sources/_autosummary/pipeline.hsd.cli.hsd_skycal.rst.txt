@@ -1,6 +1,23 @@
 pipeline.hsd.cli.hsd\_skycal
 ============================
 
-.. currentmodule:: pipeline.hsd.cli
+.. automodule:: pipeline.hsd.cli.hsd_skycal
 
-.. autofunction:: hsd_skycal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

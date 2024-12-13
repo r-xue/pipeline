@@ -35,13 +35,6 @@ pipeline.hifa.tasks.importdata.qa
    
       ALMAImportDataListQAHandler
       ALMAImportDataQAHandler
-      ALMAImportDataResults
-      Field
-      MeasurementSet
-      ParallacticAngle
-      PositiveDefiniteAngle
-      SignedAngle
-      chain
    
    
 

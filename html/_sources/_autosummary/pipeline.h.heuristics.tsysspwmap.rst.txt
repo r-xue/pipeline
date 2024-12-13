@@ -1,6 +1,23 @@
 pipeline.h.heuristics.tsysspwmap
 ================================
 
-.. currentmodule:: pipeline.h.heuristics
+.. automodule:: pipeline.h.heuristics.tsysspwmap
 
-.. autofunction:: tsysspwmap
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

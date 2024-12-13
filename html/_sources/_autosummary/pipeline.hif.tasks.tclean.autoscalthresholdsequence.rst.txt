@@ -21,7 +21,6 @@ pipeline.hif.tasks.tclean.autoscalthresholdsequence
       :nosignatures:
    
       AutoScalThresholdSequence
-      BaseCleanSequence
    
    
 

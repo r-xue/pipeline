@@ -9,14 +9,6 @@ pipeline.hif.tasks.correctedampflag.correctedampflag
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      mode
-   
    
 
    
@@ -30,12 +22,6 @@ pipeline.hif.tasks.correctedampflag.correctedampflag
    
       Correctedampflag
       CorrectedampflagInputs
-      CorrectedampflagResults
-      DataType
-      FlagCmd
-      FlagdataSetter
-      MeasurementSet
-      NDArray
    
    
 

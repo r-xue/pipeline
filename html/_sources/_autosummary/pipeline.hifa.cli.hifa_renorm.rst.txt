@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_renorm
 ==============================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_renorm
 
-.. autofunction:: hifa_renorm
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

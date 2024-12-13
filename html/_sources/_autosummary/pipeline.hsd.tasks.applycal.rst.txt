@@ -13,17 +13,6 @@ pipeline.hsd.tasks.applycal
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      SDApplycal
-      SDApplycalResults
-      SerialSDApplycal
-   
    
 
    

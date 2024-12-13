@@ -20,10 +20,8 @@ pipeline.hifv.tasks.fluxscale.qa
       :template: custom-class-template.rst
       :nosignatures:
    
-      Fluxboot
       FluxbootListQAHandler
       FluxbootQAHandler
-      FluxbootResults
       SolintListQAHandler
       SolintQAHandler
    

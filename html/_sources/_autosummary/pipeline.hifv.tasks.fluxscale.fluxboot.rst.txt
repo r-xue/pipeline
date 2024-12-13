@@ -9,16 +9,6 @@ pipeline.hifv.tasks.fluxscale.fluxboot
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      find_EVLA_band
-      standard_sources
-      uvrange
-   
    
 
    
@@ -33,7 +23,6 @@ pipeline.hifv.tasks.fluxscale.fluxboot
       Fluxboot
       FluxbootInputs
       FluxbootResults
-      FrequencyUnits
    
    
 

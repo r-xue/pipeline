@@ -39,23 +39,12 @@ pipeline.infrastructure.renderer.rendererutils
       renderflagcmds
       sanitize_data_selection_string
       scores_in_range
-      scores_with_location
       sort_row_by
       summarise_fields
    
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      QAScore
-      WebLogLocation
    
    
 

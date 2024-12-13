@@ -29,7 +29,6 @@ pipeline.hifa.tasks.targetflag.targetflag
       :nosignatures:
    
       AmpVsXChart
-      FlagdataSetter
       Targetflag
       TargetflagInputs
       TargetflagResults

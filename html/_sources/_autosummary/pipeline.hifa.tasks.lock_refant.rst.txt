@@ -13,16 +13,6 @@ pipeline.hifa.tasks.lock\_refant
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      LockRefAnt
-      T2_4MDetailsLockRefantRenderer
-   
    
 
    

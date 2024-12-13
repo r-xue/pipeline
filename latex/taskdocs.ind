@@ -5,168 +5,384 @@
 \let\spxextra \sphinxstyleindexextra
 
   \bigletter C
-  \item \spxentry{cli\_wrapper()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{12}
+  \item \spxentry{cli\_wrapper()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
 
   \indexspace
   \bigletter E
-  \item \spxentry{execute\_task()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{12}
+  \item \spxentry{execute\_task()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
 
   \indexspace
   \bigletter G
-  \item \spxentry{get\_context()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{12}
-  \item \spxentry{get\_heuristic()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{12}
-  \item \spxentry{get\_ms()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{13}
-  \item \spxentry{get\_output\_dir()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{13}
-
-  \indexspace
-  \bigletter H
-  \item \spxentry{h\_applycal()}\spxextra{in module pipeline.h.cli}, \hyperpage{2}
-  \item \spxentry{h\_export\_calstate()}\spxextra{in module pipeline.h.cli}, \hyperpage{3}
-  \item \spxentry{h\_exportdata()}\spxextra{in module pipeline.h.cli}, \hyperpage{4}
-  \item \spxentry{h\_import\_calstate()}\spxextra{in module pipeline.h.cli}, \hyperpage{5}
-  \item \spxentry{h\_importdata()}\spxextra{in module pipeline.h.cli}, \hyperpage{5}
-  \item \spxentry{h\_init()}\spxextra{in module pipeline.h.cli}, \hyperpage{7}
-  \item \spxentry{h\_mssplit()}\spxextra{in module pipeline.h.cli}, \hyperpage{7}
-  \item \spxentry{h\_restoredata()}\spxextra{in module pipeline.h.cli}, \hyperpage{8}
-  \item \spxentry{h\_resume()}\spxextra{in module pipeline.h.cli}, \hyperpage{9}
-  \item \spxentry{h\_save()}\spxextra{in module pipeline.h.cli}, \hyperpage{10}
-  \item \spxentry{h\_show\_calstate()}\spxextra{in module pipeline.h.cli}, \hyperpage{10}
-  \item \spxentry{h\_tsyscal()}\spxextra{in module pipeline.h.cli}, \hyperpage{11}
-  \item \spxentry{h\_weblog()}\spxextra{in module pipeline.h.cli}, \hyperpage{11}
-  \item \spxentry{hif\_analyzealpha()}\spxextra{in module pipeline.hif.cli}, \hyperpage{14}
-  \item \spxentry{hif\_antpos()}\spxextra{in module pipeline.hif.cli}, \hyperpage{15}
-  \item \spxentry{hif\_applycal()}\spxextra{in module pipeline.hif.cli}, \hyperpage{16}
-  \item \spxentry{hif\_bandpass()}\spxextra{in module pipeline.hif.cli}, \hyperpage{17}
-  \item \spxentry{hif\_checkproductsize()}\spxextra{in module pipeline.hif.cli}, \hyperpage{18}
-  \item \spxentry{hif\_correctedampflag()}\spxextra{in module pipeline.hif.cli}, \hyperpage{19}
-  \item \spxentry{hif\_editimlist()}\spxextra{in module pipeline.hif.cli}, \hyperpage{20}
-  \item \spxentry{hif\_findcont()}\spxextra{in module pipeline.hif.cli}, \hyperpage{22}
-  \item \spxentry{hif\_gaincal()}\spxextra{in module pipeline.hif.cli}, \hyperpage{23}
-  \item \spxentry{hif\_lowgainflag()}\spxextra{in module pipeline.hif.cli}, \hyperpage{25}
-  \item \spxentry{hif\_makecutoutimages()}\spxextra{in module pipeline.hif.cli}, \hyperpage{26}
-  \item \spxentry{hif\_makeimages()}\spxextra{in module pipeline.hif.cli}, \hyperpage{26}
-  \item \spxentry{hif\_makeimlist()}\spxextra{in module pipeline.hif.cli}, \hyperpage{28}
-  \item \spxentry{hif\_makermsimages()}\spxextra{in module pipeline.hif.cli}, \hyperpage{30}
-  \item \spxentry{hif\_mstransform()}\spxextra{in module pipeline.hif.cli}, \hyperpage{31}
-  \item \spxentry{hif\_rawflagchans()}\spxextra{in module pipeline.hif.cli}, \hyperpage{31}
-  \item \spxentry{hif\_refant()}\spxextra{in module pipeline.hif.cli}, \hyperpage{33}
-  \item \spxentry{hif\_selfcal()}\spxextra{in module pipeline.hif.cli}, \hyperpage{34}
-  \item \spxentry{hif\_setjy()}\spxextra{in module pipeline.hif.cli}, \hyperpage{35}
-  \item \spxentry{hif\_setmodels()}\spxextra{in module pipeline.hif.cli}, \hyperpage{37}
-  \item \spxentry{hif\_transformimagedata()}\spxextra{in module pipeline.hif.cli}, \hyperpage{37}
-  \item \spxentry{hif\_uvcontsub()}\spxextra{in module pipeline.hif.cli}, \hyperpage{38}
-  \item \spxentry{hifa\_antpos()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{41}
-  \item \spxentry{hifa\_bandpass()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{43}
-  \item \spxentry{hifa\_bandpassflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{45}
-  \item \spxentry{hifa\_bpsolint()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{47}
-  \item \spxentry{hifa\_diffgaincal()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{49}
-  \item \spxentry{hifa\_exportdata()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{49}
-  \item \spxentry{hifa\_flagdata()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{51}
-  \item \spxentry{hifa\_flagtargets()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{53}
-  \item \spxentry{hifa\_fluxcalflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{53}
-  \item \spxentry{hifa\_gaincalsnr()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{54}
-  \item \spxentry{hifa\_gfluxscale()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{55}
-  \item \spxentry{hifa\_gfluxscaleflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{57}
-  \item \spxentry{hifa\_imageprecheck()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{58}
-  \item \spxentry{hifa\_importdata()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{59}
-  \item \spxentry{hifa\_lock\_refant()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{61}
-  \item \spxentry{hifa\_polcal()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{61}
-  \item \spxentry{hifa\_polcalflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{62}
-  \item \spxentry{hifa\_renorm()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{62}
-  \item \spxentry{hifa\_restoredata()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{63}
-  \item \spxentry{hifa\_session\_refant()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{65}
-  \item \spxentry{hifa\_spwphaseup()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{65}
-  \item \spxentry{hifa\_targetflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{67}
-  \item \spxentry{hifa\_timegaincal()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{68}
-  \item \spxentry{hifa\_tsysflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{69}
-  \item \spxentry{hifa\_tsysflagcontamination()}\spxextra{in module pipeline.hifa.cli}, 
-		\hyperpage{71}
-  \item \spxentry{hifa\_unlock\_refant()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{72}
-  \item \spxentry{hifa\_wvrgcal()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{72}
-  \item \spxentry{hifa\_wvrgcalflag()}\spxextra{in module pipeline.hifa.cli}, \hyperpage{74}
-  \item \spxentry{hifv\_analyzestokescubes()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{78}
-  \item \spxentry{hifv\_applycals()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{78}
-  \item \spxentry{hifv\_checkflag()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{79}
-  \item \spxentry{hifv\_circfeedpolcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{80}
-  \item \spxentry{hifv\_exportdata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{81}
-  \item \spxentry{hifv\_exportvlassdata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{82}
-  \item \spxentry{hifv\_finalcals()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{82}
-  \item \spxentry{hifv\_fixpointing()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{83}
-  \item \spxentry{hifv\_flagcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{83}
-  \item \spxentry{hifv\_flagdata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{84}
-  \item \spxentry{hifv\_flagtargetsdata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{85}
-  \item \spxentry{hifv\_fluxboot()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{86}
-  \item \spxentry{hifv\_gaincurves()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{86}
-  \item \spxentry{hifv\_hanning()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{87}
-  \item \spxentry{hifv\_importdata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{87}
-  \item \spxentry{hifv\_mstransform()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{89}
-  \item \spxentry{hifv\_opcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{90}
-  \item \spxentry{hifv\_pbcor()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{90}
-  \item \spxentry{hifv\_plotsummary()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{90}
-  \item \spxentry{hifv\_priorcals()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{91}
-  \item \spxentry{hifv\_restoredata()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{91}
-  \item \spxentry{hifv\_restorepims()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{93}
-  \item \spxentry{hifv\_rqcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{93}
-  \item \spxentry{hifv\_selfcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{94}
-  \item \spxentry{hifv\_semiFinalBPdcals()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{94}
-  \item \spxentry{hifv\_solint()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{95}
-  \item \spxentry{hifv\_statwt()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{95}
-  \item \spxentry{hifv\_swpowcal()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{96}
-  \item \spxentry{hifv\_syspower()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{96}
-  \item \spxentry{hifv\_targetflag()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{97}
-  \item \spxentry{hifv\_tecmaps()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{97}
-  \item \spxentry{hifv\_testBPdcals()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{97}
-  \item \spxentry{hifv\_vlasetjy()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{98}
-  \item \spxentry{hifv\_vlassmasking()}\spxextra{in module pipeline.hifv.cli}, \hyperpage{99}
-  \item \spxentry{hsd\_applycal()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{100}
-  \item \spxentry{hsd\_atmcor()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{101}
-  \item \spxentry{hsd\_baseline()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{103}
-  \item \spxentry{hsd\_blflag()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{105}
-  \item \spxentry{hsd\_exportdata()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{107}
-  \item \spxentry{hsd\_flagdata()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{107}
-  \item \spxentry{hsd\_imaging()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{109}
-  \item \spxentry{hsd\_importdata()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{109}
-  \item \spxentry{hsd\_k2jycal()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{111}
-  \item \spxentry{hsd\_restoredata()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{112}
-  \item \spxentry{hsd\_skycal()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{114}
-  \item \spxentry{hsd\_tsysflag()}\spxextra{in module pipeline.hsd.cli}, \hyperpage{115}
-  \item \spxentry{hsdn\_exportdata()}\spxextra{in module pipeline.hsdn.cli}, \hyperpage{117}
-  \item \spxentry{hsdn\_importdata()}\spxextra{in module pipeline.hsdn.cli}, \hyperpage{118}
-  \item \spxentry{hsdn\_restoredata()}\spxextra{in module pipeline.hsdn.cli}, \hyperpage{119}
+  \item \spxentry{get\_context()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
+  \item \spxentry{get\_heuristic()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
+  \item \spxentry{get\_ms()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
+  \item \spxentry{get\_output\_dir()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{4}
 
   \indexspace
   \bigletter M
   \item \spxentry{module}
     \subitem \spxentry{pipeline.h.cli}, \hyperpage{2}
-    \subitem \spxentry{pipeline.h.cli.cli}, \hyperpage{12}
-    \subitem \spxentry{pipeline.h.cli.utils}, \hyperpage{12}
-    \subitem \spxentry{pipeline.hif.cli}, \hyperpage{14}
-    \subitem \spxentry{pipeline.hifa.cli}, \hyperpage{40}
-    \subitem \spxentry{pipeline.hifv.cli}, \hyperpage{77}
-    \subitem \spxentry{pipeline.hsd.cli}, \hyperpage{100}
-    \subitem \spxentry{pipeline.hsdn.cli}, \hyperpage{117}
+    \subitem \spxentry{pipeline.h.cli.cli}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_applycal}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_export\_calstate}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_exportdata}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_import\_calstate}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_importdata}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_init}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_mssplit}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_restoredata}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_resume}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_save}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_show\_calstate}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_tsyscal}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.h\_weblog}, \hyperpage{3}
+    \subitem \spxentry{pipeline.h.cli.utils}, \hyperpage{3}
+    \subitem \spxentry{pipeline.hif.cli}, \hyperpage{5}
+    \subitem \spxentry{pipeline.hif.cli.hif\_analyzealpha}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_antpos}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_applycal}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_bandpass}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_checkproductsize}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_correctedampflag}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_editimlist}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_findcont}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_gaincal}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_lowgainflag}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_makecutoutimages}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_makeimages}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_makeimlist}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_makermsimages}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_mstransform}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_rawflagchans}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_refant}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_selfcal}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_setjy}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_setmodels}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_transformimagedata}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hif.cli.hif\_uvcontsub}, \hyperpage{6}
+    \subitem \spxentry{pipeline.hifa.cli}, \hyperpage{7}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_antpos}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_bandpass}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_bandpassflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_bpsolint}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_diffgaincal}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_exportdata}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_flagdata}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_flagtargets}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_fluxcalflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_gaincalsnr}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_gfluxscale}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_gfluxscaleflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_imageprecheck}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_importdata}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_lock\_refant}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_polcal}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_polcalflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_renorm}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_restoredata}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_session\_refant}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_spwphaseup}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_targetflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_timegaincal}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_tsysflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_tsysflagcontamination}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_unlock\_refant}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_wvrgcal}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifa.cli.hifa\_wvrgcalflag}, \hyperpage{10}
+    \subitem \spxentry{pipeline.hifv.cli}, \hyperpage{11}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_analyzestokescubes}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_applycals}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_checkflag}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_circfeedpolcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_exportdata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_exportvlassdata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_finalcals}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_fixpointing}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_flagcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_flagdata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_flagtargetsdata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_fluxboot}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_gaincurves}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_hanning}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_importdata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_mstransform}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_opcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_pbcor}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_plotsummary}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_priorcals}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_restoredata}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_restorepims}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_rqcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_selfcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_semiFinalBPdcals}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_solint}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_statwt}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_swpowcal}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_syspower}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_targetflag}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_tecmaps}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_testBPdcals}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_vlasetjy}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hifv.cli.hifv\_vlassmasking}, \hyperpage{14}
+    \subitem \spxentry{pipeline.hsd.cli}, \hyperpage{15}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_applycal}, \hyperpage{15}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_atmcor}, \hyperpage{15}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_baseline}, \hyperpage{15}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_blflag}, \hyperpage{15}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_exportdata}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_flagdata}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_imaging}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_importdata}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_k2jycal}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_restoredata}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_skycal}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsd.cli.hsd\_tsysflag}, \hyperpage{16}
+    \subitem \spxentry{pipeline.hsdn.cli}, \hyperpage{17}
+    \subitem \spxentry{pipeline.hsdn.cli.hsdn\_exportdata}, \hyperpage{17}
+    \subitem \spxentry{pipeline.hsdn.cli.hsdn\_importdata}, \hyperpage{17}
+    \subitem \spxentry{pipeline.hsdn.cli.hsdn\_restoredata}, \hyperpage{17}
 
   \indexspace
   \bigletter P
   \item \spxentry{pipeline.h.cli}
     \subitem \spxentry{module}, \hyperpage{2}
   \item \spxentry{pipeline.h.cli.cli}
-    \subitem \spxentry{module}, \hyperpage{12}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_applycal}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_export\_calstate}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_exportdata}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_import\_calstate}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_importdata}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_init}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_mssplit}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_restoredata}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_resume}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_save}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_show\_calstate}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_tsyscal}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{pipeline.h.cli.h\_weblog}
+    \subitem \spxentry{module}, \hyperpage{3}
   \item \spxentry{pipeline.h.cli.utils}
-    \subitem \spxentry{module}, \hyperpage{12}
+    \subitem \spxentry{module}, \hyperpage{3}
   \item \spxentry{pipeline.hif.cli}
-    \subitem \spxentry{module}, \hyperpage{14}
+    \subitem \spxentry{module}, \hyperpage{5}
+  \item \spxentry{pipeline.hif.cli.hif\_analyzealpha}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_antpos}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_applycal}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_bandpass}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_checkproductsize}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_correctedampflag}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_editimlist}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_findcont}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_gaincal}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_lowgainflag}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_makecutoutimages}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_makeimages}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_makeimlist}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_makermsimages}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_mstransform}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_rawflagchans}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_refant}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_selfcal}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_setjy}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_setmodels}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_transformimagedata}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{pipeline.hif.cli.hif\_uvcontsub}
+    \subitem \spxentry{module}, \hyperpage{6}
   \item \spxentry{pipeline.hifa.cli}
-    \subitem \spxentry{module}, \hyperpage{40}
+    \subitem \spxentry{module}, \hyperpage{7}
+  \item \spxentry{pipeline.hifa.cli.hifa\_antpos}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_bandpass}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_bandpassflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_bpsolint}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_diffgaincal}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_exportdata}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_flagdata}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_flagtargets}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_fluxcalflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_gaincalsnr}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_gfluxscale}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_gfluxscaleflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_imageprecheck}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_importdata}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_lock\_refant}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_polcal}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_polcalflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_renorm}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_restoredata}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_session\_refant}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_spwphaseup}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_targetflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_timegaincal}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_tsysflag}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_tsysflagcontamination}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_unlock\_refant}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_wvrgcal}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{pipeline.hifa.cli.hifa\_wvrgcalflag}
+    \subitem \spxentry{module}, \hyperpage{10}
   \item \spxentry{pipeline.hifv.cli}
-    \subitem \spxentry{module}, \hyperpage{77}
+    \subitem \spxentry{module}, \hyperpage{11}
+  \item \spxentry{pipeline.hifv.cli.hifv\_analyzestokescubes}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_applycals}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_checkflag}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_circfeedpolcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_exportdata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_exportvlassdata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_finalcals}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_fixpointing}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_flagcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_flagdata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_flagtargetsdata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_fluxboot}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_gaincurves}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_hanning}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_importdata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_mstransform}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_opcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_pbcor}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_plotsummary}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_priorcals}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_restoredata}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_restorepims}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_rqcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_selfcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_semiFinalBPdcals}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_solint}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_statwt}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_swpowcal}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_syspower}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_targetflag}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_tecmaps}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_testBPdcals}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_vlasetjy}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{pipeline.hifv.cli.hifv\_vlassmasking}
+    \subitem \spxentry{module}, \hyperpage{14}
   \item \spxentry{pipeline.hsd.cli}
-    \subitem \spxentry{module}, \hyperpage{100}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{pipeline.hsd.cli.hsd\_applycal}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{pipeline.hsd.cli.hsd\_atmcor}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{pipeline.hsd.cli.hsd\_baseline}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{pipeline.hsd.cli.hsd\_blflag}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{pipeline.hsd.cli.hsd\_exportdata}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_flagdata}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_imaging}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_importdata}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_k2jycal}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_restoredata}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_skycal}
+    \subitem \spxentry{module}, \hyperpage{16}
+  \item \spxentry{pipeline.hsd.cli.hsd\_tsysflag}
+    \subitem \spxentry{module}, \hyperpage{16}
   \item \spxentry{pipeline.hsdn.cli}
-    \subitem \spxentry{module}, \hyperpage{117}
-
-  \indexspace
-  \bigletter W
-  \item \spxentry{wraps()}\spxextra{in module pipeline.h.cli.utils}, \hyperpage{13}
+    \subitem \spxentry{module}, \hyperpage{17}
+  \item \spxentry{pipeline.hsdn.cli.hsdn\_exportdata}
+    \subitem \spxentry{module}, \hyperpage{17}
+  \item \spxentry{pipeline.hsdn.cli.hsdn\_importdata}
+    \subitem \spxentry{module}, \hyperpage{17}
+  \item \spxentry{pipeline.hsdn.cli.hsdn\_restoredata}
+    \subitem \spxentry{module}, \hyperpage{17}
 
 \end{sphinxtheindex}

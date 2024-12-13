@@ -24,7 +24,6 @@ pipeline.infrastructure.sessionutils
       remap_spw_int
       remap_spw_str
       remove_unexpected_args
-      signature
       validate_args
    
    

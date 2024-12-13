@@ -15,8 +15,6 @@ pipeline.hifv.tasks.syspower.syspower
       :toctree:
       :nosignatures:
    
-      deepcopy
-      factorial
       savitzky_golay
    
    

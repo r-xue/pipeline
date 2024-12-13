@@ -13,16 +13,6 @@ pipeline.hifa.tasks.tsysflag\_contamination
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      T2_4MDetailsTsysflagContaminationRenderer
-      TsysFlagContamination
-   
    
 
    

@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx_astrorefs.css?v=4d4a2fdb" />
-      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=678032d9" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=30144f19" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -23,15 +23,15 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Run the Pipeline in a Conda environment" href="modular.html" />
-    <link rel="prev" title="Past Releases" href="releases.html" /> 
+    <link rel="next" title="Past Releases" href="releases.html" />
+    <link rel="prev" title="Pipeline Recipes" href="develdocmd/recipes.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
@@ -46,92 +46,63 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#runtime">Runtime</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies-for-building-a-functional-casa6-environment">Dependencies for building a functional CASA6 environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies-required-by-pipeline">Additional Dependencies Required by Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-casa6-equivalent-python-environment">A CASA6-equivalent Python environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-pipeline-dependencies">Other Pipeline Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-tools">Development Tools</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#packaging">Packaging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#development-tools">Development tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Development tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#unix-cmd">*unix-cmd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#version-controls">Version Controls</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Past Releases</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="apisummary.html">Pipeline Tasks (from autosummary)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apisummary.html#full-list">Full List</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.domain.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/context.html">Pipeline Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/test1.html">test</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/test2.html">Example 1</a></li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Pipeline</a>
       </nav>
@@ -155,12 +126,13 @@
 <h1>Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code><a class="headerlink" href="#dependencies-of-pipeline" title="Link to this heading"></a></h1>
 <section id="runtime">
 <h2>Runtime<a class="headerlink" href="#runtime" title="Link to this heading"></a></h2>
-<section id="dependencies-for-building-a-functional-casa6-environment">
-<h3>Dependencies for building a functional CASA6 environment<a class="headerlink" href="#dependencies-for-building-a-functional-casa6-environment" title="Link to this heading"></a></h3>
+<section id="a-casa6-equivalent-python-environment">
+<h3>A CASA6-equivalent Python environment<a class="headerlink" href="#a-casa6-equivalent-python-environment" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-base package with CASA6 components as dependencies, therefore, it only operates limited on the Python versions and the platform supported by specific CASA versions (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compatibility matrix</a>) and others dependency libraries specifically required by Pipeine  Please also check the OS/libraries compatibility and requirements for running CASA.</p>
+<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-based package with CASA6 components and other general-purpose Python libraries as dependencies. As with any python package, it’s only compatible and supported with certain Python and 3rd-party libraries versions. In reality, each release is only tested and validated against an ALMA-cycle-specific monolithic CASA6 release (a self-contained Python environment with a built-in portable Python interpreter and associated libraries in other languages). CASA6 distribution itself has limited platform support (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compatibility matrix</a>).; users are encouraged to check the OS/libraries compatibility and requirements for running CASA6.</p>
 </div>
+<p>For transparency and encouraging the use and development of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> in a standard Python environment (e.g. conda), we break down the essential components for a CASA6-equivalent environment as below. In reality, all of them are included in Pipeline-dedicated CASA releases with built-in portable Python interpreter.</p>
 <ul class="simple">
 <li><p>python3</p></li>
 <li><p>ipython</p></li>
@@ -175,14 +147,16 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><cite>casadata</cite> and <cite>almatasks</cite> are no longer required for <code class="docutils literal notranslate"><span class="pre">CASA6&gt;=6.6.1</span></code>. Already bundled inside the CASA+Pipeline release/prerelease tarball. <cite>casaconfig</cite> is implicitly required by <cite>casatasks`</cite></p>
+<p><code class="docutils literal notranslate"><span class="pre">casadata</span></code> and <code class="docutils literal notranslate"><span class="pre">almatasks</span></code> are no longer required for <code class="docutils literal notranslate"><span class="pre">CASA6&gt;=6.6.1</span></code> due to the introduction of casaconfig and refactor and migration of the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.calibration.wvrgcal.html#casatasks.calibration.wvrgcal">casatasks.wvrgcal</a> task. <cite>casaconfig</cite> is implicitly required by <code class="docutils literal notranslate"><span class="pre">casatasks</span></code></p>
 </div>
 </section>
-<section id="additional-dependencies-required-by-pipeline">
-<h3>Additional Dependencies Required by Pipeline<a class="headerlink" href="#additional-dependencies-required-by-pipeline" title="Link to this heading"></a></h3>
+<section id="other-pipeline-dependencies">
+<h3>Other Pipeline Dependencies<a class="headerlink" href="#other-pipeline-dependencies" title="Link to this heading"></a></h3>
+<p>Here we list other dependency libraries required by Pipeline but not offered in the CASA6 monolithic environment
+:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Python (see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>)</p></li>
+<li><p>Python packages/libraries (also see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> in the source code repository)</p></li>
 <li><p>cachetools</p></li>
 <li><p>mako</p></li>
 <li><p>pypubsub</p></li>
@@ -191,7 +165,7 @@
 <li><p>ps_mem</p></li>
 <li><p>astropy</p></li>
 <li><p>bdsf (for VLASS source detection &amp; mask creation)</p></li>
-<li><p>*unix-cmd</p></li>
+<li><p>*unix-cmd tools</p></li>
 <li><p>ImageMagick</p></li>
 <li><p>the “convert” cmd:</p></li>
 <li><p>Linux only for generating thumbnails; macOS uses “sips” which comes with OS.</p></li>
@@ -206,31 +180,34 @@
 </div></blockquote>
 </section>
 </section>
-<section id="optional-dependencies">
-<h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Link to this heading"></a></h2>
-<section id="testing">
-<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
-<blockquote>
-<div><ul class="simple">
-<li><p>pytest</p></li>
-<li><p>…</p></li>
-</ul>
-</div></blockquote>
-</section>
+<section id="development-tools">
+<h2>Development Tools<a class="headerlink" href="#development-tools" title="Link to this heading"></a></h2>
 <section id="packaging">
 <h3>Packaging<a class="headerlink" href="#packaging" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>wheel: for installing older Python packages</p></li>
-<li><p>csscompressor: minify CSS during installation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wheel</span></code>: for installing older Python packages</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">csscompressor</span></code>: minify CSS during installation</p></li>
 </ul>
 </div></blockquote>
 </section>
-<section id="development-tools">
-<h3>Development tools<a class="headerlink" href="#development-tools" title="Link to this heading"></a></h3>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>pydocs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pytest-cov</span></code></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id1">
+<h3>Development tools<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pydocstyle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pycodestyle</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memory_profiler</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line_pofiler</span></code></p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -238,15 +215,15 @@
 <h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>sphinx</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx</span></code></p></li>
 </ul>
 </div></blockquote>
 </section>
-<section id="unix-cmd">
-<h3>*unix-cmd<a class="headerlink" href="#unix-cmd" title="Link to this heading"></a></h3>
+<section id="version-controls">
+<h3>Version Controls<a class="headerlink" href="#version-controls" title="Link to this heading"></a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Git LFS: for managing the <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse">pipeline-testdata</a> repo</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Git</span> <span class="pre">LFS</span></code>: for managing the <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse">pipeline-testdata</a> repo</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -257,8 +234,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="releases.html" class="btn btn-neutral float-left" title="Past Releases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modular.html" class="btn btn-neutral float-right" title="Run the Pipeline in a Conda environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="develdocmd/recipes.html" class="btn btn-neutral float-left" title="Pipeline Recipes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="releases.html" class="btn btn-neutral float-right" title="Past Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

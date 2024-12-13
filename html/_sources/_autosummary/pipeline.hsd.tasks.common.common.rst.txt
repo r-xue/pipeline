@@ -9,14 +9,6 @@ pipeline.hsd.tasks.common.common
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      absolute_path
-   
    
 
    

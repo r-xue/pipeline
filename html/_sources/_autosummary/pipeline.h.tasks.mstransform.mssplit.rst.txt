@@ -20,8 +20,6 @@ pipeline.h.tasks.mstransform.mssplit
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
-      MeasurementSet
       MsSplit
       MsSplitInputs
       MsSplitResults

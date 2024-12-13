@@ -17,7 +17,6 @@ pipeline.infrastructure.utils.framework
    
       collect_properties
       contains_single_dish
-      flatten
       flatten_dict
       gen_hash
       get_calfroms
@@ -30,22 +29,11 @@ pipeline.infrastructure.utils.framework
       pickle_copy
       pickle_load
       plotms_iterate
-      safe_split
       task_depth
    
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      JobRequest
-      Plot
    
    
 

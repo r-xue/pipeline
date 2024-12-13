@@ -20,7 +20,6 @@ pipeline.hsd.tasks.atmcor.display
       :template: custom-class-template.rst
       :nosignatures:
    
-      MeasurementSet
       PlotmsRealVsFreqPlotter
    
    

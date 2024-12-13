@@ -20,7 +20,6 @@ pipeline.infrastructure.vdp
       gen_hash
       get_properties
       name_all_arguments
-      signature
    
    
 
@@ -33,7 +32,6 @@ pipeline.infrastructure.vdp
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       InputsContainer
       ModeInputs
       NoDefaultMarker

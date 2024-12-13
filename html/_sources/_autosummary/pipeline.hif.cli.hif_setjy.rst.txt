@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_setjy
 ===========================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_setjy
 
-.. autofunction:: hif_setjy
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

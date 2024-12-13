@@ -15,7 +15,6 @@ pipeline.hsd.tasks.imaging.imaging\_params
       :toctree:
       :nosignatures:
    
-      debugwrapper
       initialize_common_parameters
    
    
@@ -31,14 +30,12 @@ pipeline.hsd.tasks.imaging.imaging\_params
    
       CombinedImageParameters
       CommonParameters
-      NewType
       ObservedList
       Parameters
       PostProcessParameters
       ReductionGroupParameters
       TheoreticalImageRmsParameters
       ToCombineImageParameters
-      coordsys
    
    
 

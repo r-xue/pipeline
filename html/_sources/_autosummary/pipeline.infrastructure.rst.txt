@@ -16,28 +16,11 @@ pipeline.infrastructure
       :nosignatures:
    
       generate_detail_plots
-      get_logger
       set_plot_level
    
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      CalApplication
-      CalFrom
-      CalLibrary
-      CalState
-      CalTo
-      Context
-      JobRequest
-      Pipeline
    
    
 

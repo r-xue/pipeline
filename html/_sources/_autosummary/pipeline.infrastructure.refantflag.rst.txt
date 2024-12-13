@@ -15,7 +15,6 @@ pipeline.infrastructure.refantflag
       :toctree:
       :nosignatures:
    
-      NamedTuple
       aggregate_fully_flagged_antenna_notifications
       format_fully_flagged_antenna_notification
       identify_fully_flagged_antennas_from_flagcmds
@@ -36,11 +35,7 @@ pipeline.infrastructure.refantflag
       FieldIntent
       FieldIntentAntenna
       FieldIntentSpw
-      FlagCmd
-      FlaggableViewResults
       FullyFlaggedAntennasNotification
-      MeasurementSet
-      Results
    
    
 

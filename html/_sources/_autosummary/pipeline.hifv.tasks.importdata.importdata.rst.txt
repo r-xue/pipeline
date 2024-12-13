@@ -9,14 +9,6 @@ pipeline.hifv.tasks.importdata.importdata
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      detect_spectral_lines
-   
    
 
    
@@ -32,7 +24,6 @@ pipeline.hifv.tasks.importdata.importdata
       VLAImportData
       VLAImportDataInputs
       VLAImportDataResults
-      VLAScanHeuristics
    
    
 

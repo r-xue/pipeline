@@ -15,10 +15,7 @@ pipeline.hifa.tasks.bandpassflag.bandpassflag
       :toctree:
       :nosignatures:
    
-      aggregate_fully_flagged_antenna_notifications
       create_plots
-      identify_fully_flagged_antennas_from_flagcmds
-      mark_antennas_for_refant_update
    
    
 
@@ -31,12 +28,9 @@ pipeline.hifa.tasks.bandpassflag.bandpassflag
       :template: custom-class-template.rst
       :nosignatures:
    
-      ALMAPhcorBandpassInputs
       AmpVsXChart
       Bandpassflag
       BandpassflagInputs
-      BandpassflagResults
-      FlagdataSetter
    
    
 

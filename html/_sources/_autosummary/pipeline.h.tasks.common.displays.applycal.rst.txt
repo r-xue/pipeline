@@ -9,14 +9,6 @@ pipeline.h.tasks.common.displays.applycal
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      is_singledish_ms
-   
    
 
    
@@ -43,8 +35,6 @@ pipeline.h.tasks.common.displays.applycal
       BasebandComposite
       BasebandSummaryChart
       CAS9154AmpVsTimeDetailChart
-      CalTo
-      Context
       CorrectedToModelRatioVsAntenna1SummaryChart
       CorrectedToModelRatioVsUVDistanceSummaryChart
       FieldBasebandSummaryChart

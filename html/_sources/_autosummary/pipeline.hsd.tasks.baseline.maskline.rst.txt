@@ -20,9 +20,6 @@ pipeline.hsd.tasks.baseline.maskline
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataTable
-      DataTableIndexer
-      DataType
       MaskLine
       MaskLineInputs
       MaskLineResults

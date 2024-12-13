@@ -16,7 +16,6 @@ pipeline.hif.tasks.makecutoutimages.display
       :nosignatures:
    
       get_stats_summary
-      matplotlibrc_formal
    
    
 
@@ -30,7 +29,6 @@ pipeline.hif.tasks.makecutoutimages.display
       :nosignatures:
    
       CutoutimagesSummary
-      ImageHistDisplay
       ImageStats
       VlassCubeCutoutRmsSummary
       VlassCubeCutoutimagesSummary

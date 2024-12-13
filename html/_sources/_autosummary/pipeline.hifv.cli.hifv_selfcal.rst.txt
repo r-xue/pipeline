@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_selfcal
 ===============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_selfcal
 
-.. autofunction:: hifv_selfcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

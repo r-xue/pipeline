@@ -15,10 +15,7 @@ pipeline.hsd.tasks.imaging.display
       :toctree:
       :nosignatures:
    
-      DDMMSSs
-      HHMMSSss
       SDImageDisplayFactory
-      casa5style_plot
    
    
 
@@ -32,24 +29,15 @@ pipeline.hsd.tasks.imaging.display
       :nosignatures:
    
       ChannelMapAxesManager
-      ChannelSelection
-      DataType
       ImageAxesManager
-      MapAxesManagerBase
-      MultipleLocator
       SDChannelAveragedImageDisplay
       SDChannelMapDisplay
-      SDImageDisplay
-      SDImageDisplayInputs
-      SDImagingResultItem
       SDMomentMapDisplay
       SDRmsMapDisplay
       SDSparseMapDisplay
-      SDSparseMapPlotter
       SDSpectralImageDisplay
       SDSpectralMapDisplay
       SingleImageAxesManager
-      SpectralImage
       SpectralMapAxesManager
    
    

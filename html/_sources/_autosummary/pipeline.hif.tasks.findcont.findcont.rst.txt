@@ -20,10 +20,8 @@ pipeline.hif.tasks.findcont.findcont
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       FindCont
       FindContInputs
-      FindContResult
    
    
 

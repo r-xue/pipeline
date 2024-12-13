@@ -22,16 +22,6 @@ pipeline.infrastructure.eventbus.eventbus
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Event
-      TypeVar
-   
    
 
    

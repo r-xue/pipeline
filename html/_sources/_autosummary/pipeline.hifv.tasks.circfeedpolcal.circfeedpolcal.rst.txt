@@ -9,15 +9,6 @@ pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      standard_sources
-      uvrange
-   
    
 
    

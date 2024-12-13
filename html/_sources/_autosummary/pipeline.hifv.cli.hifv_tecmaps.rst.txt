@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_tecmaps
 ===============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_tecmaps
 
-.. autofunction:: hifv_tecmaps
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

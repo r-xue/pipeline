@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_imageprecheck
 =====================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_imageprecheck
 
-.. autofunction:: hifa_imageprecheck
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

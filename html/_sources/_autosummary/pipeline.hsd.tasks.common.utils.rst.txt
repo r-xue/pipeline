@@ -16,7 +16,6 @@ pipeline.hsd.tasks.common.utils
       :nosignatures:
    
       TableSelector
-      absolute_path
       asdm_name_from_ms
       convert_spw_virtual2real
       get_brightness_unit
@@ -32,7 +31,6 @@ pipeline.hsd.tasks.common.utils
       get_valid_ms_members
       is_nro
       iterate_group_member
-      list_to_str
       make_ddid_map
       make_polid_map
       make_row_map
@@ -43,7 +41,6 @@ pipeline.hsd.tasks.common.utils
       mjd_to_datetime
       parseEdge
       profiler
-      relative_path
       require_virtual_spw_id_handling
       sort_fields
       to_bool
@@ -61,20 +58,11 @@ pipeline.hsd.tasks.common.utils
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      DataTable
       EchoDictionary
-      Field
-      MeasurementSet
-      NewType
-      ObservingRun
       ProgressTimer
       RGAccumulator
       SpwDetailedView
       SpwSimpleView
-      Time
-      casa_table
-      pyLogger
    
    
 

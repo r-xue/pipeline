@@ -24,7 +24,6 @@ pipeline.hifa.heuristics.snr
    
       compute_bpsolint
       compute_gaincalsnr
-      deepcopy
       estimate_bpsolint
       estimate_gaincalsnr
       get_fluxinfo
@@ -34,7 +33,6 @@ pipeline.hifa.heuristics.snr
       join_dicts
       make_tsyslists
       nextHighestDivisibleInt
-      round_up
    
    
 

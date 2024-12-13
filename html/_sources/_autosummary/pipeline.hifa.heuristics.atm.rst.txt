@@ -9,14 +9,6 @@ pipeline.hifa.heuristics.atm
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      tsysspwmap
-   
    
 
    
@@ -29,8 +21,6 @@ pipeline.hifa.heuristics.atm
       :nosignatures:
    
       AtmHeuristics
-      Context
-      SpectralWindow
    
    
 

@@ -9,14 +9,6 @@ pipeline.hifv.tasks.importdata.renderer
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      reduce
-   
    
 
    

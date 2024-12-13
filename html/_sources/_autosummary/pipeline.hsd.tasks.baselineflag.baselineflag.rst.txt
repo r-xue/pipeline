@@ -9,15 +9,6 @@ pipeline.hsd.tasks.baselineflag.baselineflag
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      absolute_path
-      reshape_flagdata_summary
-   
    
 
    
@@ -29,11 +20,9 @@ pipeline.hsd.tasks.baselineflag.baselineflag
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       SDBLFlag
       SDBLFlagInputs
       SDBLFlagResults
-      SDBLFlagSummary
       SerialSDBLFlag
    
    

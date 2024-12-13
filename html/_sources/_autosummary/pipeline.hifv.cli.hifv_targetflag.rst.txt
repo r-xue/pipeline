@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_targetflag
 ==================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_targetflag
 
-.. autofunction:: hifv_targetflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

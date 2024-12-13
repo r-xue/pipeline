@@ -9,15 +9,6 @@ pipeline.hif.tasks.selfcal.selfcal
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      contfile_to_chansel
-      fnmatch
-   
    
 
    
@@ -29,14 +20,9 @@ pipeline.hif.tasks.selfcal.selfcal
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
-      JsonCustomEncoder
-      MakeImList
       Selfcal
       SelfcalInputs
       SelfcalResults
-      SerialIFApplycal
-      TaskQueue
    
    
 

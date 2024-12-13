@@ -9,15 +9,6 @@ pipeline.hif.tasks.makecutoutimages.makecutoutimages
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      get_stokes
-      imstat_items
-   
    
 
    
@@ -29,7 +20,6 @@ pipeline.hif.tasks.makecutoutimages.makecutoutimages
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       Makecutoutimages
       MakecutoutimagesInputs
       MakecutoutimagesResults

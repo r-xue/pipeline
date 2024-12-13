@@ -20,7 +20,6 @@ pipeline.hsdn.tasks.exportdata.manifest
       :template: custom-class-template.rst
       :nosignatures:
    
-      Element
       NROPipelineManifest
    
    

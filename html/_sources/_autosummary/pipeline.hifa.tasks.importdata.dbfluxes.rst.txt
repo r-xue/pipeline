@@ -34,13 +34,6 @@ pipeline.hifa.tasks.importdata.dbfluxes
 
    
    
-   .. rubric:: Exceptions
-
-   .. autosummary::
-      :toctree:
-   
-      ExpatError
-   
    
 
 

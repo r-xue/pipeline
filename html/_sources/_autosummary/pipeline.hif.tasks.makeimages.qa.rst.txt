@@ -9,14 +9,6 @@ pipeline.hif.tasks.makeimages.qa
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      reduce
-   
    
 
    

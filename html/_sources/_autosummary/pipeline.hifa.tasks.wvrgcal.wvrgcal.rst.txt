@@ -20,8 +20,6 @@ pipeline.hifa.tasks.wvrgcal.wvrgcal
       :template: custom-class-template.rst
       :nosignatures:
    
-      BandpassResults
-      GaincalResults
       WVRInfo
       Wvrgcal
       WvrgcalInputs

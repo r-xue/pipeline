@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=678032d9" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hsd.cli.hsd_applycal" href="pipeline.hsd.cli.hsd_applycal.html" />
-    <link rel="prev" title="pipeline.hifv.cli.hifv_vlassmasking" href="pipeline.hifv.cli.hifv_vlassmasking.html" /> 
+    <link rel="prev" title="pipeline.hsd" href="pipeline.hsd.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
@@ -46,77 +46,48 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Releases etc.</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#full-list">Full List</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Heuristics</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context/etc. (automodapi)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html"><code class="docutils literal notranslate"><span class="pre">pipeline.domain</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.launcher"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.launcher</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.callibrary"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.project</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-callibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.callibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#pipeline-infrastructure-imagelibrary-module"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.imagelibrary</span></code> module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics.html#module-pipeline.infrastructure.vdp"><code class="docutils literal notranslate"><span class="pre">pipeline.infrastructure.vdp</span></code> module</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Domain/Context (autosummary)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Pipeline Task/Inputs/Results Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../classes.html">Classes in <code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../classes.html#inheritance-diagrams">Inheritance Diagrams</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Notebooks</span></p>
-<ul>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Examples Notes (from Jupyter Notebooks)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/test1.html">test</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Example Notes (from .rst)</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../examples/test2.html">Example 1</a></li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -126,7 +97,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../apisummary.html">Pipeline Tasks (from autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
       <li class="breadcrumb-item active">pipeline.hsd.cli</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/_autosummary/pipeline.hsd.cli.rst.txt" rel="nofollow"> View page source</a>
@@ -140,43 +113,42 @@
   <section id="module-pipeline.hsd.cli">
 <span id="pipeline-hsd-cli"></span><h1>pipeline.hsd.cli<a class="headerlink" href="#module-pipeline.hsd.cli" title="Link to this heading"></a></h1>
 <p>ALMA Single Dish Tasks</p>
-<p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_applycal.html#pipeline.hsd.cli.hsd_applycal" title="pipeline.hsd.cli.hsd_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_applycal.html#module-pipeline.hsd.cli.hsd_applycal" title="pipeline.hsd.cli.hsd_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code></a>([vis, field, intent, spw, ...])</p></td>
 <td><p>Apply the calibration(s) to the data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_atmcor.html#pipeline.hsd.cli.hsd_atmcor" title="pipeline.hsd.cli.hsd_atmcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_atmcor.html#module-pipeline.hsd.cli.hsd_atmcor" title="pipeline.hsd.cli.hsd_atmcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code></a>([atmtype, dtem_dh, h0, infiles, ...])</p></td>
 <td><p>Apply offline ATM correction to the data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_baseline.html#pipeline.hsd.cli.hsd_baseline" title="pipeline.hsd.cli.hsd_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_baseline.html#module-pipeline.hsd.cli.hsd_baseline" title="pipeline.hsd.cli.hsd_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code></a>([fitfunc, fitorder, ...])</p></td>
 <td><p>Detect and validate spectral lines, subtract baseline by masking detected lines.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_blflag.html#pipeline.hsd.cli.hsd_blflag" title="pipeline.hsd.cli.hsd_blflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_blflag.html#module-pipeline.hsd.cli.hsd_blflag" title="pipeline.hsd.cli.hsd_blflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code></a>([iteration, edge, flag_tsys, ...])</p></td>
 <td><p>Flag spectra based on predefined criteria of single dish pipeline.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_exportdata.html#pipeline.hsd.cli.hsd_exportdata" title="pipeline.hsd.cli.hsd_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_exportdata.html#module-pipeline.hsd.cli.hsd_exportdata" title="pipeline.hsd.cli.hsd_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code></a>([pprfile, targetimages, ...])</p></td>
 <td><p>Prepare single dish data for export.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_flagdata.html#pipeline.hsd.cli.hsd_flagdata" title="pipeline.hsd.cli.hsd_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_flagdata.html#module-pipeline.hsd.cli.hsd_flagdata" title="pipeline.hsd.cli.hsd_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code></a>([vis, autocorr, shadow, scan, ...])</p></td>
 <td><p>Do basic flagging of a list of MeasurementSets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_imaging.html#pipeline.hsd.cli.hsd_imaging" title="pipeline.hsd.cli.hsd_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_imaging.html#module-pipeline.hsd.cli.hsd_imaging" title="pipeline.hsd.cli.hsd_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code></a>([mode, restfreq, infiles, ...])</p></td>
 <td><p>Generate single dish images.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_importdata.html#pipeline.hsd.cli.hsd_importdata" title="pipeline.hsd.cli.hsd_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_importdata.html#module-pipeline.hsd.cli.hsd_importdata" title="pipeline.hsd.cli.hsd_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code></a>([vis, session, ...])</p></td>
 <td><p>Imports data into the single dish pipeline.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_k2jycal.html#pipeline.hsd.cli.hsd_k2jycal" title="pipeline.hsd.cli.hsd_k2jycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_k2jycal.html#module-pipeline.hsd.cli.hsd_k2jycal" title="pipeline.hsd.cli.hsd_k2jycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code></a>([dbservice, endpoint, reffile, ...])</p></td>
 <td><p>Derive Kelvin to Jy calibration tables.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_restoredata.html#pipeline.hsd.cli.hsd_restoredata" title="pipeline.hsd.cli.hsd_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_restoredata.html#module-pipeline.hsd.cli.hsd_restoredata" title="pipeline.hsd.cli.hsd_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code></a>([vis, session, ...])</p></td>
 <td><p>Restore flagged and calibration single dish data from a pipeline run.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_skycal.html#pipeline.hsd.cli.hsd_skycal" title="pipeline.hsd.cli.hsd_skycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_skycal.html#module-pipeline.hsd.cli.hsd_skycal" title="pipeline.hsd.cli.hsd_skycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code></a>([calmode, fraction, noff, width, ...])</p></td>
 <td><p>Calibrate data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_tsysflag.html#pipeline.hsd.cli.hsd_tsysflag" title="pipeline.hsd.cli.hsd_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_tsysflag.html#module-pipeline.hsd.cli.hsd_tsysflag" title="pipeline.hsd.cli.hsd_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code></a>([vis, caltable, flag_nmedian, ...])</p></td>
 <td><p>Flag deviant system temperature measurements.</p></td>
 </tr>
 </tbody>
@@ -187,7 +159,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifv.cli.hifv_vlassmasking.html" class="btn btn-neutral float-left" title="pipeline.hifv.cli.hifv_vlassmasking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.html" class="btn btn-neutral float-left" title="pipeline.hsd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hsd.cli.hsd_applycal.html" class="btn btn-neutral float-right" title="pipeline.hsd.cli.hsd_applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_analyzealpha
 ==================================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_analyzealpha
 
-.. autofunction:: hif_analyzealpha
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

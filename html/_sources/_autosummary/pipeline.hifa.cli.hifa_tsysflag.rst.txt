@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_tsysflag
 ================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_tsysflag
 
-.. autofunction:: hifa_tsysflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

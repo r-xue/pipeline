@@ -13,16 +13,6 @@ pipeline.hifa.tasks.gaincalsnr
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      GaincalSnr
-      GaincalSnrResults
-   
    
 
    

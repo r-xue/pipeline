@@ -29,10 +29,6 @@ pipeline.hsd.tasks.imaging.worker
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      DataTable
-      DataType
-      NewType
       SDImagingWorker
       SDImagingWorkerInputs
    

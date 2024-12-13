@@ -28,11 +28,7 @@ pipeline.h.tasks.common.displays.image
       :template: custom-class-template.rst
       :nosignatures:
    
-      ColorConverter
-      Colormap
       ImageDisplay
-      Normalize
-      Rectangle
    
    
 

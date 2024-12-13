@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_exportdata
 ==================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_exportdata
 
-.. autofunction:: hifv_exportdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

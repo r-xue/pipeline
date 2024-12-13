@@ -16,8 +16,6 @@ pipeline.hsd.tasks.baseline.plotter
       :nosignatures:
    
       binned_mean_ma
-      casa5style_plot
-      ch_to_freq
       configure_1d_panel
       configure_2d_panel
       generate_grid_panel_map
@@ -40,7 +38,6 @@ pipeline.hsd.tasks.baseline.plotter
       BaselineSubtractionPlotManager
       BaselineSubtractionQualityManager
       BinnedStat
-      MaskedArray
       PlotDataStorage
       PlotterPool
       QualityStat

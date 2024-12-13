@@ -17,7 +17,6 @@ pipeline.hsd.tasks.common.compress
    
       compress_object
       decompress_object
-      get_obj_size
    
    
 

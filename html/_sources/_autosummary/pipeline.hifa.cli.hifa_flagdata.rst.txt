@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_flagdata
 ================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_flagdata
 
-.. autofunction:: hifa_flagdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

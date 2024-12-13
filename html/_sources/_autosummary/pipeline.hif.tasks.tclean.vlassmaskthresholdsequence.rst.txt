@@ -20,7 +20,6 @@ pipeline.hif.tasks.tclean.vlassmaskthresholdsequence
       :template: custom-class-template.rst
       :nosignatures:
    
-      BaseCleanSequence
       VlassMaskThresholdSequence
    
    

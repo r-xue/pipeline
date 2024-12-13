@@ -16,9 +16,6 @@ pipeline.hsd.tasks.baseline.baseline
       :nosignatures:
    
       deviation_mask_heuristic
-      generate_ms
-      inspect_reduction_group
-      merge_reduction_group
       test_deviation_mask_heuristic
    
    
@@ -32,11 +29,8 @@ pipeline.hsd.tasks.baseline.baseline
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       DeviationMaskHeuristicsTask
       HeuristicsTask
-      MSReductionGroupDesc
-      MaskDeviationHeuristic
       SDBaseline
       SDBaselineInputs
       SDBaselineResults

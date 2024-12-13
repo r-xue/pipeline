@@ -35,10 +35,7 @@ pipeline.h.tasks.tsysflag.renderer
       :nosignatures:
    
       ComponentRendererMap
-      Context
-      FlagTotal
       PlotDetailRenderer
-      ResultsList
       T2_4MDetailsTsysflagRenderer
    
    

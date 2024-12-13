@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_testBPdcals
 ===================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_testBPdcals
 
-.. autofunction:: hifv_testBPdcals
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -9,14 +9,6 @@ pipeline.h.tasks.tsysflag.qa
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      format_fully_flagged_antenna_notification
-   
    
 
    

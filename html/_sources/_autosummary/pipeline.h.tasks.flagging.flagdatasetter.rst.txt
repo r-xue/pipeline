@@ -20,7 +20,6 @@ pipeline.h.tasks.flagging.flagdatasetter
       :template: custom-class-template.rst
       :nosignatures:
    
-      FlagCmd
       FlagdataSetter
       FlagdataSetterInputs
       FlagdataSetterResults

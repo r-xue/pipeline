@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_fluxboot
 ================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_fluxboot
 
-.. autofunction:: hifv_fluxboot
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

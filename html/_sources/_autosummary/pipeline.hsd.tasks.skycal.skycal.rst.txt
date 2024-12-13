@@ -16,7 +16,6 @@ pipeline.hsd.tasks.skycal.skycal
       :nosignatures:
    
       compute_elevation_difference
-      relative_path
    
    
 
@@ -33,7 +32,6 @@ pipeline.hsd.tasks.skycal.skycal
       SDSkyCalInputs
       SDSkyCalResults
       SerialSDSkyCal
-      SingleDishResults
    
    
 

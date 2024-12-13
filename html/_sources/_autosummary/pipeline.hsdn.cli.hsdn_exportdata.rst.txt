@@ -1,6 +1,23 @@
 pipeline.hsdn.cli.hsdn\_exportdata
 ==================================
 
-.. currentmodule:: pipeline.hsdn.cli
+.. automodule:: pipeline.hsdn.cli.hsdn_exportdata
 
-.. autofunction:: hsdn_exportdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

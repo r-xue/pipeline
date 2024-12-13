@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_importdata
 ==================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_importdata
 
-.. autofunction:: hifa_importdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

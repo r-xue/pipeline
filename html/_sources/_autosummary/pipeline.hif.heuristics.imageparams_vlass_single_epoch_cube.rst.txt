@@ -20,7 +20,6 @@ pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_cube
       :template: custom-class-template.rst
       :nosignatures:
    
-      ImageParamsHeuristicsVlassSeContMosaic
       ImageParamsHeuristicsVlassSeCube
    
    

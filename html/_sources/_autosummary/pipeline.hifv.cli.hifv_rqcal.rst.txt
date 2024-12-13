@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_rqcal
 =============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_rqcal
 
-.. autofunction:: hifv_rqcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

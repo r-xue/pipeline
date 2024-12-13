@@ -29,8 +29,6 @@ pipeline.infrastructure.pipeline\_statistics
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
-      MeasurementSet
       PipelineStatistics
       PipelineStatisticsLevel
    

@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_correctedampflag
 ======================================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_correctedampflag
 
-.. autofunction:: hif_correctedampflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_checkflag
 =================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_checkflag
 
-.. autofunction:: hifv_checkflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

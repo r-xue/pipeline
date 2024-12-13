@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_fixpointing
 ===================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_fixpointing
 
-.. autofunction:: hifv_fixpointing
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -15,9 +15,7 @@ pipeline.hifa.tasks.importdata.renderer
       :toctree:
       :nosignatures:
    
-      get_relative_url
       make_parang_plots
-      sanitize
    
    
 
@@ -30,9 +28,7 @@ pipeline.hifa.tasks.importdata.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
-      Executor
       T2_4MDetailsALMAImportDataRenderer
-      T2_4MDetailsImportDataRenderer
    
    
 

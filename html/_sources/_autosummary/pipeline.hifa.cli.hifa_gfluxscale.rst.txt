@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_gfluxscale
 ==================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_gfluxscale
 
-.. autofunction:: hifa_gfluxscale
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

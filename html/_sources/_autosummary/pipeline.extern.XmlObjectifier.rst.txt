@@ -16,7 +16,6 @@ pipeline.extern.XmlObjectifier
       :nosignatures:
    
       castType
-      copy
    
    
 

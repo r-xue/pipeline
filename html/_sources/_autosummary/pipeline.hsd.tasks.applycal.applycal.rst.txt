@@ -28,14 +28,9 @@ pipeline.hsd.tasks.applycal.applycal
       :template: custom-class-template.rst
       :nosignatures:
    
-      ApplycalInputs
-      ApplycalResults
-      DataTable
-      DataType
       SDApplycal
       SDApplycalInputs
       SDApplycalResults
-      SerialApplycal
       SerialSDApplycal
    
    

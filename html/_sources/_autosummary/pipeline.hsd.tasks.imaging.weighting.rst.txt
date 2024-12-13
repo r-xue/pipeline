@@ -9,14 +9,6 @@ pipeline.hsd.tasks.imaging.weighting
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      list_to_str
-   
    
 
    
@@ -28,8 +20,6 @@ pipeline.hsd.tasks.imaging.weighting
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataTable
-      DataType
       WeightMS
       WeightMSInputs
       WeightMSResults

@@ -20,7 +20,6 @@ pipeline.hif.heuristics.imageparams\_alma\_scal
       :template: custom-class-template.rst
       :nosignatures:
    
-      ImageParamsHeuristicsALMA
       ImageParamsHeuristicsALMAScal
    
    

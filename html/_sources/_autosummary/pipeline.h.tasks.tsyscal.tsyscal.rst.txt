@@ -19,7 +19,6 @@ pipeline.h.tasks.tsyscal.tsyscal
       get_gainfield_map
       get_solution_map
       get_tsys_fields_for_intent
-      tsysspwmap
    
    
 
@@ -33,11 +32,8 @@ pipeline.h.tasks.tsyscal.tsyscal
       :nosignatures:
    
       GainfieldMapping
-      MeasurementSet
       Tsyscal
       TsyscalInputs
-      attrgetter
-      itemgetter
    
    
 

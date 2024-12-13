@@ -1,6 +1,23 @@
 pipeline.hsdn.cli.hsdn\_importdata
 ==================================
 
-.. currentmodule:: pipeline.hsdn.cli
+.. automodule:: pipeline.hsdn.cli.hsdn_importdata
 
-.. autofunction:: hsdn_importdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

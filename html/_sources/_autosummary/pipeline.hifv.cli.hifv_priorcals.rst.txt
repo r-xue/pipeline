@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_priorcals
 =================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_priorcals
 
-.. autofunction:: hifv_priorcals
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -13,15 +13,6 @@ pipeline.hif.tasks.makecutoutimages
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Makecutoutimages
-   
    
 
    

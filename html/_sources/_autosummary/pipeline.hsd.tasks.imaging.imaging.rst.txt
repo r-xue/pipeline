@@ -32,27 +32,14 @@ pipeline.hsd.tasks.imaging.imaging
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataTable
-      DataType
-      MeasurementSet
-      Number
       RasterInfo
-      RasterScanHeuristicsResult
       SDImaging
       SDImagingInputs
-      Sensitivity
       SensitivityInfo
    
    
 
    
-   
-   .. rubric:: Exceptions
-
-   .. autosummary::
-      :toctree:
-   
-      RasterScanHeuristicsFailure
    
    
 

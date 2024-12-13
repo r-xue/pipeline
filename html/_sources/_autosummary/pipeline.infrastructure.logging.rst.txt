@@ -16,7 +16,6 @@ pipeline.infrastructure.logging
       :nosignatures:
    
       add_handler
-      contextmanager
       get_logger
       log_filtermsg
       log_level

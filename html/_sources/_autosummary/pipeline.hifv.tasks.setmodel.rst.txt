@@ -13,15 +13,6 @@ pipeline.hifv.tasks.setmodel
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      VLASetjy
-   
    
 
    

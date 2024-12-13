@@ -16,7 +16,6 @@ pipeline.hsd.tasks.k2jycal.k2jycal
       :nosignatures:
    
       export_jyperk
-      relative_path
    
    
 

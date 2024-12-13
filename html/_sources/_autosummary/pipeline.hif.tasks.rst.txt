@@ -13,49 +13,6 @@ pipeline.hif.tasks
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Analyzealpha
-      Antpos
-      Bandpass
-      BandpassMode
-      ChannelBandpass
-      CheckProductSize
-      Correctedampflag
-      Editimlist
-      FindCont
-      Fluxscale
-      GSplineGaincal
-      GTypeGaincal
-      Gaincal
-      GaincalMode
-      IFApplycal
-      KTypeGaincal
-      Lowgainflag
-      MakeImList
-      MakeImages
-      Makecutoutimages
-      Makermsimages
-      Mstransform
-      PhcorBandpass
-      Polarization
-      PolcalWorker
-      Rawflagchans
-      RefAnt
-      Selfcal
-      SerialIFApplycal
-      SerialRefAnt
-      SetModels
-      Setjy
-      Tclean
-      Transformimagedata
-      UVcontSub
-   
    
 
    

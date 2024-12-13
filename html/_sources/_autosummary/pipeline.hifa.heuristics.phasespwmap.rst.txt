@@ -24,15 +24,6 @@ pipeline.hifa.heuristics.phasespwmap
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      SpectralWindow
-   
    
 
    

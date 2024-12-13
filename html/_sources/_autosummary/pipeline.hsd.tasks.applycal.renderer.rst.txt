@@ -20,8 +20,6 @@ pipeline.hsd.tasks.applycal.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      ResultsList
       T2_4MDetailsSDApplycalRenderer
    
    

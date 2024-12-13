@@ -15,7 +15,6 @@ pipeline.hifa.tasks.gaincal.timegaincal
       :toctree:
       :nosignatures:
    
-      combine_spwmap
       do_gtype_gaincal
    
    
@@ -29,7 +28,6 @@ pipeline.hifa.tasks.gaincal.timegaincal
       :template: custom-class-template.rst
       :nosignatures:
    
-      MeasurementSet
       TimeGaincal
       TimeGaincalInputs
    

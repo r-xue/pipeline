@@ -9,14 +9,6 @@ pipeline.hifv.tasks.priorcals.priorcals
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      correct_ant_posns
-   
    
 
    
@@ -28,13 +20,8 @@ pipeline.hifv.tasks.priorcals.priorcals
       :template: custom-class-template.rst
       :nosignatures:
    
-      GainCurves
-      Opcal
       Priorcals
       PriorcalsInputs
-      Rqcal
-      Swpowcal
-      TecMaps
    
    
 

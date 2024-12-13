@@ -19,8 +19,6 @@ pipeline.hif.tasks.tclean.renderer
       get_plot
       make_plot_dict
       missing_png_filter
-      plots_to_html
-      randint
       triadwise
    
    

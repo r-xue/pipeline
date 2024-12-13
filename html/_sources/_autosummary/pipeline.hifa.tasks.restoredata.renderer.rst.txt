@@ -9,14 +9,6 @@ pipeline.hifa.tasks.restoredata.renderer
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      make_repsource_table
-   
    
 
    

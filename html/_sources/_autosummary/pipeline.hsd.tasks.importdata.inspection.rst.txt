@@ -9,15 +9,6 @@ pipeline.hsd.tasks.importdata.inspection
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      inspect_reduction_group
-      set_beam_size
-   
    
 
    
@@ -29,23 +20,11 @@ pipeline.hsd.tasks.importdata.inspection
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      DataTableImpl
-      MSReductionGroupDesc
-      MeasurementSet
-      RasterScanHeuristicsResult
       SDInspection
    
    
 
    
-   
-   .. rubric:: Exceptions
-
-   .. autosummary::
-      :toctree:
-   
-      RasterScanHeuristicsFailure
    
    
 

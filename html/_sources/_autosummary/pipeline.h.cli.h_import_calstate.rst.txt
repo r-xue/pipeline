@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_import\_calstate
 ==================================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_import_calstate
 
-.. autofunction:: h_import_calstate
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

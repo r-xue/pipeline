@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_mssplit
 =========================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_mssplit
 
-.. autofunction:: h_mssplit
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

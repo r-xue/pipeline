@@ -9,14 +9,6 @@ pipeline.hif.tasks.tclean.tclean
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      label
-   
    
 
    
@@ -28,17 +20,8 @@ pipeline.hif.tasks.tclean.tclean
       :template: custom-class-template.rst
       :nosignatures:
    
-      AutoMaskThresholdSequence
-      AutoScalThresholdSequence
-      DataType
-      ImageCentreThresholdSequence
-      ManualMaskThresholdSequence
-      NoMaskThresholdSequence
       Tclean
       TcleanInputs
-      TcleanResult
-      VlaAutoMaskThresholdSequence
-      VlassMaskThresholdSequence
    
    
 

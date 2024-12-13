@@ -1,33 +1,30 @@
 pipeline.hifv.tasks.semiFinalBPdcals
 ====================================
 
-.. currentmodule:: pipeline.hifv.tasks
-
-.. autoclass:: semiFinalBPdcals
-   :members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members: __call__, __add__, __mul__
+.. automodule:: pipeline.hifv.tasks.semiFinalBPdcals
 
    
    
-   .. rubric:: Methods
+   .. rubric:: Module attributes
 
    .. autosummary::
-      :nosignatures:
+      :toctree:
    
-      ~semiFinalBPdcals.analyse
-      ~semiFinalBPdcals.execute
-      ~semiFinalBPdcals.prepare
+      is_multi_vis_task
    
    
 
    
    
-   .. rubric:: Attributes
+   
 
-   .. autosummary::
-   
-      ~semiFinalBPdcals.is_multi_vis_task
    
    
+   
+
+   
+   
+   
+
+
+

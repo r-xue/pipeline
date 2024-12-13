@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_targetflag
 ==================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_targetflag
 
-.. autofunction:: hifa_targetflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -21,7 +21,6 @@ pipeline.hif.tasks.tclean.automaskthresholdsequence
       :nosignatures:
    
       AutoMaskThresholdSequence
-      BaseCleanSequence
    
    
 

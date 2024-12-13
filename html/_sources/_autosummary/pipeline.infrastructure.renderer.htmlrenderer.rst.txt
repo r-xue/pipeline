@@ -50,9 +50,7 @@ pipeline.infrastructure.renderer.htmlrenderer
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
       LogCopier
-      MeasurementSet
       MetadataRendererBase
       MsgTableRow
       RendererBase
@@ -83,9 +81,6 @@ pipeline.infrastructure.renderer.htmlrenderer
       T2_4MDetailsRenderer
       T2_4MRenderer
       WebLogGenerator
-      WebLogStageRenderingAbnormalExitEvent
-      WebLogStageRenderingCompleteEvent
-      WebLogStageRenderingStartedEvent
    
    
 

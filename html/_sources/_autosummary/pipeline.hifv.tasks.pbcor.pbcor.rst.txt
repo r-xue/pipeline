@@ -20,7 +20,6 @@ pipeline.hifv.tasks.pbcor.pbcor
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataType
       Pbcor
       PbcorInputs
       PbcorResults

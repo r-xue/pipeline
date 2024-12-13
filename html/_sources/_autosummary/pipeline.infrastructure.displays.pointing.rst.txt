@@ -29,7 +29,6 @@ pipeline.infrastructure.displays.pointing
       HHMMSSsss
       RADEClabel
       XYlabel
-      casa5style_plot
       draw_beam
       draw_pointing
    
@@ -44,18 +43,7 @@ pipeline.infrastructure.displays.pointing
       :template: custom-class-template.rst
       :nosignatures:
    
-      Antenna
-      AutoLocator
-      Axes
-      DataTable
-      Formatter
-      FuncFormatter
-      Integral
-      Locator
       MapAxesManagerBase
-      MeasurementSet
-      MultipleLocator
-      Plot
       PointingAxesManager
       SingleDishPointingChart
    

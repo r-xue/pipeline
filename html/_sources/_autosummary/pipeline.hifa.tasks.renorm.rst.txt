@@ -13,16 +13,6 @@ pipeline.hifa.tasks.renorm
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Renorm
-      SerialRenorm
-   
    
 
    

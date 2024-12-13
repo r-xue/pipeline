@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_importdata
 ============================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_importdata
 
-.. autofunction:: h_importdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

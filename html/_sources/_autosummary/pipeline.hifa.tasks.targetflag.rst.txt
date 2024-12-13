@@ -13,15 +13,6 @@ pipeline.hifa.tasks.targetflag
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Targetflag
-   
    
 
    

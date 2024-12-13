@@ -13,28 +13,6 @@ pipeline.hsd.heuristics
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      AntennaDiameter
-      BaselineFitParamConfig
-      CalibrationTypeHeuristics
-      DataTypeHeuristics
-      FitOrderHeuristics
-      GroupByPosition2
-      GroupByTime2
-      MaskDeviationHeuristic
-      MergeGapTables2
-      ObservingPattern2
-      RasterScanHeuristic
-      SingleDishBeamSize
-      SingleDishBeamSizeFromName
-      TsysSpwMapHeuristics
-   
    
 
    

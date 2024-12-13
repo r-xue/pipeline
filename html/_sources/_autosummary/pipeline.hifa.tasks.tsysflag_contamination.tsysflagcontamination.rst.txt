@@ -21,24 +21,12 @@ pipeline.hifa.tasks.tsysflag\_contamination.tsysflagcontamination
       :nosignatures:
    
       ExternFunctionArguments
-      QAScore
-      StandardTaskTemplate
-      TargetDataSelection
-      TsysData
       TsysFlagContamination
       TsysFlagContaminationInputs
-      TsysflagResults
    
    
 
    
-   
-   .. rubric:: Exceptions
-
-   .. autosummary::
-      :toctree:
-   
-      PipelineException
    
    
 

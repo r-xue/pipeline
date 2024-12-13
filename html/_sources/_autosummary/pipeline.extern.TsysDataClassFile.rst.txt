@@ -19,7 +19,6 @@ pipeline.extern.TsysDataClassFile
       chanfreq_records_to_functions
       getImageSBFreqs
       getband
-      tsysspwmap
       weather_function
    
    
@@ -34,12 +33,6 @@ pipeline.extern.TsysDataClassFile
       :nosignatures:
    
       TsysData
-      attool
-      metool
-      msmdtool
-      mstool
-      qatool
-      tbtool
    
    
 

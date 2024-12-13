@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_restorepims
 ===================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_restorepims
 
-.. autofunction:: hifv_restorepims
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

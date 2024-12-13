@@ -9,15 +9,6 @@ pipeline.hsd.tasks.importdata.importdata
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      merge_reduction_group
-      relative_path
-   
    
 
    
@@ -29,11 +20,6 @@ pipeline.hsd.tasks.importdata.importdata
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      FluxCalibrationResults
-      MSReductionGroupDesc
-      MeasurementSet
-      ObservingRun
       SDImportData
       SDImportDataInputs
       SDImportDataResults

@@ -34,9 +34,6 @@ pipeline.h.tasks.applycal.applycal
       Applycal
       ApplycalInputs
       ApplycalResults
-      DataType
-      IntentFieldnames
-      IntervalCalState
       SerialApplycal
    
    

@@ -29,22 +29,6 @@ pipeline.infrastructure.displays.plotmosaic
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      ArcUnits
-      Circle
-      Distance
-      DistanceUnits
-      EquatorialArc
-      FrequencyUnits
-      FuncFormatter
-      Line2D
-   
    
 
    

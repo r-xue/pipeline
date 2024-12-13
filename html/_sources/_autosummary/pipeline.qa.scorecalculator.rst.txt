@@ -122,10 +122,6 @@ pipeline.qa.scorecalculator
       :nosignatures:
    
       AgentStats
-      MeasurementSet
-      RasterScanHeuristicsResult
-      SDImagingResultItem
-      SDImportDataResults
    
    
 

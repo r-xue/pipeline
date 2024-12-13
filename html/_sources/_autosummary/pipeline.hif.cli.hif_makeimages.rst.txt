@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_makeimages
 ================================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_makeimages
 
-.. autofunction:: hif_makeimages
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_applycal
 ==============================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_applycal
 
-.. autofunction:: hif_applycal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

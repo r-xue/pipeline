@@ -13,15 +13,6 @@ pipeline.hif.tasks.antpos
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Antpos
-   
    
 
    

@@ -35,7 +35,6 @@ pipeline.hsd.tasks.common.rasterutil
       read_datatable
       read_readonly_data
       read_readwrite_data
-      sub
    
    
 
@@ -48,10 +47,6 @@ pipeline.hsd.tasks.common.rasterutil
       :template: custom-class-template.rst
       :nosignatures:
    
-      DataTableImpl
-      FuncAnimation
-      ImageMagickWriter
-      Line2D
       MetaDataSet
    
    

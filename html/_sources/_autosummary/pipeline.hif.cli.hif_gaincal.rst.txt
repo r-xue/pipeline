@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_gaincal
 =============================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_gaincal
 
-.. autofunction:: hif_gaincal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

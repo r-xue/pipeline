@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_makeimlist
 ================================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_makeimlist
 
-.. autofunction:: hif_makeimlist
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

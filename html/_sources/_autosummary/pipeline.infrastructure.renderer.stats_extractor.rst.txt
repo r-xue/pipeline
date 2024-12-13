@@ -30,12 +30,7 @@ pipeline.infrastructure.renderer.stats\_extractor
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      FlagDeterALMAResults
       FlagDeterALMAResultsExtractor
-      OrderedDict
-      Results
-      ResultsList
       StatsExtractor
       StatsExtractorRegistry
    

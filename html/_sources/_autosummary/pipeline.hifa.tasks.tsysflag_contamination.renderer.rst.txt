@@ -20,11 +20,7 @@ pipeline.hifa.tasks.tsysflag\_contamination.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      Plot
-      ResultsList
       T2_4MDetailsTsysflagContaminationRenderer
-      T2_4MDetailsTsysflagRenderer
       TsysContaminationPlotRenderer
    
    

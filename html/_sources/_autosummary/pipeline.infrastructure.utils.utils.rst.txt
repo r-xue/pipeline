@@ -19,7 +19,6 @@ pipeline.infrastructure.utils.utils
       approx_equal
       are_equal
       deduplicate
-      dequote
       dict_merge
       ensure_products_dir_exists
       export_weblog_as_tar
@@ -47,7 +46,6 @@ pipeline.infrastructure.utils.utils
       nested_dict
       open_with_lock
       place_repr_source_first
-      range_to_list
       relative_path
       remove_trailing_string
       request_omp_threading
@@ -66,7 +64,6 @@ pipeline.infrastructure.utils.utils
       :template: custom-class-template.rst
       :nosignatures:
    
-      Number
       pl_defaultdict
    
    

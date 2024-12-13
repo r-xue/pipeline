@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_applycals
 =================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_applycals
 
-.. autofunction:: hifv_applycals
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

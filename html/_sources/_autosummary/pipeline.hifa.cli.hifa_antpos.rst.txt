@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_antpos
 ==============================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_antpos
 
-.. autofunction:: hifa_antpos
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

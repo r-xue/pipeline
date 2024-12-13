@@ -13,15 +13,6 @@ pipeline.h.tasks.tsysflag
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Tsysflag
-   
    
 
    

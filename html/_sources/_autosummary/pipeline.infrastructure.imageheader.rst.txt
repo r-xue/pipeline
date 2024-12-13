@@ -17,7 +17,6 @@ pipeline.infrastructure.imageheader
    
       clean_extendable_keys
       set_miscinfo
-      wrap
       wrap_key
    
    

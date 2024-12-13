@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_wvrgcal
 ===============================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_wvrgcal
 
-.. autofunction:: hifa_wvrgcal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

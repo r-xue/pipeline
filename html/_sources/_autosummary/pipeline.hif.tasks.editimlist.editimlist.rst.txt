@@ -20,11 +20,8 @@ pipeline.hif.tasks.editimlist.editimlist
       :template: custom-class-template.rst
       :nosignatures:
    
-      CleanTarget
-      DataType
       Editimlist
       EditimlistInputs
-      EditimlistResult
    
    
 

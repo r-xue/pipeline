@@ -21,7 +21,6 @@ pipeline.infrastructure.new\_pipeline\_task.new\_pipeline\_task
       :nosignatures:
    
       NewTask
-      Template
    
    
 

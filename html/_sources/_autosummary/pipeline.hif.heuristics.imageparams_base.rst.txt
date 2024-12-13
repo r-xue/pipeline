@@ -9,15 +9,6 @@ pipeline.hif.heuristics.imageparams\_base
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      phasecenter_to_skycoord
-      refcode_to_skyframe
-   
    
 
    
@@ -30,10 +21,6 @@ pipeline.hif.heuristics.imageparams\_base
       :nosignatures:
    
       ImageParamsHeuristics
-      ImagerParameters
-      PyParallelContSynthesisImager
-      PySynthesisImager
-      SkyCoord
    
    
 

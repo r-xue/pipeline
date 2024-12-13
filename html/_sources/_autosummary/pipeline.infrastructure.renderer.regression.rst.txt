@@ -34,73 +34,28 @@ pipeline.infrastructure.renderer.regression
       :nosignatures:
    
       ApplycalRegressionExtractor
-      ApplycalResults
-      Applycals
-      Checkflag
       CheckflagRegressionExtractor
-      CheckflagResults
-      Context
-      Finalcals
       FinalcalsRegressionExtractor
-      FinalcalsResults
-      FlagDeterVLA
       FlagDeterVLARegressionExtractor
-      FlagDeterVLAResults
-      FluxCalibrationResults
-      FluxDensityUnits
-      Fluxboot
       FluxbootRegressionExtractor
-      FluxbootResults
       FluxcalflagRegressionExtractor
-      GcorFluxscale
       GcorFluxscaleRegressionExtractor
-      GfluxscaleflagResults
-      IFApplycal
-      MeasurementSet
-      NRORestoreData
-      NRORestoreDataResults
       NRORestoredataRegressionExtractor
-      OrderedDict
-      Priorcals
       PriorcalsRegressionExtractor
-      PriorcalsResults
       RegressionExtractor
       RegressionExtractorRegistry
-      Results
-      ResultsList
-      SDApplycal
       SDApplycalRegressionExtractor
-      SDBLFlag
       SDBLFlagRegressionExtractor
-      SDBLFlagResults
-      SDImaging
       SDImagingRegressionExtractor
-      SDImagingResults
-      SDRestoreData
-      SDRestoreDataResults
       SDRestoredataRegressionExtractor
-      Solint
       SolintRegressionExtractor
-      SolintResults
-      StandardTaskTemplate
-      Statwt
-      StatwtResults
-      Targetflag
       TargetflagRegressionExtractor
-      TargetflagResults
       VLAApplycalRegressionExtractor
-      VLAImportData
       VLAImportDataRegressionExtractor
-      VLAImportDataResults
-      VLASetjy
       VLASetjyRegressionExtractor
       VLAStatwtRegressionExtractor
-      semiFinalBPdcals
       semiFinalBPdcalsRegressionExtractor
-      semiFinalBPdcalsResults
-      testBPdcals
       testBPdcalsRegressionExtractor
-      testBPdcalsResults
    
    
 

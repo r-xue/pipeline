@@ -1,6 +1,23 @@
 pipeline.hsd.cli.hsd\_applycal
 ==============================
 
-.. currentmodule:: pipeline.hsd.cli
+.. automodule:: pipeline.hsd.cli.hsd_applycal
 
-.. autofunction:: hsd_applycal
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

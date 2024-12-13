@@ -20,7 +20,6 @@ pipeline.hif.heuristics.imageparams\_vla\_scal
       :template: custom-class-template.rst
       :nosignatures:
    
-      ImageParamsHeuristicsVLA
       ImageParamsHeuristicsVLAScal
    
    

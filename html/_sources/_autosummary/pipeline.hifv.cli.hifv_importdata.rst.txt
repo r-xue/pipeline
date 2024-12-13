@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_importdata
 ==================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_importdata
 
-.. autofunction:: hifv_importdata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

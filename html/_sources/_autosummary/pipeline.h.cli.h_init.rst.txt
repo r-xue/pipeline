@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_init
 ======================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_init
 
-.. autofunction:: h_init
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

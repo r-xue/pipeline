@@ -20,10 +20,6 @@ pipeline.hsdn.tasks.importdata.importdata
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      FluxMeasurement
-      MSReductionGroupDesc
-      MeasurementSet
       NROImportData
       NROImportDataInputs
       NROImportDataResults

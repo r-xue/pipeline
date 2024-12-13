@@ -1,0 +1,9 @@
+<map id="inheritanced75835d8d4" name="inheritanced75835d8d4">
+<area shape="rect" id="node1" href="_autosummary/pipeline.h.tasks.importdata.importdata.ImportData.html#pipeline.h.tasks.importdata.importdata.ImportData" target="_top" title="h.tasks.importdata.importdata.ImportData" alt="" coords="691,57,1053,85"/>
+<area shape="rect" id="node3" href="_autosummary/pipeline.hifa.tasks.importdata.almaimportdata.SerialALMAImportData.html#pipeline.hifa.tasks.importdata.almaimportdata.SerialALMAImportData" target="_top" title="hifa.tasks.importdata.almaimportdata.SerialALMAImportData" alt="" coords="1101,5,1615,33"/>
+<area shape="rect" id="node4" href="_autosummary/pipeline.hifv.tasks.importdata.importdata.SerialVLAImportData.html#pipeline.hifv.tasks.importdata.importdata.SerialVLAImportData" target="_top" title="hifv.tasks.importdata.importdata.SerialVLAImportData" alt="" coords="1129,57,1587,85"/>
+<area shape="rect" id="node5" href="_autosummary/pipeline.hsd.tasks.importdata.importdata.SerialSDImportData.html#pipeline.hsd.tasks.importdata.importdata.SerialSDImportData" target="_top" title="Data import execution task of SingleDish." alt="" coords="1134,109,1582,137"/>
+<area shape="rect" id="node2" href="_autosummary/pipeline.infrastructure.basetask.StandardTaskTemplate.html#pipeline.infrastructure.basetask.StandardTaskTemplate" target="_top" title="StandardTaskTemplate is a template class for pipeline reduction tasks whose" alt="" coords="252,57,643,85"/>
+<area shape="rect" id="node6" href="_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportData.html#pipeline.hsdn.tasks.importdata.importdata.NROImportData" target="_top" title="NRO Data import execution task." alt="" coords="1663,109,2089,137"/>
+<area shape="rect" id="node7" href="_autosummary/pipeline.infrastructure.api.Task.html#pipeline.infrastructure.api.Task" target="_top" title="The Runnable interface should be implemented by any class whose" alt="" coords="5,57,204,85"/>
+</map>

@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_fluxcalflag
 ===================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_fluxcalflag
 
-.. autofunction:: hifa_fluxcalflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

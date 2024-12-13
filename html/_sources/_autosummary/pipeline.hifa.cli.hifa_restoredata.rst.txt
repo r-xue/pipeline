@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_restoredata
 ===================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_restoredata
 
-.. autofunction:: hifa_restoredata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

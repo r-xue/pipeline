@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_restoredata
 ===================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_restoredata
 
-.. autofunction:: hifv_restoredata
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

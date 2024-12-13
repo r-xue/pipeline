@@ -9,14 +9,6 @@ pipeline.hsd.tasks.baseline.worker
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      relative_path
-   
    
 
    
@@ -28,12 +20,9 @@ pipeline.hsd.tasks.baseline.worker
       :template: custom-class-template.rst
       :nosignatures:
    
-      BaselineFitParamConfig
       BaselineSubtractionResults
       BaselineSubtractionWorker
       BaselineSubtractionWorkerInputs
-      DataTable
-      DataType
       SerialBaselineSubtractionWorker
    
    

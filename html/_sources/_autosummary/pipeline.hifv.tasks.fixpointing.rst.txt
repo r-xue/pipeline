@@ -13,15 +13,6 @@ pipeline.hifv.tasks.fixpointing
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Fixpointing
-   
    
 
    

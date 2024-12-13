@@ -20,14 +20,9 @@ pipeline.hsdn.tasks.exportdata.exportdata
       :template: custom-class-template.rst
       :nosignatures:
    
-      Context
-      Element
       NROExportData
       NROExportDataInputs
-      NROImportDataResults
       NROPipelineNameBuilder
-      NRORestoreDataResults
-      ProjectStructure
    
    
 

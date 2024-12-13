@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_bandpassflag
 ====================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_bandpassflag
 
-.. autofunction:: hifa_bandpassflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

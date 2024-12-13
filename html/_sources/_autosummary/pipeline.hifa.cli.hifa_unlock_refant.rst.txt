@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_unlock\_refant
 ======================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_unlock_refant
 
-.. autofunction:: hifa_unlock_refant
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_finalcals
 =================================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_finalcals
 
-.. autofunction:: hifv_finalcals
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

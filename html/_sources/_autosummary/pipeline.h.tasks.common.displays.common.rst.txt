@@ -27,7 +27,6 @@ pipeline.h.tasks.common.displays.common
       CaltableWrapperFactory
       DataRatio
       LeafComposite
-      MeasurementSet
       NullScoreFinder
       PhaseVsBaselineData
       PlotbandpassAntComposite

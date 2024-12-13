@@ -13,16 +13,6 @@ pipeline.hif.tasks.refant
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      RefAnt
-      SerialRefAnt
-   
    
 
    

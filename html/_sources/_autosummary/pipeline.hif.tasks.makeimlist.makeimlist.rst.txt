@@ -20,12 +20,8 @@ pipeline.hif.tasks.makeimlist.makeimlist
       :template: custom-class-template.rst
       :nosignatures:
    
-      CleanTarget
-      DataType
       MakeImList
       MakeImListInputs
-      MakeImListResult
-      MakeImagesResult
    
    
 

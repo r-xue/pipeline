@@ -13,15 +13,6 @@ pipeline.hif.tasks.editimlist
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Editimlist
-   
    
 
    

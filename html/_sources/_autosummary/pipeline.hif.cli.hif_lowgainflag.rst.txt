@@ -1,6 +1,23 @@
 pipeline.hif.cli.hif\_lowgainflag
 =================================
 
-.. currentmodule:: pipeline.hif.cli
+.. automodule:: pipeline.hif.cli.hif_lowgainflag
 
-.. autofunction:: hif_lowgainflag
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

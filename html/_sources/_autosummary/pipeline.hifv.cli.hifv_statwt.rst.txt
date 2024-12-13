@@ -1,6 +1,23 @@
 pipeline.hifv.cli.hifv\_statwt
 ==============================
 
-.. currentmodule:: pipeline.hifv.cli
+.. automodule:: pipeline.hifv.cli.hifv_statwt
 
-.. autofunction:: hifv_statwt
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

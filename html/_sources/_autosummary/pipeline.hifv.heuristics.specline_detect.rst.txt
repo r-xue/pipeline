@@ -15,24 +15,11 @@ pipeline.hifv.heuristics.specline\_detect
       :toctree:
       :nosignatures:
    
-      commafy
       detect_spectral_lines
-      find_ranges
-      range_to_list
    
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      MeasurementSet
-      SpectralWindow
    
    
 

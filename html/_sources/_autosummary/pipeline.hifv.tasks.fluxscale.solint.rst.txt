@@ -15,9 +15,7 @@ pipeline.hifv.tasks.fluxscale.solint
       :toctree:
       :nosignatures:
    
-      getCalFlaggedSoln
       solint_rounded_to_integer_integrations
-      uvrange
    
    
 

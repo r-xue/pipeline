@@ -13,15 +13,6 @@ pipeline.hifv.tasks.hanning
 
    
    
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      Hanning
-   
    
 
    

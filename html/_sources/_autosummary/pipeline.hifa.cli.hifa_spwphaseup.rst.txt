@@ -1,6 +1,23 @@
 pipeline.hifa.cli.hifa\_spwphaseup
 ==================================
 
-.. currentmodule:: pipeline.hifa.cli
+.. automodule:: pipeline.hifa.cli.hifa_spwphaseup
 
-.. autofunction:: hifa_spwphaseup
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

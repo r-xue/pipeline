@@ -1,6 +1,23 @@
 pipeline.h.cli.h\_resume
 ========================
 
-.. currentmodule:: pipeline.h.cli
+.. automodule:: pipeline.h.cli.h_resume
 
-.. autofunction:: h_resume
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

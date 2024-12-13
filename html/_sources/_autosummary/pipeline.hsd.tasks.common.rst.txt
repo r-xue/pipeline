@@ -9,33 +9,9 @@ pipeline.hsd.tasks.common
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-      :toctree:
-      :nosignatures:
-   
-      TableSelector
-      asdm_name_from_ms
-      get_index_list_for_ms
-      get_ms_idx
-      get_valid_ms_members
-      mjd_to_datestring
-      parseEdge
-   
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-      :toctree:
-      :template: custom-class-template.rst
-      :nosignatures:
-   
-      ProgressTimer
-      SingleDishResults
    
    
 
