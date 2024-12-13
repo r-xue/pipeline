@@ -160,19 +160,34 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'  # "furo"
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'logo_only': False,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    'vcs_pageview_mode': '',
+    'style_nav_header_background': 'white',
+    'flyout_display': 'hidden',
+    'version_selector': True,
+    'language_selector': True,
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
+html_css_files = ['custom_theme.css']
 
 # -- Options for HTMLHelp output ---------------------------------------
 
@@ -281,12 +296,10 @@ napoleon_use_ivar = True
 
 verbatimwrapslines = False
 html_show_sourcelink = True
-# Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the
-# reference manual
 autosummary_generate = True
 autosummary_generate_overwrite = autosummary_generate
-autosummary_imported_members = True
-autosummary_ignore_module_all = True
+#autosummary_imported_members = True
+#autosummary_ignore_module_all = True
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']
 
@@ -316,11 +329,6 @@ automodapi_toctreedirnm = '_automodapi'
 # intersphinx_mapping['sphinx_automodapi'] = ('https://sphinx-automodapi.readthedocs.io/en/stable/', None)
 # intersphinx_mapping['packagetemplate'] = ('http://docs.astropy.org/projects/package-template/en/latest/', None)
 # intersphinx_mapping['h5py'] = ('http://docs.h5py.org/en/stable/', None)
-
-
-def setup(app):
-    app.add_css_file('custom_theme.css')
-
 
 # sphinxcontrib.bibtex/sphinx-astrorefs
 bibtex_bibfiles = ['references/pipeline-resolved.bib']
