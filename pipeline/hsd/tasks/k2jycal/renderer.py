@@ -62,16 +62,14 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             ms = context.observing_run.get_ms(name=r.vis)
             vis = ms.basename
             ms_label = vis
-            spw_band = {}
+            spws = {}
             for spw in ms.get_spectral_windows(science_windows_only=True):
                 spwid = spw.id
-                spwfq = spw.centre_frequency
                 # virtual spw id
                 vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
                 ddid = ms.get_data_description(spw=spwid)
-                if vspwid not in spw_band:
-                    spw_band[vspwid] = spw.band
-                    spw_frequencies[vspwid] = spwfq
+                if vspwid not in spws:
+                    spws[vspwid] = spw
                 for ant in ms.get_antenna():
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
@@ -99,7 +97,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         #         task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
         #         hist_plots += task.plot()
         if any(len(spw_data) > 0 for spw_data in valid_spw_factors.values()):
-            task = display.K2JySingleScatterDisplay(stage_dir, valid_spw_factors, spw_frequencies, spw_band)
+            task = display.K2JySingleScatterDisplay(stage_dir, valid_spw_factors, spws)
             hist_plots += task.plot()
         # input Jy/K files
         reffile_list = list(dict.fromkeys(reffile_list))   # remove duplicated filenames
