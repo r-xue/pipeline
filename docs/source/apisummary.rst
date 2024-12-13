@@ -4,7 +4,7 @@ Full APIs (autosummary)
 .. autosummary::
    :toctree: _autosummary
    :caption: APIs (autosummary)
-   :nosignatures:
+
    :template: custom-module-template.rst
    :recursive:
 
