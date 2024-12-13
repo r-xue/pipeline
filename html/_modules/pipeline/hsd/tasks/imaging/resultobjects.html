@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -116,7 +116,7 @@
 
 
 <div class="viewcode-block" id="SDImagingResultItem">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingResultItem.html#pipeline.infrastructure.renderer.regression.SDImagingResultItem">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.qa.scorecalculator.SDImagingResultItem.html#pipeline.qa.scorecalculator.SDImagingResultItem">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingResultItem</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class to store result of each image.</span>
@@ -134,7 +134,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_incomp</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># {originms : [RasterScanHeuristicsResult]}</span>
 
 <div class="viewcode-block" id="SDImagingResultItem.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingResultItem.html#pipeline.infrastructure.renderer.regression.SDImagingResultItem.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.qa.scorecalculator.SDImagingResultItem.html#pipeline.qa.scorecalculator.SDImagingResultItem.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDImagingResultItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;need to decide what is done in SDImagingResultItem.merge_with_context&#39;</span><span class="p">)</span>
@@ -166,13 +166,13 @@
 
 
 <div class="viewcode-block" id="SDImagingResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingResults.html#pipeline.infrastructure.renderer.regression.SDImagingResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingResults.html#pipeline.qa.scorecalculator.SDImagingResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class to store a list of per image results (SDImagingResultItem).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="SDImagingResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingResults.html#pipeline.infrastructure.renderer.regression.SDImagingResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingResults.html#pipeline.qa.scorecalculator.SDImagingResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Assign logrecords of top level task to the first result item.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;logrecords&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -184,13 +184,13 @@
 
 
 <div class="viewcode-block" id="SDImagingWorkerResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingWorkerResults.html#pipeline.infrastructure.renderer.regression.SDImagingWorkerResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingWorkerResults.html#pipeline.qa.scorecalculator.SDImagingWorkerResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingWorkerResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDImagingWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDImagingWorkerResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingWorkerResults.html#pipeline.infrastructure.renderer.regression.SDImagingWorkerResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingWorkerResults.html#pipeline.qa.scorecalculator.SDImagingWorkerResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDImagingWorkerResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
 

@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.infrastructure.displays.plotpwv.splrep &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.infrastructure.displays.plotstyle" href="pipeline.infrastructure.displays.plotstyle.html" />
+    <link rel="prev" title="pipeline.infrastructure.displays.plotpwv.splev" href="pipeline.infrastructure.displays.plotpwv.splev.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.basetask.html">pipeline.infrastructure.basetask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.html">pipeline.infrastructure.callibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.casa_tasks.html">pipeline.infrastructure.casa_tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.casa_tools.html">pipeline.infrastructure.casa_tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.contfilehandler.html">pipeline.infrastructure.contfilehandler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.daskhelpers.html">pipeline.infrastructure.daskhelpers</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.infrastructure.displays.html">pipeline.infrastructure.displays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.docutils.html">pipeline.infrastructure.docutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.eventbus.html">pipeline.infrastructure.eventbus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.exceptions.html">pipeline.infrastructure.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executeppr.html">pipeline.infrastructure.executeppr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.executevlappr.html">pipeline.infrastructure.executevlappr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.filenamer.html">pipeline.infrastructure.filenamer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imageheader.html">pipeline.infrastructure.imageheader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.imagelibrary.html">pipeline.infrastructure.imagelibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.jobrequest.html">pipeline.infrastructure.jobrequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.logging.html">pipeline.infrastructure.logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.mpihelpers.html">pipeline.infrastructure.mpihelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.new_pipeline_task.html">pipeline.infrastructure.new_pipeline_task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipeline_statistics.html">pipeline.infrastructure.pipeline_statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.pipelineqa.html">pipeline.infrastructure.pipelineqa</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.project.html">pipeline.infrastructure.project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.refantflag.html">pipeline.infrastructure.refantflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.renderer.html">pipeline.infrastructure.renderer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.sessionutils.html">pipeline.infrastructure.sessionutils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.tablereader.html">pipeline.infrastructure.tablereader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.taskregistry.html">pipeline.infrastructure.taskregistry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.timetracker.html">pipeline.infrastructure.timetracker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.utils.html">pipeline.infrastructure.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.vdp.html">pipeline.infrastructure.vdp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.version.html">pipeline.infrastructure.version</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.displays.html">pipeline.infrastructure.displays</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.infrastructure.displays.plotpwv.html">pipeline.infrastructure.displays.plotpwv</a></li>
+      <li class="breadcrumb-item active">pipeline.infrastructure.displays.plotpwv.splrep</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.infrastructure.displays.plotpwv.splrep.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-infrastructure-displays-plotpwv-splrep">
+<h1>pipeline.infrastructure.displays.plotpwv.splrep<a class="headerlink" href="#pipeline-infrastructure-displays-plotpwv-splrep" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.infrastructure.displays.plotpwv.splrep">
+<span class="sig-name descname"><span class="pre">splrep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/interpolate/_fitpack_py.html#splrep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.plotpwv.splrep" title="Link to this definition"></a></dt>
+<dd><p>Find the B-spline representation of a 1-D curve.</p>
+<p>Given the set of data points <code class="docutils literal notranslate"><span class="pre">(x[i],</span> <span class="pre">y[i])</span></code> determine a smooth spline
+approximation of degree k on the interval <code class="docutils literal notranslate"><span class="pre">xb</span> <span class="pre">&lt;=</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">xe</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>x, y</strong> (<em>array_like</em>) – The data points defining a curve y = f(x).</p></li>
+<li><p><strong>w</strong> (<em>array_like, optional</em>) – Strictly positive rank-1 array of weights the same length as x and y.
+The weights are used in computing the weighted least-squares spline
+fit. If the errors in the y values have standard-deviation given by the
+vector d, then w should be 1/d. Default is ones(len(x)).</p></li>
+<li><p><strong>xb, xe</strong> (<em>float, optional</em>) – The interval to fit.  If None, these default to x[0] and x[-1]
+respectively.</p></li>
+<li><p><strong>k</strong> (<em>int, optional</em>) – The degree of the spline fit. It is recommended to use cubic splines.
+Even values of k should be avoided especially with small s values.
+1 &lt;= k &lt;= 5</p></li>
+<li><p><strong>task</strong> (<em>{1, 0, -1}, optional</em>) – If task==0 find t and c for a given smoothing factor, s.</p>
+<p>If task==1 find t and c for another value of the smoothing factor, s.
+There must have been a previous call with task=0 or task=1 for the same
+set of data (t will be stored an used internally)</p>
+<p>If task=-1 find the weighted least square spline for a given set of
+knots, t. These should be interior knots as knots on the ends will be
+added automatically.</p>
+</li>
+<li><p><strong>s</strong> (<em>float, optional</em>) – A smoothing condition. The amount of smoothness is determined by
+satisfying the conditions: sum((w * (y - g))**2,axis=0) &lt;= s where g(x)
+is the smoothed interpolation of (x,y). The user can use s to control
+the tradeoff between closeness and smoothness of fit. Larger s means
+more smoothing while smaller values of s indicate less smoothing.
+Recommended values of s depend on the weights, w. If the weights
+represent the inverse of the standard-deviation of y, then a good s
+value should be found in the range (m-sqrt(2*m),m+sqrt(2*m)) where m is
+the number of datapoints in x, y, and w. default : s=m-sqrt(2*m) if
+weights are supplied. s = 0.0 (interpolating) if no weights are
+supplied.</p></li>
+<li><p><strong>t</strong> (<em>array_like, optional</em>) – The knots needed for task=-1. If given then task is automatically set
+to -1.</p></li>
+<li><p><strong>full_output</strong> (<em>bool, optional</em>) – If non-zero, then return optional outputs.</p></li>
+<li><p><strong>per</strong> (<em>bool, optional</em>) – If non-zero, data points are considered periodic with period x[m-1] -
+x[0] and a smooth periodic spline approximation is returned. Values of
+y[m-1] and w[m-1] are not used.</p></li>
+<li><p><strong>quiet</strong> (<em>bool, optional</em>) – Non-zero to suppress messages.
+This parameter is deprecated; use standard Python warning filters
+instead.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>tck</strong> (<em>tuple</em>) – A tuple (t,c,k) containing the vector of knots, the B-spline
+coefficients, and the degree of the spline.</p></li>
+<li><p><strong>fp</strong> (<em>array, optional</em>) – The weighted sum of squared residuals of the spline approximation.</p></li>
+<li><p><strong>ier</strong> (<em>int, optional</em>) – An integer flag about splrep success. Success is indicated if ier&lt;=0.
+If ier in [1,2,3] an error occurred but was not raised. Otherwise an
+error is raised.</p></li>
+<li><p><strong>msg</strong> (<em>str, optional</em>) – A message corresponding to the integer flag, ier.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnivariateSpline</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">BivariateSpline</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">splprep</span></code>, <a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.splev.html#pipeline.infrastructure.displays.plotpwv.splev" title="pipeline.infrastructure.displays.plotpwv.splev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splev</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sproot</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">spalde</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">splint</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bisplrep</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bisplev</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">BSpline</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">make_interp_spline</span></code></p>
+</div>
+<p class="rubric">Notes</p>
+<p>See <cite>splev</cite> for evaluation of the spline and its derivatives. Uses the
+FORTRAN routine <code class="docutils literal notranslate"><span class="pre">curfit</span></code> from FITPACK.</p>
+<p>The user is responsible for assuring that the values of <cite>x</cite> are unique.
+Otherwise, <cite>splrep</cite> will not return sensible results.</p>
+<p>If provided, knots <cite>t</cite> must satisfy the Schoenberg-Whitney conditions,
+i.e., there must be a subset of data points <code class="docutils literal notranslate"><span class="pre">x[j]</span></code> such that
+<code class="docutils literal notranslate"><span class="pre">t[j]</span> <span class="pre">&lt;</span> <span class="pre">x[j]</span> <span class="pre">&lt;</span> <span class="pre">t[j+k+1]</span></code>, for <code class="docutils literal notranslate"><span class="pre">j=0,</span> <span class="pre">1,...,n-k-2</span></code>.</p>
+<p>This routine zero-pads the coefficients array <code class="docutils literal notranslate"><span class="pre">c</span></code> to have the same length
+as the array of knots <code class="docutils literal notranslate"><span class="pre">t</span></code> (the trailing <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">+</span> <span class="pre">1</span></code> coefficients are ignored
+by the evaluation routines, <cite>splev</cite> and <cite>BSpline</cite>.) This is in contrast with
+<cite>splprep</cite>, which does not zero-pad the coefficients.</p>
+<p class="rubric">References</p>
+<p>Based on algorithms described in <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, and <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>:</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>P. Dierckx, “An algorithm for smoothing, differentiation and
+integration of experimental data using spline functions”,
+J.Comp.Appl.Maths 1 (1975) 165-184.</p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>P. Dierckx, “A fast algorithm for smoothing data on a rectangular
+grid while using spline functions”, SIAM J.Numer.Anal. 19 (1982)
+1286-1304.</p>
+</aside>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>P. Dierckx, “An improved algorithm for curve fitting with spline
+functions”, report tw54, Dept. Computer Science,K.U. Leuven, 1981.</p>
+</aside>
+<aside class="footnote brackets" id="id8" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">4</a><span class="fn-bracket">]</span></span>
+<p>P. Dierckx, “Curve and surface fitting with splines”, Monographs on
+Numerical Analysis, Oxford University Press, 1993.</p>
+</aside>
+</aside>
+<p class="rubric">Examples</p>
+<p>You can interpolate 1-D points with a B-spline curve.
+Further examples are given in
+<span class="xref std std-ref">in the tutorial</span>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">splev</span><span class="p">,</span> <span class="n">splrep</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spl</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y2</span> <span class="o">=</span> <span class="n">splev</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">spl</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.infrastructure.displays.plotpwv.splev.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.displays.plotpwv.splev" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.displays.plotstyle.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.displays.plotstyle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

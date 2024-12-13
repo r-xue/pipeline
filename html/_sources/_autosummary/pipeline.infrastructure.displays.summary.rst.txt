@@ -15,6 +15,7 @@ pipeline.infrastructure.displays.summary
       :toctree:
       :nosignatures:
    
+      casa5style_plot
       get_intent_subscan_time_ranges
    
    
@@ -29,9 +30,11 @@ pipeline.infrastructure.displays.summary
       :nosignatures:
    
       AzElChart
+      DistanceUnits
       ElVsTimeChart
       FieldVsTimeChart
       FieldVsTimeChartInputs
+      FrequencyUnits
       IntentVsTimeChart
       IntentVsTimeChartInputs
       MosaicChart

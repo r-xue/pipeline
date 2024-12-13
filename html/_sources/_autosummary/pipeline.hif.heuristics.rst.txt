@@ -13,6 +13,20 @@ pipeline.hif.heuristics
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      BPOrder
+      MedianSNR
+      MedianSNRNoAdapter
+      PhaseUpSolInt
+      RefAntHeuristics
+      Standard
+   
    
 
    

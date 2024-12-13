@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -165,40 +171,43 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_dry_opacity.html#pipeline.h.tasks.common.atmutil.get_dry_opacity" title="pipeline.h.tasks.common.atmutil.get_dry_opacity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dry_opacity</span></code></a></p></td>
 <td><p>Obtain the integrated zenith opacity of dry species.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_median_elevation.html#pipeline.h.tasks.common.atmutil.get_median_elevation" title="pipeline.h.tasks.common.atmutil.get_median_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_elevation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_logger.html#pipeline.h.tasks.common.atmutil.get_logger" title="pipeline.h.tasks.common.atmutil.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a></p></td>
+<td><p>Do basic configuration for the logging system.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_median_elevation.html#pipeline.h.tasks.common.atmutil.get_median_elevation" title="pipeline.h.tasks.common.atmutil.get_median_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_elevation</span></code></a></p></td>
 <td><p>Calculate the median elevation of pointing directions of an antenna.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_representative_elevation.html#pipeline.h.tasks.common.atmutil.get_representative_elevation" title="pipeline.h.tasks.common.atmutil.get_representative_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_elevation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_representative_elevation.html#pipeline.h.tasks.common.atmutil.get_representative_elevation" title="pipeline.h.tasks.common.atmutil.get_representative_elevation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_elevation</span></code></a></p></td>
 <td><p>Return representative elevation value computed from phasecenter.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_spw_spec.html#pipeline.h.tasks.common.atmutil.get_spw_spec" title="pipeline.h.tasks.common.atmutil.get_spw_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spw_spec</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_spw_spec.html#pipeline.h.tasks.common.atmutil.get_spw_spec" title="pipeline.h.tasks.common.atmutil.get_spw_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spw_spec</span></code></a></p></td>
 <td><p>Calculate spectral setting of a spectral window.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_table_nrow.html#pipeline.h.tasks.common.atmutil.get_table_nrow" title="pipeline.h.tasks.common.atmutil.get_table_nrow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_nrow</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_table_nrow.html#pipeline.h.tasks.common.atmutil.get_table_nrow" title="pipeline.h.tasks.common.atmutil.get_table_nrow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_table_nrow</span></code></a></p></td>
 <td><p>Get the number of rows in a specified table.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_transmission.html#pipeline.h.tasks.common.atmutil.get_transmission" title="pipeline.h.tasks.common.atmutil.get_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transmission</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_transmission.html#pipeline.h.tasks.common.atmutil.get_transmission" title="pipeline.h.tasks.common.atmutil.get_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transmission</span></code></a></p></td>
 <td><p>Calculate atmospheric transmission of an antenna and spectral window.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_transmission_for_range.html#pipeline.h.tasks.common.atmutil.get_transmission_for_range" title="pipeline.h.tasks.common.atmutil.get_transmission_for_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transmission_for_range</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_transmission_for_range.html#pipeline.h.tasks.common.atmutil.get_transmission_for_range" title="pipeline.h.tasks.common.atmutil.get_transmission_for_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transmission_for_range</span></code></a></p></td>
 <td><p>Calculate atmospheric transmission covering a range of frequency.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_wet_opacity.html#pipeline.h.tasks.common.atmutil.get_wet_opacity" title="pipeline.h.tasks.common.atmutil.get_wet_opacity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wet_opacity</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.get_wet_opacity.html#pipeline.h.tasks.common.atmutil.get_wet_opacity" title="pipeline.h.tasks.common.atmutil.get_wet_opacity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wet_opacity</span></code></a></p></td>
 <td><p>Obtain the integrated zenith opacity of wet species.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_at.html#pipeline.h.tasks.common.atmutil.init_at" title="pipeline.h.tasks.common.atmutil.init_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_at</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_at.html#pipeline.h.tasks.common.atmutil.init_at" title="pipeline.h.tasks.common.atmutil.init_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_at</span></code></a></p></td>
 <td><p>Initialize atmospheric profile and spectral window setting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_atm.html#pipeline.h.tasks.common.atmutil.init_atm" title="pipeline.h.tasks.common.atmutil.init_atm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_atm</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_atm.html#pipeline.h.tasks.common.atmutil.init_atm" title="pipeline.h.tasks.common.atmutil.init_atm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_atm</span></code></a></p></td>
 <td><p>Initialize atmospheric profile in CASA for a given location described by input atmosphere parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_spw.html#pipeline.h.tasks.common.atmutil.init_spw" title="pipeline.h.tasks.common.atmutil.init_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_spw</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.init_spw.html#pipeline.h.tasks.common.atmutil.init_spw" title="pipeline.h.tasks.common.atmutil.init_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_spw</span></code></a></p></td>
 <td><p>Initialize spectral window setting in CASA atmosphere tool using spectral window frequencies.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.plot.html#pipeline.h.tasks.common.atmutil.plot" title="pipeline.h.tasks.common.atmutil.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.plot.html#pipeline.h.tasks.common.atmutil.plot" title="pipeline.h.tasks.common.atmutil.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
 <td><p>Generate a plot of atmospheric transmission, wet and dry opacities.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.test.html#pipeline.h.tasks.common.atmutil.test" title="pipeline.h.tasks.common.atmutil.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.atmutil.test.html#pipeline.h.tasks.common.atmutil.test" title="pipeline.h.tasks.common.atmutil.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a></p></td>
 <td><p>Calculate atmospheric transmission and generate a plot.</p></td>
 </tr>
 </tbody>

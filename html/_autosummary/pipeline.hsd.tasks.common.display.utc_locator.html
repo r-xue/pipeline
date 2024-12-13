@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hsd.tasks.common.display.ChannelSelection" href="pipeline.hsd.tasks.common.display.ChannelSelection.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.display.Axes" href="pipeline.hsd.tasks.common.display.Axes.html" />
     <link rel="prev" title="pipeline.hsd.tasks.common.display.utc_formatter" href="pipeline.hsd.tasks.common.display.utc_formatter.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -149,7 +153,7 @@
 <h1>pipeline.hsd.tasks.common.display.utc_locator<a class="headerlink" href="#pipeline-hsd-tasks-common-display-utc-locator" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.common.display.utc_locator">
-<span class="sig-name descname"><span class="pre">utc_locator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MinuteLocator</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/common/display.html#utc_locator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.display.utc_locator" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">utc_locator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.hsd.tasks.common.display.MinuteLocator.html#pipeline.hsd.tasks.common.display.MinuteLocator" title="matplotlib.dates.MinuteLocator"><span class="pre">MinuteLocator</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/common/display.html#utc_locator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.display.utc_locator" title="Link to this definition"></a></dt>
 <dd><p>Generate MinuteLocator instance.</p>
 <p>Generate MinuteLocator instance. If either start_time or end_time is None,
 default MinuteLocator instance is returned. Otherwise, tick interval is
@@ -167,7 +171,7 @@ Can be minimum or maximum. Defaults to None.</p></li>
 <dd class="field-even"><p>locator instance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>MinuteLocator</p>
+<dd class="field-odd"><p><a class="reference internal" href="pipeline.hsd.tasks.common.display.MinuteLocator.html#pipeline.hsd.tasks.common.display.MinuteLocator" title="pipeline.hsd.tasks.common.display.MinuteLocator">MinuteLocator</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,7 +183,7 @@ Can be minimum or maximum. Defaults to None.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hsd.tasks.common.display.utc_formatter.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.display.utc_formatter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hsd.tasks.common.display.ChannelSelection.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.display.ChannelSelection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hsd.tasks.common.display.Axes.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.display.Axes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

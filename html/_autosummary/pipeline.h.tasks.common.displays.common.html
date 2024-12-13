@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -171,64 +177,67 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.LeafComposite.html#pipeline.h.tasks.common.displays.common.LeafComposite" title="pipeline.h.tasks.common.displays.common.LeafComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LeafComposite</span></code></a></p></td>
 <td><p>Base class to hold multiple PlotLeafs, thus generating multiple plots when plot() is called.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.NullScoreFinder.html#pipeline.h.tasks.common.displays.common.NullScoreFinder" title="pipeline.h.tasks.common.displays.common.NullScoreFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NullScoreFinder</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.MeasurementSet.html#pipeline.h.tasks.common.displays.common.MeasurementSet" title="pipeline.h.tasks.common.displays.common.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.NullScoreFinder.html#pipeline.h.tasks.common.displays.common.NullScoreFinder" title="pipeline.h.tasks.common.displays.common.NullScoreFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NullScoreFinder</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PhaseVsBaselineData.html#pipeline.h.tasks.common.displays.common.PhaseVsBaselineData" title="pipeline.h.tasks.common.displays.common.PhaseVsBaselineData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsBaselineData</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PhaseVsBaselineData.html#pipeline.h.tasks.common.displays.common.PhaseVsBaselineData" title="pipeline.h.tasks.common.displays.common.PhaseVsBaselineData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhaseVsBaselineData</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntSpwComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntSpwComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntSpwPolComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassAntSpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassAntSpwPolComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase" title="pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassDetailBase</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase.html#pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase" title="pipeline.h.tasks.common.displays.common.PlotbandpassDetailBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassDetailBase</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassLeaf.html#pipeline.h.tasks.common.displays.common.PlotbandpassLeaf" title="pipeline.h.tasks.common.displays.common.PlotbandpassLeaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassLeaf</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassLeaf.html#pipeline.h.tasks.common.displays.common.PlotbandpassLeaf" title="pipeline.h.tasks.common.displays.common.PlotbandpassLeaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassLeaf</span></code></a></p></td>
 <td><p>Class to execute plotbandpass and return a plot wrapper.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassPolComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassPolComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassSpwComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassSpwComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassSpwPolComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite.html#pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite" title="pipeline.h.tasks.common.displays.common.PlotbandpassSpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotbandpassSpwPolComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalAntComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalAntComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalAntSpwComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalAntSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalAntSpwComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalLeaf.html#pipeline.h.tasks.common.displays.common.PlotmsCalLeaf" title="pipeline.h.tasks.common.displays.common.PlotmsCalLeaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalLeaf</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalLeaf.html#pipeline.h.tasks.common.displays.common.PlotmsCalLeaf" title="pipeline.h.tasks.common.displays.common.PlotmsCalLeaf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalLeaf</span></code></a></p></td>
 <td><p>Class to execute plotms and return a plot wrapper.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalSpwAntComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalSpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalSpwAntComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalSpwComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite.html#pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite" title="pipeline.h.tasks.common.displays.common.PlotmsCalSpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotmsCalSpwComposite</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PolComposite.html#pipeline.h.tasks.common.displays.common.PolComposite" title="pipeline.h.tasks.common.displays.common.PolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.PolComposite.html#pipeline.h.tasks.common.displays.common.PolComposite" title="pipeline.h.tasks.common.displays.common.PolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolComposite</span></code></a></p></td>
 <td><p>Create a PlotLeaf for each polarization in the caltable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwAntComposite.html#pipeline.h.tasks.common.displays.common.SpwAntComposite" title="pipeline.h.tasks.common.displays.common.SpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwAntComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwAntComposite.html#pipeline.h.tasks.common.displays.common.SpwAntComposite" title="pipeline.h.tasks.common.displays.common.SpwAntComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwAntComposite</span></code></a></p></td>
 <td><p>Create a PlotLeaf for each spw and antenna in the caltable or caltables.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwComposite.html#pipeline.h.tasks.common.displays.common.SpwComposite" title="pipeline.h.tasks.common.displays.common.SpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwComposite</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwComposite.html#pipeline.h.tasks.common.displays.common.SpwComposite" title="pipeline.h.tasks.common.displays.common.SpwComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwComposite</span></code></a></p></td>
 <td><p>Create a PlotLeaf for each spw in the caltable or caltables.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwPolComposite.html#pipeline.h.tasks.common.displays.common.SpwPolComposite" title="pipeline.h.tasks.common.displays.common.SpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPolComposite</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.SpwPolComposite.html#pipeline.h.tasks.common.displays.common.SpwPolComposite" title="pipeline.h.tasks.common.displays.common.SpwPolComposite"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpwPolComposite</span></code></a></p></td>
 <td><p>Create a PlotLeaf for each spw and polarization in the caltable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.XYData.html#pipeline.h.tasks.common.displays.common.XYData" title="pipeline.h.tasks.common.displays.common.XYData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XYData</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.common.displays.common.XYData.html#pipeline.h.tasks.common.displays.common.XYData" title="pipeline.h.tasks.common.displays.common.XYData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XYData</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

@@ -1,23 +1,6 @@
 pipeline.hsd.cli.hsd\_flagdata
 ==============================
 
-.. automodule:: pipeline.hsd.cli.hsd_flagdata
+.. currentmodule:: pipeline.hsd.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hsd_flagdata

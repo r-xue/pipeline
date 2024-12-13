@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -121,7 +121,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsTsysflagContaminationRenderer">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.T2_4MDetailsTsysflagContaminationRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsTsysflagContaminationRenderer</span><span class="p">(</span><span class="n">T2_4MDetailsTsysflagRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -188,7 +188,7 @@
         <span class="k">return</span> <span class="n">tsys_map</span>
 
 <div class="viewcode-block" id="T2_4MDetailsTsysflagContaminationRenderer.post_process_plots">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer.post_process_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagContaminationRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.T2_4MDetailsTsysflagContaminationRenderer.post_process_plots">[docs]</a>
     <span class="k">def</span> <span class="nf">post_process_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pcontext</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">spw_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">plots</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Plot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transform the &#39;foreign&#39; plot wrappers coming from extern code into</span>
@@ -239,7 +239,7 @@
 
 
 <div class="viewcode-block" id="TsysContaminationPlotRenderer">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.TsysContaminationPlotRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysContaminationPlotRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">plots</span><span class="p">):</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
@@ -256,7 +256,7 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="TsysContaminationPlotRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.TsysContaminationPlotRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.TsysContaminationPlotRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="c1"># Tsys spw and intent are not automatically added by the base</span>
         <span class="c1"># implementation</span>

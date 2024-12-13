@@ -9,6 +9,14 @@ pipeline.h.tasks.common.viewflaggers
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      find_ranges
+   
    
 
    

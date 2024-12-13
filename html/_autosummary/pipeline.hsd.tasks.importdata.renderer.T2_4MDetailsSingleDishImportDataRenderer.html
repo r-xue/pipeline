@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hsd.tasks.k2jycal" href="pipeline.hsd.tasks.k2jycal.html" />
-    <link rel="prev" title="pipeline.hsd.tasks.importdata.renderer.DeductionGroupTR" href="pipeline.hsd.tasks.importdata.renderer.DeductionGroupTR.html" /> 
+    <link rel="prev" title="pipeline.hsd.tasks.importdata.renderer.Results" href="pipeline.hsd.tasks.importdata.renderer.Results.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -168,7 +172,7 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.importdata.renderer.T2_4MDetailsSingleDishImportDataRenderer.update_mako_context">
-<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mako_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.basetask.Results.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><span class="pre">Results</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/importdata/renderer.html#T2_4MDetailsSingleDishImportDataRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.importdata.renderer.T2_4MDetailsSingleDishImportDataRenderer.update_mako_context" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_mako_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mako_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><span class="pre">Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Results.html#pipeline.hsd.tasks.exportdata.almasdaqua.Results" title="pipeline.infrastructure.basetask.Results"><span class="pre">Results</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/importdata/renderer.html#T2_4MDetailsSingleDishImportDataRenderer.update_mako_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.importdata.renderer.T2_4MDetailsSingleDishImportDataRenderer.update_mako_context" title="Link to this definition"></a></dt>
 <dd><p>Update mako context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -189,7 +193,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hsd.tasks.importdata.renderer.DeductionGroupTR.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.importdata.renderer.DeductionGroupTR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.importdata.renderer.Results.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.importdata.renderer.Results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hsd.tasks.k2jycal.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.k2jycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

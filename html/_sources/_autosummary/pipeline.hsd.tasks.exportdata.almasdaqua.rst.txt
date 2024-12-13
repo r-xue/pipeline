@@ -21,6 +21,11 @@ pipeline.hsd.tasks.exportdata.almasdaqua
       :nosignatures:
    
       AlmaAquaXmlGenerator
+      Context
+      Element
+      Results
+      ResultsList
+      Sensitivity
    
    
 

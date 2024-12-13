@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_vlasetjy">
-<span id="pipeline-hifv-cli-hifv-vlasetjy"></span><h1>pipeline.hifv.cli.hifv_vlasetjy<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_vlasetjy" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-vlasetjy">
+<h1>pipeline.hifv.cli.hifv_vlasetjy<a class="headerlink" href="#pipeline-hifv-cli-hifv-vlasetjy" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_vlasetjy">
+<span class="sig-name descname"><span class="pre">hifv_vlasetjy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluxdensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebychan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">standard</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_vlasetjy.html#hifv_vlasetjy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_vlasetjy" title="Link to this definition"></a></dt>
+<dd><p>Sets flux density scale and fills calibrator model to measurement set.</p>
+<p>The hifv_vlasetjy task does an initial run of setjy on the vis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>field</strong> – List of field names or ids.</p></li>
+<li><p><strong>intent</strong> – Observing intent of flux calibrators.</p></li>
+<li><p><strong>spw</strong> – List of spectral window ids.</p></li>
+<li><p><strong>model</strong> – File location for field model.</p></li>
+<li><p><strong>reffile</strong> – Path to file with fluxes for non-solar system calibrators.</p></li>
+<li><p><strong>fluxdensity</strong> – Specified flux density [I,Q,U,V]; -1 will lookup values.</p></li>
+<li><p><strong>spix</strong> – Spectral index of fluxdensity.  Can be set when fluxdensity is not -1.</p></li>
+<li><p><strong>reffreq</strong> – Reference frequency for spix.  Can be set when fluxdensity is not -1.</p></li>
+<li><p><strong>scalebychan</strong> – Scale the flux density on a per channel basis or else on a per spw basis.</p></li>
+<li><p><strong>standard</strong> – Flux density standard.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Initial run of setjy:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_vlasetjy</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

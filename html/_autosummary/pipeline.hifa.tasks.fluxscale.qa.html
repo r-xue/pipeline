@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -164,6 +168,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.score_kspw.html#pipeline.hifa.tasks.fluxscale.qa.score_kspw" title="pipeline.hifa.tasks.fluxscale.qa.score_kspw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_kspw</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.sqrt.html#pipeline.hifa.tasks.fluxscale.qa.sqrt" title="pipeline.hifa.tasks.fluxscale.qa.sqrt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sqrt</span></code></a></p></td>
+<td><p>Return the square root of x.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -178,11 +185,41 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory.html#pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory" title="pipeline.hifa.tasks.fluxscale.qa.CaltableWrapperFactory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CaltableWrapperFactory</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.Context.html#pipeline.hifa.tasks.fluxscale.qa.Context" title="pipeline.hifa.tasks.fluxscale.qa.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.Decimal.html#pipeline.hifa.tasks.fluxscale.qa.Decimal" title="pipeline.hifa.tasks.fluxscale.qa.Decimal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Decimal</span></code></a></p></td>
+<td><p>Construct a new Decimal object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.Field.html#pipeline.hifa.tasks.fluxscale.qa.Field" title="pipeline.hifa.tasks.fluxscale.qa.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a></p></td>
+<td><p>A class to store logical representation of a field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.FluxDensity.html#pipeline.hifa.tasks.fluxscale.qa.FluxDensity" title="pipeline.hifa.tasks.fluxscale.qa.FluxDensity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxDensity</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.FluxDensityUnits.html#pipeline.hifa.tasks.fluxscale.qa.FluxDensityUnits" title="pipeline.hifa.tasks.fluxscale.qa.FluxDensityUnits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxDensityUnits</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.FluxMeasurement.html#pipeline.hifa.tasks.fluxscale.qa.FluxMeasurement" title="pipeline.hifa.tasks.fluxscale.qa.FluxMeasurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxMeasurement</span></code></a></p></td>
+<td><p>FluxMeasurement is a logical representation of a flux measurement.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.Frequency.html#pipeline.hifa.tasks.fluxscale.qa.Frequency" title="pipeline.hifa.tasks.fluxscale.qa.Frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Frequency</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.FrequencyUnits.html#pipeline.hifa.tasks.fluxscale.qa.FrequencyUnits" title="pipeline.hifa.tasks.fluxscale.qa.FrequencyUnits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrequencyUnits</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler" title="pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleListQAHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleListQAHandler</span></code></a></p></td>
 <td><p>QA handler for a list containing FluxCalibrationResults.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler.html#pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler" title="pipeline.hifa.tasks.fluxscale.qa.GcorFluxscaleQAHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleQAHandler</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.MeasurementSet.html#pipeline.hifa.tasks.fluxscale.qa.MeasurementSet" title="pipeline.hifa.tasks.fluxscale.qa.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.qa.SpectralWindow.html#pipeline.hifa.tasks.fluxscale.qa.SpectralWindow" title="pipeline.hifa.tasks.fluxscale.qa.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralWindow</span></code></a></p></td>
+<td><p>SpectralWindow is a logical representation of a spectral window (spw).</p></td>
 </tr>
 </tbody>
 </table>

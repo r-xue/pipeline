@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy" href="pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy.html" />
-    <link rel="prev" title="pipeline.hsd.tasks.common.inspection_util.set_beam_size" href="pipeline.hsd.tasks.common.inspection_util.set_beam_size.html" /> 
+    <link rel="prev" title="pipeline.hsd.tasks.common.inspection_util.ObservingRun" href="pipeline.hsd.tasks.common.inspection_util.ObservingRun.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -161,6 +165,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy" title="pipeline.hsd.tasks.common.observatory_policy.ALMAImagingPolicy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAImagingPolicy</span></code></a></p></td>
 <td><p>Implementation of imaging policy for ALMA.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.observatory_policy.Context.html#pipeline.hsd.tasks.common.observatory_policy.Context" title="pipeline.hsd.tasks.common.observatory_policy.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.observatory_policy.MeasurementSet.html#pipeline.hsd.tasks.common.observatory_policy.MeasurementSet" title="pipeline.hsd.tasks.common.observatory_policy.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy.html#pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy" title="pipeline.hsd.tasks.common.observatory_policy.NROImagingPolicy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NROImagingPolicy</span></code></a></p></td>
 <td><p>Implementation of imaging policy for NRO 45m telescope.</p></td>
 </tr>
@@ -175,7 +185,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hsd.tasks.common.inspection_util.set_beam_size.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.inspection_util.set_beam_size" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.inspection_util.ObservingRun.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.inspection_util.ObservingRun" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.observatory_policy.get_imaging_policy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -29,8 +29,13 @@ pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag
       :nosignatures:
    
       AmpVsXChart
+      CalTo
+      Context
+      FlagdataSetter
       Gfluxscaleflag
       GfluxscaleflagInputs
+      GfluxscaleflagResults
+      MeasurementSet
    
    
 

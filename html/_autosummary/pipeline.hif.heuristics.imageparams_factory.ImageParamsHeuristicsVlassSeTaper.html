@@ -1,0 +1,856 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hif.heuristics.imageparams_vla" href="pipeline.hif.heuristics.imageparams_vla.html" />
+    <link rel="prev" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube" href="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.cli.html">pipeline.hif.cli</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hif.heuristics.html">pipeline.hif.heuristics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.tasks.html">pipeline.hif.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hif.templates.html">pipeline.hif.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hif.html">pipeline.hif</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hif.heuristics.html">pipeline.hif.heuristics</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hif.heuristics.imageparams_factory.html">pipeline.hif.heuristics.imageparams_factory</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hif-heuristics-imageparams-factory-imageparamsheuristicsvlasssetaper">
+<h1>pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper<a class="headerlink" href="#pipeline-hif-heuristics-imageparams-factory-imageparamsheuristicsvlasssetaper" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ImageParamsHeuristicsVlassSeTaper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observing_run</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imaging_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics.html#pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics" title="pipeline.hif.heuristics.imageparams_base.ImageParamsHeuristics"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageParamsHeuristics</span></code></a></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregate_bandwidth</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_diameters" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_diameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antenna_diameters</span></code></a></p></td>
+<td><p>Count the antennas of given diameters per MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_ids" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antenna_ids</span></code></a></p></td>
+<td><p>Get the antenna IDs to be used for imaging.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.arrays" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arrays</span></code></a></p></td>
+<td><p>Return the array descriptions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffer_radius</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_percentile_baseline_length" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_percentile_baseline_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_percentile_baseline_length</span></code></a></p></td>
+<td><p>Calculate percentile baseline length for the vis list used in this heuristics instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_sensitivities" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_sensitivities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_sensitivities</span></code></a></p></td>
+<td><p>Compute sensitivity estimate using CASA.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_topo_ranges" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_topo_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_topo_ranges</span></code></a></p></td>
+<td><p>Calculate TOPO ranges for hif_tclean inputs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cell" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<td><p>Tclean cell parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.center_field_ids" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.center_field_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center_field_ids</span></code></a></p></td>
+<td><p>Get per-MS IDs of field closest to the phase center.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.check_psf" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.check_psf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_psf</span></code></a></p></td>
+<td><p>Check for bad psf fits.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.conjbeams" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.conjbeams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conjbeams</span></code></a></p></td>
+<td><p>Tclean conjbeams parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cont_ranges_spwsel" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cont_ranges_spwsel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cont_ranges_spwsel</span></code></a></p></td>
+<td><p>Determine spw selection parameters to exclude lines for mfs and cont images.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cyclefactor" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cyclefactor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cyclefactor</span></code></a></p></td>
+<td><p>Tclean cyclefactor parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cycleniter" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cycleniter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cycleniter</span></code></a></p></td>
+<td><p>Tclean cycleniter parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">datacolumn</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.deconvolver" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.deconvolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deconvolver</span></code></a></p></td>
+<td><p>Tclean deconvolver parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.dr_correction" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.dr_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dr_correction</span></code></a></p></td>
+<td><p>Adjustment of cleaning threshold due to dynamic range limitations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">field_intent_list</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_fields</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.find_good_commonbeam" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.find_good_commonbeam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_good_commonbeam</span></code></a></p></td>
+<td><p>Find and replace outlier beams to calculate a good common beam.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.freq_intersection" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.freq_intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_intersection</span></code></a></p></td>
+<td><p>Calculate LSRK frequency intersection of a list of MSs for a given field and spw.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_autobox_params" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_autobox_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_autobox_params</span></code></a></p></td>
+<td><p>Default auto-boxing parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_bw_corr_factor" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_bw_corr_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bw_corr_factor</span></code></a></p></td>
+<td><p>Calculate effective bandwidth correction factor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_cfcaches" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_cfcaches"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cfcaches</span></code></a></p></td>
+<td><p>Parses comma separated cfcache string</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_channel_flags" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_channel_flags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_channel_flags</span></code></a></p></td>
+<td><p>Determine channel flags for a given field and spw selection in one MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_first_unflagged_channel_from_center" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_first_unflagged_channel_from_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_first_unflagged_channel_from_center</span></code></a></p></td>
+<td><p>Find first unflagged channel from center channel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_fractional_bandwidth" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_fractional_bandwidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fractional_bandwidth</span></code></a></p></td>
+<td><p>Returns fractional bandwidth for selected spectral windows</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_min_max_freq" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_min_max_freq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_min_max_freq</span></code></a></p></td>
+<td><p>Given a comma separated string list of spectral windows, determines the minimum and maximum frequencies in spectral window list and the corresponding spectral window indexes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_outmaskratio" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_outmaskratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_outmaskratio</span></code></a></p></td>
+<td><p>Determine fractional flux in final image outside cleanmask</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_ref_msname" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_ref_msname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ref_msname</span></code></a></p></td>
+<td><p>Get the first MS name that contains data for the given spw ID.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scanidlist</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_sensitivity" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_sensitivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sensitivity</span></code></a></p></td>
+<td><p>Get sensitivity for a field / spw / chansel combination from CASA's apparentsens method and a correction for effective channel widths in case of online smoothing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.gridder" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.gridder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridder</span></code></a></p></td>
+<td><p>Tclean gridder parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_data</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">imagename</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.imsize" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.imsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imsize</span></code></a></p></td>
+<td><p>Tclean imsize parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.intent" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intent</span></code></a></p></td>
+<td><p>Tclean intent parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_eph_obj</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.is_mosaic" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.is_mosaic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_mosaic</span></code></a></p></td>
+<td><p>Determines if the given field/intent from a MS list is considered as a mosaic or not.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.keep_iterating" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.keep_iterating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keep_iterating</span></code></a></p></td>
+<td><p>Determine if another tclean iteration is necessary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">largest_primary_beam_size</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.majority_antenna_ids" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.majority_antenna_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">majority_antenna_ids</span></code></a></p></td>
+<td><p>Get the IDs of the majority (by diameter) antennas per MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.mosweight" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.mosweight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mosweight</span></code></a></p></td>
+<td><p>tclean flag to use mosaic weighting.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nchan_and_width</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ncorr</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">niter</span></code></a></p></td>
+<td><p>Tclean niter parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_by_iteration" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_by_iteration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">niter_by_iteration</span></code></a></p></td>
+<td><p>Tclean niter heuristic at each iteration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_correction" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">niter_correction</span></code></a></p></td>
+<td><p>Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nmajor</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nsigma" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nsigma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsigma</span></code></a></p></td>
+<td><p>Tclean nsigma parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nterms" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nterms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nterms</span></code></a></p></td>
+<td><p>Tclean nterms parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pb_correction</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pblimits</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pbmask" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pbmask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pbmask</span></code></a></p></td>
+<td><p>Tclean pbmask parameter heuristics</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.perchanweightdensity" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.perchanweightdensity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perchanweightdensity</span></code></a></p></td>
+<td><p>Determine the perchanweightdensity parameter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">phasecenter</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pointingoffsetsigdev" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pointingoffsetsigdev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pointingoffsetsigdev</span></code></a></p></td>
+<td><p>Tclean parameter</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.primary_beam_size" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.primary_beam_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">primary_beam_size</span></code></a></p></td>
+<td><p>Calculate primary beam size in arcsec.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.psfcutoff" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.psfcutoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psfcutoff</span></code></a></p></td>
+<td><p>Tclean psfcutoff parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.reffreq" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.reffreq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reffreq</span></code></a></p></td>
+<td><p>Tclean reffreq parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative_target</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">restfreq</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.restoringbeam" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.restoringbeam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">restoringbeam</span></code></a></p></td>
+<td><p>Tclean parameter</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.robust" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.robust"><code class="xref py py-obj docutils literal notranslate"><span class="pre">robust</span></code></a></p></td>
+<td><p>Tclean robust parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotatepastep</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.savemodel" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.savemodel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savemodel</span></code></a></p></td>
+<td><p>Tclean savemodel parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.scales" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.scales"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scales</span></code></a></p></td>
+<td><p>Tclean scales parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.select_fields" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.select_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_fields</span></code></a></p></td>
+<td><p>Select fields id based on intent, field name, or separation constrains from the phasecenter</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.smallscalebias" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.smallscalebias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smallscalebias</span></code></a></p></td>
+<td><p>A numerical control to bias the scales when using multi-scale or mtmfs algorithms</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.specmode" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.specmode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specmode</span></code></a></p></td>
+<td><p>Tclean specmode parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.stokes" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.stokes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stokes</span></code></a></p></td>
+<td><p>Tclean stokes parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.synthesized_beam" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.synthesized_beam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">synthesized_beam</span></code></a></p></td>
+<td><p>Calculate synthesized beam for a given field / spw selection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.tclean_stopcode_ignore" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.tclean_stopcode_ignore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tclean_stopcode_ignore</span></code></a></p></td>
+<td><p>tclean stop code(s) to be ignored for warning messages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.threshold" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">threshold</span></code></a></p></td>
+<td><p>Tclean threshold parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tlimit</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.usepointing" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.usepointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">usepointing</span></code></a></p></td>
+<td><p>tclean flag to use pointing table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvrange" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvrange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uvrange</span></code></a></p></td>
+<td><p>Tclean uvrange parameter heuristics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvtaper" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvtaper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uvtaper</span></code></a></p></td>
+<td><p>Tclean uvtaper parameter heuristics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">warn_missing_cont_ranges</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.weighting" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.weighting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighting</span></code></a></p></td>
+<td><p>Determine the weighting scheme.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">width</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wprojplanes</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_diameters">
+<span class="sig-name descname"><span class="pre">antenna_diameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_diameters" title="Link to this definition"></a></dt>
+<dd><p>Count the antennas of given diameters per MS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_ids">
+<span class="sig-name descname"><span class="pre">antenna_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.antenna_ids" title="Link to this definition"></a></dt>
+<dd><p>Get the antenna IDs to be used for imaging.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.arrays">
+<span class="sig-name descname"><span class="pre">arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.arrays" title="Link to this definition"></a></dt>
+<dd><p>Return the array descriptions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_percentile_baseline_length">
+<span class="sig-name descname"><span class="pre">calc_percentile_baseline_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_percentile_baseline_length" title="Link to this definition"></a></dt>
+<dd><p>Calculate percentile baseline length for the vis list used in this heuristics instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_sensitivities">
+<span class="sig-name descname"><span class="pre">calc_sensitivities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_topo_chan_param_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_sensitivities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_reffreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_sensitivities" title="Link to this definition"></a></dt>
+<dd><p>Compute sensitivity estimate using CASA.</p>
+<p>Note: calc_reffreq is defaulted to False for backwards compatibility uses in imageprecheck.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_topo_ranges">
+<span class="sig-name descname"><span class="pre">calc_topo_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.calc_topo_ranges" title="Link to this definition"></a></dt>
+<dd><p>Calculate TOPO ranges for hif_tclean inputs.</p>
+<p>Note: we might consider consolidating this with the similar code in contfilehelper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cell">
+<span class="sig-name descname"><span class="pre">cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixperbeam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cell" title="Link to this definition"></a></dt>
+<dd><p>Tclean cell parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.center_field_ids">
+<span class="sig-name descname"><span class="pre">center_field_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.center_field_ids" title="Link to this definition"></a></dt>
+<dd><p>Get per-MS IDs of field closest to the phase center.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.check_psf">
+<span class="sig-name descname"><span class="pre">check_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psf_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.check_psf" title="Link to this definition"></a></dt>
+<dd><p>Check for bad psf fits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.conjbeams">
+<span class="sig-name descname"><span class="pre">conjbeams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.conjbeams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.conjbeams" title="Link to this definition"></a></dt>
+<dd><p>Tclean conjbeams parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cont_ranges_spwsel">
+<span class="sig-name descname"><span class="pre">cont_ranges_spwsel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cont_ranges_spwsel" title="Link to this definition"></a></dt>
+<dd><p>Determine spw selection parameters to exclude lines for mfs and cont images.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cyclefactor">
+<span class="sig-name descname"><span class="pre">cyclefactor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter0_dirty_dynamic_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.cyclefactor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cyclefactor" title="Link to this definition"></a></dt>
+<dd><p>Tclean cyclefactor parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cycleniter">
+<span class="sig-name descname"><span class="pre">cycleniter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.cycleniter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cycleniter" title="Link to this definition"></a></dt>
+<dd><p>Tclean cycleniter parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.deconvolver">
+<span class="sig-name descname"><span class="pre">deconvolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specmode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwspec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.deconvolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.deconvolver" title="Link to this definition"></a></dt>
+<dd><p>Tclean deconvolver parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.dr_correction">
+<span class="sig-name descname"><span class="pre">dr_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirty_dynamic_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tlimit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drcorrect</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.dr_correction" title="Link to this definition"></a></dt>
+<dd><p>Adjustment of cleaning threshold due to dynamic range limitations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.find_good_commonbeam">
+<span class="sig-name descname"><span class="pre">find_good_commonbeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psf_filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.find_good_commonbeam" title="Link to this definition"></a></dt>
+<dd><p>Find and replace outlier beams to calculate a good common beam.
+Method from Urvashi Rao.</p>
+<p>Returns new common beam and array of channel numbers with invalid beams.
+Leaves old beams in the PSF as is.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.freq_intersection">
+<span class="sig-name descname"><span class="pre">freq_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LSRK'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.freq_intersection" title="Link to this definition"></a></dt>
+<dd><p>Calculate LSRK frequency intersection of a list of MSs for a
+given field and spw. Exclude flagged channels.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_autobox_params">
+<span class="sig-name descname"><span class="pre">get_autobox_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_autobox_params" title="Link to this definition"></a></dt>
+<dd><p>Default auto-boxing parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_bw_corr_factor">
+<span class="sig-name descname"><span class="pre">get_bw_corr_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms_do</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_bw_corr_factor" title="Link to this definition"></a></dt>
+<dd><p>Calculate effective bandwidth correction factor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_cfcaches">
+<span class="sig-name descname"><span class="pre">get_cfcaches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfcache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_cfcaches" title="Link to this definition"></a></dt>
+<dd><p>Parses comma separated cfcache string</p>
+<p>Used to input wide band and non-wide band cfcaches at the same time in
+VLASS-SE-CONT imaging mode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_channel_flags">
+<span class="sig-name descname"><span class="pre">get_channel_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_channel_flags" title="Link to this definition"></a></dt>
+<dd><p>Determine channel flags for a given field and spw selection in one MS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_first_unflagged_channel_from_center">
+<span class="sig-name descname"><span class="pre">get_first_unflagged_channel_from_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_flags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_first_unflagged_channel_from_center" title="Link to this definition"></a></dt>
+<dd><p>Find first unflagged channel from center channel.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_fractional_bandwidth">
+<span class="sig-name descname"><span class="pre">get_fractional_bandwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwspec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_fractional_bandwidth" title="Link to this definition"></a></dt>
+<dd><p>Returns fractional bandwidth for selected spectral windows</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_min_max_freq">
+<span class="sig-name descname"><span class="pre">get_min_max_freq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwspec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_min_max_freq" title="Link to this definition"></a></dt>
+<dd><p>Given a comma separated string list of spectral windows, determines the minimum and maximum
+frequencies in spectral window list and the corresponding spectral window indexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spwspec</strong> – comma separated string list of spectral windows.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary min. and max. frequencies (in Hz) and corresponding spw indexes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_outmaskratio">
+<span class="sig-name descname"><span class="pre">get_outmaskratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbimage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanmask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pblimit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frac_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_outmaskratio" title="Link to this definition"></a></dt>
+<dd><p>Determine fractional flux in final image outside cleanmask</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_ref_msname">
+<span class="sig-name descname"><span class="pre">get_ref_msname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_ref_msname" title="Link to this definition"></a></dt>
+<dd><p>Get the first MS name that contains data for the given spw ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_sensitivity">
+<span class="sig-name descname"><span class="pre">get_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms_do</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chansel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.get_sensitivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_sensitivity" title="Link to this definition"></a></dt>
+<dd><p>Get sensitivity for a field / spw / chansel combination from CASA’s
+apparentsens method and a correction for effective channel widths
+in case of online smoothing.</p>
+<p>This heuristic is currently optimized for ALMA data only.</p>
+<p>Note: the input ‘field’ is a field id as an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.gridder">
+<span class="sig-name descname"><span class="pre">gridder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.gridder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.gridder" title="Link to this definition"></a></dt>
+<dd><p>Tclean gridder parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.imsize">
+<span class="sig-name descname"><span class="pre">imsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_beam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sfpblimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_pixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centreonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_intents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.imsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.imsize" title="Link to this definition"></a></dt>
+<dd><p>Tclean imsize parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.intent">
+<span class="sig-name descname"><span class="pre">intent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.intent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.intent" title="Link to this definition"></a></dt>
+<dd><p>Tclean intent parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.is_mosaic">
+<span class="sig-name descname"><span class="pre">is_mosaic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.is_mosaic" title="Link to this definition"></a></dt>
+<dd><p>Determines if the given field/intent from a MS list is considered as a mosaic or not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.keep_iterating">
+<span class="sig-name descname"><span class="pre">keep_iterating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tclean_stopcode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirty_dynamic_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_robust_rms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.keep_iterating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.keep_iterating" title="Link to this definition"></a></dt>
+<dd><p>Determine if another tclean iteration is necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.majority_antenna_ids">
+<span class="sig-name descname"><span class="pre">majority_antenna_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vislist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.majority_antenna_ids" title="Link to this definition"></a></dt>
+<dd><p>Get the IDs of the majority (by diameter) antennas per MS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.mosweight">
+<span class="sig-name descname"><span class="pre">mosweight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.mosweight" title="Link to this definition"></a></dt>
+<dd><p>tclean flag to use mosaic weighting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter">
+<span class="sig-name descname"><span class="pre">niter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.niter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter" title="Link to this definition"></a></dt>
+<dd><p>Tclean niter parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_by_iteration">
+<span class="sig-name descname"><span class="pre">niter_by_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_by_iteration" title="Link to this definition"></a></dt>
+<dd><p>Tclean niter heuristic at each iteration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_correction">
+<span class="sig-name descname"><span class="pre">niter_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">niter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual_robust_rms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_frac_rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TARGET'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.niter_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_correction" title="Link to this definition"></a></dt>
+<dd><p>Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nsigma">
+<span class="sig-name descname"><span class="pre">nsigma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nsigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.nsigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nsigma" title="Link to this definition"></a></dt>
+<dd><p>Tclean nsigma parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nterms">
+<span class="sig-name descname"><span class="pre">nterms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwspec</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.nterms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nterms" title="Link to this definition"></a></dt>
+<dd><p>Tclean nterms parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pbmask">
+<span class="sig-name descname"><span class="pre">pbmask</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pbmask" title="Link to this definition"></a></dt>
+<dd><p>Tclean pbmask parameter heuristics</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.perchanweightdensity">
+<span class="sig-name descname"><span class="pre">perchanweightdensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.perchanweightdensity" title="Link to this definition"></a></dt>
+<dd><p>Determine the perchanweightdensity parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pointingoffsetsigdev">
+<span class="sig-name descname"><span class="pre">pointingoffsetsigdev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.pointingoffsetsigdev" title="Link to this definition"></a></dt>
+<dd><p>Tclean parameter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.primary_beam_size">
+<span class="sig-name descname"><span class="pre">primary_beam_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.primary_beam_size" title="Link to this definition"></a></dt>
+<dd><p>Calculate primary beam size in arcsec.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.psfcutoff">
+<span class="sig-name descname"><span class="pre">psfcutoff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.psfcutoff" title="Link to this definition"></a></dt>
+<dd><p>Tclean psfcutoff parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.reffreq">
+<span class="sig-name descname"><span class="pre">reffreq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deconvolver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwsel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.reffreq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.reffreq" title="Link to this definition"></a></dt>
+<dd><p>Tclean reffreq parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.restoringbeam">
+<span class="sig-name descname"><span class="pre">restoringbeam</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.restoringbeam" title="Link to this definition"></a></dt>
+<dd><p>Tclean parameter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.robust">
+<span class="sig-name descname"><span class="pre">robust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.robust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.robust" title="Link to this definition"></a></dt>
+<dd><p>Tclean robust parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.savemodel">
+<span class="sig-name descname"><span class="pre">savemodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.savemodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.savemodel" title="Link to this definition"></a></dt>
+<dd><p>Tclean savemodel parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.scales">
+<span class="sig-name descname"><span class="pre">scales</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.scales"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.scales" title="Link to this definition"></a></dt>
+<dd><p>Tclean scales parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.select_fields">
+<span class="sig-name descname"><span class="pre">select_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TARGET'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.select_fields" title="Link to this definition"></a></dt>
+<dd><p>Select fields id based on intent, field name, or separation constrains from the phasecenter</p>
+<dl class="simple">
+<dt>This method selects fields based on the following search rules:</dt><dd><p>intent: restrict the search by the field intent
+name: restrict the search id by the field name.
+phasecenter, offsets: restrict the search area in an on-sky box centered around phasecenter</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>intent</strong> (<em>str, optional</em>) – intent string. Defaults to ‘TARGET’.</p></li>
+<li><p><strong>name</strong> (<em>str, optional</em>) – name string, which could be a wildcard like ‘1*,2*,0*’ Defaults to None.</p></li>
+<li><p><strong>phasecenter</strong> (<em>str, optional</em>) – center of the search box. Defaults to None.</p></li>
+<li><p><strong>offsets</strong> (<em>optional</em>) – sky offsets search limits along the longitude/ latitude direction in the reference frame.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list; each element is the selected field id list per measurement sets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.smallscalebias">
+<span class="sig-name descname"><span class="pre">smallscalebias</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.smallscalebias" title="Link to this definition"></a></dt>
+<dd><p>A numerical control to bias the scales when using multi-scale or mtmfs algorithms</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.specmode">
+<span class="sig-name descname"><span class="pre">specmode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.specmode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.specmode" title="Link to this definition"></a></dt>
+<dd><p>Tclean specmode parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.stokes">
+<span class="sig-name descname"><span class="pre">stokes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint_intents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.stokes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.stokes" title="Link to this definition"></a></dt>
+<dd><p>Tclean stokes parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.synthesized_beam">
+<span class="sig-name descname"><span class="pre">synthesized_beam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_intent_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwspec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixperbeam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_beams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'automatic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.synthesized_beam" title="Link to this definition"></a></dt>
+<dd><p>Calculate synthesized beam for a given field / spw selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.tclean_stopcode_ignore">
+<span class="sig-name descname"><span class="pre">tclean_stopcode_ignore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteraton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.tclean_stopcode_ignore" title="Link to this definition"></a></dt>
+<dd><p>tclean stop code(s) to be ignored for warning messages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.threshold">
+<span class="sig-name descname"><span class="pre">threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_masking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.threshold" title="Link to this definition"></a></dt>
+<dd><p>Tclean threshold parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.usepointing">
+<span class="sig-name descname"><span class="pre">usepointing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.usepointing" title="Link to this definition"></a></dt>
+<dd><p>tclean flag to use pointing table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvrange">
+<span class="sig-name descname"><span class="pre">uvrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwspec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.uvrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvrange" title="Link to this definition"></a></dt>
+<dd><p>Tclean uvrange parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvtaper">
+<span class="sig-name descname"><span class="pre">uvtaper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beam_natural</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protect_long</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tapering_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr_freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/heuristics/imageparams_vlass_single_epoch_taper.html#ImageParamsHeuristicsVlassSeTaper.uvtaper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvtaper" title="Link to this definition"></a></dt>
+<dd><p>Tclean uvtaper parameter heuristics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.weighting">
+<span class="sig-name descname"><span class="pre">weighting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.weighting" title="Link to this definition"></a></dt>
+<dd><p>Determine the weighting scheme.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.html" class="btn btn-neutral float-left" title="pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hif.heuristics.imageparams_vla.html" class="btn btn-neutral float-right" title="pipeline.hif.heuristics.imageparams_vla" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

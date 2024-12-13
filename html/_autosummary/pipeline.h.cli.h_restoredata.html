@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,79 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.h.cli.h_restoredata">
-<span id="pipeline-h-cli-h-restoredata"></span><h1>pipeline.h.cli.h_restoredata<a class="headerlink" href="#module-pipeline.h.cli.h_restoredata" title="Link to this heading"></a></h1>
+  <section id="pipeline-h-cli-h-restoredata">
+<h1>pipeline.h.cli.h_restoredata<a class="headerlink" href="#pipeline-h-cli-h-restoredata" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.cli.h_restoredata">
+<span class="sig-name descname"><span class="pre">h_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_restoredata.html#h_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.cli.h_restoredata" title="Link to this definition"></a></dt>
+<dd><p>Restore flags and calibration state from a pipeline run</p>
+<p>The h_restoredata restores flagged and calibrated data from archived ASDMs and
+pipeline flagging and calibration data products. Pending archive retrieval
+support h_restoredata assumes that the required products are available in the
+rawdata_dir in the format produced by the h_exportdata task.</p>
+<p>h_restoredata assumes that the following entities are available in the
+rawdata_dir directory:</p>
+<ul>
+<li><p>the ASDMs to be restored</p></li>
+<li><p>for each ASDM in the input list:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a compressed tar file of the final flagversions file, e.g.,
+uid___A002_X30a93d_X43e.ms.flagversions.tar.gz</p></li>
+<li><p>a text file containing the applycal instructions, e.g.,
+uid___A002_X30a93d_X43e.ms.calapply.txt</p></li>
+<li><p>a compressed tar file containing the caltables for the parent
+session, e.g., uid___A001_X74_X29.session_3.caltables.tar.gz</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>h_restore data performs the following operations:</p>
+<ul class="simple">
+<li><p>imports the ASDM(s)</p></li>
+<li><p>removes the default MS.flagversions directory created by the filler</p></li>
+<li><p>restores the final MS.flagversions directory stored by the pipeline</p></li>
+<li><p>restores the final set of pipeline flags to the MS</p></li>
+<li><p>restores the final calibration state of the MS</p></li>
+<li><p>restores the final calibration tables for each MS</p></li>
+<li><p>applies the calibration tables to each MS</p></li>
+</ul>
+<p>When importing the ASDM and converting it to a Measurement Set (MS), if the
+output MS already exists in the output directory, then the importasdm
+conversion step is skipped, and the existing MS will be imported instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
+Example: vis=[‘uid___A002_X30a93d_X43e’]</p></li>
+<li><p><strong>session</strong> – List of sessions, one per visibility file. Example: session=[‘session_3’]</p></li>
+<li><p><strong>products_dir</strong> – Path to the data products directory, used to copy calibration products from. The parameter is effective only when
+copytoraw=True. When copytoraw=False, calibration products in
+rawdata_dir will be used.
+Example: products_dir=’/path/to/my/products’</p></li>
+<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from products_dir to rawdata_dir directory.
+Example: copytoraw=False</p></li>
+<li><p><strong>rawdata_dir</strong> – Path to the rawdata subdirectory. example: rawdata_dir=’/path/to/my/rawdata’</p></li>
+<li><p><strong>lazy</strong> – Use the lazy filler option. Example: lazy=True</p></li>
+<li><p><strong>bdfflags</strong> – Set the BDF flags. Example: bdfflags=False</p></li>
+<li><p><strong>ocorr_mode</strong> – Set correlation import mode. Example: ocorr_mode=’ca’</p></li>
+<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
+example: ocorr_mode=’Source Receiver’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Restore the pipeline results for a single ASDM in a single session</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h_restoredata</span> <span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;uid___A002_X30a93d_X43e&#39;</span><span class="p">],</span> <span class="n">session</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;session_1&#39;</span><span class="p">],</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

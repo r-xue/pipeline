@@ -20,6 +20,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -31,7 +33,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +59,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +80,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline.infrastructure</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +167,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -182,8 +197,40 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html#pipeline.infrastructure.generate_detail_plots" title="pipeline.infrastructure.generate_detail_plots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_detail_plots</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html#pipeline.infrastructure.set_plot_level" title="pipeline.infrastructure.set_plot_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_level</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.get_logger.html#pipeline.infrastructure.get_logger" title="pipeline.infrastructure.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a></p></td>
+<td><p>Do basic configuration for the logging system.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html#pipeline.infrastructure.set_plot_level" title="pipeline.infrastructure.set_plot_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_level</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.CalApplication.html#pipeline.infrastructure.CalApplication" title="pipeline.infrastructure.CalApplication"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalApplication</span></code></a></p></td>
+<td><p>CalApplication maps calibration tables and their application arguments to</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.CalFrom.html#pipeline.infrastructure.CalFrom" title="pipeline.infrastructure.CalFrom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalFrom</span></code></a></p></td>
+<td><p>CalFrom represents a calibration table and the CASA arguments that should be used when applying that calibration table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html#pipeline.infrastructure.CalLibrary" title="pipeline.infrastructure.CalLibrary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalLibrary</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary" title="pipeline.infrastructure.callibrary.IntervalCalLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalCalLibrary</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.CalState.html#pipeline.infrastructure.CalState" title="pipeline.infrastructure.CalState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalState</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState" title="pipeline.infrastructure.callibrary.IntervalCalState"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalCalState</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.CalTo.html#pipeline.infrastructure.CalTo" title="pipeline.infrastructure.CalTo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalTo</span></code></a></p></td>
+<td><p>CalTo represents a target data selection to which a calibration can be applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.Context.html#pipeline.infrastructure.Context" title="pipeline.infrastructure.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.JobRequest.html#pipeline.infrastructure.JobRequest" title="pipeline.infrastructure.JobRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JobRequest</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.Pipeline.html#pipeline.infrastructure.Pipeline" title="pipeline.infrastructure.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a></p></td>
+<td><p>Pipeline is the entry point for initialising the pipeline.</p></td>
 </tr>
 </tbody>
 </table>

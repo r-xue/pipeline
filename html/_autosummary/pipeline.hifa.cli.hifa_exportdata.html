@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,79 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_exportdata">
-<span id="pipeline-hifa-cli-hifa-exportdata"></span><h1>pipeline.hifa.cli.hifa_exportdata<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_exportdata" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-exportdata">
+<h1>pipeline.hifa.cli.hifa_exportdata<a class="headerlink" href="#pipeline-hifa-cli-hifa-exportdata" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_exportdata">
+<span class="sig-name descname"><span class="pre">hifa_exportdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imaging_products_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exportmses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pprfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calintents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_exportdata.html#hifa_exportdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_exportdata" title="Link to this definition"></a></dt>
+<dd><p>Prepare interferometry data for export</p>
+<p>The hifa_exportdata task for ALMA CASA pipeline exports the data defined
+in the pipeline context and exports it to the data products directory,
+converting and or packing it as necessary.</p>
+<p>The current version of the task exports the following products</p>
+<ul class="simple">
+<li><p>an XML file containing the pipeline processing request</p></li>
+<li><p>a tar file per ASDM / MS containing the final flags version</p></li>
+<li><p>a text file per ASDM / MS containing the final calibration apply list</p></li>
+<li><p>a FITS image for each selected calibrator source image</p></li>
+<li><p>a FITS image for each selected science target source image</p></li>
+<li><p>a tar file per session containing the caltables for that session</p></li>
+<li><p>a tar file containing the file web log</p></li>
+<li><p>a text file containing the final list of CASA commands</p></li>
+<li><p>an XML “manifest” file listing the products</p></li>
+<li><p>an XML “aquareport” file listing the QA scores and sub-scores,
+image sensitivities, and other numerical information</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files for which flagging and calibration
+information will be exported. Defaults to the list maintained in the
+pipeline context.
+Example: vis=[‘X227.ms’, ‘X228.ms’]</p></li>
+<li><p><strong>session</strong> – List of sessions one per visibility file. Currently defaults
+to a single virtual session containing all the visibility files in vis.
+In the future, this will default to the set of observing sessions defined
+in the context.
+Example: session=[‘session1’, ‘session2’]</p></li>
+<li><p><strong>imaging_products_only</strong> – Export science target imaging products only</p></li>
+<li><p><strong>exportmses</strong> – Export the final MeasurementSets instead of the final flags,
+calibration tables, and calibration instructions.</p></li>
+<li><p><strong>pprfile</strong> – Name of the pipeline processing request to be exported. Defaults
+to a file matching the template ‘PPR_*.xml’.
+Example: pprfile=[‘PPR_GRB021004.xml’]</p></li>
+<li><p><strong>calintents</strong> – List of calibrator image types to be exported. Defaults to
+all standard calibrator intents, ‘BANDPASS’, ‘PHASE’, ‘FLUX’.
+Example: ‘PHASE’</p></li>
+<li><p><strong>calimages</strong> – List of calibrator images to be exported. Defaults to all
+calibrator images recorded in the pipeline context.
+Example: calimages=[‘3C454.3.bandpass’, ‘3C279.phase’]</p></li>
+<li><p><strong>targetimages</strong> – List of science target images to be exported. Defaults to all
+science target images recorded in the pipeline context.
+Example: targetimages=[‘NGC3256.band3’, ‘NGC3256.band6’]</p></li>
+<li><p><strong>products_dir</strong> – Name of the data products subdirectory. Defaults to ‘./’.
+Example: products_dir=’../products’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Export the pipeline results for a single session to the data products
+directory:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !mkdir ../products
+&gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;)
+</pre></div>
+</div>
+<p>2. Export the pipeline results to the data products directory specify that
+only the gain calibrator images be saved:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !mkdir ../products
+&gt;&gt;&gt; hif_exportdata(products_dir=&#39;../products&#39;, calintents=&#39;*PHASE*&#39;)
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifa.heuristics.snr" href="pipeline.hifa.heuristics.snr.html" />
+    <link rel="next" title="pipeline.hifa.heuristics.phasespwmap.SpectralWindow" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html" />
     <link rel="prev" title="pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap" href="pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -148,7 +152,7 @@
 <h1>pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band<a class="headerlink" href="#pipeline-hifa-heuristics-phasespwmap-update-spwmap-for-band-to-band" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band">
-<span class="sig-name descname"><span class="pre">update_spwmap_for_band_to_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dg_refspws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dg_srcspws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/heuristics/phasespwmap.html#update_spwmap_for_band_to_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_spwmap_for_band_to_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dg_refspws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hifa.heuristics.atm.SpectralWindow.html#pipeline.hifa.heuristics.atm.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dg_srcspws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hifa.heuristics.atm.SpectralWindow.html#pipeline.hifa.heuristics.atm.SpectralWindow" title="pipeline.domain.spectralwindow.SpectralWindow"><span class="pre">SpectralWindow</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/heuristics/phasespwmap.html#update_spwmap_for_band_to_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band" title="Link to this definition"></a></dt>
 <dd><p>This method updates the input SpW mapping to remap diffgain on-source SpWs to
 associated diffgain reference SpWs within the same baseband, and returns the
 updated SpW mapping.</p>
@@ -173,7 +177,7 @@ updated SpW mapping.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap.html" class="btn btn-neutral float-left" title="pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifa.heuristics.snr.html" class="btn btn-neutral float-right" title="pipeline.hifa.heuristics.snr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html" class="btn btn-neutral float-right" title="pipeline.hifa.heuristics.phasespwmap.SpectralWindow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

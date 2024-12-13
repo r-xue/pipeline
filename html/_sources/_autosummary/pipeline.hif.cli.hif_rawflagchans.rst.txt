@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_rawflagchans
 ==================================
 
-.. automodule:: pipeline.hif.cli.hif_rawflagchans
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_rawflagchans

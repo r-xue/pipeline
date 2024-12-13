@@ -9,6 +9,14 @@ pipeline.hif.tasks.editimlist.renderer
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      plots_to_html
+   
    
 
    

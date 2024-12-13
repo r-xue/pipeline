@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casatools.regionmanager &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casatools.regionmanager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casatools.regionmanager</h1><div class="highlight"><pre>
+<span></span><span class="c1">##################### generated by xml-casa (v2) from regionmanager.xml #############</span>
+<span class="c1">##################### 4ff09691e40ce125872be37332fdf213 ##############################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span> 
+<span class="kn">from</span> <span class="nn">.__casac__.regionmanager</span> <span class="kn">import</span> <span class="n">regionmanager</span> <span class="k">as</span> <span class="n">_regionmanager</span>
+
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">create_error_string</span>
+<span class="kn">from</span> <span class="nn">.typecheck</span> <span class="kn">import</span> <span class="n">CasaValidator</span> <span class="k">as</span> <span class="n">_validator</span>
+<span class="n">_pc</span> <span class="o">=</span> <span class="n">_validator</span><span class="p">(</span> <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.coercetype</span> <span class="kn">import</span> <span class="n">coerce</span> <span class="k">as</span> <span class="n">_coerce</span>
+
+
+<span class="k">class</span> <span class="nc">regionmanager</span><span class="p">:</span>
+    <span class="n">_info_group_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;images&quot;&quot;&quot;</span>
+    <span class="n">_info_desc_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Create and manipulate regions of interest&quot;&quot;&quot;</span>
+    <span class="c1">### self</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This is the only regionmanager constructor.  It should generally be</span>
+<span class="sd">        unnecessary for you to make one as there is little state in a</span>
+<span class="sd">        regionmanager (you can set a Coordinate System with</span>
+<span class="sd">        setcoordinates); the</span>
+<span class="sd">        default regionmanager {stf rg} should be all you need.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;swig_object&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">_regionmanager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">absreltype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absrelvalue</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is not intended for general user use.</span>
+<span class="sd">        </span>
+<span class="sd">        Regions may be specified with coordinates which are absolute or</span>
+<span class="sd">        relative.  This function converts the integer code defining the</span>
+<span class="sd">        absolute/relative type of the coordinates (which is stored in the</span>
+<span class="sd">        region) into a string (maybe for printing purposes).</span>
+<span class="sd">        </span>
+<span class="sd">        The different types are</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        Integer     String      Description</span>
+<span class="sd">        1            abs        Absolute coordinate</span>
+<span class="sd">        2            relref     Relative reference pixel</span>
+<span class="sd">        3            relcen     Relative to center of image</span>
+<span class="sd">        4            reldir     Relative to some direction</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">absreltype</span><span class="p">(</span><span class="n">absrelvalue</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blc</span><span class="o">=</span><span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">],</span> <span class="n">trc</span><span class="o">=</span><span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">],</span> <span class="n">inc</span><span class="o">=</span><span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">],</span> <span class="n">absrel</span><span class="o">=</span><span class="s1">&#39;abs&#39;</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function creates a multi-dimensional pixel box region.  The box is</span>
+<span class="sd">        specified by a bottom-left corner, and top-right corner and an increment</span>
+<span class="sd">        (or stride).  Pixel coordinates are considered to run from 1 at the</span>
+<span class="sd">        bottom left corner of the image to the image shape at the top-right</span>
+<span class="sd">        corner of the image.</span>
+<span class="sd">        </span>
+<span class="sd">        You can specify whether the coordinates are given as pixel coordinates</span>
+<span class="sd">        ({stfaf frac=F}) or fractions of the image shape ({stfaf frac=T}).</span>
+<span class="sd">        Absolute fractions are in the range [0,1].</span>
+<span class="sd">        </span>
+<span class="sd">        You can also specify whether the coordinates are given as absolute</span>
+<span class="sd">        coordinates ({stfaf absrel=&#39;abs&#39;}) or relative to the reference pixel</span>
+<span class="sd">        ({stfaf absrel=&#39;relref&#39;}) or relative to the center of the image</span>
+<span class="sd">        ({stfaf absrel=&#39;relcen&#39;}).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">inc</span><span class="p">,</span> <span class="n">absrel</span><span class="p">,</span> <span class="n">frac</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">frombcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">chans</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokescontrol</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function creates a multi-dimensional world coordinate region based</span>
+<span class="sd">        on box, chans, stokes inputs familiar from image analysis tasks. It is</span>
+<span class="sd">        being introduced as a temporary means of refactoring some python level</span>
+<span class="sd">        task code into C++. However, if users find it to have value, its existence</span>
+<span class="sd">        can be permanent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">frombcs</span><span class="p">(</span><span class="n">csys</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">chans</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">stokescontrol</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">complement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function (short-hand name {tt comp}) creates the complement of</span>
+<span class="sd">        a world region(s).</span>
+<span class="sd">        </span>
+<span class="sd">        The region parameter can be a single region record defining a simple</span>
+<span class="sd">        or complex region or it can contain several region records in a</span>
+<span class="sd">        Python dictionary.  If multiple regions are given then the union of</span>
+<span class="sd">        this set of regions is taken first, and the complement is found from</span>
+<span class="sd">        the union.</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: ia.statistics() is UNABLE to handle complement regions in CASA yet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">complement</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">concatenation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function (short-hand name {tt concat}) creates a region which is</span>
+<span class="sd">        the concatenation along a new axis of the given world regions.</span>
+<span class="sd">        </span>
+<span class="sd">        This function is similar to the</span>
+<span class="sd">        extension function.  The</span>
+<span class="sd">        {stfaf concatenation} function allows you to take many world regions,</span>
+<span class="sd">        and concatenate them along one axis (rather than take one region and</span>
+<span class="sd">        extend it along many axes which is what function {stff extension}</span>
+<span class="sd">        does).</span>
+<span class="sd">        </span>
+<span class="sd">        For example, you may have generated a different polygonal region for</span>
+<span class="sd">        each spectral pixel of a spectral-line cube and you wish to concatenate them</span>
+<span class="sd">        together to form the overall region for use in a deconvolution</span>
+<span class="sd">        application.</span>
+<span class="sd">        </span>
+<span class="sd">        The axis to concatenate along is specified as a 1-dimensional world box.</span>
+<span class="sd">        The shape of the 1D box must contain as many pixels (although you</span>
+<span class="sd">        don&#39;t have to specify it in pixels) as there are regions</span>
+<span class="sd">        to concatenate.</span>
+<span class="sd">        </span>
+<span class="sd">        Because this function is most likely to be used in a script, the</span>
+<span class="sd">        interface takes a record containing {stff region} records, Python</span>
+<span class="sd">        dictionaries, as there might be a lot of them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">concatenation</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deletefromtable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regionname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function deletes a region stored in an casa  Table.</span>
+<span class="sd">        </span>
+<span class="sd">        For the {stfaf tablename} argument,</span>
+<span class="sd">        </span>
+<span class="sd">        you have to give  the name of an existing</span>
+<span class="sd">        CASA table on disk (any kind of table).</span>
+<span class="sd">        </span>
+<span class="sd">        You specify the name of the region with the {stfaf regionname}</span>
+<span class="sd">        arguments.  If you set {stfaf regionname=&#39;&#39;} then nothing is done.  The names of all the regions stored in a Table can be found</span>
+<span class="sd">        with the function</span>
+<span class="sd">        namesintable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">deletefromtable</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">regionname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region1</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">region2</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function (short-hand name {stff diff}) creates</span>
+<span class="sd">        a region which is the difference of two world regions.  The order</span>
+<span class="sd">        of the regions is important.</span>
+<span class="sd">        </span>
+<span class="sd">        The difference consists of all pixels masked-on in the first</span>
+<span class="sd">        region and not masked-on in the second region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">region1</span><span class="p">,</span> <span class="n">region2</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function destroys the contents of the {stf regionmanager} tool</span>
+<span class="sd">        (including its GUI).  The tool still exists as a Glish variable, but</span>
+<span class="sd">        it is no longer a Regionmanager ! You are unlikely to need this</span>
+<span class="sd">        function.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">selectedchannels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specification</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This method returns all the selected zero-based channel numbers from the specified string within the image.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">selectedchannels</span><span class="p">(</span><span class="n">specification</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fromtextfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">],</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function reads a text file containing region descriptions and</span>
+<span class="sd">        converts it to a python dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fromtextfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">csys</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fromtext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">],</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function reads a region region text descriptions and</span>
+<span class="sd">        converts it to a python region dictionary.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fromtext</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">csys</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fromfiletorecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">regionname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function reads files containing ImageRegion objects and turns them</span>
+<span class="sd">        into Region Records.</span>
+<span class="sd">        </span>
+<span class="sd">        The intended use for this method is to read the file saved by the casa</span>
+<span class="sd">        viewer and turn the files contents into regions that are usabla by the</span>
+<span class="sd">        image analysis tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fromfiletorecord</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">regionname</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tofile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function is to store a region created by the regionmanager in a disk file for future use</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fromrecordtotable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regionname</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">regionrec</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">asmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function saves regions into an casa Table</span>
+<span class="sd">        For the {stfaf tablename} argument the user should be the name of an existing</span>
+<span class="sd">        aipspp Table on disk (any kind of table).</span>
+<span class="sd">        </span>
+<span class="sd">        If the parameter {tt asmask} is {tt True} then the table has to be an image table.</span>
+<span class="sd">        A mask makes sense with an image only.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        You can specify the name the region will have ({stfaf</span>
+<span class="sd">        regionname}) when it is saved in the Table.  If you don&#39;t specify this,</span>
+<span class="sd">        a digit based name is assigned to it or if specify a name that already</span>
+<span class="sd">        exists a new one will be generated which is close but different. The</span>
+<span class="sd">        function returns you the name the region is assigned</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fromrecordtotable</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">regionname</span><span class="p">,</span> <span class="n">regionrec</span><span class="p">,</span> <span class="n">asmask</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fromtabletorecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">regionname</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function restores a region from an aipspp Table</span>
+<span class="sd">        to the global name space.</span>
+<span class="sd">        </span>
+<span class="sd">        For the {stfaf tablename} argument, you can specify an</span>
+<span class="sd">        image tool, a table tool,</span>
+<span class="sd">        or a string.  If you give a string, it should be the name of an existing</span>
+<span class="sd">        aipspp table on disk (any kind of table).</span>
+<span class="sd">        </span>
+<span class="sd">        If {stfaf numberfields} is F, then the field names of the</span>
+<span class="sd">        record are the same as they are in the Table.  Otherwise,</span>
+<span class="sd">        the regions are put into numbered fields (the field</span>
+<span class="sd">        names could be anything).</span>
+<span class="sd">        </span>
+<span class="sd">        You can use the function</span>
+<span class="sd">        namesintable to find out the</span>
+<span class="sd">        names of the regions in the Table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fromtabletorecord</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="n">regionname</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function (short-hand name {stff int}) creates a region which is</span>
+<span class="sd">        the intersection of the given world regions.   The input regions can</span>
+<span class="sd">        themselves be compound regions (such as the union or intersection etc).</span>
+<span class="sd">        The input regions must be provided as a Python dictionary of regions</span>
+<span class="sd">        (see examples).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ispixelregion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;NOT IMPLEMENTED IN CASA</span>
+<span class="sd">        </span>
+<span class="sd">        This function returns T if the region is a pixel region.</span>
+<span class="sd">        For any other glish variable it returns F.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">ispixelregion</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">isworldregion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;NOT IMPLEMENTED IN CASA</span>
+<span class="sd">        </span>
+<span class="sd">        This function returns T if the region is a world region.</span>
+<span class="sd">        For any other glish variable it returns F.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">isworldregion</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">namesintable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function returns the names of regions stored in an CASA Table.</span>
+<span class="sd">        </span>
+<span class="sd">        For the {stfaf tablename} argument, you can specify a string; it should be the name of an existing</span>
+<span class="sd">        aipspp table on disk (any kind of table).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">namesintable</span><span class="p">(</span><span class="n">tablename</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setcoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">}):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function allows you to (re)set the default Coordinate System</span>
+<span class="sd">        used by the functions that make world regions.  If you don&#39;t specifiy a</span>
+<span class="sd">        Coordinate System when you make the world region, the default Coordinate</span>
+<span class="sd">        System, if there is one, is used.   The Coordinate System is</span>
+<span class="sd">        stored in a {stf coordinates} tool and is created with</span>
+<span class="sd">        the coordsys toolfunction.</span>
+<span class="sd">        </span>
+<span class="sd">        Normally, the world region creating functions like</span>
+<span class="sd">        wbox and</span>
+<span class="sd">        wpolygon will issue a message</span>
+<span class="sd">        each time the private Coordinate System is used.  However, if you set</span>
+<span class="sd">        {stfaf verbose=F} then this will not occur.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">setcoordinates</span><span class="p">(</span><span class="n">csys</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">makeunion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function takes a minimum of two world regions and creates a region which</span>
+<span class="sd">        is the union of the given regions.  The input regions can themselves be</span>
+<span class="sd">        compound regions (such as the union or intersection etc).   The input</span>
+<span class="sd">        regions must be a Pythion dictionary of at leat two regions</span>
+<span class="sd">        (see examples).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">makeunion</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blc</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">trc</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">pixelaxes</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">],</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">absrel</span><span class="o">=</span><span class="s1">&#39;abs&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function creates a multi-dimensional world box region; the</span>
+<span class="sd">        corners of the box are specified in world coordinates.  However, the box</span>
+<span class="sd">        is not a true world volume in that its sides do not follow world</span>
+<span class="sd">        contours.  Its sides are parallel to the pixel axes.  If you are in a</span>
+<span class="sd">        region of high world coordinate contour non-linearity (e.g.  near a</span>
+<span class="sd">        pole), you are probably better off using a world polygon.</span>
+<span class="sd">        </span>
+<span class="sd">        The box is specified by a bottom-left corner, and a top-right corner.</span>
+<span class="sd">        The coordinates are given as quantities, and you can give a vector of</span>
+<span class="sd">        quantities (e.g.  {cf blc = qa.quantity(&quot;1rad 20deg&quot;)} or a</span>
+<span class="sd">        quantity of a vector (e.g.{cf blc = qa.quantity([10,30], &#39;rad&#39;)}).</span>
+<span class="sd">        </span>
+<span class="sd">        You can specify whether the coordinates are given as absolute coordinates</span>
+<span class="sd">        ({stfaf absrel=&#39;abs&#39;}) or relative to the reference pixel ({stfaf</span>
+<span class="sd">        absrel=&#39;relref&#39;}) or relative to the center of the image ({stfaf</span>
+<span class="sd">        absrel=&#39;relcen&#39;}).  You can specify this for each axis (the same for the</span>
+<span class="sd">        blc and trc).   If you specify less values than the number of</span>
+<span class="sd">        values in {stfaf blc} or {stfaf trc} then the last value you</span>
+<span class="sd">        did specify is used as the default for all higher numbered axes</span>
+<span class="sd">        (e.g. {stfaf absrel=&#39;relref&#39;} means {stfaf absrel=&quot;relref relref&quot;}</span>
+<span class="sd">        for two axes).</span>
+<span class="sd">        </span>
+<span class="sd">        You specify which pixel axes in the image the {stfaf blc} and {stfaf</span>
+<span class="sd">        trc} vector refer to with the {stfaf pixelaxes} argument.  If you</span>
+<span class="sd">        don&#39;t, it defaults to [0,1,2,...].  This specification is an important</span>
+<span class="sd">        part of world regions.</span>
+<span class="sd">        </span>
+<span class="sd">        You must also specify the Coordinate System with the {stfaf csys}</span>
+<span class="sd">        argument.  The Coordinate System is encapsulated in a {stfaf coordinates}</span>
+<span class="sd">        tool and can be recovered from an image with the</span>
+<span class="sd">        coordsys tool function.  You can</span>
+<span class="sd">        also set a default Coordinate System in the regionmanager with the</span>
+<span class="sd">        setcoordinates</span>
+<span class="sd">        function.</span>
+<span class="sd">        </span>
+<span class="sd">        In the regionmanager we have defined units `pix&#39; and `frac&#39;; these are</span>
+<span class="sd">        then known to the quanta system.  This means</span>
+<span class="sd">        that you can effectively define a pixel box (except for the stride</span>
+<span class="sd">        capability) as a world box with most of the advantages of world regions</span>
+<span class="sd">        (can be used for compound regions).  However, it is still not very</span>
+<span class="sd">        portable to other images because the coordinates are pixel based,</span>
+<span class="sd">        not world based.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that the need to deal with the {stfaf pixelaxes} and {stfaf csys}</span>
+<span class="sd">        is hidden from you when using the gui</span>
+<span class="sd">        interface of the regionmanager.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">wbox</span><span class="p">(</span><span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">pixelaxes</span><span class="p">,</span> <span class="n">csys</span><span class="p">,</span> <span class="n">absrel</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wpolygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">pixelaxes</span><span class="o">=</span><span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">],</span> <span class="n">csys</span><span class="o">=</span><span class="p">{</span> <span class="p">},</span> <span class="n">absrel</span><span class="o">=</span><span class="s1">&#39;abs&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;This function (short-hand name {stff wpoly}) creates a 2D world</span>
+<span class="sd">        polygon region.  The polygon is specified by an {stfaf x} and a {stfaf y}</span>
+<span class="sd">        vector.  These must be quantities of a vector (the</span>
+<span class="sd">        world box function</span>
+<span class="sd">        allows both</span>
+<span class="sd">        quantities of vectors and vectors of quantities).  This means that the</span>
+<span class="sd">        units are common to all elements of each vector.  Thus, {cf</span>
+<span class="sd">        qa.quantity([1,2,3],&#39;rad&#39;)} (a quantity of a vector) is different from</span>
+<span class="sd">        {cf qa.quantity(&quot;1rad 2rad 3rad&quot;)} (a vector of quantities) although</span>
+<span class="sd">        the information that they specify is the same.</span>
+<span class="sd">        </span>
+<span class="sd">        You specify which pixel axes in the image the {stfaf x} and {stfaf</span>
+<span class="sd">        y} vectors pertain to with the {stfaf pixelaxes} argument.  If you don&#39;t,</span>
+<span class="sd">        it defaults to [0,1].  This specification is an important part of</span>
+<span class="sd">        world regions.</span>
+<span class="sd">        </span>
+<span class="sd">        You can specify whether the {stfaf x} and {stfaf y} vector coordinates are</span>
+<span class="sd">        given as absolute coordinates ({stfaf absrel=&#39;abs&#39;}) or relative to the</span>
+<span class="sd">        reference pixel ({stfaf absrel=&#39;relref&#39;}) or relative to the center of the</span>
+<span class="sd">        image ({stfaf absrel=&#39;relcen&#39;}).  This argument applies to both the axes</span>
+<span class="sd">        of the polygon.</span>
+<span class="sd">        </span>
+<span class="sd">        You must also specify the Coordinate System with the {stfaf csys}</span>
+<span class="sd">        argument.  The Coordinate System is encapsulated in a {stfaf coordinates}</span>
+<span class="sd">        tool and can be recovered from an image with the</span>
+<span class="sd">        coordsys function.  You can</span>
+<span class="sd">        also set a default Coordinate System in the Regionmanager with the</span>
+<span class="sd">        setcoordinates</span>
+<span class="sd">        function.</span>
+<span class="sd">        </span>
+<span class="sd">        In the regionmanager we have defined units `pix&#39; and `frac&#39;; these are</span>
+<span class="sd">        then known to the quanta system.  This means</span>
+<span class="sd">        that you can effectively define a pixel box (except for the stride</span>
+<span class="sd">        capability) as a world box with most of the advantages of world regions</span>
+<span class="sd">        (can be used for compound regions).  However, it is still not very</span>
+<span class="sd">        portable to other images because the coordinates are pixel based,</span>
+<span class="sd">        not world based.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that the need to deal with the {stfaf pixelaxes} and {stfaf csys}</span>
+<span class="sd">        is hidden from you when using the gui</span>
+<span class="sd">        interface of the regionmanager.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">wpolygon</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pixelaxes</span><span class="p">,</span> <span class="n">csys</span><span class="p">,</span> <span class="n">absrel</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

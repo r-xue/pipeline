@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fnmatch &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">fnmatch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fnmatch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Filename matching with shell patterns.</span>
+
+<span class="sd">fnmatch(FILENAME, PATTERN) matches according to the local convention.</span>
+<span class="sd">fnmatchcase(FILENAME, PATTERN) always takes case in account.</span>
+
+<span class="sd">The functions operate by translating the pattern into a regular</span>
+<span class="sd">expression.  They cache the compiled regular expressions for speed.</span>
+
+<span class="sd">The function translate(PATTERN) returns a regular expression</span>
+<span class="sd">corresponding to PATTERN.  (It does not compile it.)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">posixpath</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="s2">&quot;fnmatch&quot;</span><span class="p">,</span> <span class="s2">&quot;fnmatchcase&quot;</span><span class="p">,</span> <span class="s2">&quot;translate&quot;</span><span class="p">]</span>
+
+<span class="c1"># Build a thread-safe incrementing counter to help create unique regexp group</span>
+<span class="c1"># names across calls.</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
+<span class="n">_nextgroupnum</span> <span class="o">=</span> <span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="fm">__next__</span>
+<span class="k">del</span> <span class="n">count</span>
+
+<div class="viewcode-block" id="fnmatch">
+<a class="viewcode-back" href="../_autosummary/pipeline.hifv.tasks.restorepims.restorepims.fnmatch.html#pipeline.hifv.tasks.restorepims.restorepims.fnmatch">[docs]</a>
+<span class="k">def</span> <span class="nf">fnmatch</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test whether FILENAME matches PATTERN.</span>
+
+<span class="sd">    Patterns are Unix shell style:</span>
+
+<span class="sd">    *       matches everything</span>
+<span class="sd">    ?       matches any single character</span>
+<span class="sd">    [seq]   matches any character in seq</span>
+<span class="sd">    [!seq]  matches any char not in seq</span>
+
+<span class="sd">    An initial period in FILENAME is not special.</span>
+<span class="sd">    Both FILENAME and PATTERN are first case-normalized</span>
+<span class="sd">    if the operating system requires it.</span>
+<span class="sd">    If you don&#39;t want this, use fnmatchcase(FILENAME, PATTERN).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">pat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fnmatchcase</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">)</span></div>
+
+
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">typed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_compile_pattern</span><span class="p">(</span><span class="n">pat</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">pat_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="s1">&#39;ISO-8859-1&#39;</span><span class="p">)</span>
+        <span class="n">res_str</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">pat_str</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">res_str</span><span class="p">,</span> <span class="s1">&#39;ISO-8859-1&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">match</span>
+
+<span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">pat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a list from those elements of the iterable NAMES that match PAT.&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pat</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">_compile_pattern</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="n">posixpath</span><span class="p">:</span>
+        <span class="c1"># normcase on posix is NOP. Optimize it away from the loop.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">name</span><span class="p">)):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">fnmatchcase</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test whether FILENAME matches PATTERN, including case.</span>
+
+<span class="sd">    This is a version of fnmatch() which doesn&#39;t case-normalize</span>
+<span class="sd">    its arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">_compile_pattern</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">match</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">pat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate a shell PATTERN to a regular expression.</span>
+
+<span class="sd">    There is no way to quote meta-characters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">STAR</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">add</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">pat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+            <span class="c1"># compress consecutive `*` into one</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">res</span><span class="p">)</span> <span class="ow">or</span> <span class="n">res</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">STAR</span><span class="p">:</span>
+                <span class="n">add</span><span class="p">(</span><span class="n">STAR</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;?&#39;</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;[&#39;</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">pat</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">pat</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;]&#39;</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">pat</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;]&#39;</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">add</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">[&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stuff</span> <span class="o">=</span> <span class="n">pat</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stuff</span><span class="p">:</span>
+                    <span class="n">stuff</span> <span class="o">=</span> <span class="n">stuff</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">2</span> <span class="k">if</span> <span class="n">pat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span> <span class="k">else</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">k</span> <span class="o">=</span> <span class="n">pat</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pat</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">k</span><span class="p">])</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">+</span><span class="mi">3</span>
+                    <span class="n">chunk</span> <span class="o">=</span> <span class="n">pat</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">chunks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-&#39;</span>
+                    <span class="c1"># Remove empty ranges -- invalid in RE.</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                            <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+                            <span class="k">del</span> <span class="n">chunks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="c1"># Escape backslashes and hyphens for set difference (--).</span>
+                    <span class="c1"># Hyphens that create ranges shouldn&#39;t be escaped.</span>
+                    <span class="n">stuff</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\-&#39;</span><span class="p">)</span>
+                                     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">)</span>
+                <span class="c1"># Escape set operations (&amp;&amp;, ~~ and ||).</span>
+                <span class="n">stuff</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([&amp;~|])&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">\1&#39;</span><span class="p">,</span> <span class="n">stuff</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">stuff</span><span class="p">:</span>
+                    <span class="c1"># Empty range: never match.</span>
+                    <span class="n">add</span><span class="p">(</span><span class="s1">&#39;(?!)&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">stuff</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+                    <span class="c1"># Negated empty range: match any character.</span>
+                    <span class="n">add</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">stuff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span>
+                        <span class="n">stuff</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="n">stuff</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="k">elif</span> <span class="n">stuff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">):</span>
+                        <span class="n">stuff</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">stuff</span>
+                    <span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">stuff</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span>
+
+    <span class="c1"># Deal with STARs.</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">res</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">add</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+    <span class="c1"># Fixed pieces at the start?</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">STAR</span><span class="p">:</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># Now deal with STAR fixed STAR fixed ...</span>
+    <span class="c1"># For an interior `STAR fixed` pairing, we want to do a minimal</span>
+    <span class="c1"># .*? match followed by `fixed`, with no possibility of backtracking.</span>
+    <span class="c1"># We can&#39;t spell that directly, but can trick it into working by matching</span>
+    <span class="c1">#    .*?fixed</span>
+    <span class="c1"># in a lookahead assertion, save the matched part in a group, then</span>
+    <span class="c1"># consume that group via a backreference. If the overall match fails,</span>
+    <span class="c1"># the lookahead assertion won&#39;t try alternatives. So the translation is:</span>
+    <span class="c1">#     (?=(?P&lt;name&gt;.*?fixed))(?P=name)</span>
+    <span class="c1"># Group names are created as needed: g0, g1, g2, ...</span>
+    <span class="c1"># The numbers are obtained from _nextgroupnum() to ensure they&#39;re unique</span>
+    <span class="c1"># across calls and across threads. This is because people rely on the</span>
+    <span class="c1"># undocumented ability to join multiple translate() results together via</span>
+    <span class="c1"># &quot;|&quot; to build large regexps matching &quot;one of many&quot; shell patterns.</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="n">STAR</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="s2">&quot;.*&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">assert</span> <span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">STAR</span>
+        <span class="n">fixed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">STAR</span><span class="p">:</span>
+            <span class="n">fixed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">fixed</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="s2">&quot;.*&quot;</span><span class="p">)</span>
+            <span class="n">add</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">groupnum</span> <span class="o">=</span> <span class="n">_nextgroupnum</span><span class="p">()</span>
+            <span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(?=(?P&lt;g</span><span class="si">{</span><span class="n">groupnum</span><span class="si">}</span><span class="s2">&gt;.*?</span><span class="si">{</span><span class="n">fixed</span><span class="si">}</span><span class="s2">))(?P=g</span><span class="si">{</span><span class="n">groupnum</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">fr</span><span class="s1">&#39;(?s:</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">)\Z&#39;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

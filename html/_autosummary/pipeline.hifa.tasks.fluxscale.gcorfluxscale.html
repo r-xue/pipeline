@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -164,21 +168,36 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.map_spw_names_to_id.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.map_spw_names_to_id" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.map_spw_names_to_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_spw_names_to_id</span></code></a></p></td>
 <td><p>Copy a flux result dict, remapping the target spectral window in the original result to a new measurement set.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.reduce.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.reduce" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a></p></td>
+<td><p>Apply a function of two arguments cumulatively to the items of a sequence or iterable, from left to right, so as to reduce the iterable to a single value.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscale.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscale" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscale</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.FlagdataSetter.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.FlagdataSetter" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.FlagdataSetter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagdataSetter</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleInputs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.FluxMeasurement.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.FluxMeasurement" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.FluxMeasurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxMeasurement</span></code></a></p></td>
+<td><p>FluxMeasurement is a logical representation of a flux measurement.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GaincalResults.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GaincalResults" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GaincalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalResults</span></code></a></p></td>
+<td><p>GaincalResults is the results class common to all pipeline gaincal calibration tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscale</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleResults</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionGcorFluxscale</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.MeasurementSet.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.MeasurementSet" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionGcorFluxscale</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscaleInputs.html#pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscaleInputs" title="pipeline.hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscaleInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionGcorFluxscaleInputs</span></code></a></p></td>

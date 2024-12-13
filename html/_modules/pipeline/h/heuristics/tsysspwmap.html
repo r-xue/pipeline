@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.heuristics.tsysspwmap &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.heuristics.tsysspwmap</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.heuristics.tsysspwmap</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># tsysspwmap.py</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1">#  v1.0 (scorder, gmoellen, jkern; 2012Apr26) == initial version</span>
+<span class="c1">#  v1.1 (gmoellen; 2013Mar07) Lots of improvements from Eric Villard</span>
+<span class="c1">#  v1.2 (ldavis; 2013May15) Ported to pipeline</span>
+<span class="c1">#</span>
+<span class="c1"># This script defines several functions useful for ALMA Tsys processing.</span>
+<span class="c1">#</span>
+<span class="c1"># tsysspwmap  - generate an &quot;applycal-ready&quot; spwmap for TDM to FDM</span>
+<span class="c1">#                 transfer of Tsys</span>
+<span class="c1">#</span>
+<span class="c1"># For more information about each function type</span>
+<span class="c1">#</span>
+<span class="c1"># help tsysspwmap</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SpwMap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This object is basically set up to hold the information needed </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calSpwId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calSpwId</span> <span class="o">=</span> <span class="n">calSpwId</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validFreqRange</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapsToSpw</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">class</span> <span class="nc">SpwInfo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTableAndSpwId</span><span class="p">(</span><span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setTableAndSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTable</span><span class="p">(</span><span class="n">mstable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSpwId</span><span class="p">(</span><span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setTable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">colnames</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setSpwId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mstable</span><span class="p">,</span> <span class="n">spwId</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mstable</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">spwId</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">areIdentical</span><span class="p">(</span><span class="n">spwInfo1</span><span class="p">,</span> <span class="n">spwInfo2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo1</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo2</span><span class="o">.</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo1</span><span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo2</span><span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo1</span>
+    <span class="n">valueCompare</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">minState</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+        <span class="n">compare</span> <span class="o">=</span> <span class="p">(</span><span class="n">minState</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">maxState</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">compare</span><span class="p">)]:</span>
+            <span class="n">compare</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">compare</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">valueCompare</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valueCompare</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">valueCompare</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">trimSpwmap</span><span class="p">(</span><span class="n">spwMap</span><span class="p">):</span>
+    <span class="n">compare</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">compare</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">compare</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="o">==</span> <span class="n">spwMap</span><span class="p">[</span><span class="n">i</span><span class="p">:]:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">spwMap</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="tsysspwmap">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.atm.tsysspwmap.html#pipeline.hifa.heuristics.atm.tsysspwmap">[docs]</a>
+<span class="k">def</span> <span class="nf">tsysspwmap</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">relax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tsysChanTol</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations</span>
+<span class="sd">    Input:</span>
+<span class="sd">     ms        the target MeasurementSet object </span>
+<span class="sd">     tsystable  the input Tsys caltable (w/ TDM Tsys measurements)</span>
+<span class="sd">     trim       if True (the default), return minimum-length spwmap;</span>
+<span class="sd">                    otherwise the spwmap will be exhaustive and include</span>
+<span class="sd">                    the high-numbered (and usually irrelevant) wvr</span>
+<span class="sd">                    spws</span>
+<span class="sd">     relax      (not yet implemented)</span>
+<span class="sd">    Output:</span>
+<span class="sd">     spw list to use in applycal spwmap parameter for the Tsys caltable</span>
+
+<span class="sd">     This function takes the Tsys Caltable you wish to apply to a</span>
+<span class="sd">     MeasurementSet and generates a &quot;applycal-ready&quot; spwmap that</span>
+<span class="sd">     provides the appropriate information regarding the transfer</span>
+<span class="sd">     Tsys calibration from TDM spectral windows to FDM spectral</span>
+<span class="sd">     windows.  To execute the function:</span>
+
+<span class="sd">     tsysmap=tsysspwmap(vis=&#39;my.ms&#39;,tsystable=&#39;mytsys.cal&#39;)</span>
+
+<span class="sd">     tsysmap can then be supplied to the applycal spwmap parameter</span>
+<span class="sd">     to ensure proper Tsys calibration application.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">spwMaps</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Case of Nobeyama(=NRO) data</span>
+    <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;NRO&quot;</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Mapping process between Tsys windows and Science windows is not specially needed.&#39;</span><span class="p">)</span>
+        <span class="n">unmatched_science_spws</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">spwMaps</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">unmatched_science_spws</span><span class="p">,</span> <span class="n">spwMaps</span>
+
+    <span class="c1"># Get the spectral windows with entries in the solution table</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">tsystable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">measuredTsysSpw</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Get the frequency ranges for the allowed </span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">tsystable</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">measuredTsysSpw</span><span class="p">:</span>
+            <span class="n">spwMap</span> <span class="o">=</span> <span class="n">SpwMap</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">chanFreqs</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_FREQ&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chanFreqs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">chanWidth</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">chanFreqs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">chanFreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">chanWidth</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;EFFECTIVE_BW&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">spwMap</span><span class="o">.</span><span class="n">chanWidth</span> <span class="o">=</span> <span class="n">chanWidth</span>
+            <span class="n">spwMap</span><span class="o">.</span><span class="n">validFreqRange</span> <span class="o">=</span> <span class="p">[</span><span class="n">chanFreqs</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span><span class="p">,</span>
+                                     <span class="n">chanFreqs</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span><span class="p">]</span>
+            <span class="n">spwMaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)</span>
+
+    <span class="c1"># Now loop through the main table&#39;s spectral window table</span>
+    <span class="c1"># to map the spectral windows as desired.</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">spwMaps</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;BBC_NO&quot;</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+                <span class="n">chanFreqs</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_FREQ&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chanFreqs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">chanWidth</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_WIDTH&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">freqMin</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                    <span class="n">freqMax</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">chanWidth</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;CHAN_WIDTH&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="n">freqMin</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                    <span class="n">freqMax</span> <span class="o">=</span> <span class="n">chanFreqs</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">chanWidth</span>
+                <span class="n">msSpw</span> <span class="o">=</span> <span class="n">SpwInfo</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span> <span class="o">==</span> <span class="n">msSpw</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;BBC_NO&#39;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">freqMin</span> <span class="o">&gt;=</span> <span class="n">j</span><span class="o">.</span><span class="n">validFreqRange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">tsysChanTol</span><span class="o">*</span><span class="n">j</span><span class="o">.</span><span class="n">chanWidth</span> <span class="ow">and</span> \
+                       <span class="n">freqMax</span> <span class="o">&lt;=</span> <span class="n">j</span><span class="o">.</span><span class="n">validFreqRange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">tsysChanTol</span><span class="o">*</span><span class="n">j</span><span class="o">.</span><span class="n">chanWidth</span><span class="p">:</span>
+                        <span class="n">j</span><span class="o">.</span><span class="n">mapsToSpw</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="n">applyCalSpwMap</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">spwWithoutMatch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/SPECTRAL_WINDOW&quot;</span> <span class="o">%</span> <span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+            <span class="n">useSpw</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">spwMaps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">j</span><span class="o">.</span><span class="n">mapsToSpw</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">useSpw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s2">&quot;BBC_NO&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">j</span><span class="o">.</span><span class="n">bbNo</span><span class="p">:</span>
+                            <span class="n">useSpw</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">useSpw</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">calSpwId</span>
+            <span class="k">if</span> <span class="n">useSpw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">useSpw</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">spwWithoutMatch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">applyCalSpwMap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">useSpw</span><span class="p">))</span>        
+
+    <span class="n">science_window_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)})</span>
+    <span class="n">unmatched_science_spws</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spwWithoutMatch</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">science_window_ids</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unmatched_science_spws</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">no_match</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">unmatched_science_spws</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No Tsys match found for spws </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">no_match</span><span class="p">)</span> 
+
+    <span class="k">if</span> <span class="n">trim</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computed tsysspwmap is: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">trimSpwmap</span><span class="p">(</span><span class="n">applyCalSpwMap</span><span class="p">)))</span>
+        <span class="c1"># return spwWithoutMatch, trimSpwmap(applyCalSpwMap)</span>
+        <span class="k">return</span> <span class="n">unmatched_science_spws</span><span class="p">,</span> <span class="n">trimSpwmap</span><span class="p">(</span><span class="n">applyCalSpwMap</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Computed tsysspwmap is: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">applyCalSpwMap</span><span class="p">))</span>
+        <span class="c1"># return spwWithoutMatch, applyCalSpwMap</span>
+        <span class="k">return</span> <span class="n">unmatched_science_spws</span><span class="p">,</span> <span class="n">applyCalSpwMap</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

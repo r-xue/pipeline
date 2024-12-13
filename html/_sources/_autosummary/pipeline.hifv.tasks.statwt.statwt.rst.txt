@@ -9,6 +9,15 @@ pipeline.hifv.tasks.statwt.statwt
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      contfile_to_spwsel
+      set_add_model_column_parameters
+   
    
 
    
@@ -20,6 +29,7 @@ pipeline.hifv.tasks.statwt.statwt
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Statwt
       StatwtInputs
       StatwtResults

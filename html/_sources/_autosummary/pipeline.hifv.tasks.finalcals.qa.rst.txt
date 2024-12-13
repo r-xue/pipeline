@@ -20,8 +20,10 @@ pipeline.hifv.tasks.finalcals.qa
       :template: custom-class-template.rst
       :nosignatures:
    
+      Finalcals
       FinalcalsListQAHandler
       FinalcalsQAHandler
+      FinalcalsResults
    
    
 

@@ -33,8 +33,10 @@ pipeline.hifa.tasks.spwphaseup.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
       PhaseRmsTR
       PhaseTR
+      ResultsList
       SnrTR
       SpwMapInfo
       SpwPhaseupApplication

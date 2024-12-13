@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.cli.hif_makeimlist &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.cli.hif_makeimlist</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.cli.hif_makeimlist</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.cli.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+
+<div class="viewcode-block" id="hif_makeimlist">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.hif_makeimlist.html#pipeline.cli.hif_makeimlist">[docs]</a>
+<span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
+<span class="k">def</span> <span class="nf">hif_makeimlist</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">calmaxpix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">robust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clearlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_eb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">per_session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcsb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute list of clean images to be produced</span>
+
+<span class="sd">    Generate a list of images to be cleaned. By default, the list will include</span>
+<span class="sd">    one image per science target per spw. Calibrator targets can be selected</span>
+<span class="sd">    by setting appropriate values for ``intent``.</span>
+
+<span class="sd">    By default, the output image cell size is set to the minimum cell size</span>
+<span class="sd">    consistent with the UV coverage.</span>
+
+<span class="sd">    By default, the image size in pixels is set to values determined by the</span>
+<span class="sd">    cell size and the primary beam size. If a calibrator is being</span>
+<span class="sd">    imaged (intents &#39;PHASE&#39;, &#39;BANDPASS&#39;, &#39;FLUX&#39; or &#39;AMPLITUDE&#39;) then the</span>
+<span class="sd">    image dimensions are limited to &#39;calmaxpix&#39; pixels.</span>
+
+<span class="sd">    By default, science target images are cubes and calibrator target images</span>
+<span class="sd">    are mfs. Science target images may be mosaics or single fields.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            &quot;&quot;: use all MeasurementSets in the context</span>
+<span class="sd">            Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+
+<span class="sd">        imagename: Prefix for output image names, &quot;&quot; for automatic.</span>
+
+<span class="sd">        intent: Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and</span>
+<span class="sd">            TARGET or combinations thereof.</span>
+<span class="sd">            Examples: &#39;PHASE,BANDPASS&#39;, &#39;TARGET&#39;</span>
+
+<span class="sd">        field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is</span>
+<span class="sd">            specified only fields with data matching the intent will be</span>
+<span class="sd">            selected. The fields will be selected from MeasurementSets in</span>
+<span class="sd">            &quot;vis&quot;.</span>
+<span class="sd">            &quot;&quot; Fields matching intent, one image per target source.</span>
+
+<span class="sd">        spw: Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</span>
+
+<span class="sd">        contfile: Name of file with frequency ranges to use for continuum images.</span>
+
+<span class="sd">        linesfile: Name of file with line frequency ranges to exclude for continuum images.</span>
+
+<span class="sd">        uvrange: Select a set of uv ranges to image. &quot;&quot;: All uv data is included</span>
+<span class="sd">            Examples: &#39;0~1000klambda&#39;, [&#39;0~100klambda&#39;, 100~1000klambda]</span>
+
+<span class="sd">        specmode: Frequency imaging mode, &#39;mfs&#39;, &#39;cont&#39;, &#39;cube&#39;, &#39;repBW&#39;. &#39;&#39; defaults to &#39;cube&#39; if ``intent`` parameter includes &#39;TARGET&#39;</span>
+<span class="sd">            otherwise &#39;mfs&#39;.</span>
+<span class="sd">            specmode=&#39;mfs&#39; produce one image per source and spw</span>
+<span class="sd">            specmode=&#39;cont&#39; produce one image per source and aggregate</span>
+<span class="sd">            over all specified spws</span>
+<span class="sd">            specmode=&#39;cube&#39; produce an LSRK frequency cube, channels are</span>
+<span class="sd">            specified in frequency</span>
+<span class="sd">            specmode=&#39;repBW&#39; produce an LSRK frequency cube at</span>
+<span class="sd">            representative channel width</span>
+
+<span class="sd">        outframe: velocity frame of output image (LSRK, &#39;&#39; for automatic) (not implemented)</span>
+
+<span class="sd">        hm_imsize: Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.</span>
+<span class="sd">            The default values are derived as follows:</span>
+<span class="sd">            1. Determine phase center and spread of field centers</span>
+<span class="sd">            around it.</span>
+<span class="sd">            2. Set the size of the image to cover the spread of field</span>
+<span class="sd">            centers plus a border of width 0.75 * beam radius, to</span>
+<span class="sd">            first null.</span>
+<span class="sd">            3. Divide X and Y extents by cell size to arrive at the</span>
+<span class="sd">            number of pixels required.</span>
+<span class="sd">            The PB level setting for single fields leads to an imsize</span>
+<span class="sd">            extending to the specified level plus 5% padding in all</span>
+<span class="sd">            directions.</span>
+<span class="sd">            Examples: &#39;0.3pb&#39;, [120, 120]</span>
+
+<span class="sd">        hm_cell: Image X and Y cell sizes. &quot;&quot; computes the cell size based on the UV coverage of all the fields to be imaged and uses a</span>
+<span class="sd">            5 pix per beam sampling.</span>
+<span class="sd">            The pix per beam specification (&#39;&lt;number&gt;ppb&#39;) uses the above</span>
+<span class="sd">            default cell size (&#39;5ppb&#39;) and scales it accordingly.</span>
+<span class="sd">            The cells can also be specified as explicit measures.</span>
+<span class="sd">            Examples: &#39;3ppb&#39;, [&#39;0.5arcsec&#39;, &#39;0.5arcsec&#39;]</span>
+
+<span class="sd">        calmaxpix: Maximum image X or Y size in pixels if a calibrator is being imaged (&#39;PHASE&#39;, &#39;BANDPASS&#39;, &#39;AMPLITUDE&#39; or &#39;FLUX&#39; intent).</span>
+
+<span class="sd">        phasecenter: Direction measure or field id of the image center. The default phase center is set to the mean of the field</span>
+<span class="sd">            directions of all fields that are to be image together.</span>
+<span class="sd">            Examples: &#39;J2000 19h30m00 -40d00m00&#39;, 0</span>
+
+<span class="sd">        nchan: Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by</span>
+<span class="sd">            spw consistent with start and width.</span>
+
+<span class="sd">        start: Start of image frequency axis as frequency or velocity. &quot;&quot; selects start frequency automatically.</span>
+
+<span class="sd">        width: Output channel width. Difference in frequency between 2 selected channels for</span>
+<span class="sd">            frequency mode images.</span>
+<span class="sd">            &#39;pilotimage&#39; for 15 MHz / 8 channel heuristic</span>
+
+<span class="sd">        nbins: Channel binning factors for each spw. Format: &#39;spw1:nb1,spw2:nb2,...&#39; with optional wildcards: &#39;*:nb&#39;</span>
+<span class="sd">            Examples: &#39;9:2,11:4,13:2,15:8&#39;, &#39;*:2&#39;</span>
+
+<span class="sd">        robust: Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)</span>
+
+<span class="sd">        uvtaper: uv-taper on outer baselines</span>
+
+<span class="sd">        clearlist: Clear any existing target list</span>
+
+<span class="sd">        per_eb: Make an image target per EB</span>
+
+<span class="sd">        per_session: Make an image target per session</span>
+
+<span class="sd">        calcsb: Force (re-)calculation of sensitivities and beams</span>
+
+<span class="sd">        datatype: Data type(s) to image. The default &#39;&#39; selects the best available data type (e.g. selfcal over regcal) with</span>
+<span class="sd">            an automatic fallback to the next available data type.</span>
+<span class="sd">            With the ``datatype`` parameter one can force the use of only</span>
+<span class="sd">            given data type(s) without a fallback. The data type(s) are</span>
+<span class="sd">            specified as comma separated string of keywords. Accepted</span>
+<span class="sd">            values are the standard data types such as</span>
+<span class="sd">            &#39;REGCAL_CONTLINE_ALL&#39;, &#39;REGCAL_CONTLINE_SCIENCE&#39;,</span>
+<span class="sd">            &#39;SELFCAL_CONTLINE_SCIENCE&#39;, &#39;REGCAL_LINE_SCIENCE&#39;,</span>
+<span class="sd">            &#39;SELFCAL_LINE_SCIENCE&#39;. The shortcuts &#39;regcal&#39; and &#39;selfcal&#39;</span>
+<span class="sd">            are also accepted. They are expanded into the full data types</span>
+<span class="sd">            using the ``specmode`` parameter and the available data types for</span>
+<span class="sd">            the given MSes. In addition the strings &#39;best&#39; and &#39;all&#39; are</span>
+<span class="sd">            accepted, where &#39;best&#39; means the above mentioned automatic</span>
+<span class="sd">            mode and &#39;all&#39; means all available data types for a given</span>
+<span class="sd">            specmode. The data type strings are case insensitive.</span>
+<span class="sd">            Examples: &#39;selfcal&#39;, &#39;regcal, &#39;selfcal,regcal&#39;,</span>
+<span class="sd">            &#39;REGCAL_LINE_SCIENCE,selfcal_line_science&#39;</span>
+
+<span class="sd">        datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</span>
+
+<span class="sd">        parallel: Use MPI cluster where possible</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Make a list of science target images to be cleaned, one image per science</span>
+<span class="sd">        spw.</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_makeimlist()</span>
+
+<span class="sd">        2. Make a list of PHASE and BANDPASS calibrator targets to be imaged,</span>
+<span class="sd">        one image per science spw.</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_makeimlist(intent=&#39;PHASE,BANDPASS&#39;)</span>
+
+<span class="sd">        3. Make a list of PHASE calibrator images observed in spw 1, images limited to</span>
+<span class="sd">        50 pixels on a side.</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_makeimlist(intent=&#39;PHASE&#39;,spw=&#39;1&#39;,calmaxpix=50)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">#  CASA task interface boilerplate code starts here. No edits should be  #</span>
+    <span class="c1">#  needed beyond this point.                                             #</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1"># create a dictionary containing all the arguments given in the</span>
+    <span class="c1"># constructor</span>
+    <span class="n">all_inputs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">()</span>
+
+    <span class="c1"># get the name of this function for the weblog, eg. &#39;hif_flagdata&#39;</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="c1"># get the context on which this task operates</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+    <span class="c1"># execute the task</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">execute_task</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

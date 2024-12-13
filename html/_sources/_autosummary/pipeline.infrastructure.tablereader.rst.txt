@@ -15,7 +15,10 @@ pipeline.infrastructure.tablereader
       :toctree:
       :nosignatures:
    
+      MSMDReader
+      bisect_left
       find_EVLA_band
+      reduce
    
    
 
@@ -28,6 +31,8 @@ pipeline.infrastructure.tablereader
       :template: custom-class-template.rst
       :nosignatures:
    
+      Antenna
+      AntennaArray
       AntennaTable
       BandDescriber
       DataDescriptionTable

@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Pipeline</a>
       </nav>
@@ -319,6 +319,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_data_interval</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="Formatter">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter">[docs]</a>
 <span class="k">class</span> <span class="nc">Formatter</span><span class="p">(</span><span class="n">TickHelper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string based on a tick value and location.</span>
@@ -327,36 +329,50 @@
     <span class="c1"># individual ones</span>
     <span class="n">locs</span> <span class="o">=</span> <span class="p">[]</span>
 
+<div class="viewcode-block" id="Formatter.__call__">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the format for tick value *x* at position pos.</span>
 <span class="sd">        ``pos=None`` indicates an unspecified location.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Formatter.format_ticks">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.format_ticks">[docs]</a>
     <span class="k">def</span> <span class="nf">format_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the tick labels for all the ticks at once.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_locs</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span></div>
 
+
+<div class="viewcode-block" id="Formatter.format_data">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.format_data">[docs]</a>
     <span class="k">def</span> <span class="nf">format_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the full string representation of the value with the</span>
 <span class="sd">        position unspecified.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Formatter.format_data_short">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.format_data_short">[docs]</a>
     <span class="k">def</span> <span class="nf">format_data_short</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a short string version of the tick value.</span>
 
 <span class="sd">        Defaults to the position-independent long value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
+<div class="viewcode-block" id="Formatter.set_locs">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.set_locs">[docs]</a>
     <span class="k">def</span> <span class="nf">set_locs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the locations of the ticks.</span>
@@ -364,8 +380,11 @@
 <span class="sd">        This method is called before computing the tick labels because some</span>
 <span class="sd">        formatters need to know all tick locations to do so.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">locs</span> <span class="o">=</span> <span class="n">locs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">locs</span> <span class="o">=</span> <span class="n">locs</span></div>
 
+
+<div class="viewcode-block" id="Formatter.fix_minus">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter.fix_minus">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fix_minus</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -376,11 +395,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\N{MINUS SIGN}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span>
-                <span class="k">else</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">s</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_set_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses may want to override this to set a locator.&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
+        <span class="k">pass</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">NullFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
@@ -425,6 +446,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="n">ofs</span>
 
 
+<div class="viewcode-block" id="FuncFormatter">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.FuncFormatter.html#pipeline.infrastructure.displays.pointing.FuncFormatter">[docs]</a>
 <span class="k">class</span> <span class="nc">FuncFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use a user-defined function for formatting.</span>
@@ -438,19 +461,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
+<div class="viewcode-block" id="FuncFormatter.__call__">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.FuncFormatter.html#pipeline.infrastructure.displays.pointing.FuncFormatter.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the value of the user defined function.</span>
 
 <span class="sd">        *x* and *pos* are passed through as-is.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span>
 
     <span class="k">def</span> <span class="nf">set_offset_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ofs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="n">ofs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="n">ofs</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">FormatStrFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
@@ -496,6 +523,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="ScalarFormatter">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter">[docs]</a>
 <span class="k">class</span> <span class="nc">ScalarFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format tick values as a number.</span>
@@ -560,6 +589,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_powerlimits</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.formatter.limits&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_useLocale</span><span class="p">(</span><span class="n">useLocale</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ScalarFormatter.get_useOffset">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.get_useOffset">[docs]</a>
     <span class="k">def</span> <span class="nf">get_useOffset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return whether automatic mode for offset notation is active.</span>
@@ -571,8 +602,11 @@
 <span class="sd">        --------</span>
 <span class="sd">        ScalarFormatter.set_useOffset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useOffset</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useOffset</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_useOffset">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_useOffset">[docs]</a>
     <span class="k">def</span> <span class="nf">set_useOffset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set whether to use offset notation.</span>
@@ -605,10 +639,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_useOffset</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_useOffset</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">val</span></div>
+
 
     <span class="n">useOffset</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_useOffset</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="n">set_useOffset</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ScalarFormatter.get_useLocale">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.get_useLocale">[docs]</a>
     <span class="k">def</span> <span class="nf">get_useLocale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return whether locale settings are used for formatting.</span>
@@ -617,8 +654,11 @@
 <span class="sd">        --------</span>
 <span class="sd">        ScalarFormatter.set_useLocale</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_useLocale">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_useLocale">[docs]</a>
     <span class="k">def</span> <span class="nf">set_useLocale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set whether to use locale settings for decimal sign and positive sign.</span>
@@ -631,7 +671,8 @@
         <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.formatter.use_locale&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span> <span class="o">=</span> <span class="n">val</span></div>
+
 
     <span class="n">useLocale</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_useLocale</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="n">set_useLocale</span><span class="p">)</span>
 
@@ -642,6 +683,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_minus</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">format_string</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="p">(</span><span class="n">arg</span><span class="p">,),</span> <span class="kc">True</span><span class="p">)</span>
                               <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useLocale</span> <span class="k">else</span> <span class="n">fmt</span> <span class="o">%</span> <span class="n">arg</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ScalarFormatter.get_useMathText">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.get_useMathText">[docs]</a>
     <span class="k">def</span> <span class="nf">get_useMathText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return whether to use fancy math formatting.</span>
@@ -650,8 +693,11 @@
 <span class="sd">        --------</span>
 <span class="sd">        ScalarFormatter.set_useMathText</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useMathText</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useMathText</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_useMathText">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_useMathText">[docs]</a>
     <span class="k">def</span> <span class="nf">set_useMathText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set whether to use fancy math formatting.</span>
@@ -683,10 +729,13 @@
                         <span class="s2">&quot;mathtext, set axes.formatter.use_mathtext to True&quot;</span>
                     <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_useMathText</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_useMathText</span> <span class="o">=</span> <span class="n">val</span></div>
+
 
     <span class="n">useMathText</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="o">=</span><span class="n">get_useMathText</span><span class="p">,</span> <span class="n">fset</span><span class="o">=</span><span class="n">set_useMathText</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ScalarFormatter.__call__">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the format for tick value *x* at position *pos*.</span>
@@ -697,8 +746,11 @@
             <span class="n">xp</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">10.</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">orderOfMagnitude</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
                 <span class="n">xp</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_maybe_minus_and_locale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">xp</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_maybe_minus_and_locale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">xp</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_scientific">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_scientific">[docs]</a>
     <span class="k">def</span> <span class="nf">set_scientific</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Turn scientific notation on or off.</span>
@@ -707,8 +759,11 @@
 <span class="sd">        --------</span>
 <span class="sd">        ScalarFormatter.set_powerlimits</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scientific</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scientific</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_powerlimits">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_powerlimits">[docs]</a>
     <span class="k">def</span> <span class="nf">set_powerlimits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lims</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set size thresholds for scientific notation.</span>
@@ -741,8 +796,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lims</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;lims&#39; must be a sequence of length 2&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_powerlimits</span> <span class="o">=</span> <span class="n">lims</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_powerlimits</span> <span class="o">=</span> <span class="n">lims</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.format_data_short">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.format_data_short">[docs]</a>
     <span class="k">def</span> <span class="nf">format_data_short</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">mask</span><span class="p">:</span>
@@ -769,8 +827,11 @@
                 <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">()</span>
                 <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e4</span>
             <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;%-#.</span><span class="si">{}</span><span class="s2">g&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cbook</span><span class="o">.</span><span class="n">_g_sig_digits</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">delta</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_maybe_minus_and_locale</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_maybe_minus_and_locale</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.format_data">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.format_data">[docs]</a>
     <span class="k">def</span> <span class="nf">format_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
@@ -785,8 +846,11 @@
             <span class="k">return</span> <span class="p">(</span><span class="n">exponent</span> <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span>  <span class="c1"># reformat 1x10^y as 10^y</span>
                     <span class="k">else</span> <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">significand</span><span class="si">}</span><span class="s2"> \times </span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">significand</span><span class="si">}</span><span class="s2">e</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">significand</span><span class="si">}</span><span class="s2">e</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.get_offset">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.get_offset">[docs]</a>
     <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return scientific notation, plus offset.</span>
@@ -813,8 +877,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">sciNotStr</span><span class="p">,</span> <span class="n">offsetStr</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_minus</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fix_minus</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="ScalarFormatter.set_locs">
+<a class="viewcode-back" href="../../_autosummary/pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter.html#pipeline.infrastructure.displays.pointing.ScalarFormatter.set_locs">[docs]</a>
     <span class="k">def</span> <span class="nf">set_locs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locs</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locs</span> <span class="o">=</span> <span class="n">locs</span>
@@ -822,7 +889,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useOffset</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_compute_offset</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_order_of_magnitude</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_format</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_format</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="nf">_compute_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">locs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locs</span>
@@ -928,7 +996,8 @@
         <span class="n">sigfigs</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s1">&#39;%1.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sigfigs</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;f&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_useMathText</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\mathdefault{</span><span class="si">%s</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;$\mathdefault{</span><span class="si">%s</span><span class="s1">}$&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">LogFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
@@ -1708,6 +1777,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_symbol</span> <span class="o">=</span> <span class="n">symbol</span>
 
 
+<div class="viewcode-block" id="Locator">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator">[docs]</a>
 <span class="k">class</span> <span class="nc">Locator</span><span class="p">(</span><span class="n">TickHelper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine the tick locations;</span>
@@ -1723,6 +1794,8 @@
     <span class="c1"># many ticks are generated.</span>
     <span class="n">MAXTICKS</span> <span class="o">=</span> <span class="mi">1000</span>
 
+<div class="viewcode-block" id="Locator.tick_values">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.tick_values">[docs]</a>
     <span class="k">def</span> <span class="nf">tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the values of the located ticks given **vmin** and **vmax**.</span>
@@ -1738,8 +1811,11 @@
 <span class="sd">                [1, 2, 3, 4]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Locator.set_params">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.set_params">[docs]</a>
     <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do nothing, and raise a warning. Any locator class not supporting the</span>
@@ -1747,14 +1823,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_api</span><span class="o">.</span><span class="n">warn_external</span><span class="p">(</span>
             <span class="s2">&quot;&#39;set_params()&#39; not defined for locator of type &quot;</span> <span class="o">+</span>
-            <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+            <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span></div>
 
+
+<div class="viewcode-block" id="Locator.__call__">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the locations of the ticks.&quot;&quot;&quot;</span>
         <span class="c1"># note: some locators return data limits, other return view limits,</span>
         <span class="c1"># hence there is no *one* interface to call self.tick_values.</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Derived must override&#39;</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Locator.raise_if_exceeds">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.raise_if_exceeds">[docs]</a>
     <span class="k">def</span> <span class="nf">raise_if_exceeds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Log at WARNING level if *locs* is longer than `Locator.MAXTICKS`.</span>
@@ -1771,8 +1853,11 @@
                 <span class="s2">&quot;Locator attempting to generate </span><span class="si">%s</span><span class="s2"> ticks ([</span><span class="si">%s</span><span class="s2">, ..., </span><span class="si">%s</span><span class="s2">]), &quot;</span>
                 <span class="s2">&quot;which exceeds Locator.MAXTICKS (</span><span class="si">%s</span><span class="s2">).&quot;</span><span class="p">,</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">locs</span><span class="p">),</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">locs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAXTICKS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">locs</span>
+        <span class="k">return</span> <span class="n">locs</span></div>
 
+
+<div class="viewcode-block" id="Locator.nonsingular">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.nonsingular">[docs]</a>
     <span class="k">def</span> <span class="nf">nonsingular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adjust a range as needed to avoid singularities.</span>
@@ -1787,15 +1872,20 @@
 <span class="sd">          default view limits.</span>
 <span class="sd">        - Otherwise, ``(v0, v1)`` is returned without modification.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">expander</span><span class="o">=</span><span class="mf">.05</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">expander</span><span class="o">=</span><span class="mf">.05</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="Locator.view_limits">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator.view_limits">[docs]</a>
     <span class="k">def</span> <span class="nf">view_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select a scale for the range from vmin to vmax.</span>
 
 <span class="sd">        Subclasses should override this method to change locator behaviour.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">class</span> <span class="nc">IndexLocator</span><span class="p">(</span><span class="n">Locator</span><span class="p">):</span>
@@ -1967,6 +2057,8 @@
         <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="MultipleLocator">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator">[docs]</a>
 <span class="k">class</span> <span class="nc">MultipleLocator</span><span class="p">(</span><span class="n">Locator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set a tick on each integer multiple of a base within the view interval.</span>
@@ -1975,16 +2067,24 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_edge</span> <span class="o">=</span> <span class="n">_Edge_integer</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
+<div class="viewcode-block" id="MultipleLocator.set_params">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator.set_params">[docs]</a>
     <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set parameters within this locator.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_edge</span> <span class="o">=</span> <span class="n">_Edge_integer</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge</span> <span class="o">=</span> <span class="n">_Edge_integer</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MultipleLocator.__call__">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the locations of the ticks.&quot;&quot;&quot;</span>
         <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick_values</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tick_values</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MultipleLocator.tick_values">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator.tick_values">[docs]</a>
     <span class="k">def</span> <span class="nf">tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;</span> <span class="n">vmin</span><span class="p">:</span>
             <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">vmin</span>
@@ -1992,8 +2092,11 @@
         <span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span>
         <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span> <span class="o">+</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">//</span> <span class="n">step</span>
         <span class="n">locs</span> <span class="o">=</span> <span class="n">vmin</span> <span class="o">-</span> <span class="n">step</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_if_exceeds</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_if_exceeds</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MultipleLocator.view_limits">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits">[docs]</a>
     <span class="k">def</span> <span class="nf">view_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dmin</span><span class="p">,</span> <span class="n">dmax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the view limits to the nearest multiples of base that</span>
@@ -2009,7 +2112,9 @@
             <span class="n">vmin</span> <span class="o">=</span> <span class="n">dmin</span>
             <span class="n">vmax</span> <span class="o">=</span> <span class="n">dmax</span>
 
-        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">nonsingular</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">def</span> <span class="nf">scale_range</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
@@ -3004,6 +3109,8 @@
         <span class="k">return</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span>
 
 
+<div class="viewcode-block" id="AutoLocator">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.pointing.AutoLocator.html#pipeline.infrastructure.displays.pointing.AutoLocator">[docs]</a>
 <span class="k">class</span> <span class="nc">AutoLocator</span><span class="p">(</span><span class="n">MaxNLocator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dynamically find major tick positions. This is actually a subclass</span>
@@ -3021,7 +3128,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">nbins</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
             <span class="n">steps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">AutoMinorLocator</span><span class="p">(</span><span class="n">Locator</span><span class="p">):</span>

@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_statwt">
-<span id="pipeline-hifv-cli-hifv-statwt"></span><h1>pipeline.hifv.cli.hifv_statwt<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_statwt" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-statwt">
+<h1>pipeline.hifv.cli.hifv_statwt<a class="headerlink" href="#pipeline-hifv-cli-hifv-statwt" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_statwt">
+<span class="sig-name descname"><span class="pre">hifv_statwt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_modelcol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statwtmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_statwt.html#hifv_statwt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_statwt" title="Link to this definition"></a></dt>
+<dd><p>Compute statistical weights and write them to measurement set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>datacolumn</strong> – Data column used to compute weights. Supported values are “data”, “corrected”, “residual”, and “residual_data”
+(case insensitive, minimum match supported).</p></li>
+<li><p><strong>overwrite_modelcol</strong> – Always write the model column, even if it already exists.</p></li>
+<li><p><strong>statwtmode</strong> – Sets the weighting parameters for general VLA (‘VLA’) or VLASS Single Epoch (‘VLASS-SE’) use case. Note that the ‘VLASS-SE’
+mode is meant to be used with datacolumn=’residual_data’.
+Default is ‘VLA’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Statistical weighting of the visibilities:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_statwt</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Statistical weighting of the visibilities in the Very Large Array Sky Survey Single Epoch use case:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_statwt</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;vlass-se&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;residual_data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

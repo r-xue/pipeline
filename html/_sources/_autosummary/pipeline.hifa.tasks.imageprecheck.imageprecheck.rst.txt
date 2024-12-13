@@ -20,9 +20,11 @@ pipeline.hifa.tasks.imageprecheck.imageprecheck
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       ImagePreCheck
       ImagePreCheckInputs
       ImagePreCheckResults
+      Sensitivity
    
    
 

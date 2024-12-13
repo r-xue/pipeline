@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_pbcor
 =============================
 
-.. automodule:: pipeline.hifv.cli.hifv_pbcor
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_pbcor

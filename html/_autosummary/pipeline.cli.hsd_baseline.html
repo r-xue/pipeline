@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.cli.hsd_baseline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.cli.hsd_blflag" href="pipeline.cli.hsd_blflag.html" />
+    <link rel="prev" title="pipeline.cli.hsd_atmcor" href="pipeline.cli.hsd_atmcor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.get_pipeline_task_with_name.html">pipeline.cli.get_pipeline_task_with_name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_applycal.html">pipeline.cli.h_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_export_calstate.html">pipeline.cli.h_export_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_exportdata.html">pipeline.cli.h_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_import_calstate.html">pipeline.cli.h_import_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_importdata.html">pipeline.cli.h_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_init.html">pipeline.cli.h_init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_mssplit.html">pipeline.cli.h_mssplit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_restoredata.html">pipeline.cli.h_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_resume.html">pipeline.cli.h_resume</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_save.html">pipeline.cli.h_save</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_show_calstate.html">pipeline.cli.h_show_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_tsyscal.html">pipeline.cli.h_tsyscal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_weblog.html">pipeline.cli.h_weblog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_analyzealpha.html">pipeline.cli.hif_analyzealpha</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_antpos.html">pipeline.cli.hif_antpos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_applycal.html">pipeline.cli.hif_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_bandpass.html">pipeline.cli.hif_bandpass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_checkproductsize.html">pipeline.cli.hif_checkproductsize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_correctedampflag.html">pipeline.cli.hif_correctedampflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_editimlist.html">pipeline.cli.hif_editimlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_findcont.html">pipeline.cli.hif_findcont</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_gaincal.html">pipeline.cli.hif_gaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_lowgainflag.html">pipeline.cli.hif_lowgainflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makecutoutimages.html">pipeline.cli.hif_makecutoutimages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makeimages.html">pipeline.cli.hif_makeimages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makeimlist.html">pipeline.cli.hif_makeimlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makermsimages.html">pipeline.cli.hif_makermsimages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_mstransform.html">pipeline.cli.hif_mstransform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_rawflagchans.html">pipeline.cli.hif_rawflagchans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_refant.html">pipeline.cli.hif_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_selfcal.html">pipeline.cli.hif_selfcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_setjy.html">pipeline.cli.hif_setjy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_setmodels.html">pipeline.cli.hif_setmodels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_transformimagedata.html">pipeline.cli.hif_transformimagedata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_uvcontsub.html">pipeline.cli.hif_uvcontsub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_antpos.html">pipeline.cli.hifa_antpos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bandpass.html">pipeline.cli.hifa_bandpass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bandpassflag.html">pipeline.cli.hifa_bandpassflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bpsolint.html">pipeline.cli.hifa_bpsolint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_diffgaincal.html">pipeline.cli.hifa_diffgaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_exportdata.html">pipeline.cli.hifa_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_flagdata.html">pipeline.cli.hifa_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_flagtargets.html">pipeline.cli.hifa_flagtargets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_fluxcalflag.html">pipeline.cli.hifa_fluxcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gaincalsnr.html">pipeline.cli.hifa_gaincalsnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gfluxscale.html">pipeline.cli.hifa_gfluxscale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gfluxscaleflag.html">pipeline.cli.hifa_gfluxscaleflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_imageprecheck.html">pipeline.cli.hifa_imageprecheck</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_importdata.html">pipeline.cli.hifa_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_lock_refant.html">pipeline.cli.hifa_lock_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_polcal.html">pipeline.cli.hifa_polcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_polcalflag.html">pipeline.cli.hifa_polcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_renorm.html">pipeline.cli.hifa_renorm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_restoredata.html">pipeline.cli.hifa_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_session_refant.html">pipeline.cli.hifa_session_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_spwphaseup.html">pipeline.cli.hifa_spwphaseup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_targetflag.html">pipeline.cli.hifa_targetflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_timegaincal.html">pipeline.cli.hifa_timegaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_tsysflag.html">pipeline.cli.hifa_tsysflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_tsysflagcontamination.html">pipeline.cli.hifa_tsysflagcontamination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_unlock_refant.html">pipeline.cli.hifa_unlock_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_wvrgcal.html">pipeline.cli.hifa_wvrgcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_wvrgcalflag.html">pipeline.cli.hifa_wvrgcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_analyzestokescubes.html">pipeline.cli.hifv_analyzestokescubes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_applycals.html">pipeline.cli.hifv_applycals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_checkflag.html">pipeline.cli.hifv_checkflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_circfeedpolcal.html">pipeline.cli.hifv_circfeedpolcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_exportdata.html">pipeline.cli.hifv_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_exportvlassdata.html">pipeline.cli.hifv_exportvlassdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_finalcals.html">pipeline.cli.hifv_finalcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_fixpointing.html">pipeline.cli.hifv_fixpointing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagcal.html">pipeline.cli.hifv_flagcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagdata.html">pipeline.cli.hifv_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagtargetsdata.html">pipeline.cli.hifv_flagtargetsdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_fluxboot.html">pipeline.cli.hifv_fluxboot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_gaincurves.html">pipeline.cli.hifv_gaincurves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_hanning.html">pipeline.cli.hifv_hanning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_importdata.html">pipeline.cli.hifv_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_mstransform.html">pipeline.cli.hifv_mstransform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_opcal.html">pipeline.cli.hifv_opcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_pbcor.html">pipeline.cli.hifv_pbcor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_plotsummary.html">pipeline.cli.hifv_plotsummary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_priorcals.html">pipeline.cli.hifv_priorcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_restoredata.html">pipeline.cli.hifv_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_restorepims.html">pipeline.cli.hifv_restorepims</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_rqcal.html">pipeline.cli.hifv_rqcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_selfcal.html">pipeline.cli.hifv_selfcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_semiFinalBPdcals.html">pipeline.cli.hifv_semiFinalBPdcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_solint.html">pipeline.cli.hifv_solint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_statwt.html">pipeline.cli.hifv_statwt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_swpowcal.html">pipeline.cli.hifv_swpowcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_syspower.html">pipeline.cli.hifv_syspower</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_targetflag.html">pipeline.cli.hifv_targetflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_tecmaps.html">pipeline.cli.hifv_tecmaps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_testBPdcals.html">pipeline.cli.hifv_testBPdcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_vlasetjy.html">pipeline.cli.hifv_vlasetjy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_vlassmasking.html">pipeline.cli.hifv_vlassmasking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_applycal.html">pipeline.cli.hsd_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_atmcor.html">pipeline.cli.hsd_atmcor</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.cli.hsd_baseline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_blflag.html">pipeline.cli.hsd_blflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_exportdata.html">pipeline.cli.hsd_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_flagdata.html">pipeline.cli.hsd_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_imaging.html">pipeline.cli.hsd_imaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_importdata.html">pipeline.cli.hsd_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_k2jycal.html">pipeline.cli.hsd_k2jycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_restoredata.html">pipeline.cli.hsd_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_skycal.html">pipeline.cli.hsd_skycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_tsysflag.html">pipeline.cli.hsd_tsysflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_exportdata.html">pipeline.cli.hsdn_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_importdata.html">pipeline.cli.hsdn_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_restoredata.html">pipeline.cli.hsdn_restoredata</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.cli.html">pipeline.cli</a></li>
+      <li class="breadcrumb-item active">pipeline.cli.hsd_baseline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.cli.hsd_baseline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-cli-hsd-baseline">
+<h1>pipeline.cli.hsd_baseline<a class="headerlink" href="#pipeline-cli-hsd-baseline" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.cli.hsd_baseline">
+<span class="sig-name descname"><span class="pre">hsd_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switchpoly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewindow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewindowmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">broadline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clusteringalgorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviationmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_baseline.html#hsd_baseline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.cli.hsd_baseline" title="Link to this definition"></a></dt>
+<dd><p>Detect and validate spectral lines, subtract baseline by masking detected lines.</p>
+<p>The hsd_baseline task subtracts baseline from calibrated spectra.
+By default, the task tries to find spectral line feature using
+line detection and validation algorithms. Then, the task puts a
+mask on detected lines and perform baseline subtraction.
+The user is able to turn off automatic line masking by setting
+linewindow parameter, which specifies pre-defined line window.</p>
+<p>Fitting order is automatically determined by default. It can be
+disabled by specifying fitorder as non-negative value. In this
+case, the value specified by fitorder will be used.</p>
+<p><strong>*WARNING*</strong>
+Currently, hsd_baseline overwrites the result obtained by the
+previous run. Due to this behavior, users need to be careful
+about an order of the task execution when they run hsd_baseline
+multiple times with different data selection. Suppose there are
+two spectral windows (0 and 1) and hsd_baseline is executed
+separately for each spw as below,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Since the second run of hsd_baseline overwrites the result for
+spw 0 with the data before baseline subtraction, this will not
+produce correct result for spw 0. Proper sequence for this use
+case is to process each spw to the imaging stage separately,
+which looks like as follows:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fitfunc</strong> – Fitting function for baseline subtraction. You can choose either cubic spline (‘spline’ or ‘cspline’) or polynomial
+(‘poly’ or ‘polynomial’). Default is ‘cspline’.</p></li>
+<li><p><strong>fitorder</strong> – Fitting order for polynomial. For cubic spline, it is used to determine how much the spectrum is segmented into.
+Default (-1) is to determine the order automatically.</p></li>
+<li><p><strong>switchpoly</strong> – Whether to fall back the fits from cubic spline to 1st or 2nd order polynomial when large masks exist at the edges
+of the spw. Condition for switching is as follows:
+if nmask &gt; nchan/2      =&gt; 1st order polynomial
+else if nmask &gt; nchan/4 =&gt; 2nd order polynomial
+else                    =&gt; use fitfunc and fitorder
+where nmask is a number of channels for mask at edge while
+nchan is a number of channels of entire spectral window.</p></li>
+<li><p><strong>linewindow</strong> – Pre-defined line window. If this is set, specified line windows are used as a line mask for baseline subtraction
+instead to determine masks based on line detection and
+validation stage. Several types of format are acceptable.
+One is channel-based window,
+[min_chan, max_chan]
+where min_chan and max_chan should be an integer. For
+multiple  windows, nested list is also acceptable,
+[[min_chan0, max_chan0], [min_chan1, max_chan1], …]
+Another way is frequency-based window,
+[min_freq, max_freq]
+where min_freq and max_freq should be either a float or
+a string. If float value is given, it is interpreted as
+a frequency in Hz. String should be a quantity consisting
+of “value” and “unit”,
+e.g., ‘100GHz’. Multiple windows are also supported.
+[[min_freq0, max_freq0], [min_freq1, max_freq1], …]
+Note that the specified frequencies are assumed to be
+the value in LSRK frame. Note also that there is a
+limitation when multiple MSes are processed.
+If native frequency frame of the data is not LSRK
+(e.g. TOPO), frequencies need to be converted to that
+frame. As a result, corresponding channel range may vary
+between MSes. However, current implementation is not
+able to handle such case. Frequencies are converted to
+desired frame using representative MS (time, position,
+direction).
+In the above cases, specified line windows are applied
+to all science spws. In case when line windows vary with
+spw, line windows can be specified by a dictionary whose
+key is spw id while value is line window.
+For example, the following dictionary gives different
+line windows to spws 17 and 19. Other spws, if available,
+will have an empty line window.
+{17: [[100, 200], [1200, 1400]], 19: [‘112115MHz’, ‘112116MHz’]}
+Furthermore, linewindow accepts MS selection string.
+The following string gives [[100,200],[1200,1400]] for
+spw 17 while [1000,1500] for spw 21.
+“17:100~200;1200~1400,21:1000~1500”
+The string also accepts frequency with units. Note,
+however, that frequency reference frame in this case is
+not fixed to LSRK. Instead, the frame will be taken from
+the MS (typically TOPO for ALMA).
+Thus, the following two frequency-based line windows
+result different channel selections.
+{19: [‘112115MHz’, ‘112116MHz’]} # frequency frame is LSRK
+“19:11215MHz~11216MHz” # frequency frame is taken from the data
+# (TOPO for ALMA)
+None is allowed as a value of dictionary input to indicate that
+no line detection/validation is required even if manually specified
+line window does not exist. When None is given as a value and if
+<code class="docutils literal notranslate"><span class="pre">linewindowmode</span></code> is ‘replace’, line detection/validation is not performed
+for the corresponding spw. For example, suppose the following parameters
+are given for the data with four science spws, 17, 19, 21, and 23.
+linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
+linewindowmode=’replace’
+The task will use given line window for 17 and 19 while the task performs
+line deteciton/validation for spw 23 because no line window is set.
+On the other hand, line detection/validation is skipped for spw 21 due to
+the effect of None.
+example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz)
+[‘115GHz’, ‘115.1GHz’], see above for more examples</p></li>
+<li><p><strong>linewindowmode</strong> – Merge or replace given manual line window with line detection/validation result. If ‘replace’ is given, line
+detection and validation will not be performed.
+On the other hand, when ‘merge’ is specified, line
+detection/validation will be performed and manually
+specified line windows are added to the result.
+Note that this has no effect when linewindow for target
+spw is an empty list. In that case, line detection/validation
+will be performed regardless of the value of linewindowmode.
+In case if no linewindow nor line detection/validation
+are necessary, you should set linewindowmode to ‘replace’
+and specify None as a value of the linewindow dictionary
+for the spw to apply. See parameter description of <code class="docutils literal notranslate"><span class="pre">linewindow</span></code>
+for detail.</p></li>
+<li><p><strong>edge</strong> – Number of edge channels to be dropped from baseline subtraction. The value must be a list with length of 2,
+whose values specify left and right edge channels,
+respectively.
+example: [10,10]</p></li>
+<li><p><strong>broadline</strong> – Try to detect broad component of spectral line if True.</p></li>
+<li><p><strong>clusteringalgorithm</strong> – Selection of the algorithm used in the clustering analysis to check the validity of detected line features.
+The ‘kmean’ algorithm, hierarchical clustering algorithm,
+‘hierarchy’, and their combination (‘both’) are so far
+implemented.</p></li>
+<li><p><strong>deviationmask</strong> – Apply deviation mask in addition to masks determined by the automatic line detection.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. Options: ‘automatic’, ‘true’, ‘false’, True, False.
+default: None (equivalent to ‘automatic’).</p></li>
+<li><p><strong>infiles</strong> – List of data files. These must be a name of MeasurementSets that are registered to context via
+hsd_importdata task.
+example: vis=[‘X227.ms’, ‘X228.ms’]</p></li>
+<li><p><strong>field</strong> – Data selection by field. example: ‘1’ (select by FIELD_ID),
+‘M100*’ (select by field name),
+‘’ (all fields).</p></li>
+<li><p><strong>antenna</strong> – Data selection by antenna. example: ‘1’ (select by ANTENNA_ID),
+‘PM03’ (select by antenna name),
+‘’ (all antennas).</p></li>
+<li><p><strong>spw</strong> – Data selection by spw. example: ‘3,4’ (generate caltable for spw 3 and 4),
+[‘0’,’2’] (spw 0 for first data, 2 for second),
+‘’ (all spws).</p></li>
+<li><p><strong>pol</strong> – Data selection by polarizations. example: ‘0’ (generate caltable for pol 0),
+[‘0~1’,’0’] (pol 0 and 1 for first data, only 0 for second),
+‘’ (all polarizations).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Basic usage with automatic line detection and validation</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;PM03&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;17,19&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Using pre-defined line windows without automatic line detection
+and edge channels</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">linewindow</span><span class="o">=</span><span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1400</span><span class="p">]],</span>
+<span class="go">                 linewindowmode=&#39;replace&#39;, edge=[10, 10])</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Using per spw pre-defined line windows with automatic line detection</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_baseline</span><span class="p">(</span><span class="n">linewindow</span><span class="o">=</span><span class="p">{</span><span class="mi">19</span><span class="p">:</span> <span class="p">[[</span><span class="mi">390</span><span class="p">,</span> <span class="mi">550</span><span class="p">]],</span> <span class="mi">23</span><span class="p">:</span> <span class="p">[[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1400</span><span class="p">]]},</span>
+<span class="go">                 linewindowmode=&#39;merge&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.cli.hsd_atmcor.html" class="btn btn-neutral float-left" title="pipeline.cli.hsd_atmcor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.cli.hsd_blflag.html" class="btn btn-neutral float-right" title="pipeline.cli.hsd_blflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,23 +1,6 @@
 pipeline.h.cli.h\_tsyscal
 =========================
 
-.. automodule:: pipeline.h.cli.h_tsyscal
+.. currentmodule:: pipeline.h.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: h_tsyscal

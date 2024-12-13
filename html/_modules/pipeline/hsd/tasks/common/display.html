@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -281,7 +281,7 @@
 
 
 <div class="viewcode-block" id="SingleDishDisplayInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SingleDishDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SingleDishDisplayInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.display.SingleDishDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SingleDishDisplayInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SingleDishDisplayInputs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents inputs to Display classes.&quot;&quot;&quot;</span>
 
@@ -316,7 +316,7 @@
 
 
 <div class="viewcode-block" id="SpectralImage">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage">[docs]</a>
 <span class="k">class</span> <span class="nc">SpectralImage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Representation of four-dimensional spectral image.&quot;&quot;&quot;</span>
 
@@ -434,7 +434,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beamsize_in_deg</span>
 
 <div class="viewcode-block" id="SpectralImage.to_velocity">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.to_velocity">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.to_velocity">[docs]</a>
     <span class="k">def</span> <span class="nf">to_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">frequency</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
                     <span class="n">freq_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
@@ -456,7 +456,7 @@
 
 
 <div class="viewcode-block" id="SpectralImage.spectral_axis">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.spectral_axis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.spectral_axis">[docs]</a>
     <span class="k">def</span> <span class="nf">spectral_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;GHz&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return conversion information for spectral axis.</span>
 
@@ -474,7 +474,7 @@
 
 
 <div class="viewcode-block" id="SpectralImage.direction_axis">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.direction_axis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage.direction_axis">[docs]</a>
     <span class="k">def</span> <span class="nf">direction_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return conversion information for direction axes.</span>
 
@@ -537,7 +537,7 @@
 
 
 <div class="viewcode-block" id="SDImageDisplayInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImageDisplayInputs</span><span class="p">(</span><span class="n">SingleDishDisplayInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages input data for plotter classes for single dish images.&quot;&quot;&quot;</span>
 
@@ -564,7 +564,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">imagename</span>
 
 <div class="viewcode-block" id="SDImageDisplayInputs.moment_imagename">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.moment_imagename">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.moment_imagename">[docs]</a>
     <span class="k">def</span> <span class="nf">moment_imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moments</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Moment</span><span class="p">],</span> <span class="n">Moment</span><span class="p">],</span> <span class="n">chans</span><span class="p">:</span> <span class="n">ChannelSelection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of the moment image.</span>
 
@@ -715,7 +715,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imagename</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.contamination.png&#39;</span>
 
 <div class="viewcode-block" id="SDImageDisplayInputs.valid_lines">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.valid_lines">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.valid_lines">[docs]</a>
     <span class="k">def</span> <span class="nf">valid_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_freq_chan_reversed_image</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of chnnel ranges of valid spectral lines.&quot;&quot;&quot;</span>
         <span class="n">group_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduction_group</span>
@@ -748,7 +748,7 @@
 
 
 <div class="viewcode-block" id="SDImageDisplayInputs.create_channel_mask">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.create_channel_mask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.create_channel_mask">[docs]</a>
     <span class="k">def</span> <span class="nf">create_channel_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel_selection</span><span class="p">:</span> <span class="n">ChannelSelection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate channel mask for immoments according to channel selection enum.</span>
 
@@ -783,7 +783,7 @@
 
 
 <div class="viewcode-block" id="SDImageDisplayInputs.get_line_free_channels">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.get_line_free_channels">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.get_line_free_channels">[docs]</a>
     <span class="k">def</span> <span class="nf">get_line_free_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of line-free channels.</span>
 
@@ -806,7 +806,7 @@
 
 
 <div class="viewcode-block" id="SDImageDisplayInputs.compute_per_channel_stats">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.compute_per_channel_stats">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.compute_per_channel_stats">[docs]</a>
     <span class="k">def</span> <span class="nf">compute_per_channel_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute per-channel statistics of cube image.</span>
 
@@ -921,7 +921,7 @@
 
 
 <div class="viewcode-block" id="SDImageDisplay">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDImageDisplay">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDImageDisplay">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImageDisplay</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base plotter class for imaging tasks.&quot;&quot;&quot;</span>
 
@@ -940,7 +940,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SDImageDisplay.init">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDImageDisplay.init">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDImageDisplay.init">[docs]</a>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize plotter using specifiec image.&quot;&quot;&quot;</span>
         <span class="c1"># self.image = SpectralImage(self.imagename)</span>
@@ -1389,7 +1389,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter">[docs]</a>
 <span class="k">class</span> <span class="nc">SDSparseMapPlotter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plotter for sparse spectral map.&quot;&quot;&quot;</span>
 
@@ -1448,7 +1448,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">direction_reference</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="SDSparseMapPlotter.setup_labels_relative">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_labels_relative">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_labels_relative">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_labels_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">refpix_list</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
                               <span class="n">refval_list</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
@@ -1489,7 +1489,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.setup_labels_absolute">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_labels_absolute">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_labels_absolute">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_labels_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ralist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">declist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up position labels.</span>
 
@@ -1508,7 +1508,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.setup_lines">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_lines">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_lines">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">lines_averaged</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                     <span class="n">lines_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1528,7 +1528,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.setup_reference_level">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_reference_level">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.setup_reference_level">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_reference_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set reference level of the sparse profile map.</span>
 
@@ -1542,7 +1542,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.set_global_scaling">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_global_scaling">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_global_scaling">[docs]</a>
     <span class="k">def</span> <span class="nf">set_global_scaling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable global scaling.</span>
 
@@ -1553,7 +1553,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.unset_global_scaling">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_global_scaling">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_global_scaling">[docs]</a>
     <span class="k">def</span> <span class="nf">unset_global_scaling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disable global scaling.</span>
 
@@ -1564,7 +1564,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.set_deviation_mask">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_deviation_mask">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_deviation_mask">[docs]</a>
     <span class="k">def</span> <span class="nf">set_deviation_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set deviation mask.</span>
 
@@ -1575,7 +1575,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.set_edge">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_edge">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_edge">[docs]</a>
     <span class="k">def</span> <span class="nf">set_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set edge parameter.</span>
 
@@ -1588,7 +1588,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.set_atm_transmission">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_atm_transmission">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_atm_transmission">[docs]</a>
     <span class="k">def</span> <span class="nf">set_atm_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set atmospheric transmission data.</span>
 
@@ -1609,7 +1609,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.unset_atm_transmission">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_atm_transmission">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_atm_transmission">[docs]</a>
     <span class="k">def</span> <span class="nf">unset_atm_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disable displaying atmospheric transmission.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atm_transmission</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1617,7 +1617,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.set_channel_axis">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_channel_axis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.set_channel_axis">[docs]</a>
     <span class="k">def</span> <span class="nf">set_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable channel axis for integrated spectrum.</span>
 
@@ -1628,14 +1628,14 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.unset_channel_axis">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_channel_axis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.unset_channel_axis">[docs]</a>
     <span class="k">def</span> <span class="nf">unset_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disable channel axis for integrated spectrum.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channel_axis</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.add_channel_axis">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.add_channel_axis">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.add_channel_axis">[docs]</a>
     <span class="k">def</span> <span class="nf">add_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add channel axis to integrated spectrum.</span>
 
@@ -1648,7 +1648,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.plot">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.plot">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.plot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
              <span class="n">map_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">],</span>
              <span class="n">averaged_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">],</span>
@@ -1871,7 +1871,7 @@
 
 
 <div class="viewcode-block" id="SDSparseMapPlotter.done">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.done">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.done">[docs]</a>
     <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up plot.&quot;&quot;&quot;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">figure</span>
@@ -1883,7 +1883,7 @@
 
 
 <div class="viewcode-block" id="ch_to_freq">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.common.display.ch_to_freq.html#pipeline.hsd.tasks.imaging.display.ch_to_freq">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.plotter.ch_to_freq.html#pipeline.hsd.tasks.imaging.display.ch_to_freq">[docs]</a>
 <span class="k">def</span> <span class="nf">ch_to_freq</span><span class="p">(</span><span class="n">ch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert channel into frequency.</span>
 

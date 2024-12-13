@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.tasks.exportdata.exportdata.ExportData" href="pipeline.h.tasks.exportdata.exportdata.ExportData.html" />
-    <link rel="prev" title="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator" href="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html" /> 
+    <link rel="next" title="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk" href="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk.html" />
+    <link rel="prev" title="pipeline.h.tasks.exportdata.aqua.QAScore" href="pipeline.h.tasks.exportdata.aqua.QAScore.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -172,16 +178,39 @@ inputs = pipeline.tasks.exportdata.Exportdata.Inputs(context,</p>
 <dt>task = pipeline.tasks.exportdata.ExportData(inputs)</dt><dd><p>results = task.execute()</p>
 </dd>
 </dl>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk.html#pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk" title="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_aqua_to_disk</span></code></a></p></td>
+<td><p>Convert an XML document to a nicely formatted XML string and save it in a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.fitsname.html#pipeline.h.tasks.exportdata.exportdata.fitsname" title="pipeline.h.tasks.exportdata.exportdata.fitsname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitsname</span></code></a></p></td>
+<td><p>Strip off stage and iter information to generate FITS file name.</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.ExportData.html#pipeline.h.tasks.exportdata.exportdata.ExportData" title="pipeline.h.tasks.exportdata.exportdata.ExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportData</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator.html#pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator" title="pipeline.h.tasks.exportdata.exportdata.AquaXmlGenerator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AquaXmlGenerator</span></code></a></p></td>
+<td><p>Class to create the XML for an AQUA pipeline report.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.Context.html#pipeline.h.tasks.exportdata.exportdata.Context" title="pipeline.h.tasks.exportdata.exportdata.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.DataType.html#pipeline.h.tasks.exportdata.exportdata.DataType" title="pipeline.h.tasks.exportdata.exportdata.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.ExportData.html#pipeline.h.tasks.ExportData" title="pipeline.h.tasks.exportdata.exportdata.ExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportData</span></code></a></p></td>
 <td><p>ExportData is the base class for exporting data to the products subdirectory.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs" title="pipeline.h.tasks.exportdata.exportdata.ExportDataInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportDataInputs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.ExportDataInputs.html#pipeline.h.tasks.exportdata.exportdata.ExportDataInputs" title="pipeline.h.tasks.exportdata.exportdata.ExportDataInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportDataInputs</span></code></a></p></td>
 <td><p>ExportDataInputs manages the inputs for the ExportData task.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.ExportDataResults.html#pipeline.h.tasks.exportdata.exportdata.ExportDataResults" title="pipeline.h.tasks.exportdata.exportdata.ExportDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportDataResults</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.ExportDataResults.html#pipeline.h.tasks.exportdata.exportdata.ExportDataResults" title="pipeline.h.tasks.exportdata.exportdata.ExportDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportDataResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.PipelineProductNameBuilder.html#pipeline.h.tasks.exportdata.exportdata.PipelineProductNameBuilder" title="pipeline.h.tasks.exportdata.exportdata.PipelineProductNameBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipelineProductNameBuilder</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.exportdata.exportdata.StdFileProducts.html#pipeline.h.tasks.exportdata.exportdata.StdFileProducts" title="pipeline.h.tasks.exportdata.exportdata.StdFileProducts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StdFileProducts</span></code></a></p></td>
@@ -195,8 +224,8 @@ inputs = pipeline.tasks.exportdata.Exportdata.Inputs(context,</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.tasks.exportdata.exportdata.ExportData.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.exportdata.exportdata.ExportData" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.tasks.exportdata.aqua.QAScore.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.exportdata.aqua.QAScore" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.exportdata.exportdata.export_aqua_to_disk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

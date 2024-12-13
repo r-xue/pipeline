@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -110,10 +110,10 @@
 
 
 <div class="viewcode-block" id="IntentFieldnames">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.fieldnames.IntentFieldnames.html#pipeline.h.heuristics.fieldnames.IntentFieldnames">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.tasks.applycal.applycal.IntentFieldnames.html#pipeline.h.heuristics.IntentFieldnames">[docs]</a>
 <span class="k">class</span> <span class="nc">IntentFieldnames</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <div class="viewcode-block" id="IntentFieldnames.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.heuristics.fieldnames.IntentFieldnames.html#pipeline.h.heuristics.fieldnames.IntentFieldnames.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.h.tasks.applycal.applycal.IntentFieldnames.html#pipeline.h.heuristics.IntentFieldnames.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">fld</span> <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>

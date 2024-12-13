@@ -20,10 +20,12 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hsd.tasks.applycal" href="pipeline.hsd.tasks.applycal.html" />
+    <link rel="next" title="pipeline.hsd.tasks.FlagDeterALMASingleDish" href="pipeline.hsd.tasks.FlagDeterALMASingleDish.html" />
     <link rel="prev" title="pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics" href="pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html" /> 
 </head>
 
@@ -31,7 +33,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +59,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -144,6 +150,47 @@
              
   <section id="module-pipeline.hsd.tasks">
 <span id="pipeline-hsd-tasks"></span><h1>pipeline.hsd.tasks<a class="headerlink" href="#module-pipeline.hsd.tasks" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.FlagDeterALMASingleDish.html#pipeline.hsd.tasks.FlagDeterALMASingleDish" title="pipeline.hsd.tasks.FlagDeterALMASingleDish"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMASingleDish</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDApplycal.html#pipeline.hsd.tasks.SDApplycal" title="pipeline.hsd.tasks.SDApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDBLFlag.html#pipeline.hsd.tasks.SDBLFlag" title="pipeline.hsd.tasks.SDBLFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBLFlag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline" title="pipeline.hsd.tasks.SDBaseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaseline</span></code></a></p></td>
+<td><p>Baseline subtraction task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDExportData.html#pipeline.hsd.tasks.SDExportData" title="pipeline.hsd.tasks.SDExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDExportData</span></code></a></p></td>
+<td><p>A class for exporting single dish data to the products subdirectory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging" title="pipeline.hsd.tasks.SDImaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImaging</span></code></a></p></td>
+<td><p>SDImaging processing class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDImportData.html#pipeline.hsd.tasks.SDImportData" title="pipeline.hsd.tasks.SDImportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImportData</span></code></a></p></td>
+<td><p>SDImportData class for parallelization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDK2JyCal.html#pipeline.hsd.tasks.SDK2JyCal" title="pipeline.hsd.tasks.SDK2JyCal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDK2JyCal</span></code></a></p></td>
+<td><p>Generate calibration table of Jy/K factors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDRestoreData.html#pipeline.hsd.tasks.SDRestoreData" title="pipeline.hsd.tasks.SDRestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRestoreData</span></code></a></p></td>
+<td><p>Restore flagged and calibrated data produced during a previous pipeline run and archived on disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDSkyCal.html#pipeline.hsd.tasks.SDSkyCal" title="pipeline.hsd.tasks.SDSkyCal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSkyCal</span></code></a></p></td>
+<td><p>Class to generate sky calibration table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDTsysflag.html#pipeline.hsd.tasks.SDTsysflag" title="pipeline.hsd.tasks.SDTsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDTsysflag</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.hsd.tasks.tsysflag.tsysflag.SerialTsysflag.html#pipeline.hsd.tasks.tsysflag.tsysflag.SerialTsysflag" title="pipeline.hsd.tasks.tsysflag.tsysflag.SerialTsysflag"><code class="xref py py-class docutils literal notranslate"><span class="pre">SerialTsysflag</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection" title="pipeline.hsd.tasks.SerialSDATMCorrection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialSDATMCorrection</span></code></a></p></td>
+<td><p>Offline ATM correction task.</p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.applycal.html#module-pipeline.hsd.tasks.applycal" title="pipeline.hsd.tasks.applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">applycal</span></code></a></p></td>
@@ -194,7 +241,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html" class="btn btn-neutral float-left" title="pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hsd.tasks.applycal.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hsd.tasks.FlagDeterALMASingleDish.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.FlagDeterALMASingleDish" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

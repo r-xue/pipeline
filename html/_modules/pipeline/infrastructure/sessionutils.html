@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -143,7 +143,7 @@
 
 
 <div class="viewcode-block" id="parallel_inputs_impl">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.parallel_inputs_impl.html#pipeline.infrastructure.sessionutils.parallel_inputs_impl">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.parallel_inputs_impl.html#pipeline.infrastructure.renderer.regression.parallel_inputs_impl">[docs]</a>
 <span class="k">def</span> <span class="nf">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a vis-independent property implementation for a parallel</span>
@@ -171,14 +171,14 @@
 
 
 <div class="viewcode-block" id="as_list">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.as_list.html#pipeline.infrastructure.sessionutils.as_list">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.as_list.html#pipeline.infrastructure.renderer.regression.as_list">[docs]</a>
 <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">o</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">o</span><span class="p">]</span></div>
 
 
 
 <div class="viewcode-block" id="group_into_sessions">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.group_into_sessions.html#pipeline.infrastructure.sessionutils.group_into_sessions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.group_into_sessions.html#pipeline.infrastructure.renderer.regression.group_into_sessions">[docs]</a>
 <span class="k">def</span> <span class="nf">group_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">all_results</span><span class="p">,</span> <span class="n">measurement_sets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return results grouped into lists by session.</span>
@@ -237,7 +237,7 @@
 
 
 <div class="viewcode-block" id="group_vislist_into_sessions">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.group_vislist_into_sessions.html#pipeline.infrastructure.sessionutils.group_vislist_into_sessions">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.group_vislist_into_sessions.html#pipeline.infrastructure.renderer.regression.group_vislist_into_sessions">[docs]</a>
 <span class="k">def</span> <span class="nf">group_vislist_into_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Group the specified list of measurement sets &#39;vislist&#39; by their session,</span>
@@ -259,7 +259,7 @@
 
 
 <div class="viewcode-block" id="get_vislist_for_session">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.get_vislist_for_session.html#pipeline.infrastructure.sessionutils.get_vislist_for_session">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.get_vislist_for_session.html#pipeline.infrastructure.renderer.regression.get_vislist_for_session">[docs]</a>
 <span class="k">def</span> <span class="nf">get_vislist_for_session</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return list of measurement sets for specified session name.</span>
@@ -276,7 +276,7 @@
 
 
 <div class="viewcode-block" id="VDPTaskFactory">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.VDPTaskFactory.html#pipeline.infrastructure.sessionutils.VDPTaskFactory">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.VDPTaskFactory.html#pipeline.infrastructure.renderer.regression.VDPTaskFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">VDPTaskFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    VDPTaskFactory is a class that implements the Factory design</span>
@@ -325,7 +325,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
 
 <div class="viewcode-block" id="VDPTaskFactory.get_task">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.VDPTaskFactory.html#pipeline.infrastructure.sessionutils.VDPTaskFactory.get_task">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.VDPTaskFactory.html#pipeline.infrastructure.renderer.regression.VDPTaskFactory.get_task">[docs]</a>
     <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a SyncTask or AsyncTask for the job.</span>
@@ -396,7 +396,7 @@
 
 
 <div class="viewcode-block" id="remove_unexpected_args">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remove_unexpected_args.html#pipeline.infrastructure.sessionutils.remove_unexpected_args">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remove_unexpected_args.html#pipeline.infrastructure.renderer.regression.remove_unexpected_args">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_unexpected_args</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">fn_args</span><span class="p">):</span>
     <span class="c1"># get the argument names for the function</span>
     <span class="n">arg_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
@@ -416,7 +416,7 @@
 
 
 <div class="viewcode-block" id="validate_args">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.validate_args.html#pipeline.infrastructure.sessionutils.validate_args">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.validate_args.html#pipeline.infrastructure.renderer.regression.validate_args">[docs]</a>
 <span class="k">def</span> <span class="nf">validate_args</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="n">task_args</span><span class="p">):</span>
     <span class="n">inputs_constructor_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">)</span>
     <span class="n">valid_args</span> <span class="o">=</span> <span class="n">remove_unexpected_args</span><span class="p">(</span><span class="n">inputs_constructor_fn</span><span class="p">,</span> <span class="n">task_args</span><span class="p">)</span>
@@ -425,7 +425,7 @@
 
 
 <div class="viewcode-block" id="get_spwmap">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.get_spwmap.html#pipeline.infrastructure.sessionutils.get_spwmap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.get_spwmap.html#pipeline.infrastructure.renderer.regression.get_spwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spwmap</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a map of spectral windows IDs that map from a source spw ID in</span>
@@ -467,7 +467,7 @@
 
 
 <div class="viewcode-block" id="remap_spw_int">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remap_spw_int.html#pipeline.infrastructure.sessionutils.remap_spw_int">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remap_spw_int.html#pipeline.infrastructure.renderer.regression.remap_spw_int">[docs]</a>
 <span class="k">def</span> <span class="nf">remap_spw_int</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">,</span> <span class="n">spws</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map integer spw arguments from one MS to their equivalent spw in</span>
@@ -487,7 +487,7 @@
 
 
 <div class="viewcode-block" id="remap_spw_str">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remap_spw_str.html#pipeline.infrastructure.sessionutils.remap_spw_str">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.remap_spw_str.html#pipeline.infrastructure.renderer.regression.remap_spw_str">[docs]</a>
 <span class="k">def</span> <span class="nf">remap_spw_str</span><span class="p">(</span><span class="n">source_ms</span><span class="p">,</span> <span class="n">target_ms</span><span class="p">,</span> <span class="n">spws</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remap a string spw argument, e.g., &#39;16,18,20,22&#39;, from one MS to</span>
@@ -508,7 +508,7 @@
 
 
 <div class="viewcode-block" id="ParallelTemplate">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.sessionutils.ParallelTemplate">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.renderer.regression.ParallelTemplate">[docs]</a>
 <span class="k">class</span> <span class="nc">ParallelTemplate</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -524,7 +524,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">ParallelTemplate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ParallelTemplate.get_result_for_exception">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.sessionutils.ParallelTemplate.get_result_for_exception">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.renderer.regression.ParallelTemplate.get_result_for_exception">[docs]</a>
     <span class="nd">@basetask</span><span class="o">.</span><span class="n">result_finaliser</span>
     <span class="k">def</span> <span class="nf">get_result_for_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate FailedTaskResults with exception raised.</span>
@@ -547,7 +547,7 @@
 
 
 <div class="viewcode-block" id="ParallelTemplate.prepare">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.sessionutils.ParallelTemplate.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.renderer.regression.ParallelTemplate.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -582,7 +582,7 @@
 
 
 <div class="viewcode-block" id="ParallelTemplate.analyse">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.sessionutils.ParallelTemplate.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.sessionutils.ParallelTemplate.html#pipeline.infrastructure.renderer.regression.ParallelTemplate.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
         <span class="c1"># all results will be added to this object</span>
         <span class="n">final_result</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>

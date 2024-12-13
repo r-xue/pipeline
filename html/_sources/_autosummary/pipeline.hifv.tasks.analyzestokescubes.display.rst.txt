@@ -9,6 +9,14 @@ pipeline.hifv.tasks.analyzestokescubes.display
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      matplotlibrc_formal
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.analyzestokescubes.display
       :template: custom-class-template.rst
       :nosignatures:
    
+      ScalarFormatter
       VlassCubeFluxSummary
       VlassCubeStokesSummary
    

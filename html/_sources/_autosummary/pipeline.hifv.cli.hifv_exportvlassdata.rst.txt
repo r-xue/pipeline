@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_exportvlassdata
 =======================================
 
-.. automodule:: pipeline.hifv.cli.hifv_exportvlassdata
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_exportvlassdata

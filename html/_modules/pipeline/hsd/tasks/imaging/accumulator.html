@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -116,7 +116,7 @@
 
 
 <div class="viewcode-block" id="GaussianKernel">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.GaussianKernel.html#pipeline.hsd.tasks.imaging.accumulator.GaussianKernel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.GaussianKernel.html#pipeline.hsd.tasks.imaging.gridding.GaussianKernel">[docs]</a>
 <span class="k">class</span> <span class="nc">GaussianKernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
@@ -129,7 +129,7 @@
 
 
 <div class="viewcode-block" id="LinearKernel">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.LinearKernel.html#pipeline.hsd.tasks.imaging.accumulator.LinearKernel">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.LinearKernel.html#pipeline.hsd.tasks.imaging.gridding.LinearKernel">[docs]</a>
 <span class="k">class</span> <span class="nc">LinearKernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
@@ -140,7 +140,7 @@
 
 
 <div class="viewcode-block" id="Accumulator">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.accumulator.Accumulator.html#pipeline.hsd.tasks.imaging.accumulator.Accumulator">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.gridding.Accumulator.html#pipeline.hsd.tasks.imaging.gridding.Accumulator">[docs]</a>
 <span class="k">class</span> <span class="nc">Accumulator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">KernelType</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;gauss&#39;</span><span class="p">:</span> <span class="n">GaussianKernel</span><span class="p">,</span>
                   <span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="n">LinearKernel</span><span class="p">}</span>

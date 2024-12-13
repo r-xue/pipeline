@@ -4,8 +4,8 @@ Pipeline Tasks (from autosummary)
 .. autosummary::
    :toctree: _autosummary
    :caption: Pipeline Tasks
-   :nosignatures:
    :template: custom-module-template.rst
+   :recursive:
    
    pipeline.h.cli
    pipeline.hif.cli

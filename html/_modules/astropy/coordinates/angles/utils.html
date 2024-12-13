@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>astropy.coordinates.angles.utils &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">astropy.coordinates.angles.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for astropy.coordinates.angles.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains utility functions for working with angles. These are both</span>
+<span class="sd">used internally in ``astropy.coordinates.angles``, and of possible use externally.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;angular_separation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;position_angle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;offset_by&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;golden_spiral_grid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uniform_spherical_random_surface&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uniform_spherical_random_volume&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Third-party</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Astropy</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates.representation</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SphericalRepresentation</span><span class="p">,</span>
+    <span class="n">UnitSphericalRepresentation</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">astropy.utils.compat</span> <span class="kn">import</span> <span class="n">COPY_IF_NEEDED</span>
+
+<span class="n">_TWOPI</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+
+<span class="k">def</span> <span class="nf">angular_separation</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Angular separation between two points on a sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lon1, lat1, lon2, lat2 : `~astropy.coordinates.Angle`, `~astropy.units.Quantity` or float</span>
+<span class="sd">        Longitude and latitude of the two points. Quantities should be in</span>
+<span class="sd">        angular units; floats in radians.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    angular separation : `~astropy.units.Quantity` [&#39;angle&#39;] or float</span>
+<span class="sd">        Type depends on input; ``Quantity`` in angular units, or float in</span>
+<span class="sd">        radians.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The angular separation is calculated using the Vincenty formula [1]_,</span>
+<span class="sd">    which is slightly more complex and computationally expensive than</span>
+<span class="sd">    some alternatives, but is stable at at all distances, including the</span>
+<span class="sd">    poles and antipodes.</span>
+
+<span class="sd">    .. [1] https://en.wikipedia.org/wiki/Great-circle_distance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sdlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+    <span class="n">cdlon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+    <span class="n">slat1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span>
+    <span class="n">slat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span>
+    <span class="n">clat1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span>
+    <span class="n">clat2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span>
+
+    <span class="n">num1</span> <span class="o">=</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">sdlon</span>
+    <span class="n">num2</span> <span class="o">=</span> <span class="n">clat1</span> <span class="o">*</span> <span class="n">slat2</span> <span class="o">-</span> <span class="n">slat1</span> <span class="o">*</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">cdlon</span>
+    <span class="n">denominator</span> <span class="o">=</span> <span class="n">slat1</span> <span class="o">*</span> <span class="n">slat2</span> <span class="o">+</span> <span class="n">clat1</span> <span class="o">*</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">cdlon</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">),</span> <span class="n">denominator</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">position_angle</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lat2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Position Angle (East of North) between two points on a sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lon1, lat1, lon2, lat2 : `~astropy.coordinates.Angle`, `~astropy.units.Quantity` or float</span>
+<span class="sd">        Longitude and latitude of the two points. Quantities should be in</span>
+<span class="sd">        angular units; floats in radians.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pa : `~astropy.coordinates.Angle`</span>
+<span class="sd">        The (positive) position angle of the vector pointing from position 1 to</span>
+<span class="sd">        position 2.  If any of the angles are arrays, this will contain an array</span>
+<span class="sd">        following the appropriate `numpy` broadcasting rules.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Angle</span>
+
+    <span class="n">deltalon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+    <span class="n">colat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">-</span> <span class="n">colat</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">deltalon</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">deltalon</span><span class="p">)</span> <span class="o">*</span> <span class="n">colat</span>
+
+    <span class="k">return</span> <span class="n">Angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="mi">360</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="offset_by">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.positioncorrection.offset_by.html#pipeline.infrastructure.utils.positioncorrection.offset_by">[docs]</a>
+<span class="k">def</span> <span class="nf">offset_by</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">posang</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Point with the given offset from the given point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lon, lat, posang, distance : `~astropy.coordinates.Angle`, `~astropy.units.Quantity` or float</span>
+<span class="sd">        Longitude and latitude of the starting point,</span>
+<span class="sd">        position angle and distance to the final point.</span>
+<span class="sd">        Quantities should be in angular units; floats in radians.</span>
+<span class="sd">        Polar points at lat= +/-90 are treated as limit of +/-(90-epsilon) and same lon.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lon, lat : `~astropy.coordinates.Angle`</span>
+<span class="sd">        The position of the final point.  If any of the angles are arrays,</span>
+<span class="sd">        these will contain arrays following the appropriate `numpy` broadcasting rules.</span>
+<span class="sd">        0 &lt;= lon &lt; 2pi.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Angle</span>
+
+    <span class="c1"># Calculations are done using the spherical trigonometry sine and cosine rules</span>
+    <span class="c1"># of the triangle A at North Pole,   B at starting point,   C at final point</span>
+    <span class="c1"># with angles     A (change in lon), B (posang),            C (not used, but negative reciprocal posang)</span>
+    <span class="c1"># with sides      a (distance),      b (final co-latitude), c (starting colatitude)</span>
+    <span class="c1"># B, a, c are knowns; A and b are unknowns</span>
+    <span class="c1"># https://en.wikipedia.org/wiki/Spherical_trigonometry</span>
+
+    <span class="n">cos_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+    <span class="n">sin_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+    <span class="n">cos_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+    <span class="n">sin_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+    <span class="n">cos_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">posang</span><span class="p">)</span>
+    <span class="n">sin_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">posang</span><span class="p">)</span>
+
+    <span class="c1"># cosine rule: Know two sides: a,c and included angle: B; get unknown side b</span>
+    <span class="n">cos_b</span> <span class="o">=</span> <span class="n">cos_c</span> <span class="o">*</span> <span class="n">cos_a</span> <span class="o">+</span> <span class="n">sin_c</span> <span class="o">*</span> <span class="n">sin_a</span> <span class="o">*</span> <span class="n">cos_B</span>
+    <span class="c1"># sin_b = np.sqrt(1 - cos_b**2)</span>
+    <span class="c1"># sine rule and cosine rule for A (using both lets arctan2 pick quadrant).</span>
+    <span class="c1"># multiplying both sin_A and cos_A by x=sin_b * sin_c prevents /0 errors</span>
+    <span class="c1"># at poles.  Correct for the x=0 multiplication a few lines down.</span>
+    <span class="c1"># sin_A/sin_a == sin_B/sin_b    # Sine rule</span>
+    <span class="n">xsin_A</span> <span class="o">=</span> <span class="n">sin_a</span> <span class="o">*</span> <span class="n">sin_B</span> <span class="o">*</span> <span class="n">sin_c</span>
+    <span class="c1"># cos_a == cos_b * cos_c + sin_b * sin_c * cos_A  # cosine rule</span>
+    <span class="n">xcos_A</span> <span class="o">=</span> <span class="n">cos_a</span> <span class="o">-</span> <span class="n">cos_b</span> <span class="o">*</span> <span class="n">cos_c</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">xsin_A</span><span class="p">,</span> <span class="n">xcos_A</span><span class="p">),</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)</span>
+    <span class="c1"># Treat the poles as if they are infinitesimally far from pole but at given lon</span>
+    <span class="n">small_sin_c</span> <span class="o">=</span> <span class="n">sin_c</span> <span class="o">&lt;</span> <span class="mf">1e-12</span>
+    <span class="k">if</span> <span class="n">small_sin_c</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="c1"># For south pole (cos_c = -1), A = posang; for North pole, A=180 deg - posang</span>
+        <span class="n">A_pole</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">+</span> <span class="n">cos_c</span> <span class="o">*</span> <span class="p">(</span><span class="mi">90</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span> <span class="o">-</span> <span class="n">Angle</span><span class="p">(</span><span class="n">posang</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="c1"># broadcast to ensure the shape is like that of A, which is also</span>
+            <span class="c1"># affected by the (possible) shapes of lat, posang, and distance.</span>
+            <span class="n">small_sin_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">small_sin_c</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">small_sin_c</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_pole</span><span class="p">[</span><span class="n">small_sin_c</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">A_pole</span>
+
+    <span class="n">outlon</span> <span class="o">=</span> <span class="p">(</span><span class="n">Angle</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="mf">360.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+    <span class="n">outlat</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">cos_b</span><span class="p">),</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">outlon</span><span class="p">,</span> <span class="n">outlat</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">golden_spiral_grid</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a grid of points on the surface of the unit sphere using the</span>
+<span class="sd">    Fibonacci or Golden Spiral method.</span>
+
+<span class="sd">    .. seealso::</span>
+
+<span class="sd">        `Evenly distributing points on a sphere &lt;https://stackoverflow.com/questions/9600801/evenly-distributing-n-points-on-a-sphere&gt;`_</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : int</span>
+<span class="sd">        The number of points to generate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rep : `~astropy.coordinates.UnitSphericalRepresentation`</span>
+<span class="sd">        The grid of points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">golden_r</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">5</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">_TWOPI</span> <span class="o">/</span> <span class="n">golden_r</span> <span class="o">*</span> <span class="n">grid</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">grid</span> <span class="o">/</span> <span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+
+    <span class="k">return</span> <span class="n">UnitSphericalRepresentation</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">uniform_spherical_random_surface</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a random sampling of points on the surface of the unit sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : int</span>
+<span class="sd">        The number of points to generate.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rep : `~astropy.coordinates.UnitSphericalRepresentation`</span>
+<span class="sd">        The random points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span>  <span class="c1"># can maybe switch to this being an input later - see #11628</span>
+
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_TWOPI</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span>
+
+    <span class="k">return</span> <span class="n">UnitSphericalRepresentation</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">uniform_spherical_random_volume</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a random sampling of points that follow a uniform volume</span>
+<span class="sd">    density distribution within a sphere.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : int</span>
+<span class="sd">        The number of points to generate.</span>
+<span class="sd">    max_radius : number, quantity-like, optional</span>
+<span class="sd">        A dimensionless or unit-ful factor to scale the random distances.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rep : `~astropy.coordinates.SphericalRepresentation`</span>
+<span class="sd">        The random points.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span>  <span class="c1"># can maybe switch to this being an input later - see #11628</span>
+
+    <span class="n">usph</span> <span class="o">=</span> <span class="n">uniform_spherical_random_surface</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cbrt</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">max_radius</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">COPY_IF_NEEDED</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SphericalRepresentation</span><span class="p">(</span><span class="n">usph</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">usph</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

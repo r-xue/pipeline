@@ -13,6 +13,15 @@ pipeline.hif.tasks.makeimlist
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      MakeImList
+   
    
 
    

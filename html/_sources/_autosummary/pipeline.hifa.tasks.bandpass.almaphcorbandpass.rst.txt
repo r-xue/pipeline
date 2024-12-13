@@ -17,6 +17,7 @@ pipeline.hifa.tasks.bandpass.almaphcorbandpass
    
       centre_datetime_from_epochs
       get_time_delta_seconds
+      round_up
    
    
 
@@ -31,6 +32,7 @@ pipeline.hifa.tasks.bandpass.almaphcorbandpass
    
       ALMAPhcorBandpass
       ALMAPhcorBandpassInputs
+      BandpassResults
       SessionALMAPhcorBandpass
       SessionALMAPhcorBandpassInputs
    

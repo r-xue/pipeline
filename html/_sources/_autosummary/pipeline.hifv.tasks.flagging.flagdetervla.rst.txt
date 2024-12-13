@@ -20,6 +20,7 @@ pipeline.hifv.tasks.flagging.flagdetervla
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       FlagDeterVLA
       FlagDeterVLAInputs
       FlagDeterVLAResults

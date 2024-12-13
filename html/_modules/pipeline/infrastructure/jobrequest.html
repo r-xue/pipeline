@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -153,7 +153,7 @@
 
 
 <div class="viewcode-block" id="FunctionArg">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.FunctionArg.html#pipeline.infrastructure.jobrequest.FunctionArg">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.FunctionArg.html#pipeline.infrastructure.utils.framework.FunctionArg">[docs]</a>
 <span class="k">class</span> <span class="nc">FunctionArg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to hold named function or method arguments</span>
@@ -171,7 +171,7 @@
 
 
 <div class="viewcode-block" id="NamelessArg">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.NamelessArg.html#pipeline.infrastructure.jobrequest.NamelessArg">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.NamelessArg.html#pipeline.infrastructure.utils.framework.NamelessArg">[docs]</a>
 <span class="k">class</span> <span class="nc">NamelessArg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to hold unnamed arguments</span>
@@ -188,7 +188,7 @@
 
 
 <div class="viewcode-block" id="alphasort">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.alphasort.html#pipeline.infrastructure.jobrequest.alphasort">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.alphasort.html#pipeline.infrastructure.utils.framework.alphasort">[docs]</a>
 <span class="k">def</span> <span class="nf">alphasort</span><span class="p">(</span><span class="n">argument</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return an argument with values sorted so that the log record is easier to</span>
@@ -239,7 +239,7 @@
 
 
 <div class="viewcode-block" id="UUID_to_underscore">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.UUID_to_underscore.html#pipeline.infrastructure.jobrequest.UUID_to_underscore">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.UUID_to_underscore.html#pipeline.infrastructure.utils.framework.UUID_to_underscore">[docs]</a>
 <span class="k">def</span> <span class="nf">UUID_to_underscore</span><span class="p">(</span><span class="n">argument</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return an argument with UUIDs converted to underscores.</span>
@@ -262,7 +262,7 @@
 
 
 <div class="viewcode-block" id="truncate_paths">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.truncate_paths.html#pipeline.infrastructure.jobrequest.truncate_paths">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.truncate_paths.html#pipeline.infrastructure.utils.framework.truncate_paths">[docs]</a>
 <span class="k">def</span> <span class="nf">truncate_paths</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
     <span class="c1"># Path arguments are kw args with specific identifiers. Exit early if this</span>
     <span class="c1"># is not a path argument</span>
@@ -289,7 +289,7 @@
 
 
 <div class="viewcode-block" id="basename_if_isfile">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.basename_if_isfile.html#pipeline.infrastructure.jobrequest.basename_if_isfile">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.basename_if_isfile.html#pipeline.infrastructure.utils.framework.basename_if_isfile">[docs]</a>
 <span class="k">def</span> <span class="nf">basename_if_isfile</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test whether input string resolves to an existing file: if so, return the</span>
@@ -306,7 +306,7 @@
 
 
 <div class="viewcode-block" id="JobRequest">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.JobRequest.html#pipeline.infrastructure.jobrequest.JobRequest">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.utils.framework.JobRequest.html#pipeline.infrastructure.utils.framework.JobRequest">[docs]</a>
 <span class="k">class</span> <span class="nc">JobRequest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -359,7 +359,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_nameless</span> <span class="o">=</span> <span class="p">[</span><span class="n">NamelessArg</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="n">argcount</span><span class="p">:]]</span>
 
 <div class="viewcode-block" id="JobRequest.execute">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.JobRequest.html#pipeline.infrastructure.jobrequest.JobRequest.execute">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.utils.framework.JobRequest.html#pipeline.infrastructure.utils.framework.JobRequest.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute this job, returning any result to the caller.</span>
@@ -408,7 +408,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fn_msg</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_args</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JobRequest.hash_code">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.JobRequest.html#pipeline.infrastructure.jobrequest.JobRequest.hash_code">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.utils.framework.JobRequest.html#pipeline.infrastructure.utils.framework.JobRequest.hash_code">[docs]</a>
     <span class="k">def</span> <span class="nf">hash_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the numerical hash code for this JobRequest.</span>
@@ -446,7 +446,7 @@
 
 
 <div class="viewcode-block" id="get_fn_name">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.get_fn_name.html#pipeline.infrastructure.jobrequest.get_fn_name">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.get_fn_name.html#pipeline.infrastructure.utils.framework.get_fn_name">[docs]</a>
 <span class="k">def</span> <span class="nf">get_fn_name</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple stating the name of the callable and whether it&#39;s a CASA task.</span>
 
@@ -472,7 +472,7 @@
 
 
 <div class="viewcode-block" id="jobrequest_generator">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.jobrequest_generator.html#pipeline.infrastructure.jobrequest.jobrequest_generator">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.jobrequest.jobrequest_generator.html#pipeline.infrastructure.utils.framework.jobrequest_generator">[docs]</a>
 <span class="k">def</span> <span class="nf">jobrequest_generator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a JobRequest generator for a callable.</span>
 <span class="sd">    </span>

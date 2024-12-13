@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -152,7 +152,7 @@
 <span class="kn">import</span> <span class="nn">csv</span> <span class="c1"># used by editIntentscsv</span>
 
 <div class="viewcode-block" id="SpwMap">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.SpwMap.html#pipeline.extern.almahelpers.SpwMap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.SpwMap.html#pipeline.extern.TsysDataClassFile.SpwMap">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwMap</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This object is basically set up to hold the information needed </span>
@@ -165,7 +165,7 @@
 
         
 <div class="viewcode-block" id="SpwInfo">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.SpwInfo.html#pipeline.extern.almahelpers.SpwInfo">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.SpwInfo.html#pipeline.extern.TsysDataClassFile.SpwInfo">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwInfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msfile</span><span class="p">,</span><span class="n">spwId</span><span class="p">)</span> <span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">tbtool</span><span class="p">()</span>
@@ -190,7 +190,7 @@
 
     
 <div class="viewcode-block" id="areIdentical">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.areIdentical.html#pipeline.extern.almahelpers.areIdentical">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.areIdentical.html#pipeline.extern.TsysDataClassFile.areIdentical">[docs]</a>
 <span class="k">def</span> <span class="nf">areIdentical</span><span class="p">(</span><span class="n">spwInfo1</span><span class="p">,</span><span class="n">spwInfo2</span><span class="p">)</span> <span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo1</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spwInfo2</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="p">:</span>
         <span class="n">minState</span> <span class="o">=</span> <span class="n">spwInfo1</span> <span class="p">;</span> <span class="n">maxState</span> <span class="o">=</span> <span class="n">spwInfo2</span>
@@ -208,7 +208,7 @@
 
 
 <div class="viewcode-block" id="trimSpwmap">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.trimSpwmap.html#pipeline.extern.almahelpers.trimSpwmap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.trimSpwmap.html#pipeline.extern.TsysDataClassFile.trimSpwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">trimSpwmap</span><span class="p">(</span><span class="n">spwMap</span><span class="p">)</span> <span class="p">:</span>
     <span class="n">compare</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spwMap</span><span class="p">))</span>
     <span class="n">evenPoint</span> <span class="o">=</span> <span class="n">compare</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -221,7 +221,7 @@
         
         
 <div class="viewcode-block" id="tsysspwmap">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.tsysspwmap.html#pipeline.extern.almahelpers.tsysspwmap">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.tsysspwmap.html#pipeline.extern.TsysDataClassFile.tsysspwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">tsysspwmap</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">tsystable</span><span class="p">,</span><span class="n">trim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">relax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tsysChanTol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations</span>
@@ -318,7 +318,7 @@
 
 
 <div class="viewcode-block" id="fixsyscaltimes">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.fixsyscaltimes.html#pipeline.extern.almahelpers.fixsyscaltimes">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.fixsyscaltimes.html#pipeline.extern.TsysDataClassFile.fixsyscaltimes">[docs]</a>
 <span class="k">def</span> <span class="nf">fixsyscaltimes</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span><span class="n">newinterval</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fix TIME,INTERVAL columns in MS SYSCAL subtable</span>
@@ -405,7 +405,7 @@
 
 
 <div class="viewcode-block" id="calantsub">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.calantsub.html#pipeline.extern.almahelpers.calantsub">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.calantsub.html#pipeline.extern.TsysDataClassFile.calantsub">[docs]</a>
 <span class="k">def</span> <span class="nf">calantsub</span><span class="p">(</span><span class="n">incaltable</span><span class="p">,</span><span class="n">outcaltable</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
               <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
               <span class="n">ant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">subant</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -545,7 +545,7 @@
 
 
 <div class="viewcode-block" id="editIntentscsv">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.editIntentscsv.html#pipeline.extern.almahelpers.editIntentscsv">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.editIntentscsv.html#pipeline.extern.TsysDataClassFile.editIntentscsv">[docs]</a>
 <span class="k">def</span> <span class="nf">editIntentscsv</span><span class="p">(</span><span class="n">intentcsv</span><span class="p">,</span> <span class="n">dryrun</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a list of parameters from a csv text file and runs editIntents on them.</span>
@@ -595,7 +595,7 @@
 
 
 <div class="viewcode-block" id="editIntents">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.editIntents.html#pipeline.extern.almahelpers.editIntents">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.editIntents.html#pipeline.extern.TsysDataClassFile.editIntents">[docs]</a>
 <span class="k">def</span> <span class="nf">editIntents</span><span class="p">(</span><span class="n">msName</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">newintents</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
                 <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -771,7 +771,7 @@
 
 
 <div class="viewcode-block" id="genImageName">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.genImageName.html#pipeline.extern.almahelpers.genImageName">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.almahelpers.genImageName.html#pipeline.extern.TsysDataClassFile.genImageName">[docs]</a>
 <span class="k">def</span> <span class="nf">genImageName</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">imtype</span><span class="o">=</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="n">targettype</span><span class="o">=</span><span class="s1">&#39;sci&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">mous</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">modtext</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">):</span>
     <span class="c1"># DPetry, Sept 2017</span>
 

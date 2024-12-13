@@ -1,23 +1,6 @@
 pipeline.h.cli.h\_restoredata
 =============================
 
-.. automodule:: pipeline.h.cli.h_restoredata
+.. currentmodule:: pipeline.h.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: h_restoredata

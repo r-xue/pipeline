@@ -9,6 +9,14 @@ pipeline.h.tasks.restoredata.restoredata
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      alma_renorm
+   
    
 
    

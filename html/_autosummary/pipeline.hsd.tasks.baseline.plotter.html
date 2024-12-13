@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -152,6 +156,12 @@
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.binned_mean_ma.html#pipeline.hsd.tasks.baseline.plotter.binned_mean_ma" title="pipeline.hsd.tasks.baseline.plotter.binned_mean_ma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binned_mean_ma</span></code></a></p></td>
 <td><p>Bin an array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.casa5style_plot.html#pipeline.hsd.tasks.baseline.plotter.casa5style_plot" title="pipeline.hsd.tasks.baseline.plotter.casa5style_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">casa5style_plot</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.ch_to_freq.html#pipeline.hsd.tasks.baseline.plotter.ch_to_freq" title="pipeline.hsd.tasks.baseline.plotter.ch_to_freq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ch_to_freq</span></code></a></p></td>
+<td><p>Convert channel into frequency.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.configure_1d_panel.html#pipeline.hsd.tasks.baseline.plotter.configure_1d_panel" title="pipeline.hsd.tasks.baseline.plotter.configure_1d_panel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_1d_panel</span></code></a></p></td>
 <td><p>Configure linear mapping between grid table index and sparse map panel.</p></td>
@@ -188,13 +198,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.BinnedStat.html#pipeline.hsd.tasks.baseline.plotter.BinnedStat" title="pipeline.hsd.tasks.baseline.plotter.BinnedStat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinnedStat</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage" title="pipeline.hsd.tasks.baseline.plotter.PlotDataStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotDataStorage</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.MaskedArray.html#pipeline.hsd.tasks.baseline.plotter.MaskedArray" title="pipeline.hsd.tasks.baseline.plotter.MaskedArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MaskedArray</span></code></a></p></td>
+<td><p>An array class with possibly masked values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.PlotDataStorage.html#pipeline.hsd.tasks.baseline.plotter.PlotDataStorage" title="pipeline.hsd.tasks.baseline.plotter.PlotDataStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotDataStorage</span></code></a></p></td>
 <td><p>Storage class to hold array data for plotting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.PlotterPool.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool" title="pipeline.hsd.tasks.baseline.plotter.PlotterPool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterPool</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.PlotterPool.html#pipeline.hsd.tasks.baseline.plotter.PlotterPool" title="pipeline.hsd.tasks.baseline.plotter.PlotterPool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotterPool</span></code></a></p></td>
 <td><p>Pool class to hold resources for plotting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.QualityStat.html#pipeline.hsd.tasks.baseline.plotter.QualityStat" title="pipeline.hsd.tasks.baseline.plotter.QualityStat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualityStat</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.plotter.QualityStat.html#pipeline.hsd.tasks.baseline.plotter.QualityStat" title="pipeline.hsd.tasks.baseline.plotter.QualityStat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualityStat</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

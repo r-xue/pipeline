@@ -9,6 +9,15 @@ pipeline.hif.tasks.uvcontsub.uvcontsub
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      namedtuple
+      nested_dict
+   
    
 
    
@@ -20,6 +29,7 @@ pipeline.hif.tasks.uvcontsub.uvcontsub
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       SerialUVcontSub
       UVcontSub
       UVcontSubInputs

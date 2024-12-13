@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -125,7 +125,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.AntennaArray">[docs]</a>
 <span class="k">class</span> <span class="nc">AntennaArray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    AntennaArray is a logical representation of the antenna array.</span>
@@ -280,7 +280,7 @@
                           <span class="n">datum</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AntennaArray.baselines_for_antennas">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray.baselines_for_antennas">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.AntennaArray.baselines_for_antennas">[docs]</a>
     <span class="k">def</span> <span class="nf">baselines_for_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Baseline</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of Baseline tuples for input antenna IDs.</span>
@@ -361,7 +361,7 @@
         <span class="k">return</span> <span class="n">baselines</span>
 
 <div class="viewcode-block" id="AntennaArray.get_offset">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray.get_offset">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.AntennaArray.get_offset">[docs]</a>
     <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="n">Antenna</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Distance</span><span class="p">,</span> <span class="n">Distance</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the offset of the given antenna from the centre of the array.</span>
@@ -382,7 +382,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray.get_baseline">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray.get_baseline">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.AntennaArray.get_baseline">[docs]</a>
     <span class="k">def</span> <span class="nf">get_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Baseline</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the baseline distance between two antennas.</span>
@@ -427,7 +427,7 @@
 
 
 <div class="viewcode-block" id="AntennaArray.get_antenna">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray.get_antenna">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.AntennaArray.get_antenna">[docs]</a>
     <span class="k">def</span> <span class="nf">get_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Antenna</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Antenna object for given antenna ID or name.</span>

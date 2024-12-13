@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -151,6 +155,18 @@
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.BandpassResults.html#pipeline.hif.tasks.bandpass.common.BandpassResults" title="pipeline.hif.tasks.bandpass.common.BandpassResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassResults</span></code></a></p></td>
 <td><p>BandpassResults is the results class common to all pipeline bandpass calibration tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.CalApplication.html#pipeline.hif.tasks.bandpass.common.CalApplication" title="pipeline.hif.tasks.bandpass.common.CalApplication"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalApplication</span></code></a></p></td>
+<td><p>CalApplication maps calibration tables and their application arguments to</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.CalFrom.html#pipeline.hif.tasks.bandpass.common.CalFrom" title="pipeline.hif.tasks.bandpass.common.CalFrom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalFrom</span></code></a></p></td>
+<td><p>CalFrom represents a calibration table and the CASA arguments that should be used when applying that calibration table.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.CalToArgs.html#pipeline.hif.tasks.bandpass.common.CalToArgs" title="pipeline.hif.tasks.bandpass.common.CalToArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalToArgs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.Context.html#pipeline.hif.tasks.bandpass.common.Context" title="pipeline.hif.tasks.bandpass.common.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs.html#pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs" title="pipeline.hif.tasks.bandpass.common.VdpCommonBandpassInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VdpCommonBandpassInputs</span></code></a></p></td>
 <td><p>CommonBandpassInputs is the base class for defines inputs that are common to all pipeline bandpass calibration tasks.</p></td>

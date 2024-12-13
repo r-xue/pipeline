@@ -23,6 +23,8 @@ pipeline.hsd.heuristics.grouping2
       GroupByPosition2
       GroupByTime2
       MergeGapTables2
+      NewType
+      Real
       ThresholdForGroupByTime
    
    

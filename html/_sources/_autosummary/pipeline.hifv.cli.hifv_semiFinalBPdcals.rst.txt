@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_semiFinalBPdcals
 ========================================
 
-.. automodule:: pipeline.hifv.cli.hifv_semiFinalBPdcals
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_semiFinalBPdcals

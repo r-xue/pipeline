@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -135,7 +135,7 @@
 
 
 <div class="viewcode-block" id="T2_4MDetailsTsysflagRenderer">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer.html#pipeline.h.tasks.tsysflag.renderer.T2_4MDetailsTsysflagRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.T2_4MDetailsTsysflagRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">T2_4MDetailsTsysflagRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
     <span class="c1"># list of intents to consider for the summary table (only the ones that actually exist will be shown)</span>
     <span class="n">task_intents</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
@@ -424,7 +424,7 @@
 
 
 <div class="viewcode-block" id="plot_slice_displays">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_slice_displays.html#pipeline.h.tasks.tsysflag.renderer.plot_slice_displays">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_slice_displays.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.plot_slice_displays">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_slice_displays</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create Slice plots for the given Tsys metric.</span>
@@ -446,7 +446,7 @@
 
 
 <div class="viewcode-block" id="plot_image_displays">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_image_displays.html#pipeline.h.tasks.tsysflag.renderer.plot_image_displays">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_image_displays.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.plot_image_displays">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_image_displays</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
     <span class="n">plotter</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">ImageDisplay</span><span class="p">()</span>
     <span class="n">plots</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="o">=</span><span class="n">reportdir</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">name_of_metric</span><span class="p">)</span>
@@ -458,7 +458,7 @@
 
 
 <div class="viewcode-block" id="plot_tsys_spectra">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra.html#pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.plot_tsys_spectra.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.plot_tsys_spectra">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_tsys_spectra</span><span class="p">(</span><span class="n">name_of_metric</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_for_metric</span><span class="p">,</span> <span class="n">reportdir</span><span class="p">):</span>
     <span class="n">plots</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -498,7 +498,7 @@
 
 
 <div class="viewcode-block" id="ensure_vis_in_plot_metadata">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata.html#pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.ensure_vis_in_plot_metadata.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.ensure_vis_in_plot_metadata">[docs]</a>
 <span class="k">def</span> <span class="nf">ensure_vis_in_plot_metadata</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update Plot parameters with the given vis metadata if required.</span>
@@ -515,7 +515,7 @@
 
 
 <div class="viewcode-block" id="convert_field_id_to_field_names">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names.html#pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.convert_field_id_to_field_names.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.convert_field_id_to_field_names">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_field_id_to_field_names</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert field IDs in the Plot to field names where possible.</span>
@@ -541,7 +541,7 @@
 
 
 <div class="viewcode-block" id="create_plot_detail_page">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page.html#pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.create_plot_detail_page.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.create_plot_detail_page">[docs]</a>
 <span class="k">def</span> <span class="nf">create_plot_detail_page</span><span class="p">(</span><span class="n">metric_mapping</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create and render any detail plots required for the Tsys result.</span>
@@ -590,7 +590,7 @@
 
 
 <div class="viewcode-block" id="get_plots">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.get_plots.html#pipeline.h.tasks.tsysflag.renderer.get_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.get_plots.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.get_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">get_plots</span><span class="p">(</span><span class="n">plot_fn</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results_list</span><span class="p">,</span> <span class="n">name_of_metric</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate detail plots for a Tsys flagging metric, returning a list of Plot</span>
@@ -624,7 +624,7 @@
 
 
 <div class="viewcode-block" id="PlotDetailRenderer">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.PlotDetailRenderer">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotDetailRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">JsonPlotRenderer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Standard Mako renderer used to render all Tsys plot detail pages.</span>
@@ -643,7 +643,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">PlotDetailRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">template_uri</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PlotDetailRenderer.update_json_dict">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.html#pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.update_json_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.tsysflag.renderer.PlotDetailRenderer.html#pipeline.hifa.tasks.tsysflag_contamination.renderer.PlotDetailRenderer.update_json_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">update_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;intent&#39;</span> <span class="ow">in</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span></div>

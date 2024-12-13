@@ -28,6 +28,9 @@ pipeline.hsd.tasks.imaging.gridding
       :template: custom-class-template.rst
       :nosignatures:
    
+      Accumulator
+      DataTableIndexer
+      DataType
       GriddingBase
       GriddingInputs
       GriddingResults

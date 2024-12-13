@@ -20,6 +20,8 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -31,7 +33,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +59,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +80,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +167,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -224,10 +239,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.XYlabel.html#pipeline.infrastructure.displays.pointing.XYlabel" title="pipeline.infrastructure.displays.pointing.XYlabel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XYlabel</span></code></a></p></td>
 <td><p>Create labels for the x- and y-axes in plot.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.draw_beam.html#pipeline.infrastructure.displays.pointing.draw_beam" title="pipeline.infrastructure.displays.pointing.draw_beam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_beam</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.casa5style_plot.html#pipeline.infrastructure.displays.pointing.casa5style_plot" title="pipeline.infrastructure.displays.pointing.casa5style_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">casa5style_plot</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.draw_beam.html#pipeline.infrastructure.displays.pointing.draw_beam" title="pipeline.infrastructure.displays.pointing.draw_beam"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_beam</span></code></a></p></td>
 <td><p>Draw circle indicating beam size.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.draw_pointing.html#pipeline.infrastructure.displays.pointing.draw_pointing" title="pipeline.infrastructure.displays.pointing.draw_pointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_pointing</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.draw_pointing.html#pipeline.infrastructure.displays.pointing.draw_pointing" title="pipeline.infrastructure.displays.pointing.draw_pointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_pointing</span></code></a></p></td>
 <td><p>Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.</p></td>
 </tr>
 </tbody>
@@ -235,13 +253,46 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.infrastructure.displays.pointing.Antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antenna</span></code></a></p></td>
+<td><p>Antenna is a logical representation of an antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.AutoLocator.html#pipeline.infrastructure.displays.pointing.AutoLocator" title="pipeline.infrastructure.displays.pointing.AutoLocator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AutoLocator</span></code></a></p></td>
+<td><p>Dynamically find major tick positions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Axes.html#pipeline.infrastructure.displays.pointing.Axes" title="pipeline.infrastructure.displays.pointing.Axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Axes</span></code></a></p></td>
+<td><p>The <cite>Axes</cite> contains most of the figure elements: <cite>~.axis.Axis</cite>, <cite>~.axis.Tick</cite>, <cite>~.lines.Line2D</cite>, <cite>~.text.Text</cite>, <cite>~.patches.Polygon</cite>, etc., and sets the coordinate system.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.DataTable.html#pipeline.infrastructure.displays.pointing.DataTable" title="pipeline.infrastructure.displays.pointing.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Formatter.html#pipeline.infrastructure.displays.pointing.Formatter" title="pipeline.infrastructure.displays.pointing.Formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Formatter</span></code></a></p></td>
+<td><p>Create a string based on a tick value and location.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.FuncFormatter.html#pipeline.infrastructure.displays.pointing.FuncFormatter" title="pipeline.infrastructure.displays.pointing.FuncFormatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FuncFormatter</span></code></a></p></td>
+<td><p>Use a user-defined function for formatting.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Integral.html#pipeline.infrastructure.displays.pointing.Integral" title="pipeline.infrastructure.displays.pointing.Integral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Integral</span></code></a></p></td>
+<td><p>Integral adds methods that work on integral numbers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator" title="pipeline.infrastructure.displays.pointing.Locator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Locator</span></code></a></p></td>
+<td><p>Determine the tick locations;</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.MapAxesManagerBase.html#pipeline.infrastructure.displays.pointing.MapAxesManagerBase" title="pipeline.infrastructure.displays.pointing.MapAxesManagerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MapAxesManagerBase</span></code></a></p></td>
 <td><p>Base class for MapAxesManager classes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.PointingAxesManager.html#pipeline.infrastructure.displays.pointing.PointingAxesManager" title="pipeline.infrastructure.displays.pointing.PointingAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointingAxesManager</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.MeasurementSet.html#pipeline.infrastructure.displays.pointing.MeasurementSet" title="pipeline.infrastructure.displays.pointing.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.MultipleLocator.html#pipeline.infrastructure.displays.pointing.MultipleLocator" title="pipeline.infrastructure.displays.pointing.MultipleLocator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultipleLocator</span></code></a></p></td>
+<td><p>Set a tick on each integer multiple of a base within the view interval.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Plot.html#pipeline.infrastructure.displays.pointing.Plot" title="pipeline.infrastructure.displays.pointing.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.PointingAxesManager.html#pipeline.infrastructure.displays.pointing.PointingAxesManager" title="pipeline.infrastructure.displays.pointing.PointingAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointingAxesManager</span></code></a></p></td>
 <td><p>Creates and manages Axes instance for pointing plot.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.SingleDishPointingChart.html#pipeline.infrastructure.displays.pointing.SingleDishPointingChart" title="pipeline.infrastructure.displays.pointing.SingleDishPointingChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleDishPointingChart</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.pointing.SingleDishPointingChart.html#pipeline.infrastructure.displays.pointing.SingleDishPointingChart" title="pipeline.infrastructure.displays.pointing.SingleDishPointingChart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleDishPointingChart</span></code></a></p></td>
 <td><p>Generate pointing plots.</p></td>
 </tr>
 </tbody>

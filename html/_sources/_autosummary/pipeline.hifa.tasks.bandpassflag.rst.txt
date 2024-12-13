@@ -13,6 +13,15 @@ pipeline.hifa.tasks.bandpassflag
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Bandpassflag
+   
    
 
    

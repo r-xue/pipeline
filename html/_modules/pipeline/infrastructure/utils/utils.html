@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -150,7 +150,7 @@
 
 
 <div class="viewcode-block" id="find_ranges">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.find_ranges.html#pipeline.infrastructure.utils.utils.find_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.find_ranges.html#pipeline.domain.datatable.find_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">find_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify numeric ranges in string or list.</span>
 
@@ -190,7 +190,7 @@
 
 
 <div class="viewcode-block" id="dict_merge">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dict_merge.html#pipeline.infrastructure.utils.utils.dict_merge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dict_merge.html#pipeline.domain.datatable.dict_merge">[docs]</a>
 <span class="k">def</span> <span class="nf">dict_merge</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively merge dictionaries.</span>
 
@@ -216,7 +216,7 @@
 
 
 <div class="viewcode-block" id="are_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.are_equal.html#pipeline.infrastructure.utils.utils.are_equal">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.are_equal.html#pipeline.domain.datatable.are_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">are_equal</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the contents of the given arrays are equal.</span>
 
@@ -235,7 +235,7 @@
 
 
 <div class="viewcode-block" id="approx_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.approx_equal.html#pipeline.infrastructure.utils.utils.approx_equal">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.approx_equal.html#pipeline.domain.datatable.approx_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">approx_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-15</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two numbers are equal within the given tolerance.</span>
 
@@ -255,7 +255,7 @@
 
 
 <div class="viewcode-block" id="get_num_caltable_polarizations">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_num_caltable_polarizations.html#pipeline.infrastructure.utils.utils.get_num_caltable_polarizations">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_num_caltable_polarizations.html#pipeline.domain.datatable.get_num_caltable_polarizations">[docs]</a>
 <span class="k">def</span> <span class="nf">get_num_caltable_polarizations</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain number of polarisations from calibration table.</span>
 
@@ -285,7 +285,7 @@
 
 
 <div class="viewcode-block" id="flagged_intervals">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.flagged_intervals.html#pipeline.infrastructure.utils.utils.flagged_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.flagged_intervals.html#pipeline.domain.datatable.flagged_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">flagged_intervals</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Idendity isnads of ones in input array or list.</span>
 
@@ -314,7 +314,7 @@
 
 
 <div class="viewcode-block" id="fieldname_for_casa">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_for_casa.html#pipeline.infrastructure.utils.utils.fieldname_for_casa">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_for_casa.html#pipeline.domain.datatable.fieldname_for_casa">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare field string to be used as CASA argument.</span>
 
@@ -334,7 +334,7 @@
 
 
 <div class="viewcode-block" id="fieldname_clean">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_clean.html#pipeline.infrastructure.utils.utils.fieldname_clean">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_clean.html#pipeline.domain.datatable.fieldname_clean">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldname_clean</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicate if the fieldname is allowed as-is.</span>
 
@@ -353,7 +353,7 @@
 
 
 <div class="viewcode-block" id="get_field_accessor">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_field_accessor.html#pipeline.infrastructure.utils.utils.get_field_accessor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_field_accessor.html#pipeline.domain.datatable.get_field_accessor">[docs]</a>
 <span class="k">def</span> <span class="nf">get_field_accessor</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns accessor to field name or field ID, if field name is ambiguous.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -368,7 +368,7 @@
 
 
 <div class="viewcode-block" id="get_field_identifiers">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_field_identifiers.html#pipeline.infrastructure.utils.utils.get_field_identifiers">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_field_identifiers.html#pipeline.domain.datatable.get_field_identifiers">[docs]</a>
 <span class="k">def</span> <span class="nf">get_field_identifiers</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps numeric field IDs to field names.</span>
 
@@ -382,7 +382,7 @@
 
 
 <div class="viewcode-block" id="get_receiver_type_for_spws">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_receiver_type_for_spws.html#pipeline.infrastructure.utils.utils.get_receiver_type_for_spws">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_receiver_type_for_spws.html#pipeline.domain.datatable.get_receiver_type_for_spws">[docs]</a>
 <span class="k">def</span> <span class="nf">get_receiver_type_for_spws</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return dictionary of receiver types for requested spectral window IDs.</span>
 
@@ -408,7 +408,7 @@
 
 
 <div class="viewcode-block" id="get_spectralspec_to_spwid_map">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_spectralspec_to_spwid_map.html#pipeline.infrastructure.utils.utils.get_spectralspec_to_spwid_map">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_spectralspec_to_spwid_map.html#pipeline.domain.datatable.get_spectralspec_to_spwid_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">spws</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary of spectral specs mapped to corresponding spectral</span>
@@ -426,7 +426,7 @@
 
 
 <div class="viewcode-block" id="imstat_items">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.imstat_items.html#pipeline.infrastructure.utils.utils.imstat_items">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.imstat_items.html#pipeline.domain.datatable.imstat_items">[docs]</a>
 <span class="k">def</span> <span class="nf">imstat_items</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract desired stats properties (per Stokes) using ia.statistics().</span>
 
@@ -468,7 +468,7 @@
 
 
 <div class="viewcode-block" id="get_stokes">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_stokes.html#pipeline.infrastructure.utils.utils.get_stokes">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_stokes.html#pipeline.domain.datatable.get_stokes">[docs]</a>
 <span class="k">def</span> <span class="nf">get_stokes</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the labels of all stokes planes present in a CASA image.&quot;&quot;&quot;</span>
 
@@ -483,7 +483,7 @@
 
 
 <div class="viewcode-block" id="get_casa_quantity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_casa_quantity.html#pipeline.infrastructure.utils.utils.get_casa_quantity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_casa_quantity.html#pipeline.domain.datatable.get_casa_quantity">[docs]</a>
 <span class="k">def</span> <span class="nf">get_casa_quantity</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around quanta.quantity() that handles None input.</span>
 
@@ -508,7 +508,7 @@
 
 
 <div class="viewcode-block" id="get_si_prefix">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_si_prefix.html#pipeline.infrastructure.utils.utils.get_si_prefix">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_si_prefix.html#pipeline.domain.datatable.get_si_prefix">[docs]</a>
 <span class="k">def</span> <span class="nf">get_si_prefix</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="n">lztol</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the best SI unit prefix option for a numeric value.</span>
 
@@ -562,7 +562,7 @@
 
 
 <div class="viewcode-block" id="absolute_path">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.absolute_path.html#pipeline.infrastructure.utils.utils.absolute_path">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.domain.datatable.absolute_path.html#pipeline.domain.datatable.absolute_path">[docs]</a>
 <span class="k">def</span> <span class="nf">absolute_path</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an absolute path of a given file.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">name</span><span class="p">)))</span></div>
@@ -570,7 +570,7 @@
 
 
 <div class="viewcode-block" id="relative_path">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.relative_path.html#pipeline.infrastructure.utils.utils.relative_path">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.relative_path.html#pipeline.domain.datatable.relative_path">[docs]</a>
 <span class="k">def</span> <span class="nf">relative_path</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retun a relative path of a given file with respect a given origin.</span>
@@ -593,7 +593,7 @@
 
 
 <div class="viewcode-block" id="get_task_result_count">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_task_result_count.html#pipeline.infrastructure.utils.utils.get_task_result_count">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_task_result_count.html#pipeline.domain.datatable.get_task_result_count">[docs]</a>
 <span class="k">def</span> <span class="nf">get_task_result_count</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">taskname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;hif_makeimages&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Count occurrences of a task result in the context.results list.</span>
 
@@ -621,7 +621,7 @@
 
 
 <div class="viewcode-block" id="place_repr_source_first">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.place_repr_source_first.html#pipeline.infrastructure.utils.utils.place_repr_source_first">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.place_repr_source_first.html#pipeline.domain.datatable.place_repr_source_first">[docs]</a>
 <span class="k">def</span> <span class="nf">place_repr_source_first</span><span class="p">(</span><span class="n">itemlist</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]],</span> <span class="n">repr_source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Place representative source first in a list of source names</span>
@@ -645,7 +645,7 @@
 
 
 <div class="viewcode-block" id="shutdown_plotms">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.shutdown_plotms.html#pipeline.infrastructure.utils.utils.shutdown_plotms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.shutdown_plotms.html#pipeline.domain.datatable.shutdown_plotms">[docs]</a>
 <span class="k">def</span> <span class="nf">shutdown_plotms</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Shutdown the existing plotms process in the current CASA session.</span>
 
@@ -672,7 +672,7 @@
 
 
 <div class="viewcode-block" id="get_casa_session_details">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_casa_session_details.html#pipeline.infrastructure.utils.utils.get_casa_session_details">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_casa_session_details.html#pipeline.domain.datatable.get_casa_session_details">[docs]</a>
 <span class="k">def</span> <span class="nf">get_casa_session_details</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current CASA session details.</span>
 
@@ -699,7 +699,7 @@
 
 
 <div class="viewcode-block" id="get_taskhistory_fromimage">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_taskhistory_fromimage.html#pipeline.infrastructure.utils.utils.get_taskhistory_fromimage">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_taskhistory_fromimage.html#pipeline.domain.datatable.get_taskhistory_fromimage">[docs]</a>
 <span class="k">def</span> <span class="nf">get_taskhistory_fromimage</span><span class="p">(</span><span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve past CASA/tclean() call parameters from the image history.</span>
 
@@ -737,7 +737,7 @@
 
 
 <div class="viewcode-block" id="get_obj_size">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_obj_size.html#pipeline.infrastructure.utils.utils.get_obj_size">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_obj_size.html#pipeline.domain.datatable.get_obj_size">[docs]</a>
 <span class="k">def</span> <span class="nf">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">serialize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the size of a Python object.</span>
 
@@ -768,7 +768,7 @@
 
 
 <div class="viewcode-block" id="glob_ordered">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.glob_ordered.html#pipeline.infrastructure.utils.utils.glob_ordered">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.glob_ordered.html#pipeline.domain.datatable.glob_ordered">[docs]</a>
 <span class="k">def</span> <span class="nf">glob_ordered</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a sorted list of paths matching a pathname pattern.&quot;&quot;&quot;</span>
 
@@ -789,7 +789,7 @@
 
 
 <div class="viewcode-block" id="deduplicate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.deduplicate.html#pipeline.infrastructure.utils.utils.deduplicate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.deduplicate.html#pipeline.domain.datatable.deduplicate">[docs]</a>
 <span class="k">def</span> <span class="nf">deduplicate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove duplicate entries from a list, but preserve the order.</span>
 
@@ -806,7 +806,7 @@
 
 
 <div class="viewcode-block" id="ignore_pointing">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.ignore_pointing.html#pipeline.infrastructure.utils.utils.ignore_pointing">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.ignore_pointing.html#pipeline.domain.datatable.ignore_pointing">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">ignore_pointing</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager to ignore pointing tables of MSes during I/O operations.</span>
@@ -870,7 +870,7 @@
 
 
 <div class="viewcode-block" id="request_omp_threading">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.request_omp_threading.html#pipeline.infrastructure.utils.utils.request_omp_threading">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.request_omp_threading.html#pipeline.domain.datatable.request_omp_threading">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">request_omp_threading</span><span class="p">(</span><span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager to override the session-wise OMP threading setting on CASA MPI client.</span>
@@ -949,7 +949,7 @@
 
 
 <div class="viewcode-block" id="open_with_lock">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.open_with_lock.html#pipeline.infrastructure.utils.utils.open_with_lock">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.open_with_lock.html#pipeline.domain.datatable.open_with_lock">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">open_with_lock</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Open file with a lock.</span>
@@ -1007,7 +1007,7 @@
 
 
 <div class="viewcode-block" id="ensure_products_dir_exists">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.ensure_products_dir_exists.html#pipeline.infrastructure.utils.utils.ensure_products_dir_exists">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.ensure_products_dir_exists.html#pipeline.domain.datatable.ensure_products_dir_exists">[docs]</a>
 <span class="k">def</span> <span class="nf">ensure_products_dir_exists</span><span class="p">(</span><span class="n">products_dir</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating products directory: </span><span class="si">{</span><span class="n">products_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1019,7 +1019,7 @@
 
 
 <div class="viewcode-block" id="export_weblog_as_tar">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.export_weblog_as_tar.html#pipeline.infrastructure.utils.utils.export_weblog_as_tar">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.export_weblog_as_tar.html#pipeline.domain.datatable.export_weblog_as_tar">[docs]</a>
 <span class="k">def</span> <span class="nf">export_weblog_as_tar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">name_builder</span><span class="p">):</span>
     <span class="c1"># Construct filename prefix from oussid and recipe name if available.</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
@@ -1041,7 +1041,7 @@
 
 
 <div class="viewcode-block" id="get_products_dir">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_products_dir.html#pipeline.infrastructure.utils.utils.get_products_dir">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_products_dir.html#pipeline.domain.datatable.get_products_dir">[docs]</a>
 <span class="k">def</span> <span class="nf">get_products_dir</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">products_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
@@ -1051,7 +1051,7 @@
 
 
 <div class="viewcode-block" id="pl_defaultdict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.pl_defaultdict.html#pipeline.infrastructure.utils.utils.pl_defaultdict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.pl_defaultdict.html#pipeline.domain.datatable.pl_defaultdict">[docs]</a>
 <span class="k">class</span> <span class="nc">pl_defaultdict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -1062,14 +1062,14 @@
 
 
 <div class="viewcode-block" id="nested_dict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.nested_dict.html#pipeline.infrastructure.utils.utils.nested_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.nested_dict.html#pipeline.domain.datatable.nested_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">nested_dict</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">pl_defaultdict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="to_plain_dict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.to_plain_dict.html#pipeline.infrastructure.utils.utils.to_plain_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.to_plain_dict.html#pipeline.domain.datatable.to_plain_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">to_plain_dict</span><span class="p">(</span><span class="n">default_dict</span><span class="p">):</span>
     <span class="n">plain_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1083,7 +1083,7 @@
 
 
 <div class="viewcode-block" id="string_to_val">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.string_to_val.html#pipeline.infrastructure.utils.utils.string_to_val">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.string_to_val.html#pipeline.domain.datatable.string_to_val">[docs]</a>
 <span class="k">def</span> <span class="nf">string_to_val</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a string to a Python data type.</span>
@@ -1102,7 +1102,7 @@
 
 
 <div class="viewcode-block" id="remove_trailing_string">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.remove_trailing_string.html#pipeline.infrastructure.utils.utils.remove_trailing_string">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.remove_trailing_string.html#pipeline.domain.datatable.remove_trailing_string">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_trailing_string</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove a trailing string if it exists.</span>
@@ -1115,7 +1115,7 @@
 
 
 <div class="viewcode-block" id="list_to_str">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.list_to_str.html#pipeline.infrastructure.utils.utils.list_to_str">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.domain.datatable.list_to_str.html#pipeline.domain.datatable.list_to_str">[docs]</a>
 <span class="k">def</span> <span class="nf">list_to_str</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert list or numpy.ndarray into string.</span>
 

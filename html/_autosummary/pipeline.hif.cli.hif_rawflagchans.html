@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_rawflagchans">
-<span id="pipeline-hif-cli-hif-rawflagchans"></span><h1>pipeline.hif.cli.hif_rawflagchans<a class="headerlink" href="#module-pipeline.hif.cli.hif_rawflagchans" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-rawflagchans">
+<h1>pipeline.hif.cli.hif_rawflagchans<a class="headerlink" href="#pipeline-hif-cli-hif-rawflagchans" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_rawflagchans">
+<span class="sig-name descname"><span class="pre">hif_rawflagchans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_hilo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhl_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhl_minsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_bad_quadrant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_hilo_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_antenna_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fbq_baseline_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_rawflagchans.html#hif_rawflagchans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_rawflagchans" title="Link to this definition"></a></dt>
+<dd><p>Flag deviant baseline/channels in raw data</p>
+<p>hif_rawflagchans flags deviant baseline/channels in the raw data.</p>
+<p>The flagging views used are derived from the raw data for the specified
+intent - default is BANDPASS.</p>
+<p>Bad baseline/channels are flagged for all intents, not just the
+one that is the basis of the flagging views.</p>
+<p>For each spectral window the flagging view is a 2d image with axes
+‘channel’ and ‘baseline’. The pixel for each channel, baseline is the
+time average of the underlying unflagged raw data.</p>
+<p>The baseline axis is labeled by numbers of form id1.id2 where id1 and id2
+are the IDs of the baseline antennas. Both id1 and id2 run over all
+antenna IDs in the observation. This means that each baseline is shown
+twice but has the benefit that ‘bad’ antennas are easily identified by
+eye.</p>
+<p>Three flagging methods are available:</p>
+<p>If parameter <code class="docutils literal notranslate"><span class="pre">flag_hilo</span></code> is set True then outliers from the median
+of each flagging view will be flagged.</p>
+<p>If parameter <code class="docutils literal notranslate"><span class="pre">flag_bad_quadrant</span></code> is set True then a simple 2 part
+test is used to check for bad antenna quadrants and/or bad baseline
+quadrants. Here a ‘quadrant’ is defined simply as one quarter of the
+channel axis. The first part of the test is to note as ‘suspect’ those
+points further from the view median than <code class="docutils literal notranslate"><span class="pre">fbq_hilo_limit</span></code> * MAD.
+The second part is to flag entire antenna/quadrants if their
+fraction of suspect points exceeds <code class="docutils literal notranslate"><span class="pre">fbq_antenna_frac_limit</span></code>.
+Failing that, entire baseline/quadrants may be flagged if their
+fraction of suspect points exceeds <code class="docutils literal notranslate"><span class="pre">fbq_baseline_frac_limit</span></code>.
+Suspect points are not flagged unless as part of a bad antenna or
+baseline quadrant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline
+context.</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
+context.
+example: spw=’17’, spw=’11, 15’</p></li>
+<li><p><strong>intent</strong> – A string containing the list of intents to be checked for antennas with deviant gains. The default is blank, which causes the task to select
+the ‘BANDPASS’ intent.
+example: intent=’<cite>*BANDPASS*</cite>’</p></li>
+<li><p><strong>flag_hilo</strong> – True to flag channel/baseline data further from the view median than fhl_limit * MAD.</p></li>
+<li><p><strong>fhl_limit</strong> – If flag_hilo is True then flag channel/baseline data further from the view median than fhl_limit * MAD.</p></li>
+<li><p><strong>fhl_minsample</strong> – Do no flagging if the view median and MAD are derived from fewer than fhl_minsample view pixels.</p></li>
+<li><p><strong>flag_bad_quadrant</strong> – True to search for and flag bad antenna quadrants and baseline quadrants. Here a /’quadrant/’ is one
+quarter of the channel axis.</p></li>
+<li><p><strong>fbq_hilo_limit</strong> – If flag_bad_quadrant is True then channel/baselines further from the view median than fbq_hilo_limit * MAD will be noted as
+‘suspect’. If there are enough of them to indicate that an antenna or
+baseline quadrant is bad then all channel/baselines in that quadrant will
+be flagged.</p></li>
+<li><p><strong>fbq_antenna_frac_limit</strong> – If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular antenna/quadrant exceeds
+fbq_antenna_frac_limit then all data for that antenna/quadrant will
+be flagged.</p></li>
+<li><p><strong>fbq_baseline_frac_limit</strong> – If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular baseline/quadrant exceeds
+fbq_baseline_frac_limit then all data for that baseline/quadrant will
+be flagged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Flag bad quadrants and wild outliers, default method:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_rawflagchans</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>equivalent to:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_rawflagchans</span><span class="p">(</span><span class="n">flag_hilo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fhl_limit</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">flag_bad_quadrant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fbq_hilo_limit</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+<span class="gp">... </span>                 <span class="n">fbq_antenna_frac_limit</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">fbq_baseline_frac_limit</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

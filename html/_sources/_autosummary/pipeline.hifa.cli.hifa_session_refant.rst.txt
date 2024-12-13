@@ -1,23 +1,6 @@
 pipeline.hifa.cli.hifa\_session\_refant
 =======================================
 
-.. automodule:: pipeline.hifa.cli.hifa_session_refant
+.. currentmodule:: pipeline.hifa.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifa_session_refant

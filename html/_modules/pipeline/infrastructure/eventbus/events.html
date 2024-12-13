@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -119,7 +119,7 @@
 
 
 <div class="viewcode-block" id="Event">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.Event.html#pipeline.infrastructure.eventbus.events.Event">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.Event.html#pipeline.infrastructure.timetracker.Event">[docs]</a>
 <span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class inherited by all pipeline events.</span>
@@ -129,7 +129,7 @@
 
 
 <div class="viewcode-block" id="ContextLifecycleEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ContextLifecycleEvent.html#pipeline.infrastructure.eventbus.events.ContextLifecycleEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ContextLifecycleEvent.html#pipeline.infrastructure.timetracker.ContextLifecycleEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ContextLifecycleEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for events related to the lifecycle of the pipeline context.</span>
@@ -149,7 +149,7 @@
 
 
 <div class="viewcode-block" id="ContextCreatedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ContextCreatedEvent.html#pipeline.infrastructure.eventbus.events.ContextCreatedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ContextCreatedEvent.html#pipeline.infrastructure.timetracker.ContextCreatedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ContextCreatedEvent</span><span class="p">(</span><span class="n">ContextLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a pipeline Context is created.</span>
@@ -162,7 +162,7 @@
 
 
 <div class="viewcode-block" id="ContextResumedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ContextResumedEvent.html#pipeline.infrastructure.eventbus.events.ContextResumedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ContextResumedEvent.html#pipeline.infrastructure.timetracker.ContextResumedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ContextResumedEvent</span><span class="p">(</span><span class="n">ContextLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a pipeline Context is resumed.</span>
@@ -175,7 +175,7 @@
 
 
 <div class="viewcode-block" id="TaskLifecycleEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.TaskLifecycleEvent.html#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.TaskLifecycleEvent.html#pipeline.infrastructure.timetracker.TaskLifecycleEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskLifecycleEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for events related to the pipeline task lifecycle.</span>
@@ -190,7 +190,7 @@
 
 
 <div class="viewcode-block" id="TaskStartedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.TaskStartedEvent.html#pipeline.infrastructure.eventbus.events.TaskStartedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.TaskStartedEvent.html#pipeline.infrastructure.timetracker.TaskStartedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskStartedEvent</span><span class="p">(</span><span class="n">TaskLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a pipeline Task is started.</span>
@@ -203,7 +203,7 @@
 
 
 <div class="viewcode-block" id="TaskCompleteEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.TaskCompleteEvent.html#pipeline.infrastructure.eventbus.events.TaskCompleteEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.TaskCompleteEvent.html#pipeline.infrastructure.timetracker.TaskCompleteEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskCompleteEvent</span><span class="p">(</span><span class="n">TaskLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a pipeline Task completes.</span>
@@ -216,7 +216,7 @@
 
 
 <div class="viewcode-block" id="TaskAbnormalExitEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent.html#pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.TaskAbnormalExitEvent.html#pipeline.infrastructure.timetracker.TaskAbnormalExitEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">TaskAbnormalExitEvent</span><span class="p">(</span><span class="n">TaskLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a pipeline Task terminates due to an unexpected error.</span>
@@ -229,7 +229,7 @@
 
 
 <div class="viewcode-block" id="WebLogLifecycleEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent.html#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent.html#pipeline.infrastructure.timetracker.WebLogLifecycleEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogLifecycleEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for events related to weblog generation.</span>
@@ -247,7 +247,7 @@
 
 
 <div class="viewcode-block" id="WebLogRenderingStartedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent.html#pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogRenderingStartedEvent.html#pipeline.infrastructure.timetracker.WebLogRenderingStartedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogRenderingStartedEvent</span><span class="p">(</span><span class="n">WebLogLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when weblog rendering begins.</span>
@@ -260,7 +260,7 @@
 
 
 <div class="viewcode-block" id="WebLogRenderingCompleteEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent.html#pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogRenderingCompleteEvent.html#pipeline.infrastructure.timetracker.WebLogRenderingCompleteEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogRenderingCompleteEvent</span><span class="p">(</span><span class="n">WebLogLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when weblog rendering ends.</span>
@@ -273,7 +273,7 @@
 
 
 <div class="viewcode-block" id="WebLogStageLifecycleEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent.html#pipeline.infrastructure.eventbus.events.WebLogStageLifecycleEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.WebLogStageLifecycleEvent.html#pipeline.infrastructure.timetracker.WebLogStageLifecycleEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogStageLifecycleEvent</span><span class="p">(</span><span class="n">WebLogLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for events related to weblog rendering of a specific stage.</span>
@@ -287,7 +287,7 @@
 
 
 <div class="viewcode-block" id="WebLogStageRenderingStartedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent.html#pipeline.infrastructure.eventbus.events.WebLogStageRenderingStartedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.WebLogStageRenderingStartedEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingStartedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogStageRenderingStartedEvent</span><span class="p">(</span><span class="n">WebLogStageLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when stage rendering begins.</span>
@@ -300,7 +300,7 @@
 
 
 <div class="viewcode-block" id="WebLogStageRenderingCompleteEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent.html#pipeline.infrastructure.eventbus.events.WebLogStageRenderingCompleteEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.WebLogStageRenderingCompleteEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingCompleteEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogStageRenderingCompleteEvent</span><span class="p">(</span><span class="n">WebLogStageLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when stage rendering ends.</span>
@@ -313,7 +313,7 @@
 
 
 <div class="viewcode-block" id="WebLogStageRenderingAbnormalExitEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent.html#pipeline.infrastructure.eventbus.events.WebLogStageRenderingAbnormalExitEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.WebLogStageRenderingAbnormalExitEvent.html#pipeline.infrastructure.timetracker.WebLogStageRenderingAbnormalExitEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogStageRenderingAbnormalExitEvent</span><span class="p">(</span><span class="n">WebLogStageLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when stage rendering exits due to error.</span>
@@ -326,7 +326,7 @@
 
 
 <div class="viewcode-block" id="ResultLifecycleEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ResultLifecycleEvent.html#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ResultLifecycleEvent.html#pipeline.infrastructure.timetracker.ResultLifecycleEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ResultLifecycleEvent</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for events related to the acceptance of a pipeline Result.</span>
@@ -341,7 +341,7 @@
 
 
 <div class="viewcode-block" id="ResultAcceptingEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ResultAcceptingEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptingEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ResultAcceptingEvent.html#pipeline.infrastructure.timetracker.ResultAcceptingEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ResultAcceptingEvent</span><span class="p">(</span><span class="n">ResultLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a Result is accepted into the Context.</span>
@@ -354,7 +354,7 @@
 
 
 <div class="viewcode-block" id="ResultAcceptedEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ResultAcceptedEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptedEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ResultAcceptedEvent.html#pipeline.infrastructure.timetracker.ResultAcceptedEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ResultAcceptedEvent</span><span class="p">(</span><span class="n">ResultLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when a Result has been successfully incorporated into the Context.</span>
@@ -367,7 +367,7 @@
 
 
 <div class="viewcode-block" id="ResultAcceptErrorEvent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.timetracker.ResultAcceptErrorEvent.html#pipeline.infrastructure.timetracker.ResultAcceptErrorEvent">[docs]</a>
 <span class="k">class</span> <span class="nc">ResultAcceptErrorEvent</span><span class="p">(</span><span class="n">TaskLifecycleEvent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when Results acceptance fails due to error.</span>

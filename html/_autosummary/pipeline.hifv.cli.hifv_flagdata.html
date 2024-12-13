@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_flagdata">
-<span id="pipeline-hifv-cli-hifv-flagdata"></span><h1>pipeline.hifv.cli.hifv_flagdata<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_flagdata" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-flagdata">
+<h1>pipeline.hifv.cli.hifv_flagdata<a class="headerlink" href="#pipeline-hifv-cli-hifv-flagdata" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_flagdata">
+<span class="sig-name descname"><span class="pre">hifv_flagdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autocorr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scannumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseband</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgespw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fracspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">online</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileonline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tbuff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_flagdata.html#hifv_flagdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_flagdata" title="Link to this definition"></a></dt>
+<dd><p>Do basic deterministic flagging of a list of MeasurementSets.</p>
+<p>The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:</p>
+<ul class="simple">
+<li><p>autocorrelation data flagging</p></li>
+<li><p>shadowed antenna data flagging</p></li>
+<li><p>scan based flagging</p></li>
+<li><p>edge channel flagging</p></li>
+<li><p>baseband edge flagging</p></li>
+<li><p>applying online flags</p></li>
+<li><p>applying a flagging template</p></li>
+<li><p>quack, shadow, and basebands</p></li>
+<li><p>Antenna not-on-source (ANOS)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>autocorr</strong> – Flag autocorrelation data</p></li>
+<li><p><strong>shadow</strong> – Flag shadowed antennas</p></li>
+<li><p><strong>scan</strong> – Flag specified scans</p></li>
+<li><p><strong>scannumber</strong> – A string containing a  comma delimited list of scans to be flagged. example: ‘3,5,6’</p></li>
+<li><p><strong>quack</strong> – Quack scans</p></li>
+<li><p><strong>clip</strong> – Clip mode</p></li>
+<li><p><strong>baseband</strong> – Flag 20MHz of each edge of basebands</p></li>
+<li><p><strong>intents</strong> – A string containing a comma delimited list of intents against which the scans to be flagged are matched.
+example: <cite>‘*BANDPASS*’</cite></p></li>
+<li><p><strong>edgespw</strong> – Fraction of the baseline correlator TDM edge channels to be flagged.</p></li>
+<li><p><strong>fracspw</strong> – Fraction of baseline correlator edge channels to be flagged.</p></li>
+<li><p><strong>online</strong> – Apply the online flags.</p></li>
+<li><p><strong>fileonline</strong> – File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files
+are undefined a name of the form ‘msname.flagonline.txt’ is assumed.</p></li>
+<li><p><strong>template</strong> – Apply a flagging template.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the flagging template for RFI, birdies, telluric lines, etc.  If the template flags files
+is undefined a name of the form ‘msname.flagtemplate.txt’ is assumed.</p></li>
+<li><p><strong>hm_tbuff</strong> – The time buffer computation heuristic</p></li>
+<li><p><strong>tbuff</strong> – List of time buffers (sec) to pad timerange in flag commands.</p></li>
+<li><p><strong>flagbackup</strong> – Backup pre-existing flags before applying new ones.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Do basic flagging on a MeasurementSet:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_flagdata</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. Do basic flagging on a MeasurementSet as well as flag pointing and
+atmosphere data:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_flagdata</span><span class="p">(</span><span class="n">scan</span><span class="o">=</span><span class="kc">True</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;*BANDPASS*&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

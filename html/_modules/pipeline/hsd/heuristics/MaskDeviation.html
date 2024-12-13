@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -126,10 +126,10 @@
 
 
 <div class="viewcode-block" id="MaskDeviationHeuristic">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic">[docs]</a>
 <span class="k">class</span> <span class="nc">MaskDeviationHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <div class="viewcode-block" id="MaskDeviationHeuristic.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviationHeuristic.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">antenna_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Channel mask heuristics using MaskDeviation algorithm implemented </span>
@@ -151,7 +151,7 @@
 
 
 <div class="viewcode-block" id="MaskDeviation">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation">[docs]</a>
 <span class="k">class</span> <span class="nc">MaskDeviation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class is used to detect channels having large variation or deviation. If there&#39;s any</span>
@@ -168,7 +168,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">masklist</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="MaskDeviation.ReadData">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.ReadData">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation.ReadData">[docs]</a>
     <span class="k">def</span> <span class="nf">ReadData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">colname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads data from input MS. </span>
@@ -212,7 +212,7 @@
 
 
 <div class="viewcode-block" id="MaskDeviation.SubtractMedian">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.SubtractMedian">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation.SubtractMedian">[docs]</a>
     <span class="k">def</span> <span class="nf">SubtractMedian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subtract median value of the spectrum from the spectrum: re-bias the spectrum.</span>
@@ -245,7 +245,7 @@
 
 
 <div class="viewcode-block" id="MaskDeviation.CalcStdSpectrum">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.CalcStdSpectrum">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation.CalcStdSpectrum">[docs]</a>
     <span class="k">def</span> <span class="nf">CalcStdSpectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        meanSP, maxSP, minSP, ymax, ymin: used only for plotting and should be</span>
@@ -273,7 +273,7 @@
 
 
 <div class="viewcode-block" id="MaskDeviation.CalcRange">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.CalcRange">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation.CalcRange">[docs]</a>
     <span class="k">def</span> <span class="nf">CalcRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">detection</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find regions which value is greater than threshold.</span>
@@ -339,7 +339,7 @@
 
 
 <div class="viewcode-block" id="MaskDeviation.ExtendMask">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.ExtendMask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.MaskDeviation.MaskDeviation.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviation.ExtendMask">[docs]</a>
     <span class="k">def</span> <span class="nf">ExtendMask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extend the mask region as long as Standard Deviation value is higher than the given threshold</span>

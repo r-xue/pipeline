@@ -9,6 +9,19 @@ pipeline.hifv.tasks.finalcals.finalcals
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      do_bandpass
+      find_EVLA_band
+      getCalFlaggedSoln
+      standard_sources
+      uvrange
+      weakbp
+   
    
 
    

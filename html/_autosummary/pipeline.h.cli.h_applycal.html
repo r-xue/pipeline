@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.h.cli.h_export_calstate" href="pipeline.h.cli.h_export_calstate.html" />
-    <link rel="prev" title="pipeline.h.cli.cli" href="pipeline.h.cli.cli.html" /> 
+    <link rel="prev" title="pipeline.h.cli" href="pipeline.h.cli.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,15 +111,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.h.cli.h_applycal">
-<span id="pipeline-h-cli-h-applycal"></span><h1>pipeline.h.cli.h_applycal<a class="headerlink" href="#module-pipeline.h.cli.h_applycal" title="Link to this heading"></a></h1>
+  <section id="pipeline-h-cli-h-applycal">
+<h1>pipeline.h.cli.h_applycal<a class="headerlink" href="#pipeline-h-cli-h-applycal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.cli.h_applycal">
+<span class="sig-name descname"><span class="pre">h_applycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parang</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applymode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbackup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagsum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagdetailedsum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_applycal.html#h_applycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.cli.h_applycal" title="Link to this definition"></a></dt>
+<dd><p>Apply the calibration(s) to the data</p>
+<p>Apply precomputed calibrations to the data.</p>
+<p>h_applycal applies the precomputed calibration tables stored in the pipeline
+context to the set of visibility files using predetermined field and
+spectral window maps and default values for the interpolation schemes.</p>
+<p>Users can interact with the pipeline calibration state using the tasks
+h_export_calstate and h_import_calstate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
+example: [‘X227.ms’]</p></li>
+<li><p><strong>field</strong> – A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
+context.
+example: ‘3C279’, ‘3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing the list of intents against which the selected fields will be matched. Defaults to all supported intents
+in the pipeline context.
+example: <cite>‘*TARGET*’</cite></p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
+context.
+example: ‘17’, ‘11, 15’</p></li>
+<li><p><strong>antenna</strong> – The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.</p></li>
+<li><p><strong>parang</strong> – Apply parallactic angle correction</p></li>
+<li><p><strong>applymode</strong> – Calibration apply mode ‘calflag’: calibrate data and apply flags from solutions
+‘calflagstrict’: (default) same as above except flag spws for which calibration is
+unavailable in one or more tables (instead of allowing them to pass
+uncalibrated and unflagged)
+‘trial’: report on flags from solutions, dataset entirely unchanged
+‘flagonly’: apply flags from solutions only, data not calibrated
+‘flagonlystrict’: same as above except flag spws for which calibration is
+unavailable in one or more tables
+‘calonly’: calibrate data only, flags from solutions NOT applied</p></li>
+<li><p><strong>flagbackup</strong> – Backup the flags before the apply</p></li>
+<li><p><strong>flagsum</strong> – Compute before and after flagging summary statistics</p></li>
+<li><p><strong>flagdetailedsum</strong> – Compute detailed before and after flagging statistics summaries. Parameter available only when if flagsum is True.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. options: ‘automatic’, ‘true’, ‘false’, True, False
+default: None (equivalent to False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Apply the calibration to the target data</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_applycal</span> <span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.h.cli.cli.html" class="btn btn-neutral float-left" title="pipeline.h.cli.cli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.cli.html" class="btn btn-neutral float-left" title="pipeline.h.cli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.h.cli.h_export_calstate.html" class="btn btn-neutral float-right" title="pipeline.h.cli.h_export_calstate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

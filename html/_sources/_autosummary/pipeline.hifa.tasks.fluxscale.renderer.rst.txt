@@ -34,7 +34,9 @@ pipeline.hifa.tasks.fluxscale.renderer
       :nosignatures:
    
       AdoptedTR
+      FluxDensityUnits
       FluxTR
+      FrequencyUnits
       T2_4MDetailsGFluxscaleRenderer
    
    

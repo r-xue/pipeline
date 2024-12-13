@@ -21,6 +21,7 @@ pipeline.hif.tasks.tclean.basecleansequence
       :nosignatures:
    
       BaseCleanSequence
+      BoxResult
    
    
 

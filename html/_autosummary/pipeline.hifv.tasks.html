@@ -20,10 +20,12 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifv.tasks.analyzestokescubes" href="pipeline.hifv.tasks.analyzestokescubes.html" />
+    <link rel="next" title="pipeline.hifv.tasks.Analyzestokescubes" href="pipeline.hifv.tasks.Analyzestokescubes.html" />
     <link rel="prev" title="pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics" href="pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.html" /> 
 </head>
 
@@ -31,7 +33,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +59,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -144,6 +150,110 @@
              
   <section id="module-pipeline.hifv.tasks">
 <span id="pipeline-hifv-tasks"></span><h1>pipeline.hifv.tasks<a class="headerlink" href="#module-pipeline.hifv.tasks" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Analyzestokescubes.html#pipeline.hifv.tasks.Analyzestokescubes" title="pipeline.hifv.tasks.Analyzestokescubes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Analyzestokescubes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Applycals.html#pipeline.hifv.tasks.Applycals" title="pipeline.hifv.tasks.Applycals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Applycals</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Checkflag.html#pipeline.hifv.tasks.Checkflag" title="pipeline.hifv.tasks.Checkflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Checkflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Circfeedpolcal.html#pipeline.hifv.tasks.Circfeedpolcal" title="pipeline.hifv.tasks.Circfeedpolcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Circfeedpolcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Exportvlassdata.html#pipeline.hifv.tasks.Exportvlassdata" title="pipeline.hifv.tasks.Exportvlassdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exportvlassdata</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Finalcals.html#pipeline.hifv.tasks.Finalcals" title="pipeline.hifv.tasks.Finalcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Finalcals</span></code></a></p></td>
+<td><p>Class for the finalcals pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Fixpointing.html#pipeline.hifv.tasks.Fixpointing" title="pipeline.hifv.tasks.Fixpointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Fixpointing</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.FlagDeterVLA.html#pipeline.hifv.tasks.FlagDeterVLA" title="pipeline.hifv.tasks.FlagDeterVLA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterVLA</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Flagcal.html#pipeline.hifv.tasks.Flagcal" title="pipeline.hifv.tasks.Flagcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Flagcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Fluxboot.html#pipeline.hifv.tasks.Fluxboot" title="pipeline.hifv.tasks.Fluxboot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Fluxboot</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.GainCurves.html#pipeline.hifv.tasks.GainCurves" title="pipeline.hifv.tasks.GainCurves"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainCurves</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Hanning.html#pipeline.hifv.tasks.Hanning" title="pipeline.hifv.tasks.Hanning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hanning</span></code></a></p></td>
+<td><p>Class for the hifv_hanning pipeline smoothing task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Opcal.html#pipeline.hifv.tasks.Opcal" title="pipeline.hifv.tasks.Opcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Opcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Pbcor.html#pipeline.hifv.tasks.Pbcor" title="pipeline.hifv.tasks.Pbcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pbcor</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.PlotSummary.html#pipeline.hifv.tasks.PlotSummary" title="pipeline.hifv.tasks.PlotSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlotSummary</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Priorcals.html#pipeline.hifv.tasks.Priorcals" title="pipeline.hifv.tasks.Priorcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Priorcals</span></code></a></p></td>
+<td><p>Class for the Priorcals pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Restorepims.html#pipeline.hifv.tasks.Restorepims" title="pipeline.hifv.tasks.Restorepims"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Restorepims</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Rqcal.html#pipeline.hifv.tasks.Rqcal" title="pipeline.hifv.tasks.Rqcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rqcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Selfcal.html#pipeline.hifv.tasks.Selfcal" title="pipeline.hifv.tasks.Selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Selfcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Solint.html#pipeline.hifv.tasks.Solint" title="pipeline.hifv.tasks.Solint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solint</span></code></a></p></td>
+<td><p>Class for the solint pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Statwt.html#pipeline.hifv.tasks.Statwt" title="pipeline.hifv.tasks.Statwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Statwt</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Swpowcal.html#pipeline.hifv.tasks.Swpowcal" title="pipeline.hifv.tasks.Swpowcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Swpowcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower" title="pipeline.hifv.tasks.Syspower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Syspower</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Targetflag.html#pipeline.hifv.tasks.Targetflag" title="pipeline.hifv.tasks.Targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Targetflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.TecMaps.html#pipeline.hifv.tasks.TecMaps" title="pipeline.hifv.tasks.TecMaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TecMaps</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.VLAExportData.html#pipeline.hifv.tasks.VLAExportData" title="pipeline.hifv.tasks.VLAExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAExportData</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.VLAImportData.html#pipeline.hifv.tasks.VLAImportData" title="pipeline.hifv.tasks.VLAImportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAImportData</span></code></a></p></td>
+<td><p>VLAImportData class for parallelization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.VLARestoreData.html#pipeline.hifv.tasks.VLARestoreData" title="pipeline.hifv.tasks.VLARestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLARestoreData</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.VLASetjy.html#pipeline.hifv.tasks.VLASetjy" title="pipeline.hifv.tasks.VLASetjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLASetjy</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.VlaMstransform.html#pipeline.hifv.tasks.VlaMstransform" title="pipeline.hifv.tasks.VlaMstransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VlaMstransform</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.Vlassmasking.html#pipeline.hifv.tasks.Vlassmasking" title="pipeline.hifv.tasks.Vlassmasking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Vlassmasking</span></code></a></p></td>
+<td><p>Class for the hifv_vlassmasking pipeline task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#pipeline.hifv.tasks.semiFinalBPdcals" title="pipeline.hifv.tasks.semiFinalBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semiFinalBPdcals</span></code></a></p></td>
+<td><p>Class for the semiFinalBPdcals pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals" title="pipeline.hifv.tasks.testBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testBPdcals</span></code></a></p></td>
+<td><p>Class for the testBPdcals pipeline task.</p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.analyzestokescubes.html#module-pipeline.hifv.tasks.analyzestokescubes" title="pipeline.hifv.tasks.analyzestokescubes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyzestokescubes</span></code></a></p></td>
@@ -206,26 +316,20 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.selfcal.html#module-pipeline.hifv.tasks.selfcal" title="pipeline.hifv.tasks.selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">selfcal</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.semiFinalBPdcals.html#module-pipeline.hifv.tasks.semiFinalBPdcals" title="pipeline.hifv.tasks.semiFinalBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semiFinalBPdcals</span></code></a>(inputs)</p></td>
-<td><p>Class for the semiFinalBPdcals pipeline task.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel" title="pipeline.hifv.tasks.setmodel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setmodel</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.setmodel.html#module-pipeline.hifv.tasks.setmodel" title="pipeline.hifv.tasks.setmodel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setmodel</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt" title="pipeline.hifv.tasks.statwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">statwt</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.statwt.html#module-pipeline.hifv.tasks.statwt" title="pipeline.hifv.tasks.statwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">statwt</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#module-pipeline.hifv.tasks.swpowcal" title="pipeline.hifv.tasks.swpowcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swpowcal</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.swpowcal.html#module-pipeline.hifv.tasks.swpowcal" title="pipeline.hifv.tasks.swpowcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swpowcal</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower" title="pipeline.hifv.tasks.syspower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">syspower</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.syspower.html#module-pipeline.hifv.tasks.syspower" title="pipeline.hifv.tasks.syspower"><code class="xref py py-obj docutils literal notranslate"><span class="pre">syspower</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html#module-pipeline.hifv.tasks.tecmaps" title="pipeline.hifv.tasks.tecmaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tecmaps</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.tecmaps.html#module-pipeline.hifv.tasks.tecmaps" title="pipeline.hifv.tasks.tecmaps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tecmaps</span></code></a></p></td>
 <td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.tasks.testBPdcals.html#module-pipeline.hifv.tasks.testBPdcals" title="pipeline.hifv.tasks.testBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testBPdcals</span></code></a>(inputs)</p></td>
-<td><p>Class for the testBPdcals pipeline task.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.tasks.vlassmasking.html#module-pipeline.hifv.tasks.vlassmasking" title="pipeline.hifv.tasks.vlassmasking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vlassmasking</span></code></a></p></td>
 <td><p></p></td>
@@ -239,7 +343,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics.html" class="btn btn-neutral float-left" title="pipeline.hifv.heuristics.vlascanheuristics.VLAScanHeuristics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifv.tasks.analyzestokescubes.html" class="btn btn-neutral float-right" title="pipeline.hifv.tasks.analyzestokescubes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hifv.tasks.Analyzestokescubes.html" class="btn btn-neutral float-right" title="pipeline.hifv.tasks.Analyzestokescubes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

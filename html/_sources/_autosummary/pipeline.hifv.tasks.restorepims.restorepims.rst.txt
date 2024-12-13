@@ -9,6 +9,14 @@ pipeline.hifv.tasks.restorepims.restorepims
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      fnmatch
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.restorepims.restorepims
       :template: custom-class-template.rst
       :nosignatures:
    
+      MakeImages
       Restorepims
       RestorepimsInputs
       RestorepimsResults

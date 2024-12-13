@@ -15,8 +15,10 @@ pipeline.domain.datatable
       :toctree:
       :nosignatures:
    
+      absolute_path
       construct_timegroup
       create_table
+      list_to_str
       timetable_key
    
    

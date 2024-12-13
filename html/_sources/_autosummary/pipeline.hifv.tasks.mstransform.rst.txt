@@ -13,6 +13,15 @@ pipeline.hifv.tasks.mstransform
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      VlaMstransform
+   
    
 
    

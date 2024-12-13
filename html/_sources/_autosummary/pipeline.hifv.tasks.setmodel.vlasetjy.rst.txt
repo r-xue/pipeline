@@ -15,6 +15,7 @@ pipeline.hifv.tasks.setmodel.vlasetjy
       :toctree:
       :nosignatures:
    
+      find_EVLA_band
       find_standards
       standard_sources
    

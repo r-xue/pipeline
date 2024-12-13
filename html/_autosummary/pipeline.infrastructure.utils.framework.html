@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +78,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +165,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -195,44 +208,61 @@ objects (Results, CalLibrary objects, etc.).</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.contains_single_dish.html#pipeline.infrastructure.utils.framework.contains_single_dish" title="pipeline.infrastructure.utils.framework.contains_single_dish"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_single_dish</span></code></a></p></td>
 <td><p>Return True if the context contains single-dish data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.flatten_dict.html#pipeline.infrastructure.utils.framework.flatten_dict" title="pipeline.infrastructure.utils.framework.flatten_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_dict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.flatten.html#pipeline.infrastructure.utils.framework.flatten" title="pipeline.infrastructure.utils.framework.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a></p></td>
+<td><p>Flatten a list of lists into a single list without pipelineaq.QAScore.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.flatten_dict.html#pipeline.infrastructure.utils.framework.flatten_dict" title="pipeline.infrastructure.utils.framework.flatten_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_dict</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.gen_hash.html#pipeline.infrastructure.utils.framework.gen_hash" title="pipeline.infrastructure.utils.framework.gen_hash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gen_hash</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.gen_hash.html#pipeline.infrastructure.utils.framework.gen_hash" title="pipeline.infrastructure.utils.framework.gen_hash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gen_hash</span></code></a></p></td>
 <td><p>Makes a hash from a dictionary, list, tuple or set to any level, that contains only other hashable types (including any lists, tuples, sets, and dictionaries).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_calfroms.html#pipeline.infrastructure.utils.framework.get_calfroms" title="pipeline.infrastructure.utils.framework.get_calfroms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_calfroms</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_calfroms.html#pipeline.infrastructure.utils.framework.get_calfroms" title="pipeline.infrastructure.utils.framework.get_calfroms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_calfroms</span></code></a></p></td>
 <td><p>Get the CalFroms of the requested type from the callibrary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_origin_input_arg.html#pipeline.infrastructure.utils.framework.get_origin_input_arg" title="pipeline.infrastructure.utils.framework.get_origin_input_arg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_origin_input_arg</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_origin_input_arg.html#pipeline.infrastructure.utils.framework.get_origin_input_arg" title="pipeline.infrastructure.utils.framework.get_origin_input_arg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_origin_input_arg</span></code></a></p></td>
 <td><p>Get a single-valued task input argument from a CalApp.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_qascores.html#pipeline.infrastructure.utils.framework.get_qascores" title="pipeline.infrastructure.utils.framework.get_qascores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qascores</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_qascores.html#pipeline.infrastructure.utils.framework.get_qascores" title="pipeline.infrastructure.utils.framework.get_qascores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qascores</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_tracebacks.html#pipeline.infrastructure.utils.framework.get_tracebacks" title="pipeline.infrastructure.utils.framework.get_tracebacks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tracebacks</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.get_tracebacks.html#pipeline.infrastructure.utils.framework.get_tracebacks" title="pipeline.infrastructure.utils.framework.get_tracebacks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tracebacks</span></code></a></p></td>
 <td><p>Get the tracebacks for the result, from any failures that may have occurred during the task.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.is_top_level_task.html#pipeline.infrastructure.utils.framework.is_top_level_task" title="pipeline.infrastructure.utils.framework.is_top_level_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_top_level_task</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.is_top_level_task.html#pipeline.infrastructure.utils.framework.is_top_level_task" title="pipeline.infrastructure.utils.framework.is_top_level_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_top_level_task</span></code></a></p></td>
 <td><p>Return True if the callee if executing as part of a top-level task.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.merge_jobs.html#pipeline.infrastructure.utils.framework.merge_jobs" title="pipeline.infrastructure.utils.framework.merge_jobs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_jobs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.merge_jobs.html#pipeline.infrastructure.utils.framework.merge_jobs" title="pipeline.infrastructure.utils.framework.merge_jobs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_jobs</span></code></a></p></td>
 <td><p>Merge jobs that are identical apart from the arguments named in ignore.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.mkdir_p.html#pipeline.infrastructure.utils.framework.mkdir_p" title="pipeline.infrastructure.utils.framework.mkdir_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mkdir_p</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.mkdir_p.html#pipeline.infrastructure.utils.framework.mkdir_p" title="pipeline.infrastructure.utils.framework.mkdir_p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mkdir_p</span></code></a></p></td>
 <td><p>Emulate mkdir -p functionality.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.pickle_copy.html#pipeline.infrastructure.utils.framework.pickle_copy" title="pipeline.infrastructure.utils.framework.pickle_copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_copy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.pickle_copy.html#pipeline.infrastructure.utils.framework.pickle_copy" title="pipeline.infrastructure.utils.framework.pickle_copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_copy</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.pickle_load.html#pipeline.infrastructure.utils.framework.pickle_load" title="pipeline.infrastructure.utils.framework.pickle_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_load</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.pickle_load.html#pipeline.infrastructure.utils.framework.pickle_load" title="pipeline.infrastructure.utils.framework.pickle_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle_load</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.plotms_iterate.html#pipeline.infrastructure.utils.framework.plotms_iterate" title="pipeline.infrastructure.utils.framework.plotms_iterate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotms_iterate</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.plotms_iterate.html#pipeline.infrastructure.utils.framework.plotms_iterate" title="pipeline.infrastructure.utils.framework.plotms_iterate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotms_iterate</span></code></a></p></td>
 <td><p>Iterate multiple plotms job requests</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.safe_split.html#pipeline.infrastructure.utils.framework.safe_split" title="pipeline.infrastructure.utils.framework.safe_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">safe_split</span></code></a></p></td>
+<td><p>Split a string containing field names into a list.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.task_depth.html#pipeline.infrastructure.utils.framework.task_depth" title="pipeline.infrastructure.utils.framework.task_depth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">task_depth</span></code></a></p></td>
 <td><p>Get the number of executing tasks currently on the stack.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.JobRequest.html#pipeline.infrastructure.utils.framework.JobRequest" title="pipeline.infrastructure.utils.framework.JobRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JobRequest</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.framework.Plot.html#pipeline.infrastructure.utils.framework.Plot" title="pipeline.infrastructure.utils.framework.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>

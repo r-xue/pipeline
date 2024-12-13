@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -120,7 +120,7 @@
 
 
 <div class="viewcode-block" id="VdpCommonGaincalInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.common.VdpCommonGaincalInputs.html#pipeline.hifa.tasks.gaincal.qa.VdpCommonGaincalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.common.VdpCommonGaincalInputs.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.VdpCommonGaincalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">VdpCommonGaincalInputs</span><span class="p">(</span><span class="n">commoncalinputs</span><span class="o">.</span><span class="n">VdpCommonCalibrationInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CommonGaincalInputs is the base class for defines inputs that are common</span>
@@ -182,7 +182,7 @@
 
 
 <div class="viewcode-block" id="GaincalResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.common.GaincalResults.html#pipeline.hifa.tasks.gaincal.qa.GaincalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcal.wvrgcal.GaincalResults.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.GaincalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">GaincalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GaincalResults is the results class common to all pipeline gaincal</span>
@@ -222,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GaincalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.gaincal.common.GaincalResults.html#pipeline.hifa.tasks.gaincal.qa.GaincalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcal.wvrgcal.GaincalResults.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.GaincalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">to_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>

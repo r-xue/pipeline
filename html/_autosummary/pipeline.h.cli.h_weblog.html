@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.cli.utils" href="pipeline.h.cli.utils.html" />
+    <link rel="next" title="pipeline.h.cli.cli" href="pipeline.h.cli.cli.html" />
     <link rel="prev" title="pipeline.h.cli.h_tsyscal" href="pipeline.h.cli.h_tsyscal.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.h.cli.h_weblog">
-<span id="pipeline-h-cli-h-weblog"></span><h1>pipeline.h.cli.h_weblog<a class="headerlink" href="#module-pipeline.h.cli.h_weblog" title="Link to this heading"></a></h1>
+  <section id="pipeline-h-cli-h-weblog">
+<h1>pipeline.h.cli.h_weblog<a class="headerlink" href="#pipeline-h-cli-h-weblog" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.h.cli.h_weblog">
+<span class="sig-name descname"><span class="pre">h_weblog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/cli/h_weblog.html#h_weblog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.cli.h_weblog" title="Link to this definition"></a></dt>
+<dd><p>Open the pipeline weblog in a browser</p>
+<p>h_weblog opens the weblog in a new browser tab or window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>relpath</strong> – Relative path to the weblog index file. This file must be located
+in a child directory of the CASA working directory. If relpath
+is left unspecified, the most recent weblog will be located and
+displayed.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Open pipeline weblog in a browser:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h_weblog</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 
@@ -120,7 +145,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.h.cli.h_tsyscal.html" class="btn btn-neutral float-left" title="pipeline.h.cli.h_tsyscal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.cli.utils.html" class="btn btn-neutral float-right" title="pipeline.h.cli.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.cli.cli.html" class="btn btn-neutral float-right" title="pipeline.h.cli.cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

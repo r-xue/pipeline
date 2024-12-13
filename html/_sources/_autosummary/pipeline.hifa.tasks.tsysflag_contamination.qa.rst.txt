@@ -9,6 +9,15 @@ pipeline.hifa.tasks.tsysflag\_contamination.qa
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      score_tsysflagcontamination_contamination_flagged
+      score_tsysflagcontamination_external_heuristic
+   
    
 
    
@@ -20,8 +29,12 @@ pipeline.hifa.tasks.tsysflag\_contamination.qa
       :template: custom-class-template.rst
       :nosignatures:
    
+      TsysFlagContamination
       TsysflagContaminationListQAHandler
       TsysflagContaminationQAHandler
+      TsysflagListQAHandler
+      TsysflagQAHandler
+      TsysflagResults
    
    
 

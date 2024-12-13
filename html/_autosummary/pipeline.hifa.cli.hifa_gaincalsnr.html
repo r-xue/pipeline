@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,84 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_gaincalsnr">
-<span id="pipeline-hifa-cli-hifa-gaincalsnr"></span><h1>pipeline.hifa.cli.hifa_gaincalsnr<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_gaincalsnr" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-gaincalsnr">
+<h1>pipeline.hifa.cli.hifa_gaincalsnr<a class="headerlink" href="#pipeline-hifa-cli-hifa-gaincalsnr" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_gaincalsnr">
+<span class="sig-name descname"><span class="pre">hifa_gaincalsnr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasesnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwedgefrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nantennas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfracflagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_gaincalsnr.html#hifa_gaincalsnr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_gaincalsnr" title="Link to this definition"></a></dt>
+<dd><p>Compute gaincal signal-to-noise ratios per spw</p>
+<p>The gaincal solution signal-to-noise is determined as follows:</p>
+<ul class="simple">
+<li><p>For each data set the list of source(s) to use for the per-scan gaincal
+solution signal-to-noise estimation is compiled based on the values of the
+field, intent, and spw parameters.</p></li>
+<li><p>Source fluxes are determined for each spw and source combination.</p></li>
+<li><p>Fluxes in Jy are derived from the pipeline context.</p></li>
+<li><p>Pipeline context fluxes are derived from the online flux calibrator
+catalog, the ASDM, or the user via the flux.csv file.</p></li>
+<li><p>If no fluxes are available the task terminates.</p></li>
+<li><p>Atmospheric calibration and observations scans are determined for each spw
+and source combination.</p></li>
+<li><p>If intent is set to ‘PHASE’ are there are no atmospheric scans associated
+with the ‘PHASE’ calibrator, ‘TARGET’ atmospheric scans will be used
+instead.</p></li>
+<li><p>If atmospheric scans cannot be associated with any of the spw and source
+combinations the task terminates.</p></li>
+<li><p>Science spws are mapped to atmospheric spws for each science spw and
+source combinations.</p></li>
+<li><p>If mappings cannot be determined for any of the spws the task terminates.</p></li>
+<li><p>The median Tsys value for each atmospheric spw and source combination is
+determined from the SYSCAL table. Medians are computed first by channel,
+then by antenna, in order to reduce sensitivity to deviant values.</p></li>
+<li><p>The science spw parameters, exposure time(s), and integration time(s) are
+determined.</p></li>
+<li><p>The per scan sensitivity and signal-to-noise estimates are computed per
+science spectral window. Nominal Tsys and sensitivity values per receiver
+band provide by the ALMA project are used for this estimate.</p></li>
+<li><p>The QA score is based on how many signal-to-noise estimates greater than
+the requested signal-to-noise ratio can be computed.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p></li>
+<li><p><strong>field</strong> – The list of field names of sources to be used for signal to noise
+estimation. Defaults to all fields with the standard intent.
+Example: field=’3C279’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which
+the selected fields are matched. Defaults to ‘PHASE’.
+Example: intent=’BANDPASS’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which gain solutions are
+computed. Defaults to all the science spectral windows for which there are
+both ‘intent’ and TARGET intents.
+Example: spw=’13,15’</p></li>
+<li><p><strong>phasesnr</strong> – The required gaincal solution signal to noise.
+Example: phasesnr=20.0</p></li>
+<li><p><strong>bwedgefrac</strong> – The fraction of the bandwidth edges that is flagged.
+Example: bwedgefrac=0.0</p></li>
+<li><p><strong>hm_nantennas</strong> – The heuristics for determines the number of antennas to use
+in the signal to noise estimate. The options are ‘all’ and ‘unflagged’.
+The ‘unflagged’ options is not currently supported.
+Example: hm_nantennas=’unflagged’</p></li>
+<li><p><strong>maxfracflagged</strong> – The maximum fraction of an antenna that can be flagged
+before it is excluded from the signal to noise estimate.
+Example: maxfracflagged=0.80</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Estimate the per scan gaincal solution sensitivities and signal to noise
+ratios for all the science spectral windows:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_gaincalsnr</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

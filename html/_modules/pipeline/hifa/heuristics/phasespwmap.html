@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -119,7 +119,7 @@
 
 
 <div class="viewcode-block" id="combine_spwmap">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasespwmap.combine_spwmap.html#pipeline.hifa.heuristics.phasespwmap.combine_spwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.combine_spwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_spwmap</span><span class="p">(</span><span class="n">scispws</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a spectral window map where each science spectral window is mapped</span>
@@ -159,7 +159,7 @@
 
 
 <div class="viewcode-block" id="snr_n2wspwmap">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap.html#pipeline.hifa.heuristics.phasespwmap.snr_n2wspwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.snr_n2wspwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.snr_n2wspwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">snr_n2wspwmap</span><span class="p">(</span><span class="n">scispws</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">],</span> <span class="n">snrs</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">goodsnrs</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a spectral window map based on signal-to-noise information.</span>
@@ -290,7 +290,7 @@
 
 
 <div class="viewcode-block" id="simple_n2wspwmap">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasespwmap.simple_n2wspwmap.html#pipeline.hifa.heuristics.phasespwmap.simple_n2wspwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.simple_n2wspwmap.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.simple_n2wspwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">simple_n2wspwmap</span><span class="p">(</span><span class="n">scispws</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">],</span> <span class="n">maxnarrowbw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">maxbwfrac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">samebb</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a simple phase up wide to narrow spectral window map.</span>
@@ -414,7 +414,7 @@
 
 
 <div class="viewcode-block" id="update_spwmap_for_band_to_band">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band.html#pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.update_spwmap_for_band_to_band.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.update_spwmap_for_band_to_band">[docs]</a>
 <span class="k">def</span> <span class="nf">update_spwmap_for_band_to_band</span><span class="p">(</span><span class="n">spwmap</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">dg_refspws</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">],</span>
                                    <span class="n">dg_srcspws</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SpectralWindow</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

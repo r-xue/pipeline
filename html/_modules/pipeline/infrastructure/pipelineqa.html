@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -152,7 +152,7 @@
 
 
 <div class="viewcode-block" id="WebLogLocation">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.WebLogLocation.html#pipeline.infrastructure.pipelineqa.WebLogLocation">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.WebLogLocation.html#pipeline.infrastructure.renderer.rendererutils.WebLogLocation">[docs]</a>
 <span class="k">class</span> <span class="nc">WebLogLocation</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    WebLogLocation is an enumeration attached to each QA score, specifying</span>
@@ -171,7 +171,7 @@
 
 
 <div class="viewcode-block" id="TargetDataSelection">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.TargetDataSelection.html#pipeline.infrastructure.pipelineqa.TargetDataSelection">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.TargetDataSelection.html#pipeline.infrastructure.renderer.rendererutils.TargetDataSelection">[docs]</a>
 <span class="k">class</span> <span class="nc">TargetDataSelection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TargetDataSelection is a struct to hold data selection metadata. Its various</span>
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="QAScore">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAScore.html#pipeline.infrastructure.pipelineqa.QAScore">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.QAScore.html#pipeline.infrastructure.renderer.rendererutils.QAScore">[docs]</a>
 <span class="k">class</span> <span class="nc">QAScore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">longmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">shortmsg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">NULL_ORIGIN</span><span class="p">,</span>
                  <span class="n">weblog_location</span><span class="o">=</span><span class="n">WebLogLocation</span><span class="o">.</span><span class="n">UNSET</span><span class="p">,</span> <span class="n">hierarchy</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -296,7 +296,7 @@
 
 
 <div class="viewcode-block" id="QAScorePool">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAScorePool.html#pipeline.infrastructure.pipelineqa.QAScorePool">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAScorePool.html#pipeline.infrastructure.renderer.rendererutils.QAScorePool">[docs]</a>
 <span class="k">class</span> <span class="nc">QAScorePool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">all_unity_longmsg</span> <span class="o">=</span> <span class="s1">&#39;All QA completed successfully&#39;</span>
     <span class="n">all_unity_shortmsg</span> <span class="o">=</span> <span class="s1">&#39;QA pass&#39;</span>
@@ -332,7 +332,7 @@
 
 
 <div class="viewcode-block" id="QAPlugin">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.pipelineqa.QAPlugin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.renderer.rendererutils.QAPlugin">[docs]</a>
 <span class="k">class</span> <span class="nc">QAPlugin</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    QAPlugin is the mandatory base class for all pipeline QA handlers.</span>
@@ -387,7 +387,7 @@
     <span class="n">generating_task</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="QAPlugin.is_handler_for">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.pipelineqa.QAPlugin.is_handler_for">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.renderer.rendererutils.QAPlugin.is_handler_for">[docs]</a>
     <span class="k">def</span> <span class="nf">is_handler_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if this QAPlugin can process the Result.</span>
@@ -422,7 +422,7 @@
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="QAPlugin.handle_with_exception_catch">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.pipelineqa.QAPlugin.handle_with_exception_catch">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QAPlugin.html#pipeline.infrastructure.renderer.rendererutils.QAPlugin.handle_with_exception_catch">[docs]</a>
     <span class="k">def</span> <span class="nf">handle_with_exception_catch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle QA scoring with an exception catch.</span>
@@ -442,7 +442,7 @@
 
 
 <div class="viewcode-block" id="QARegistry">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QARegistry.html#pipeline.infrastructure.pipelineqa.QARegistry">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.QARegistry.html#pipeline.infrastructure.renderer.rendererutils.QARegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">QARegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The registry and manager of the pipeline QA framework.</span>
@@ -503,7 +503,7 @@
 
 
 <div class="viewcode-block" id="scores_with_location">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.pipelineqa.scores_with_location.html#pipeline.infrastructure.pipelineqa.scores_with_location">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.renderer.rendererutils.scores_with_location.html#pipeline.infrastructure.renderer.rendererutils.scores_with_location">[docs]</a>
 <span class="k">def</span> <span class="nf">scores_with_location</span><span class="p">(</span><span class="n">pool</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">],</span>
                          <span class="n">locations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">WebLogLocation</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QAScore</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

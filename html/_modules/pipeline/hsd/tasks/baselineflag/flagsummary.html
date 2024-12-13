@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -131,7 +131,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagSummary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagSummary">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBLFlagSummary</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class of single dish flagging task.</span>
@@ -169,7 +169,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bunit</span> <span class="o">=</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">get_brightness_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">defaultunit</span><span class="o">=</span><span class="s1">&#39;Jy/beam&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SDBLFlagSummary.execute">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.execute">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagSummary.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span><span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Summarizes flagging results.</span>
@@ -307,7 +307,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagSummary.pack_flags">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.pack_flags">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagSummary.pack_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">pack_flags</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span><span class="n">DataTable</span><span class="p">,</span> <span class="n">polid</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">FlagRule_local</span><span class="p">:</span><span class="n">Dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span> <span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pack flag data into data sets.</span>
@@ -423,7 +423,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagSummary.show_flags">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.show_flags">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagSummary.show_flags">[docs]</a>
     <span class="k">def</span> <span class="nf">show_flags</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">nrow</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">is_baselined</span><span class="p">:</span><span class="nb">bool</span><span class="p">,</span> <span class="n">FlaggedRows</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">FlaggedRowsCategory</span><span class="p">:</span><span class="n">Dict</span> <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Output flag statistics to LOG.</span>
@@ -485,7 +485,7 @@
 
 
 <div class="viewcode-block" id="SDBLFlagSummary.create_summary_data">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.create_summary_data">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.flagsummary.SDBLFlagSummary.html#pipeline.hsd.tasks.baselineflag.baselineflag.SDBLFlagSummary.create_summary_data">[docs]</a>
     <span class="k">def</span> <span class="nf">create_summary_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">FlaggedRows</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">FlaggedRowsCategory</span><span class="p">:</span><span class="n">Dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count flagged rows for each flagging reason.</span>

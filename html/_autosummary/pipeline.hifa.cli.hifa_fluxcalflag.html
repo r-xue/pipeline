@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_fluxcalflag">
-<span id="pipeline-hifa-cli-hifa-fluxcalflag"></span><h1>pipeline.hifa.cli.hifa_fluxcalflag<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_fluxcalflag" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-fluxcalflag">
+<h1>pipeline.hifa.cli.hifa_fluxcalflag<a class="headerlink" href="#pipeline-hifa-cli-hifa-fluxcalflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_fluxcalflag">
+<span class="sig-name descname"><span class="pre">hifa_fluxcalflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">appendlines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesfiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">applyflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_fluxcalflag.html#hifa_fluxcalflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_fluxcalflag" title="Link to this definition"></a></dt>
+<dd><p>Locate and flag line regions in solar system flux calibrators</p>
+<p>Search the built-in solar system flux calibrator line catalog for overlaps with
+the science spectral windows. Generate a list of line overlap regions and
+flagging commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which the models are
+to be set. Defaults to all fields with intent ‘AMPLITUDE’.
+Example: field=’3C279’, field=’3C279, M82’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against
+which the selected fields are matched. Defaults to all data
+with amplitude intent.
+Example: intent=’AMPLITUDE’</p></li>
+<li><p><strong>spw</strong> – Spectral windows and channels for which bandpasses are
+computed. Defaults to all science spectral windows.
+Example: spw=’11,13,15,17’</p></li>
+<li><p><strong>threshold</strong> – If the fraction of a spectral window occupied by line regions
+is greater than this threshold value, then flag the entire
+spectral window.</p></li>
+<li><p><strong>appendlines</strong> – Append user defined line regions to the line dictionary.</p></li>
+<li><p><strong>linesfile</strong> – Read in a file containing lines regions and append it to the
+builtin dictionary. Blank lines and comments beginning with #
+are skipped. The data is contained in 4 whitespace delimited
+fields containing the solar system object field name, e.g.
+‘Callisto’, the molecular species name, e.g. ‘13CO’, and the
+starting and ending frequency in GHz.</p></li>
+<li><p><strong>applyflags</strong> – Boolean for whether to apply the generated flag commands. (default True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Locate known lines in any solar system object flux calibrators:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_fluxcalflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

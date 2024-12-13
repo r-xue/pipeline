@@ -9,6 +9,14 @@ pipeline.hifv.tasks.selfcal.selfcal
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      set_add_model_column_parameters
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.selfcal.selfcal
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Selfcal
       SelfcalInputs
       SelfcalResults

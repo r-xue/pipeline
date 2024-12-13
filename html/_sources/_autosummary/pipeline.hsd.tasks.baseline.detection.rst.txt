@@ -28,6 +28,7 @@ pipeline.hsd.tasks.baseline.detection
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       DetectLine
       DetectLineInputs
       DetectLineResults

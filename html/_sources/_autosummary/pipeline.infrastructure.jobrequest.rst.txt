@@ -20,6 +20,7 @@ pipeline.infrastructure.jobrequest
       basename_if_isfile
       get_fn_name
       jobrequest_generator
+      signature
       truncate_paths
    
    

@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory" href="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory.html" />
+    <link rel="next" title="pipeline.hsd.tasks.imaging.display.DDMMSSs" href="pipeline.hsd.tasks.imaging.display.DDMMSSs.html" />
     <link rel="prev" title="pipeline.hsd.tasks.imaging.detectcontamination.NAxis" href="pipeline.hsd.tasks.imaging.detectcontamination.NAxis.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -150,8 +154,17 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.DDMMSSs.html#pipeline.hsd.tasks.imaging.display.DDMMSSs" title="pipeline.hsd.tasks.imaging.display.DDMMSSs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DDMMSSs</span></code></a></p></td>
+<td><p>Convert an angle in degree to dms angle with DDMMSSs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.HHMMSSss.html#pipeline.hsd.tasks.imaging.display.HHMMSSss" title="pipeline.hsd.tasks.imaging.display.HHMMSSss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HHMMSSss</span></code></a></p></td>
+<td><p>Convert an angle in degree to hour angle with HHMMSSss format.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory" title="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImageDisplayFactory</span></code></a></p></td>
 <td><p>Return appropriate display class for plotting.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.casa5style_plot.html#pipeline.hsd.tasks.imaging.display.casa5style_plot" title="pipeline.hsd.tasks.imaging.display.casa5style_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">casa5style_plot</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -161,8 +174,20 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.ChannelMapAxesManager.html#pipeline.hsd.tasks.imaging.display.ChannelMapAxesManager" title="pipeline.hsd.tasks.imaging.display.ChannelMapAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChannelMapAxesManager</span></code></a></p></td>
 <td><p>Creates and manages Axes instances for channel map.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.ChannelSelection.html#pipeline.hsd.tasks.imaging.display.ChannelSelection" title="pipeline.hsd.tasks.imaging.display.ChannelSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChannelSelection</span></code></a></p></td>
+<td><p>An enumeration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.DataType.html#pipeline.hsd.tasks.imaging.display.DataType" title="pipeline.hsd.tasks.imaging.display.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.ImageAxesManager.html#pipeline.hsd.tasks.imaging.display.ImageAxesManager" title="pipeline.hsd.tasks.imaging.display.ImageAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageAxesManager</span></code></a></p></td>
 <td><p>Axes manager for figure containing ImageAxes instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.MapAxesManagerBase.html#pipeline.hsd.tasks.imaging.display.MapAxesManagerBase" title="pipeline.hsd.tasks.imaging.display.MapAxesManagerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MapAxesManagerBase</span></code></a></p></td>
+<td><p>Base class for MapAxesManager classes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.MultipleLocator.html#pipeline.hsd.tasks.imaging.display.MultipleLocator" title="pipeline.hsd.tasks.imaging.display.MultipleLocator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultipleLocator</span></code></a></p></td>
+<td><p>Set a tick on each integer multiple of a base within the view interval.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDChannelAveragedImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDChannelAveragedImageDisplay" title="pipeline.hsd.tasks.imaging.display.SDChannelAveragedImageDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDChannelAveragedImageDisplay</span></code></a></p></td>
 <td><p>Plotter to create a color map for channel averaged spw.</p></td>
@@ -170,14 +195,26 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDChannelMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDChannelMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDChannelMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDChannelMapDisplay</span></code></a></p></td>
 <td><p>Plotter to create a channel map.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDMomentMapDisplay</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDImageDisplay" title="pipeline.hsd.tasks.imaging.display.SDImageDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImageDisplay</span></code></a></p></td>
+<td><p>Base plotter class for imaging tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs.html#pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs" title="pipeline.hsd.tasks.imaging.display.SDImageDisplayInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImageDisplayInputs</span></code></a></p></td>
+<td><p>Manages input data for plotter classes for single dish images.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDImagingResultItem.html#pipeline.hsd.tasks.imaging.display.SDImagingResultItem" title="pipeline.hsd.tasks.imaging.display.SDImagingResultItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImagingResultItem</span></code></a></p></td>
+<td><p>The class to store result of each image.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDMomentMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDMomentMapDisplay</span></code></a></p></td>
 <td><p>Plotter to create a moment map.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRmsMapDisplay</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDRmsMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRmsMapDisplay</span></code></a></p></td>
 <td><p>Plotter to create a baseline rms map.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSparseMapDisplay</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay.html#pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay" title="pipeline.hsd.tasks.imaging.display.SDSparseMapDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSparseMapDisplay</span></code></a></p></td>
 <td><p>Plotter to create a sparse profile map.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter.html#pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter" title="pipeline.hsd.tasks.imaging.display.SDSparseMapPlotter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSparseMapPlotter</span></code></a></p></td>
+<td><p>Plotter for sparse spectral map.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SDSpectralImageDisplay.html#pipeline.hsd.tasks.imaging.display.SDSpectralImageDisplay" title="pipeline.hsd.tasks.imaging.display.SDSpectralImageDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDSpectralImageDisplay</span></code></a></p></td>
 <td><p>Plotter for science spectral window.</p></td>
@@ -188,7 +225,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SingleImageAxesManager.html#pipeline.hsd.tasks.imaging.display.SingleImageAxesManager" title="pipeline.hsd.tasks.imaging.display.SingleImageAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleImageAxesManager</span></code></a></p></td>
 <td><p>Axes manager for figure containing single ImageAxes instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager.html#pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager" title="pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralMapAxesManager</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SpectralImage.html#pipeline.hsd.tasks.imaging.display.SpectralImage" title="pipeline.hsd.tasks.imaging.display.SpectralImage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralImage</span></code></a></p></td>
+<td><p>Representation of four-dimensional spectral image.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager.html#pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager" title="pipeline.hsd.tasks.imaging.display.SpectralMapAxesManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralMapAxesManager</span></code></a></p></td>
 <td><p>Creates and manages Axes instances for detailed spectral map.</p></td>
 </tr>
 </tbody>
@@ -200,7 +240,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hsd.tasks.imaging.detectcontamination.NAxis.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.imaging.detectcontamination.NAxis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.imaging.display.SDImageDisplayFactory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hsd.tasks.imaging.display.DDMMSSs.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.imaging.display.DDMMSSs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

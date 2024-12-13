@@ -15,7 +15,9 @@ pipeline.hsd.tasks.skycal.display
       :toctree:
       :nosignatures:
    
+      casa5style_plot
       get_field_from_ms
+      plot_elevation_difference
    
    
 

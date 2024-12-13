@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casampi.MPIEnvironment &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casampi.MPIEnvironment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casampi.MPIEnvironment</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">traceback</span> <span class="c1"># To pretty-print tracebacks</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="MPIEnvironment">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.MPIEnvironment.html#pipeline.environment.MPIEnvironment">[docs]</a>
+<span class="k">class</span> <span class="nc">MPIEnvironment</span><span class="p">:</span>
+
+<div class="viewcode-block" id="MPIEnvironment.is_mpi_disabled_or_client">
+<a class="viewcode-back" href="../../_autosummary/pipeline.environment.MPIEnvironment.html#pipeline.environment.MPIEnvironment.is_mpi_disabled_or_client">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_mpi_disabled_or_client</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: is this the only process (serial mode - MPI disabled) or the client</span>
+<span class="sd">        process if MPI is enabled?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># MPIEnvironment.is_mpi_client alone would be enough, as when MPI is disabled,</span>
+        <span class="c1"># mpi_processor_rank==0, and is_mpi_client is set to True. This function is</span>
+        <span class="c1"># added to be more explicit, and for future maintainability.</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_mpi_enabled</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">is_mpi_enabled</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Static variables #################################################################################################</span>
+
+    <span class="c1"># Set hostname</span>
+    <span class="n">hostname</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span>
+
+    <span class="c1"># Initialization</span>
+    <span class="n">mpi_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># don&#39;t load mpi unless we are already running under mpi</span>
+        <span class="c1"># trying to load a broken mpi installation will abort the process not</span>
+        <span class="c1"># giving us a chance to run in the serial mode</span>
+        <span class="c1"># testing mpi via a forked import causes deadlock on process end when</span>
+        <span class="c1"># running test_casampi[test_server_not_responsive]</span>
+        <span class="k">if</span> <span class="s1">&#39;OMPI_COMM_WORLD_RANK&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;MPI disabled&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set mpi4py runtime configuration</span>
+        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">rc</span> <span class="k">as</span> <span class="n">__mpi_runtime_config</span>
+        <span class="c1"># Automatic MPI initialization at import time</span>
+        <span class="n">__mpi_runtime_config</span><span class="o">.</span><span class="n">initialize</span> <span class="o">=</span> <span class="kc">True</span>  
+        <span class="c1"># Request for thread support at MPI initialization</span>
+        <span class="n">__mpi_runtime_config</span><span class="o">.</span><span class="n">threaded</span> <span class="o">=</span> <span class="kc">True</span>  
+        <span class="c1"># Level of thread support to request at MPI initialization</span>
+        <span class="c1"># &quot;single&quot; : use MPI_THREAD_SINGLE</span>
+        <span class="c1"># &quot;funneled&quot; : use MPI_THREAD_FUNNELED</span>
+        <span class="c1"># &quot;serialized&quot; : use MPI_THREAD_SERIALIZED</span>
+        <span class="c1"># &quot;multiple&quot; : use MPI_THREAD_MULTIPLE</span>
+        <span class="n">__mpi_runtime_config</span><span class="o">.</span><span class="n">thread_level</span> <span class="o">=</span> <span class="s1">&#39;multiple&#39;</span>
+        <span class="c1"># Automatic MPI finalization at exit time</span>
+        <span class="n">__mpi_runtime_config</span><span class="o">.</span><span class="n">finalize</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Import mpi4py and thus initialize MPI</span>
+        <span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span> <span class="k">as</span> <span class="n">__mpi_factory</span> <span class="c1"># NOTE: This is a private variable to avoid uncontrolled access to MPI</span>
+        
+        <span class="c1"># Get world size and processor rank</span>
+        <span class="n">mpi_world_size</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
+        <span class="n">mpi_processor_rank</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
+        
+        <span class="c1"># Get pid</span>
+        <span class="n">mpi_pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+
+        <span class="c1"># Get version and vendor info</span>
+        <span class="n">mpi_version_info</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">Get_version</span><span class="p">()</span>
+        <span class="n">mpi_vendor_info</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">get_vendor</span><span class="p">()</span>
+        <span class="n">mpi_thread_safe_level</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">Query_thread</span><span class="p">()</span>
+        
+        <span class="c1"># Prepare version info string</span>
+        <span class="n">mpi_version_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">tuple_element_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mpi_version_info</span><span class="p">)):</span>
+            <span class="n">mpi_version_str</span> <span class="o">=</span> <span class="n">mpi_version_str</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_version_info</span><span class="p">[</span><span class="n">tuple_element_index</span><span class="p">])</span>
+
+        <span class="c1"># Prepare vendor info string</span>
+        <span class="n">mpi_vendor_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_vendor_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mpi_vendor_info</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">mpi_vendor_version</span> <span class="o">=</span> <span class="n">mpi_vendor_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">mpi_vendor_version_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_vendor_version</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">tuple_element_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">mpi_vendor_version</span><span class="p">)):</span>
+                <span class="n">mpi_vendor_version_str</span> <span class="o">=</span> <span class="n">mpi_vendor_version_str</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_vendor_version</span><span class="p">[</span><span class="n">tuple_element_index</span><span class="p">])</span>
+            <span class="n">mpi_vendor_str</span> <span class="o">=</span> <span class="n">mpi_vendor_str</span> <span class="o">+</span> <span class="s2">&quot; v&quot;</span> <span class="o">+</span> <span class="n">mpi_vendor_version_str</span>
+            
+        <span class="c1"># Set initialization flag</span>
+        <span class="n">mpi_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">instance</span><span class="p">:</span>
+        <span class="n">mpi_initialization_error_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        <span class="n">__mpi_factory</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">mpi_world_size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">mpi_processor_rank</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">mpi_version_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">mpi_vendor_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">mpi_version_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">mpi_vendor_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">mpi_vendor_version_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">mpi_thread_safe_level</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">mpi_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        
+    <span class="c1"># Check if MPI implementation is thread safe</span>
+    <span class="k">if</span> <span class="n">mpi_initialized</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mpi_thread_safe_level</span> <span class="o">==</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">THREAD_SINGLE</span><span class="p">:</span>
+            <span class="n">mpi_thread_safe_level_str</span> <span class="o">=</span> <span class="s2">&quot;MPI THREAD SINGLE&quot;</span>
+            <span class="n">is_mpi_thread_safe</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">mpi_thread_safe_level</span> <span class="o">==</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">THREAD_FUNNELED</span><span class="p">:</span>
+            <span class="n">mpi_thread_safe_level_str</span> <span class="o">=</span> <span class="s2">&quot;MPI THREAD FUNNELED&quot;</span>
+            <span class="n">is_mpi_thread_safe</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">mpi_thread_safe_level</span> <span class="o">==</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">THREAD_SERIALIZED</span><span class="p">:</span>
+            <span class="n">mpi_thread_safe_level_str</span> <span class="o">=</span> <span class="s2">&quot;MPI THREAD SERIALIZED&quot;</span>
+            <span class="n">is_mpi_thread_safe</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">mpi_thread_safe_level</span> <span class="o">==</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">THREAD_MULTIPLE</span><span class="p">:</span>
+            <span class="n">mpi_thread_safe_level_str</span> <span class="o">=</span> <span class="s2">&quot;MPI THREAD MULTIPLE&quot;</span>
+            <span class="n">is_mpi_thread_safe</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mpi_thread_safe_level_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mpi_thread_safe_level</span><span class="p">)</span>
+            <span class="n">is_mpi_thread_safe</span> <span class="o">=</span> <span class="kc">False</span>  
+            
+    <span class="c1"># Generate MPI thread-safe info message</span>
+    <span class="k">if</span> <span class="n">mpi_initialized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_mpi_thread_safe</span><span class="p">:</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="s2">&quot;Provided MPI implementation (</span><span class="si">%s</span><span class="s2">) is not thread safe configured, &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mpi_vendor_str</span><span class="p">)</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span> <span class="o">+</span><span class="s2">&quot;maximum thread safe level supported is: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mpi_thread_safe_level_str</span><span class="p">)</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">NOTE: In most MPI implementations thread-safety &quot;</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span> <span class="o">+</span> <span class="s2">&quot;can be enabled at pre-compile, &quot;</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span> <span class="o">+</span> <span class="s2">&quot;by setting explicit thread-safe configuration options, &quot;</span>
+        <span class="n">mpi_thread_safe_info_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">      e.g. (MPI 1.6.5) --enable-mpi-thread-multiple&quot;</span>    
+        
+    <span class="c1"># Allocate memory for buffered sends</span>
+    <span class="k">if</span> <span class="n">mpi_initialized</span>  <span class="ow">and</span> <span class="n">mpi_world_size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_mpi_thread_safe</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mpi_buffer_size_in_mb</span> <span class="o">=</span> <span class="mi">150</span>
+            <span class="n">__mpi_buffer</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">Alloc_mem</span><span class="p">(</span><span class="n">mpi_buffer_size_in_mb</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span>
+            <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">Attach_buffer</span><span class="p">(</span><span class="n">__mpi_buffer</span><span class="p">)</span>
+            <span class="n">mpi_buffer_allocated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">instance</span><span class="p">:</span>
+            <span class="n">mpi_buffer_allocated</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">mpi_buffer_allocation_error_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+        
+    <span class="c1"># Check if MPI is effectively enabled</span>
+    <span class="k">if</span> <span class="n">mpi_initialized</span>  <span class="ow">and</span> <span class="n">mpi_world_size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_mpi_thread_safe</span> <span class="ow">and</span> <span class="n">mpi_buffer_allocated</span><span class="p">:</span>
+        <span class="n">is_mpi_enabled</span> <span class="o">=</span> <span class="kc">True</span>           
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">is_mpi_enabled</span> <span class="o">=</span> <span class="kc">False</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mpi_initialized</span><span class="p">:</span>
+            <span class="n">mpi_error_msg</span> <span class="o">=</span> <span class="n">mpi_initialization_error_msg</span>
+        <span class="k">elif</span> <span class="n">mpi_world_size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">mpi_error_msg</span> <span class="o">=</span> <span class="s2">&quot;Only 1 MPI process found&quot;</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">is_mpi_thread_safe</span><span class="p">:</span>
+            <span class="n">mpi_error_msg</span> <span class="o">=</span> <span class="n">mpi_thread_safe_info_msg</span>   
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">mpi_buffer_allocated</span><span class="p">:</span>
+            <span class="n">mpi_error_msg</span> <span class="o">=</span> <span class="n">mpi_buffer_allocation_error_msg</span>
+        
+    <span class="c1"># Determine whether this processor is the &#39;privileged&#39; MPI rank</span>
+    <span class="n">mpi_client_rank</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">mpi_processor_rank</span> <span class="o">==</span> <span class="n">mpi_client_rank</span><span class="p">:</span>
+        <span class="n">is_mpi_client</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">mpi_execution_role</span> <span class="o">=</span> <span class="s2">&quot;MPIClient&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">is_mpi_client</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># MPIServer is written in the C++ level</span>
+        <span class="n">mpi_execution_role</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        
+    <span class="c1"># Generate MPI info message</span>
+    <span class="n">mpi_info_msg</span> <span class="o">=</span> <span class="s2">&quot;MPI Enabled at host </span><span class="si">%s</span><span class="s2"> with rank </span><span class="si">%s</span><span class="s2"> as </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hostname</span><span class="p">,</span><span class="n">mpi_processor_rank</span><span class="p">,</span><span class="n">mpi_execution_role</span><span class="p">)</span>
+    <span class="n">mpi_info_msg</span> <span class="o">=</span> <span class="n">mpi_info_msg</span> <span class="o">+</span> <span class="s2">&quot;using MPI version </span><span class="si">%s</span><span class="s2"> from </span><span class="si">%s</span><span class="s2"> implementation &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mpi_version_str</span><span class="p">,</span><span class="n">mpi_vendor_str</span><span class="p">)</span>             
+
+    <span class="c1"># If MPI is enabled populate list with the ranks of the MPI servers</span>
+    <span class="n">__mpi_server_rank_list</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># NOTE: This is a private variable because Python list copy operator is by reference</span>
+    <span class="k">if</span> <span class="n">is_mpi_enabled</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mpi_world_size</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="n">mpi_client_rank</span><span class="p">:</span>
+                <span class="n">__mpi_server_rank_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>               
+                
+    <span class="c1"># Set showconsole settings</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">is_mpi_enabled</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">is_mpi_client</span><span class="p">)):</span>
+        <span class="n">log_to_console</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log_to_console</span> <span class="o">=</span> <span class="kc">True</span>
+                        
+    <span class="c1"># Generate the processor origin for the logger</span>
+    <span class="k">def</span> <span class="nf">setup_logger</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">show</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># CASA 6</span>
+            <span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">logsink</span>
+            <span class="n">casalog</span> <span class="o">=</span> <span class="n">logsink</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">taskinit</span> <span class="kn">import</span> <span class="n">casalog</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">setglobal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">processorOrigin</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+        <span class="n">casalog</span><span class="o">.</span><span class="n">showconsole</span><span class="p">()</span>
+
+    <span class="n">processor_origin</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_mpi_enabled</span><span class="p">:</span>
+        <span class="c1"># keep it short, take out the domain name if present</span>
+        <span class="n">hostname_wo_domain</span> <span class="o">=</span> <span class="n">hostname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">processor_origin</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">hostname_wo_domain</span>
+        <span class="k">if</span> <span class="n">is_mpi_client</span><span class="p">:</span>
+            <span class="n">processor_origin</span> <span class="o">+=</span> <span class="s2">&quot;:MPIClient&quot;</span>
+            <span class="c1"># For servers, rank information is written in the C++ level</span>
+        <span class="n">setup_logger</span><span class="p">(</span><span class="n">processor_origin</span><span class="p">,</span> <span class="n">is_mpi_enabled</span> <span class="ow">and</span> <span class="n">log_to_console</span><span class="p">)</span>
+            
+    <span class="c1"># Set pre-determined log level</span>
+    <span class="n">command_handling_log_level</span> <span class="o">=</span> <span class="s2">&quot;NORMAL&quot;</span>
+            
+    <span class="c1"># Set ANY_SOURCE and ANY_TAG constants</span>
+    <span class="k">if</span> <span class="n">is_mpi_enabled</span><span class="p">:</span>
+        <span class="n">mpi_any_tag</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">ANY_TAG</span>
+        <span class="n">mpi_any_source</span> <span class="o">=</span> <span class="n">__mpi_factory</span><span class="o">.</span><span class="n">ANY_SOURCE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mpi_any_tag</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>        
+        <span class="n">mpi_any_source</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>             
+                
+    <span class="c1"># Set progression profile</span>
+    <span class="k">if</span> <span class="n">is_mpi_enabled</span><span class="p">:</span>
+        <span class="n">mpi_start_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, not concurrent with command execution (at the server)</span>
+        <span class="n">mpi_stop_service_sleep_time</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># Not aggressive, concurrent with command execution (at the server)</span>
+        <span class="n">mpi_check_start_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, temporal and not concurrent with command execution (at the client)</span>
+        <span class="n">mpi_check_stop_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, temporal and not concurrent with command execution (at the client)</span>
+        <span class="n">mpi_monitor_status_service_heartbeat</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># Not aggressive, permanent and concurrent with command execution (at the client)</span>
+        <span class="n">mpi_ping_status_request_handler_service_sleep_time</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Not aggressive, concurrent with command execution (at the server)</span>
+        <span class="n">mpi_ping_status_response_handler_service_sleep_time</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># Not aggressive, concurrent with command execution (at the client)</span>
+        <span class="n">mpi_command_request_handler_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, not concurrent with command execution (at the server)</span>
+        <span class="n">mpi_command_response_handler_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, triggered (at the client)</span>
+        <span class="n">mpi_command_request_queue_service_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, triggered (at the client)</span>
+        <span class="n">mpi_push_command_request_block_mode_sleep_time</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># Aggressive, used for getting response in blocking mode (at the client)</span>
+
+        <span class="c1"># For debugging/developing purposes this might need to be</span>
+        <span class="c1"># disabled</span>
+        <span class="n">mpi_monitor_status_service_timeout_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># 2*[bsend+(Iprobe+recv) + serialization/deserialization + latency + locks]</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_ping_status_request_handler_service_sleep_time</span> <span class="c1"># Sleep time at the server</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_world_size</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># Receive sequentially response from all servers</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_ping_status_response_handler_service_sleep_time</span> <span class="c1"># Sleep time at the client</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_monitor_status_service_heartbeat</span> <span class="c1"># Own heartbeat sleep time</span>
+        <span class="n">mpi_monitor_status_service_timeout</span> <span class="o">*=</span> <span class="mi">3</span> <span class="c1"># 3 times what it should take</span>
+        
+        <span class="n">mpi_ping_status_request_handler_service_timeout</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># 1*[bsend+(Iprobe+recv) + serialization/deserialization + latency + locks]</span>
+        <span class="n">mpi_ping_status_request_handler_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_world_size</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># Receive sequentially response from all servers</span>
+        <span class="n">mpi_ping_status_request_handler_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_ping_status_response_handler_service_sleep_time</span> <span class="c1"># Sleep time at the client</span>
+        <span class="n">mpi_ping_status_request_handler_service_timeout</span> <span class="o">+=</span> <span class="n">mpi_monitor_status_service_heartbeat</span> <span class="c1"># Own heartbeat sleep time</span>
+        <span class="n">mpi_ping_status_request_handler_service_timeout</span> <span class="o">*=</span> <span class="mi">3</span> <span class="c1"># 3 times what it should take</span>
+
+
+    <span class="c1"># Static methods ###################################################################################################       </span>
+        
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mpi_comm_world_factory</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">__mpi_factory</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Dup</span><span class="p">()</span>
+    
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mpi_server_rank_list</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">__mpi_server_rank_list</span><span class="p">)</span> <span class="c1"># Careful, Python list copy operator is by reference</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">finalize_mpi_environment</span><span class="p">():</span>
+        <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">__mpi_factory</span><span class="o">.</span><span class="n">Finalize</span><span class="p">()</span>
+        
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">abort_mpi_environment</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">:</span>
+            <span class="c1"># 1.10 sometimes hangs on aborts</span>
+            <span class="c1"># abort is only needed with &gt;= 2.0 to kill all processes on timeout</span>
+            <span class="k">if</span> <span class="s1">&#39;Open MPI v1.10&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mpi_vendor_str</span><span class="p">:</span>
+                <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">__mpi_factory</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Abort</span><span class="p">()</span></div>
+
+
+        
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,23 +1,6 @@
 pipeline.hsd.cli.hsd\_blflag
 ============================
 
-.. automodule:: pipeline.hsd.cli.hsd_blflag
+.. currentmodule:: pipeline.hsd.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hsd_blflag

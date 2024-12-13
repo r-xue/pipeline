@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.domain.antenna" href="pipeline.domain.antenna.html" />
+    <link rel="next" title="pipeline.domain.Antenna" href="pipeline.domain.Antenna.html" />
     <link rel="prev" title="pipeline.config.cli_interface" href="pipeline.config.cli_interface.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -59,6 +59,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pipeline.domain</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Antenna.html">pipeline.domain.Antenna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.AntennaArray.html">pipeline.domain.AntennaArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataDescription.html">pipeline.domain.DataDescription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataTable.html">pipeline.domain.DataTable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataType.html">pipeline.domain.DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Field.html">pipeline.domain.Field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.FluxMeasurement.html">pipeline.domain.FluxMeasurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.MeasurementSet.html">pipeline.domain.MeasurementSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.ObservingRun.html">pipeline.domain.ObservingRun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Polarization.html">pipeline.domain.Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Scan.html">pipeline.domain.Scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Source.html">pipeline.domain.Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindow.html">pipeline.domain.SpectralWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindowWithChannelSelection.html">pipeline.domain.SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.State.html">pipeline.domain.State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.antenna.html">pipeline.domain.antenna</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.antennaarray.html">pipeline.domain.antennaarray</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.datadescription.html">pipeline.domain.datadescription</a></li>
@@ -110,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -134,6 +149,56 @@
              
   <section id="module-pipeline.domain">
 <span id="pipeline-domain"></span><h1>pipeline.domain<a class="headerlink" href="#module-pipeline.domain" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antenna</span></code></a></p></td>
+<td><p>Antenna is a logical representation of an antenna.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray" title="pipeline.domain.AntennaArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AntennaArray</span></code></a></p></td>
+<td><p>AntennaArray is a logical representation of the antenna array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription" title="pipeline.domain.DataDescription"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataDescription</span></code></a></p></td>
+<td><p>A DataDescription is a logical representation of an entry in the DATA_DESCRIPTION table in the measurement set, where the latter is used to define the shape of the data in the MAIN table in the MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataTable.html#pipeline.domain.DataTable" title="pipeline.domain.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.Field.html#pipeline.domain.Field" title="pipeline.domain.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a></p></td>
+<td><p>A class to store logical representation of a field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.FluxMeasurement.html#pipeline.domain.FluxMeasurement" title="pipeline.domain.FluxMeasurement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxMeasurement</span></code></a></p></td>
+<td><p>FluxMeasurement is a logical representation of a flux measurement.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun" title="pipeline.domain.ObservingRun"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservingRun</span></code></a></p></td>
+<td><p>ObservingRun is a logical representation of an observing run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.Polarization.html#pipeline.domain.Polarization" title="pipeline.domain.Polarization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polarization</span></code></a></p></td>
+<td><p>Polarization is a logical representation of a polarization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.Scan.html#pipeline.domain.Scan" title="pipeline.domain.Scan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Scan</span></code></a></p></td>
+<td><p>Scan is a logical representation of a single scan.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.Source.html#pipeline.domain.Source" title="pipeline.domain.Source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Source</span></code></a></p></td>
+<td><p>Source is a logical representation of an astronomical source.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow" title="pipeline.domain.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralWindow</span></code></a></p></td>
+<td><p>SpectralWindow is a logical representation of a spectral window (spw).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection" title="pipeline.domain.SpectralWindowWithChannelSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectralWindowWithChannelSelection</span></code></a></p></td>
+<td><p>SpectralWindowWithChannelSelection decorates a SpectralWindow so that the spectral window ID also contains a channel selection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.State.html#pipeline.domain.State" title="pipeline.domain.State"><code class="xref py py-obj docutils literal notranslate"><span class="pre">State</span></code></a></p></td>
+<td><p>State is a logical representation of (part of) rows in the STATE table relating STATE_ID (in the MAIN table) to the observing mode(s) and corresponding pipeline intent(s).</p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.domain.antenna.html#module-pipeline.domain.antenna" title="pipeline.domain.antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antenna</span></code></a></p></td>
@@ -196,7 +261,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.config.cli_interface.html" class="btn btn-neutral float-left" title="pipeline.config.cli_interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.domain.antenna.html" class="btn btn-neutral float-right" title="pipeline.domain.antenna" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.domain.Antenna.html" class="btn btn-neutral float-right" title="pipeline.domain.Antenna" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

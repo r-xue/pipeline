@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hif.tasks.selfcal.selfcal.Selfcal" href="pipeline.hif.tasks.selfcal.selfcal.Selfcal.html" />
+    <link rel="next" title="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel" href="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel.html" />
     <link rel="prev" title="pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer" href="pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -146,17 +150,43 @@
              
   <section id="module-pipeline.hif.tasks.selfcal.selfcal">
 <span id="pipeline-hif-tasks-selfcal-selfcal"></span><h1>pipeline.hif.tasks.selfcal.selfcal<a class="headerlink" href="#module-pipeline.hif.tasks.selfcal.selfcal" title="Link to this heading"></a></h1>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel.html#pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel" title="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contfile_to_chansel</span></code></a></p></td>
+<td><p>Translate continuum ranges specified in contfile to channel selection string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.fnmatch.html#pipeline.hif.tasks.selfcal.selfcal.fnmatch" title="pipeline.hif.tasks.selfcal.selfcal.fnmatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fnmatch</span></code></a></p></td>
+<td><p>Test whether FILENAME matches PATTERN.</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.Selfcal.html#pipeline.hif.tasks.selfcal.selfcal.Selfcal" title="pipeline.hif.tasks.selfcal.selfcal.Selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Selfcal</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.DataType.html#pipeline.hif.tasks.selfcal.selfcal.DataType" title="pipeline.hif.tasks.selfcal.selfcal.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.JsonCustomEncoder.html#pipeline.hif.tasks.selfcal.selfcal.JsonCustomEncoder" title="pipeline.hif.tasks.selfcal.selfcal.JsonCustomEncoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">JsonCustomEncoder</span></code></a></p></td>
+<td><p>Support for data types that JSON default encoder does not do.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.MakeImList.html#pipeline.hif.tasks.selfcal.selfcal.MakeImList" title="pipeline.hif.tasks.selfcal.selfcal.MakeImList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MakeImList</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs.html#pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs" title="pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfcalInputs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal" title="pipeline.hif.tasks.selfcal.selfcal.Selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Selfcal</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.SelfcalResults.html#pipeline.hif.tasks.selfcal.selfcal.SelfcalResults" title="pipeline.hif.tasks.selfcal.selfcal.SelfcalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfcalResults</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs.html#pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs" title="pipeline.hif.tasks.selfcal.selfcal.SelfcalInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfcalInputs</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.SelfcalResults.html#pipeline.hif.tasks.selfcal.selfcal.SelfcalResults" title="pipeline.hif.tasks.selfcal.selfcal.SelfcalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelfcalResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.SerialIFApplycal.html#pipeline.hif.tasks.selfcal.selfcal.SerialIFApplycal" title="pipeline.hif.tasks.selfcal.selfcal.SerialIFApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialIFApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.selfcal.selfcal.TaskQueue.html#pipeline.hif.tasks.selfcal.selfcal.TaskQueue" title="pipeline.hif.tasks.selfcal.selfcal.TaskQueue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskQueue</span></code></a></p></td>
+<td><p>A interface class that manages/executes tier0 PipelineTask, JobRquests, or FunctionaCalls in parallel.</p></td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +197,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer.html" class="btn btn-neutral float-left" title="pipeline.hif.tasks.selfcal.renderer.T2_4MDetailsSelfcalRenderer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hif.tasks.selfcal.selfcal.Selfcal.html" class="btn btn-neutral float-right" title="pipeline.hif.tasks.selfcal.selfcal.Selfcal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel.html" class="btn btn-neutral float-right" title="pipeline.hif.tasks.selfcal.selfcal.contfile_to_chansel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -20,6 +20,7 @@ pipeline.hifv.tasks.syspower.display
       :template: custom-class-template.rst
       :nosignatures:
    
+      atime
       compressionSummary
       medianSummary
       syspowerBarChart

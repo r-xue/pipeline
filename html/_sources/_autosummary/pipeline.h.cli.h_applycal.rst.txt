@@ -1,23 +1,6 @@
 pipeline.h.cli.h\_applycal
 ==========================
 
-.. automodule:: pipeline.h.cli.h_applycal
+.. currentmodule:: pipeline.h.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: h_applycal

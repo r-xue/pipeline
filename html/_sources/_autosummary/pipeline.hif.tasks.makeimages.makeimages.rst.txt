@@ -9,6 +9,14 @@ pipeline.hif.tasks.makeimages.makeimages
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      signature
+   
    
 
    
@@ -21,8 +29,13 @@ pipeline.hif.tasks.makeimages.makeimages
       :nosignatures:
    
       CleanTaskFactory
+      DataType
       MakeImages
       MakeImagesInputs
+      MakeImagesResult
+      Sensitivity
+      Tclean
+      TcleanResult
    
    
 

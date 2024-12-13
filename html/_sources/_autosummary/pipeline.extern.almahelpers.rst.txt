@@ -21,6 +21,7 @@ pipeline.extern.almahelpers
       editIntentscsv
       fixsyscaltimes
       genImageName
+      reduce
       trimSpwmap
       tsysspwmap
    
@@ -37,6 +38,9 @@ pipeline.extern.almahelpers
    
       SpwInfo
       SpwMap
+      msmdtool
+      qatool
+      tbtool
    
    
 

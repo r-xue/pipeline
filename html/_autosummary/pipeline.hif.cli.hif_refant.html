@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_refant">
-<span id="pipeline-hif-cli-hif-refant"></span><h1>pipeline.hif.cli.hif_refant<a class="headerlink" href="#module-pipeline.hif.cli.hif_refant" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-refant">
+<h1>pipeline.hif.cli.hif_refant<a class="headerlink" href="#pipeline-hif-cli-hif-refant" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_refant">
+<span class="sig-name descname"><span class="pre">hif_refant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_refant.html#hif_refant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_refant" title="Link to this definition"></a></dt>
+<dd><p>Select the best reference antennas</p>
+<p>The hif_refant task selects a list of reference antennas and stores them
+in the pipeline context in priority order.</p>
+<p>The priority order is determined by a weighted combination of scores derived
+by the antenna selection heuristics. In manual mode the reference antennas
+can be set by hand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
+example: [‘M31.ms’]</p></li>
+<li><p><strong>field</strong> – The comma delimited list of field names or field ids for which flagging scores are computed if hm_refant=’automatic’ and  flagging = True
+example: ‘’ (Default to fields with the specified intents), ‘3C279’, ‘3C279,M82’</p></li>
+<li><p><strong>spw</strong> – A string containing the comma delimited list of spectral window ids for which flagging scores are computed if hm_refant=’automatic’ and  flagging = True.
+example: ‘’ (all spws observed with the specified intents), ‘11,13,15,17’</p></li>
+<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to all supported
+intents.
+example: ‘BANDPASS’, ‘AMPLITUDE,BANDPASS,PHASE,POLARIZATION’</p></li>
+<li><p><strong>hm_refant</strong> – The heuristics method or mode for selection the reference antenna. The options are ‘manual’ and ‘automatic. In manual
+mode a user supplied reference antenna refant is supplied.
+In ‘automatic’ mode the antennas are selected automatically.</p></li>
+<li><p><strong>refant</strong> – The user supplied reference antenna for hm_refant=’manual’. If no antenna list is supplied an empty list is returned.
+example: ‘DV05’</p></li>
+<li><p><strong>geometry</strong> – Score antenna by proximity to the center of the array. This option is quick as only the ANTENNA table must be read.
+Parameter is available when <a href="#id1"><span class="problematic" id="id2">``</span></a>hm_refant``=’automatic’.</p></li>
+<li><p><strong>flagging</strong> – Score antennas by percentage of unflagged data.  This option requires computing flagging statistics.
+Parameter is available when <a href="#id3"><span class="problematic" id="id4">``</span></a>hm_refant``=’automatic’.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. options: ‘automatic’, ‘true’, ‘false’, True, False
+default: None (equivalent to False)</p></li>
+<li><p><strong>refantignore</strong> – string list to be ignored as reference antennas. example:  refantignore=’ea02,ea03’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Compute the references antennas to be used for bandpass and gain calibration.</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_refant</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

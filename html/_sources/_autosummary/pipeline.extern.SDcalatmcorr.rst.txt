@@ -52,6 +52,21 @@ pipeline.extern.SDcalatmcorr
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      CubicSpline
+      aftool
+      attool
+      msmdtool
+      product
+      qatool
+      tbtool
+   
    
 
    

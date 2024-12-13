@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_hanning
 ===============================
 
-.. automodule:: pipeline.hifv.cli.hifv_hanning
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_hanning

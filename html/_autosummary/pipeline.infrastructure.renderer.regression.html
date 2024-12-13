@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +78,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +165,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -229,29 +242,95 @@ QAPlugin.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor" title="pipeline.infrastructure.renderer.regression.ApplycalRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for applycal tasks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckflagRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.ApplycalResults.html#pipeline.infrastructure.renderer.regression.ApplycalResults" title="pipeline.infrastructure.renderer.regression.ApplycalResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplycalResults</span></code></a></p></td>
+<td><p>ApplycalResults is the results class for the pipeline Applycal task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Applycals.html#pipeline.infrastructure.renderer.regression.Applycals" title="pipeline.infrastructure.renderer.regression.Applycals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Applycals</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Checkflag.html#pipeline.infrastructure.renderer.regression.Checkflag" title="pipeline.infrastructure.renderer.regression.Checkflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Checkflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.CheckflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckflagRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_checkflag</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.CheckflagResults.html#pipeline.infrastructure.renderer.regression.CheckflagResults" title="pipeline.infrastructure.renderer.regression.CheckflagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckflagResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Context.html#pipeline.infrastructure.renderer.regression.Context" title="pipeline.infrastructure.renderer.regression.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a></p></td>
+<td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Finalcals.html#pipeline.infrastructure.renderer.regression.Finalcals" title="pipeline.infrastructure.renderer.regression.Finalcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Finalcals</span></code></a></p></td>
+<td><p>Class for the finalcals pipeline task.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor" title="pipeline.infrastructure.renderer.regression.FinalcalsRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FinalcalsRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_finalcals</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FinalcalsResults.html#pipeline.infrastructure.renderer.regression.FinalcalsResults" title="pipeline.infrastructure.renderer.regression.FinalcalsResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FinalcalsResults</span></code></a></p></td>
+<td><p>Results class for the hifv_finalcals pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FlagDeterVLA.html#pipeline.infrastructure.renderer.regression.FlagDeterVLA" title="pipeline.infrastructure.renderer.regression.FlagDeterVLA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterVLA</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor.html#pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor" title="pipeline.infrastructure.renderer.regression.FlagDeterVLARegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterVLARegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_flagdata</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FlagDeterVLAResults.html#pipeline.infrastructure.renderer.regression.FlagDeterVLAResults" title="pipeline.infrastructure.renderer.regression.FlagDeterVLAResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterVLAResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxCalibrationResults.html#pipeline.infrastructure.renderer.regression.FluxCalibrationResults" title="pipeline.infrastructure.renderer.regression.FluxCalibrationResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxCalibrationResults</span></code></a></p></td>
+<td><p>TODO: refactor this results structure.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxDensityUnits.html#pipeline.infrastructure.renderer.regression.FluxDensityUnits" title="pipeline.infrastructure.renderer.regression.FluxDensityUnits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxDensityUnits</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Fluxboot.html#pipeline.infrastructure.renderer.regression.Fluxboot" title="pipeline.infrastructure.renderer.regression.Fluxboot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Fluxboot</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor" title="pipeline.infrastructure.renderer.regression.FluxbootRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxbootRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_fluxboot.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxcalflagRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxbootResults.html#pipeline.infrastructure.renderer.regression.FluxbootResults" title="pipeline.infrastructure.renderer.regression.FluxbootResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxbootResults</span></code></a></p></td>
+<td><p>Fluxboot Results class used with Fluxboot and Fluxboot Inputs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.FluxcalflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FluxcalflagRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifa_gfluxscaleflag.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.GcorFluxscale.html#pipeline.infrastructure.renderer.regression.GcorFluxscale" title="pipeline.infrastructure.renderer.regression.GcorFluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscale</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor.html#pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor" title="pipeline.infrastructure.renderer.regression.GcorFluxscaleRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GcorFluxscaleRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifa_gcorfluxscale.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NRORestoredataRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.GfluxscaleflagResults.html#pipeline.infrastructure.renderer.regression.GfluxscaleflagResults" title="pipeline.infrastructure.renderer.regression.GfluxscaleflagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GfluxscaleflagResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.IFApplycal.html#pipeline.infrastructure.renderer.regression.IFApplycal" title="pipeline.infrastructure.renderer.regression.IFApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IFApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.MeasurementSet.html#pipeline.infrastructure.renderer.regression.MeasurementSet" title="pipeline.infrastructure.renderer.regression.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.NRORestoreData.html#pipeline.infrastructure.renderer.regression.NRORestoreData" title="pipeline.infrastructure.renderer.regression.NRORestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NRORestoreData</span></code></a></p></td>
+<td><p>Restore flagged and calibrated data produced during a previous pipeline run and archived on disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.NRORestoreDataResults.html#pipeline.infrastructure.renderer.regression.NRORestoreDataResults" title="pipeline.infrastructure.renderer.regression.NRORestoreDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NRORestoreDataResults</span></code></a></p></td>
+<td><p>Results object of NRORestoreData.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.NRORestoredataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NRORestoredataRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hsdn_restoredata.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor" title="pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriorcalsRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.OrderedDict.html#pipeline.infrastructure.renderer.regression.OrderedDict" title="pipeline.infrastructure.renderer.regression.OrderedDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDict</span></code></a></p></td>
+<td><p>Dictionary that remembers insertion order</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Priorcals.html#pipeline.infrastructure.renderer.regression.Priorcals" title="pipeline.infrastructure.renderer.regression.Priorcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Priorcals</span></code></a></p></td>
+<td><p>Class for the Priorcals pipeline task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor" title="pipeline.infrastructure.renderer.regression.PriorcalsRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriorcalsRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_priorcals</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.PriorcalsResults.html#pipeline.infrastructure.renderer.regression.PriorcalsResults" title="pipeline.infrastructure.renderer.regression.PriorcalsResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PriorcalsResults</span></code></a></p></td>
+<td><p>Results class for the hifv_priorcals pipeline task.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.RegressionExtractor.html#pipeline.infrastructure.renderer.regression.RegressionExtractor" title="pipeline.infrastructure.renderer.regression.RegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegressionExtractor</span></code></a></p></td>
 <td><p>The mandatory base class for all regression test result extractors.</p></td>
@@ -259,41 +338,110 @@ QAPlugin.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry.html#pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry" title="pipeline.infrastructure.renderer.regression.RegressionExtractorRegistry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegressionExtractorRegistry</span></code></a></p></td>
 <td><p>The registry and manager of the regression result extractor framework.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDApplycalRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Results.html#pipeline.infrastructure.renderer.regression.Results" title="pipeline.infrastructure.renderer.regression.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
+<td><p>Results is the base implementation of the Results API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.ResultsList.html#pipeline.infrastructure.renderer.regression.ResultsList" title="pipeline.infrastructure.renderer.regression.ResultsList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDApplycal.html#pipeline.infrastructure.renderer.regression.SDApplycal" title="pipeline.infrastructure.renderer.regression.SDApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDApplycalRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDApplycalRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for sd_applycal.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDBLFlag.html#pipeline.infrastructure.renderer.regression.SDBLFlag" title="pipeline.infrastructure.renderer.regression.SDBLFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBLFlag</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDBLFlagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBLFlagRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for sd_blfrag.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDBLFlagResults.html#pipeline.infrastructure.renderer.regression.SDBLFlagResults" title="pipeline.infrastructure.renderer.regression.SDBLFlagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBLFlagResults</span></code></a></p></td>
+<td><p>The results of SDFalgData</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDImaging.html#pipeline.infrastructure.renderer.regression.SDImaging" title="pipeline.infrastructure.renderer.regression.SDImaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImaging</span></code></a></p></td>
+<td><p>SDImaging processing class.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDImagingRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImagingRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for sd_imaging.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRestoredataRegressionExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDImagingResults.html#pipeline.infrastructure.renderer.regression.SDImagingResults" title="pipeline.infrastructure.renderer.regression.SDImagingResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDImagingResults</span></code></a></p></td>
+<td><p>The class to store a list of per image results (SDImagingResultItem).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDRestoreData.html#pipeline.infrastructure.renderer.regression.SDRestoreData" title="pipeline.infrastructure.renderer.regression.SDRestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRestoreData</span></code></a></p></td>
+<td><p>Restore flagged and calibrated data produced during a previous pipeline run and archived on disk.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDRestoreDataResults.html#pipeline.infrastructure.renderer.regression.SDRestoreDataResults" title="pipeline.infrastructure.renderer.regression.SDRestoreDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRestoreDataResults</span></code></a></p></td>
+<td><p>Results object of SDRestoreData.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SDRestoredataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDRestoredataRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for sd_restoredata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Solint.html#pipeline.infrastructure.renderer.regression.Solint" title="pipeline.infrastructure.renderer.regression.Solint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solint</span></code></a></p></td>
+<td><p>Class for the solint pipeline task.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SolintRegressionExtractor.html#pipeline.infrastructure.renderer.regression.SolintRegressionExtractor" title="pipeline.infrastructure.renderer.regression.SolintRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolintRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_solint.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TargetflagRegressionExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.SolintResults.html#pipeline.infrastructure.renderer.regression.SolintResults" title="pipeline.infrastructure.renderer.regression.SolintResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolintResults</span></code></a></p></td>
+<td><p>Results class for the hifv_solint pipeline task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.StandardTaskTemplate.html#pipeline.infrastructure.renderer.regression.StandardTaskTemplate" title="pipeline.infrastructure.renderer.regression.StandardTaskTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p></td>
+<td><p>StandardTaskTemplate is a template class for pipeline reduction tasks whose execution can be described by a common four-step process:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Statwt.html#pipeline.infrastructure.renderer.regression.Statwt" title="pipeline.infrastructure.renderer.regression.Statwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Statwt</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.StatwtResults.html#pipeline.infrastructure.renderer.regression.StatwtResults" title="pipeline.infrastructure.renderer.regression.StatwtResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatwtResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.Targetflag.html#pipeline.infrastructure.renderer.regression.Targetflag" title="pipeline.infrastructure.renderer.regression.Targetflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Targetflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor.html#pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor" title="pipeline.infrastructure.renderer.regression.TargetflagRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TargetflagRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_targetflag</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.TargetflagResults.html#pipeline.infrastructure.renderer.regression.TargetflagResults" title="pipeline.infrastructure.renderer.regression.TargetflagResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TargetflagResults</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLAApplycalRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAApplycalRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_applycals</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAImportDataRegressionExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAImportData.html#pipeline.infrastructure.renderer.regression.VLAImportData" title="pipeline.infrastructure.renderer.regression.VLAImportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAImportData</span></code></a></p></td>
+<td><p>VLAImportData class for parallelization.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLAImportDataRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAImportDataRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_importdata</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLASetjyRegressionExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAImportDataResults.html#pipeline.infrastructure.renderer.regression.VLAImportDataResults" title="pipeline.infrastructure.renderer.regression.VLAImportDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAImportDataResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLASetjy.html#pipeline.infrastructure.renderer.regression.VLASetjy" title="pipeline.infrastructure.renderer.regression.VLASetjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLASetjy</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLASetjyRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLASetjyRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_vlasetjy</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAStatwtRegressionExtractor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor.html#pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor" title="pipeline.infrastructure.renderer.regression.VLAStatwtRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VLAStatwtRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_statwt</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.semiFinalBPdcals.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcals" title="pipeline.infrastructure.renderer.regression.semiFinalBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semiFinalBPdcals</span></code></a></p></td>
+<td><p>Class for the semiFinalBPdcals pipeline task.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor" title="pipeline.infrastructure.renderer.regression.semiFinalBPdcalsRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semiFinalBPdcalsRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_semiFinalBPdcals</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.semiFinalBPdcalsResults.html#pipeline.infrastructure.renderer.regression.semiFinalBPdcalsResults" title="pipeline.infrastructure.renderer.regression.semiFinalBPdcalsResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semiFinalBPdcalsResults</span></code></a></p></td>
+<td><p>Results class for the hifv_semiFinalBPdcals pipeline task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.testBPdcals.html#pipeline.infrastructure.renderer.regression.testBPdcals" title="pipeline.infrastructure.renderer.regression.testBPdcals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testBPdcals</span></code></a></p></td>
+<td><p>Class for the testBPdcals pipeline task.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor.html#pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor" title="pipeline.infrastructure.renderer.regression.testBPdcalsRegressionExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testBPdcalsRegressionExtractor</span></code></a></p></td>
 <td><p>Regression test result extractor for hifv_testBPdcals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.renderer.regression.testBPdcalsResults.html#pipeline.infrastructure.renderer.regression.testBPdcalsResults" title="pipeline.infrastructure.renderer.regression.testBPdcalsResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">testBPdcalsResults</span></code></a></p></td>
+<td><p>Results class for the hifv_testBPdcals pipeline task.</p></td>
 </tr>
 </tbody>
 </table>

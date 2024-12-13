@@ -13,6 +13,29 @@ pipeline.domain
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Antenna
+      AntennaArray
+      DataDescription
+      DataTable
+      DataType
+      Field
+      FluxMeasurement
+      MeasurementSet
+      ObservingRun
+      Polarization
+      Scan
+      Source
+      SpectralWindow
+      SpectralWindowWithChannelSelection
+      State
+   
    
 
    

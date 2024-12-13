@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.tasks.applycal" href="pipeline.h.tasks.applycal.html" />
-    <link rel="prev" title="pipeline.h.heuristics.tsysspwmap" href="pipeline.h.heuristics.tsysspwmap.html" /> 
+    <link rel="next" title="pipeline.h.tasks.Applycal" href="pipeline.h.tasks.Applycal.html" />
+    <link rel="prev" title="pipeline.h.heuristics.tsysnormalize.tsysNormalize" href="pipeline.h.heuristics.tsysnormalize.tsysNormalize.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -144,6 +150,32 @@
              
   <section id="module-pipeline.h.tasks">
 <span id="pipeline-h-tasks"></span><h1>pipeline.h.tasks<a class="headerlink" href="#module-pipeline.h.tasks" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.Applycal.html#pipeline.h.tasks.Applycal" title="pipeline.h.tasks.Applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Applycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.ExportData.html#pipeline.h.tasks.ExportData" title="pipeline.h.tasks.ExportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExportData</span></code></a></p></td>
+<td><p>ExportData is the base class for exporting data to the products subdirectory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData" title="pipeline.h.tasks.ImportData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImportData</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.MsSplit.html#pipeline.h.tasks.MsSplit" title="pipeline.h.tasks.MsSplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MsSplit</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.RestoreData.html#pipeline.h.tasks.RestoreData" title="pipeline.h.tasks.RestoreData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RestoreData</span></code></a></p></td>
+<td><p>RestoreData is the base class for restoring flagged and calibrated data produced during a previous pipeline run and archived on disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal" title="pipeline.h.tasks.Tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tsyscal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.Tsysflag.html#pipeline.h.tasks.Tsysflag" title="pipeline.h.tasks.Tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tsysflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.html#module-pipeline.h.tasks.applycal" title="pipeline.h.tasks.applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">applycal</span></code></a></p></td>
@@ -181,8 +213,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.h.heuristics.tsysspwmap.html" class="btn btn-neutral float-left" title="pipeline.h.heuristics.tsysspwmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.tasks.applycal.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.heuristics.tsysnormalize.tsysNormalize.html" class="btn btn-neutral float-left" title="pipeline.h.heuristics.tsysnormalize.tsysNormalize" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.tasks.Applycal.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.Applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

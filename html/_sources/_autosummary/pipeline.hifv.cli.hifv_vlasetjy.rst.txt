@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_vlasetjy
 ================================
 
-.. automodule:: pipeline.hifv.cli.hifv_vlasetjy
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_vlasetjy

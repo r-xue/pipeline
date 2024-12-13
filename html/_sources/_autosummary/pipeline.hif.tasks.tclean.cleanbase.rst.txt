@@ -31,6 +31,7 @@ pipeline.hif.tasks.tclean.cleanbase
       CleanBase
       CleanBaseError
       CleanBaseInputs
+      TcleanResult
    
    
 

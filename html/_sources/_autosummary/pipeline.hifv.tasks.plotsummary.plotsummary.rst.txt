@@ -20,6 +20,7 @@ pipeline.hifv.tasks.plotsummary.plotsummary
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       PlotSummary
       PlotSummaryInputs
       PlotSummaryResults

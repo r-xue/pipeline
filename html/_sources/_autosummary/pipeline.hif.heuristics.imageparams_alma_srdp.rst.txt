@@ -20,6 +20,7 @@ pipeline.hif.heuristics.imageparams\_alma\_srdp
       :template: custom-class-template.rst
       :nosignatures:
    
+      ImageParamsHeuristicsALMA
       ImageParamsHeuristicsALMASrdp
    
    

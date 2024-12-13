@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.tasks.applycal.applycal.SerialApplycal" href="pipeline.h.tasks.applycal.applycal.SerialApplycal.html" />
+    <link rel="next" title="pipeline.h.tasks.applycal.applycal.DataType" href="pipeline.h.tasks.applycal.applycal.DataType.html" />
     <link rel="prev" title="pipeline.h.tasks.applycal.applycal.ApplycalInputs" href="pipeline.h.tasks.applycal.applycal.ApplycalInputs.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -149,8 +155,8 @@
 <h1>pipeline.h.tasks.applycal.applycal.ApplycalResults<a class="headerlink" href="#pipeline-h-tasks-applycal-applycal-applycalresults" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.h.tasks.applycal.applycal.ApplycalResults">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ApplycalResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">applied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callib_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/applycal/applycal.html#ApplycalResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.applycal.applycal.ApplycalResults" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.basetask.Results.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ApplycalResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">applied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callib_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/h/tasks/applycal/applycal.html#ApplycalResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.applycal.applycal.ApplycalResults" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Results.html#pipeline.hsd.tasks.exportdata.almasdaqua.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
 <p>ApplycalResults is the results class for the pipeline Applycal task.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
@@ -211,7 +217,7 @@ on-the-fly calibration calculations.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.h.tasks.applycal.applycal.ApplycalInputs.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.applycal.applycal.ApplycalInputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.tasks.applycal.applycal.SerialApplycal.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.applycal.applycal.SerialApplycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.tasks.applycal.applycal.DataType.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.applycal.applycal.DataType" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

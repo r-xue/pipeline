@@ -9,6 +9,14 @@ pipeline.hsd.tasks.baseline.display
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      casa5style_plot
+   
    
 
    
@@ -25,6 +33,9 @@ pipeline.hsd.tasks.baseline.display
       ClusterPropertyDisplay
       ClusterValidationAxesManager
       ClusterValidationDisplay
+      DataTable
+      MapAxesManagerBase
+      SingleDishDisplayInputs
    
    
 

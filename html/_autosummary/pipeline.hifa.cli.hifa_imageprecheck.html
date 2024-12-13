@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_imageprecheck">
-<span id="pipeline-hifa-cli-hifa-imageprecheck"></span><h1>pipeline.hifa.cli.hifa_imageprecheck<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_imageprecheck" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-imageprecheck">
+<h1>pipeline.hifa.cli.hifa_imageprecheck<a class="headerlink" href="#pipeline-hifa-cli-hifa-imageprecheck" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_imageprecheck">
+<span class="sig-name descname"><span class="pre">hifa_imageprecheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_angular_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_imageprecheck.html#hifa_imageprecheck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_imageprecheck" title="Link to this definition"></a></dt>
+<dd><p>Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.</p>
+<p>In this task, the representative source and the spw containing the representative
+frequency selected by the PI in the OT are used to calculate the synthesized beam
+and to make sensitivity estimates for the aggregate bandwidth and representative
+bandwidth for several values of the Briggs robust parameter. This information is
+reported in a table in the weblog. If no representative target/frequency information
+is available, it defaults to the first target and center of first spw in the data
+(e.g. pre-Cycle 5 data does not have this information available). The best Briggs
+robust parameter to achieve the PI’s desired angular resolution is chosen
+automatically. See the User’s guide for further details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>desired_angular_resolution</strong> – User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
+‘’: automatic from performance parameters (default).
+Example: ‘1.0arcsec’</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams; defaults to False</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>run with recommended settings to perform checks prior to imaging:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_imageprecheck</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. run to perform checks prior to imaging and force the re-calculation of
+sensitivities and beams:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_imageprecheck</span><span class="p">(</span><span class="n">calcsb</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

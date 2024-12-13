@@ -13,6 +13,21 @@ pipeline.h.tasks
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Applycal
+      ExportData
+      ImportData
+      MsSplit
+      RestoreData
+      Tsyscal
+      Tsysflag
+   
    
 
    

@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,10 +111,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hsd.cli.hsd_blflag">
-<span id="pipeline-hsd-cli-hsd-blflag"></span><h1>pipeline.hsd.cli.hsd_blflag<a class="headerlink" href="#module-pipeline.hsd.cli.hsd_blflag" title="Link to this heading"></a></h1>
-<p>Created on 2013/06/23</p>
-<p>&#64;author: kana</p>
+  <section id="pipeline-hsd-cli-hsd-blflag">
+<h1>pipeline.hsd.cli.hsd_blflag<a class="headerlink" href="#pipeline-hsd-cli-hsd-blflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_blflag">
+<span class="sig-name descname"><span class="pre">hsd_blflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_tsys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tsys_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_prfre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prfre_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_pofre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pofre_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_prfr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prfr_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_pofr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pofr_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_prfrm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prfrm_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prfrm_nmean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_pofrm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pofrm_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pofrm_nmean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_blflag.html#hsd_blflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_blflag" title="Link to this definition"></a></dt>
+<dd><p>Flag spectra based on predefined criteria of single dish pipeline.</p>
+<p>Data are flagged based on several flagging rules. Available rules are:
+expected rms, calculated rms, and running mean of both pre-fit and
+post-fit spectra. Tsys flagging is also available.</p>
+<p>In addition, the heuristics script creates many plots for each stage.
+Those plots are included in the weblog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> – Number of iterations to perform sigma clipping to calculate threshold value of flagging.</p></li>
+<li><p><strong>edge</strong> – Number of channels to be dropped from the edge. The value must be a list of integer with length of one or
+two. If list length is one, same number will be applied
+both side of the band.
+example: [10,20], [10]</p></li>
+<li><p><strong>flag_tsys</strong> – Activate (True) or deactivate (False) Tsys flag.</p></li>
+<li><p><strong>tsys_thresh</strong> – Threshold value for Tsys flag.</p></li>
+<li><p><strong>flag_prfre</strong> – Activate (True) or deactivate (False) flag by expected rms of pre-fit spectra.</p></li>
+<li><p><strong>prfre_thresh</strong> – Threshold value for flag by expected rms of pre-fit spectra.</p></li>
+<li><p><strong>flag_pofre</strong> – Activate (True) or deactivate (False) flag by expected rms of post-fit spectra.</p></li>
+<li><p><strong>pofre_thresh</strong> – Threshold value for flag by expected rms of post-fit spectra.</p></li>
+<li><p><strong>flag_prfr</strong> – Activate (True) or deactivate (False) flag by rms of pre-fit spectra.</p></li>
+<li><p><strong>prfr_thresh</strong> – Threshold value for flag by rms of pre-fit spectra.</p></li>
+<li><p><strong>flag_pofr</strong> – Activate (True) or deactivate (False) flag by rms of post-fit spectra.</p></li>
+<li><p><strong>pofr_thresh</strong> – Threshold value for flag by rms of post-fit spectra.</p></li>
+<li><p><strong>flag_prfrm</strong> – Activate (True) or deactivate (False) flag by running mean of pre-fit spectra.</p></li>
+<li><p><strong>prfrm_thresh</strong> – Threshold value for flag by running mean of pre-fit spectra.</p></li>
+<li><p><strong>prfrm_nmean</strong> – Number of channels for running mean of pre-fit spectra.</p></li>
+<li><p><strong>flag_pofrm</strong> – Activate (True) or deactivate (False) flag by running mean of post-fit spectra.</p></li>
+<li><p><strong>pofrm_thresh</strong> – Threshold value for flag by running mean of post-fit spectra.</p></li>
+<li><p><strong>pofrm_nmean</strong> – Number of channels for running mean of post-fit spectra.</p></li>
+<li><p><strong>plotflag</strong> – True to plot result of data flagging.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. Options: ‘automatic’, ‘true’, ‘false’, True, False.
+Default: None (equivalent to ‘automatic’)</p></li>
+<li><p><strong>infiles</strong> – ASDM or MS files to be processed. This parameter behaves as data selection parameter. The name specified by
+infiles must be registered to context before you run
+hsd_blflag.</p></li>
+<li><p><strong>antenna</strong> – Data selection by antenna names or ids. example: ‘PM03,PM04’,
+‘’ (all antennas).</p></li>
+<li><p><strong>field</strong> – Data selection by field names or ids. example: ‘<cite>*Sgr*,M100</cite>’,
+‘’ (all fields).</p></li>
+<li><p><strong>spw</strong> – Data selection by spw ids. example: ‘3,4’ (spw 3 and 4),
+‘’ (all spws).</p></li>
+<li><p><strong>pol</strong> – Data selection by polarizations. example: ‘XX,YY’ (correlation XX and YY),
+‘’ (all polarizations).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>flagging with all rules</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_blflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

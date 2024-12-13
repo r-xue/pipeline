@@ -59,6 +59,15 @@ pipeline.hif.heuristics.auto\_selfcal.selfcal\_helpers
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      ContFileHandler
+   
    
 
    

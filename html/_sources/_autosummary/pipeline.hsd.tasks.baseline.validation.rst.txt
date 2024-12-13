@@ -17,6 +17,7 @@ pipeline.hsd.tasks.baseline.validation
    
       ValidationFactory
       convolve2d
+      sqrt
    
    
 
@@ -29,6 +30,9 @@ pipeline.hsd.tasks.baseline.validation
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataTableIndexer
+      DataType
+      Integral
       SVDSolver2D
       ValidateLineInputs
       ValidateLineRaster

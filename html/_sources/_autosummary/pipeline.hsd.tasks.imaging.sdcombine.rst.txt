@@ -20,8 +20,10 @@ pipeline.hsd.tasks.imaging.sdcombine
       :template: custom-class-template.rst
       :nosignatures:
    
+      NewType
       SDImageCombine
       SDImageCombineInputs
+      SDImagingResultItem
    
    
 

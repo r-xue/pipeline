@@ -20,6 +20,7 @@ pipeline.hif.tasks.makermsimages.makermsimages
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Makermsimages
       MakermsimagesInputs
       MakermsimagesResults

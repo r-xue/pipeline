@@ -15,11 +15,14 @@ pipeline.hsd.tasks.importdata.reader
       :toctree:
       :nosignatures:
    
+      TableSelector
       get_state_id
       get_value_in_deg
       initialize_template
       merge_flagcmd
       merge_timerange
+      mjd_to_datestring
+      mjd_to_datetime
       mjdsec2str
       set_nominal_direction
       write_flagcmd
@@ -35,7 +38,12 @@ pipeline.hsd.tasks.importdata.reader
       :template: custom-class-template.rst
       :nosignatures:
    
+      ColMaskList
+      Context
+      DataTable
+      MeasurementSet
       MetaDataReader
+      RasterScanHeuristicsResult
    
    
 

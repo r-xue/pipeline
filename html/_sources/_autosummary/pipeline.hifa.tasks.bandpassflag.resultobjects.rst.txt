@@ -21,6 +21,7 @@ pipeline.hifa.tasks.bandpassflag.resultobjects
       :nosignatures:
    
       BandpassflagResults
+      FullyFlaggedAntennasNotification
    
    
 

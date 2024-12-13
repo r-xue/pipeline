@@ -9,6 +9,14 @@ pipeline.hifv.tasks.hanning.hanning
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      find_ranges
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.hanning.hanning
       :template: custom-class-template.rst
       :nosignatures:
    
+      FrequencyUnits
       Hanning
       HanningInputs
       HanningResults

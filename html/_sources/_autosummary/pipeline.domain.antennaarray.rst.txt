@@ -20,8 +20,11 @@ pipeline.domain.antennaarray
       :template: custom-class-template.rst
       :nosignatures:
    
+      Antenna
       AntennaArray
       Baseline
+      Distance
+      DistanceUnits
    
    
 

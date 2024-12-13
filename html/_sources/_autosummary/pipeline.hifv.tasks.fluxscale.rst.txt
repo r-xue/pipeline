@@ -13,6 +13,17 @@ pipeline.hifv.tasks.fluxscale
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Fluxboot
+      FluxbootResults
+      Solint
+   
    
 
    

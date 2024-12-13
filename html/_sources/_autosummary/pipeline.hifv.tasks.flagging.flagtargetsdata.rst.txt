@@ -9,6 +9,14 @@ pipeline.hifv.tasks.flagging.flagtargetsdata
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      sanitize_for_ms
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.flagging.flagtargetsdata
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Flagtargetsdata
       FlagtargetsdataInputs
       FlagtargetsdataResults

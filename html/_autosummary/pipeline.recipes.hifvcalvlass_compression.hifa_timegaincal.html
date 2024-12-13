@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.recipes.hifvcalvlass_compression.hifa_tsysflag" href="pipeline.recipes.hifvcalvlass_compression.hifa_tsysflag.html" />
+    <link rel="prev" title="pipeline.recipes.hifvcalvlass_compression.hifa_targetflag" href="pipeline.recipes.hifvcalvlass_compression.hifa_targetflag.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.hifacal.html">pipeline.recipes.hifacal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.hifatargets.html">pipeline.recipes.hifatargets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.hifv.html">pipeline.recipes.hifv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.hifvcalvlass.html">pipeline.recipes.hifvcalvlass</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.recipes.hifvcalvlass_compression.html">pipeline.recipes.hifvcalvlass_compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.hsd.html">pipeline.recipes.hsd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.procedure_hifv_calimage_cont.html">pipeline.recipes.procedure_hifv_calimage_cont</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.procedure_hifv_contimage.html">pipeline.recipes.procedure_hifv_contimage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.recipe_converter.html">pipeline.recipes.recipe_converter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.recipes.vlassQLIP.html">pipeline.recipes.vlassQLIP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.html">pipeline.recipes</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.recipes.hifvcalvlass_compression.html">pipeline.recipes.hifvcalvlass_compression</a></li>
+      <li class="breadcrumb-item active">pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-recipes-hifvcalvlass-compression-hifa-timegaincal">
+<h1>pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal<a class="headerlink" href="#pipeline-recipes-hifvcalvlass-compression-hifa-timegaincal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal">
+<span class="sig-name descname"><span class="pre">hifa_timegaincal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calamptable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calphasetable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetstable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetphasetable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amptable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solnorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minblperant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calminsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetminsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_timegaincal.html#hifa_timegaincal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.recipes.hifvcalvlass_compression.hifa_timegaincal" title="Link to this definition"></a></dt>
+<dd><p>Determine temporal gains from calibrator observations</p>
+<p>The time-dependent complex gains for each antenna/spwid are determined from
+the raw data (DATA column) divided by the model (MODEL column), for the
+specified fields. The gains are computed according to the spw-combination
+model determined in hifa_spwphaseup.</p>
+<p>Previous calibrations are applied on the fly.</p>
+<p>The complex gains are derived from the data column (raw data) divided by the
+model column (usually set with hif_setjy). The gains are obtained for the
+specified solution intervals, spw combination and field combination. One
+gain solution is computed for the science targets and one for the calibrator
+targets.</p>
+<p>Good candidate reference antennas can be determined using the hif_refant
+task.</p>
+<p>Previous calibrations that have been stored in the pipeline context are
+applied on the fly. Users can interact with these calibrations via the
+h_export_calstate and h_import_calstate tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p></li>
+<li><p><strong>calamptable</strong> – The list of output diagnostic calibration amplitude tables for
+the calibration targets. Defaults to the standard pipeline naming
+convention.
+Example: calamptable=[‘M82.gacal’, ‘M82B.gacal’]</p></li>
+<li><p><strong>offsetstable</strong> – The list of output diagnostic phase offset tables for the
+calibration targets. Defaults to the standard pipeline naming convention.
+Example: offsetstable=[‘M82.offsets.gacal’, ‘M82B.offsets.gacal’]</p></li>
+<li><p><strong>calphasetable</strong> – The list of output calibration phase tables for the
+calibration targets. Defaults to the standard pipeline naming convention.
+Example: calphasetable=[‘M82.gpcal’, ‘M82B.gpcal’]</p></li>
+<li><p><strong>targetphasetable</strong> – The list of output phase calibration tables for the science
+targets. Defaults to the standard pipeline naming convention.
+Example: targetphasetable=[‘M82.gpcal’, ‘M82B.gpcal’]</p></li>
+<li><p><strong>amptable</strong> – The list of output calibration amplitude tables for the
+calibration and science targets.
+Defaults to the standard pipeline naming convention.
+Example: amptable=[‘M82.gacal’, ‘M82B.gacal’]</p></li>
+<li><p><strong>field</strong> – The list of field names or field ids for which gain solutions are to
+be computed. Defaults to all fields with the standard intent.
+Example: field=’3C279’, field=’3C279, M82’</p></li>
+<li><p><strong>spw</strong> – The list of spectral windows and channels for which gain solutions are
+computed. Defaults to all science spectral windows.
+Example: spw=’11’, spw=’11, 13’</p></li>
+<li><p><strong>antenna</strong> – The selection of antennas for which gains are computed. Defaults to all.</p></li>
+<li><p><strong>calsolint</strong> – Time solution interval in CASA syntax for calibrator source
+solutions.
+Example: calsolint=’inf’, calsolint=’int’, calsolint=’100sec’</p></li>
+<li><p><strong>targetsolint</strong> – Time solution interval in CASA syntax for target source
+solutions.
+Example: targetsolint=’inf’, targetsolint=’int’, targetsolint=’100sec’</p></li>
+<li><p><strong>refant</strong> – Reference antenna name(s) in priority order. Defaults to most recent
+values set in the pipeline context. If no reference antenna is defined in
+the pipeline context use the CASA defaults.
+example: refant=’DV01’, refant=’DV05,DV07’</p></li>
+<li><p><strong>refantmode</strong> – Controls how the refant is applied. Currently available
+choices are ‘flex’, ‘strict’, and the default value of ‘’.
+Setting to ‘’ allows the pipeline to select the appropriate
+mode based on the state of the reference antenna list.
+Examples: refantmode=’strict’, refantmode=’’</p></li>
+<li><p><strong>solnorm</strong> – Normalise the gain solutions.</p></li>
+<li><p><strong>minblperant</strong> – Minimum number of baselines required per antenna for each solve.
+Antennas with fewer baselines are excluded from solutions.
+Example: minblperant=2</p></li>
+<li><p><strong>calminsnr</strong> – Solutions below this SNR are rejected for calibrator solutions.</p></li>
+<li><p><strong>targetminsnr</strong> – Solutions below this SNR are rejected for science target
+solutions.</p></li>
+<li><p><strong>smodel</strong> – Point source Stokes parameters for source model (experimental)
+Defaults to using standard MODEL_DATA column data.
+Example: smodel=[1,0,0,0]  - (I=1, unpolarized)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Compute standard per scan gain solutions that will be used to calibrate
+the target:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_timegaincal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.recipes.hifvcalvlass_compression.hifa_targetflag.html" class="btn btn-neutral float-left" title="pipeline.recipes.hifvcalvlass_compression.hifa_targetflag" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.recipes.hifvcalvlass_compression.hifa_tsysflag.html" class="btn btn-neutral float-right" title="pipeline.recipes.hifvcalvlass_compression.hifa_tsysflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

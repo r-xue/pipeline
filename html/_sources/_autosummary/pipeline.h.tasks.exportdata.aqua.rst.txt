@@ -38,6 +38,7 @@ pipeline.h.tasks.exportdata.aqua
       GenericMetricXmlGenerator
       LowestScoreMetricXmlGenerator
       MetricXmlGenerator
+      QAScore
    
    
 

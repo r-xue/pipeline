@@ -30,6 +30,7 @@ pipeline.h.tasks.importdata.importdata
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       ImportData
       ImportDataInputs
       ImportDataResults

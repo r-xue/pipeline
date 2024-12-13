@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.rasterutil.DataTableImpl &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.rasterutil.FuncAnimation" href="pipeline.hsd.tasks.common.rasterutil.FuncAnimation.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.common.rasterutil.sub" href="pipeline.hsd.tasks.common.rasterutil.sub.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html">pipeline.hsd.heuristics</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.templates.html">pipeline.hsd.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.html">pipeline.hsd.tasks.common</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.rasterutil.html">pipeline.hsd.tasks.common.rasterutil</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.rasterutil.DataTableImpl</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hsd.tasks.common.rasterutil.DataTableImpl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-tasks-common-rasterutil-datatableimpl">
+<h1>pipeline.hsd.tasks.common.rasterutil.DataTableImpl<a class="headerlink" href="#pipeline-hsd-tasks-common-rasterutil-datatableimpl" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataTableImpl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>DataTable is an object to hold meta data of scantable on memory.</p>
+<dl>
+<dt>row layout: [Row, Scan, IF, Pol, Beam, Date, Time, ElapsedTime,</dt><dd><blockquote>
+<div><p>0,    1,  2,   3,    4,    5,    6,            7,</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Exptime, RA, DEC, Az, El, nchan, Tsys, TargetName,</dt><dd><p>8,  9,  10, 11, 12,    13,   14,         15,</p>
+</dd>
+<dt>Statistics, Flags, PermanentFlags, SummaryFlag, Nmask, MaskList, NoChange, Ant]</dt><dd><p>16,    17,             18,          19,    20,       21,       22,  23</p>
+</dd>
+</dl>
+</dd>
+<dt>Statistics: DataTable[ID][16] =</dt><dd><dl class="simple">
+<dt>[LowFreqRMS, NewRMS, OldRMS, NewRMSdiff, OldRMSdiff, ExpectedRMS, ExpectedRMS]</dt><dd><p>0,      1,      2,          3,          4,           5,           6</p>
+</dd>
+</dl>
+</dd>
+<dt>Flags: DataTable[ID][17] =</dt><dd><dl class="simple">
+<dt>[LowFrRMSFlag, PostFitRMSFlag, PreFitRMSFlag, PostFitRMSdiff, PreFitRMSdiff, PostFitExpRMSFlag, PreFitExpRMSFlag]</dt><dd><p>0,              1,             2,              3,             4,                 5,                6</p>
+</dd>
+</dl>
+</dd>
+<dt>PermanentFlags: DataTable[ID][18] =</dt><dd><dl class="simple">
+<dt>[WeatherFlag, TsysFlag, UserFlag]</dt><dd><p>0,        1,        2</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Note for Flags: 1 is valid, 0 is invalid</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">addrows</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">colnames</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.export_rwtable_exclusive" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.export_rwtable_exclusive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_rwtable_exclusive</span></code></a></p></td>
+<td><p>Export &quot;on-memory&quot; RW table to the one on disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.exportdata" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exportdata</span></code></a></p></td>
+<td><p>name -- name of exported DataTable overwrite -- overwrite existing DataTable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_posdict</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rotable_name</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rwtable_name</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_timegap</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_timetable</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getcell</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getcellslice</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getcol</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getcolkeyword</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getcolslice</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.getkeyword" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.getkeyword"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getkeyword</span></code></a></p></td>
+<td><p>name -- keyword name</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">haskeyword</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importdata</span></code></a></p></td>
+<td><p>name -- name of DataTable to be imported</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata2" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importdata2</span></code></a></p></td>
+<td><p>name -- name of DataTable to be imported</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.keywordnames" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.keywordnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keywordnames</span></code></a></p></td>
+<td><p>return table keyword names</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putcell" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">putcell</span></code></a></p></td>
+<td><p>name -- column name idx -- row index val -- value to be put</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">putcellslice</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">putcol</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">putcolslice</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putkeyword" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putkeyword"><code class="xref py py-obj docutils literal notranslate"><span class="pre">putkeyword</span></code></a></p></td>
+<td><p>name -- keyword name val -- keyword value</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_timetable</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.sync" title="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync</span></code></a></p></td>
+<td><p>Sync with DataTable on disk.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REFKEY</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction_ref</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nrow</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">position_group_id</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_group_id_large</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_group_id_small</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.export_rwtable_exclusive">
+<span class="sig-name descname"><span class="pre">export_rwtable_exclusive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirty_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.export_rwtable_exclusive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.export_rwtable_exclusive" title="Link to this definition"></a></dt>
+<dd><p>Export “on-memory” RW table to the one on disk.</p>
+<p>To support parallel operation, the method will acquire a lock for RW table
+to ensure the operation in one process doesn’t overwrite the changes made by
+other processes.</p>
+<dl class="simple">
+<dt>dirty_rows – list of row numbers that are updated. If None, everything</dt><dd><p>including unchanged rows will be flushed. Default is None.</p>
+</dd>
+<dt>cols – list of columns that are updated. If None, all rows will be flushed.</dt><dd><p>default is None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.exportdata">
+<span class="sig-name descname"><span class="pre">exportdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.exportdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.exportdata" title="Link to this definition"></a></dt>
+<dd><p>name – name of exported DataTable
+overwrite – overwrite existing DataTable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.getkeyword">
+<span class="sig-name descname"><span class="pre">getkeyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.getkeyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.getkeyword" title="Link to this definition"></a></dt>
+<dd><p>name – keyword name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata">
+<span class="sig-name descname"><span class="pre">importdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.importdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata" title="Link to this definition"></a></dt>
+<dd><p>name – name of DataTable to be imported</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata2">
+<span class="sig-name descname"><span class="pre">importdata2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.importdata2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.importdata2" title="Link to this definition"></a></dt>
+<dd><p>name – name of DataTable to be imported</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.keywordnames">
+<span class="sig-name descname"><span class="pre">keywordnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.keywordnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.keywordnames" title="Link to this definition"></a></dt>
+<dd><p>return table keyword names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putcell">
+<span class="sig-name descname"><span class="pre">putcell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.putcell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putcell" title="Link to this definition"></a></dt>
+<dd><p>name – column name
+idx – row index
+val – value to be put</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putkeyword">
+<span class="sig-name descname"><span class="pre">putkeyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.putkeyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.putkeyword" title="Link to this definition"></a></dt>
+<dd><p>name – keyword name
+val – keyword value</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.DataTableImpl.sync">
+<span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatable.html#DataTableImpl.sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.DataTableImpl.sync" title="Link to this definition"></a></dt>
+<dd><p>Sync with DataTable on disk.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.common.rasterutil.sub.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.rasterutil.sub" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.rasterutil.FuncAnimation.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.rasterutil.FuncAnimation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

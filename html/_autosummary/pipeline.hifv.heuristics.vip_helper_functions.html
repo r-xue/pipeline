@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn" href="pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn.html" />
-    <link rel="prev" title="pipeline.hifv.heuristics.uvrange" href="pipeline.hifv.heuristics.uvrange.html" /> 
+    <link rel="prev" title="pipeline.hifv.heuristics.standard.Standard" href="pipeline.hifv.heuristics.standard.Standard.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -159,6 +163,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands.html#pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands" title="pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_pybdsf_islands</span></code></a></p></td>
 <td><p>Reject islands from a sky catalog based on simple heuristics.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.glob.html#pipeline.hifv.heuristics.vip_helper_functions.glob" title="pipeline.hifv.heuristics.vip_helper_functions.glob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">glob</span></code></a></p></td>
+<td><p>Return a list of paths matching a pathname pattern.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.linregress.html#pipeline.hifv.heuristics.vip_helper_functions.linregress" title="pipeline.hifv.heuristics.vip_helper_functions.linregress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linregress</span></code></a></p></td>
+<td><p>Calculate a linear least-squares regression for two sets of measurements.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog.html#pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog" title="pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_from_catalog</span></code></a></p></td>
 <td><p>Construct a clean mask from a sky catalog and reference image.</p></td>
 </tr>
@@ -170,7 +180,16 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.heuristics.vip_helper_functions.Timer" title="pipeline.hifv.heuristics.vip_helper_functions.Timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timer</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.Angle.html#pipeline.hifv.heuristics.vip_helper_functions.Angle" title="pipeline.hifv.heuristics.vip_helper_functions.Angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Angle</span></code></a></p></td>
+<td><p>One or more angular value(s) with units equivalent to radians or degrees.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.ICRS.html#pipeline.hifv.heuristics.vip_helper_functions.ICRS" title="pipeline.hifv.heuristics.vip_helper_functions.ICRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ICRS</span></code></a></p></td>
+<td><p>A coordinate or frame in the ICRS system.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.SkyCoord.html#pipeline.hifv.heuristics.vip_helper_functions.SkyCoord" title="pipeline.hifv.heuristics.vip_helper_functions.SkyCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></p></td>
+<td><p>High-level object providing a flexible interface for celestial coordinate representation, manipulation, and transformation between systems.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.heuristics.vip_helper_functions.Timer" title="pipeline.hifv.heuristics.vip_helper_functions.Timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timer</span></code></a></p></td>
 <td><p>Contextualisable class for simple runtime measurement.</p></td>
 </tr>
 </tbody>
@@ -181,7 +200,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifv.heuristics.uvrange.html" class="btn btn-neutral float-left" title="pipeline.hifv.heuristics.uvrange" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifv.heuristics.standard.Standard.html" class="btn btn-neutral float-left" title="pipeline.hifv.heuristics.standard.Standard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn.html" class="btn btn-neutral float-right" title="pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

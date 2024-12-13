@@ -21,6 +21,7 @@ pipeline.domain.datadescription
       :nosignatures:
    
       DataDescription
+      SpectralWindow
    
    
 

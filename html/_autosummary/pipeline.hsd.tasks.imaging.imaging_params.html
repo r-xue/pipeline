@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters" href="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters.html" />
-    <link rel="prev" title="pipeline.hsd.tasks.imaging.imaging.SensitivityInfo" href="pipeline.hsd.tasks.imaging.imaging.SensitivityInfo.html" /> 
+    <link rel="next" title="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper" href="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.imaging.imaging.RasterScanHeuristicsFailure" href="pipeline.hsd.tasks.imaging.imaging.RasterScanHeuristicsFailure.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -150,7 +154,10 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters.html#pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters" title="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_common_parameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper.html#pipeline.hsd.tasks.imaging.imaging_params.debugwrapper" title="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debugwrapper</span></code></a></p></td>
+<td><p>Decorate methods to debug</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters.html#pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters" title="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_common_parameters</span></code></a></p></td>
 <td><p>Initialize an instance of CommonParameters and return it.</p></td>
 </tr>
 </tbody>
@@ -164,23 +171,29 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.CommonParameters.html#pipeline.hsd.tasks.imaging.imaging_params.CommonParameters" title="pipeline.hsd.tasks.imaging.imaging_params.CommonParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CommonParameters</span></code></a></p></td>
 <td><p>Common parameters class of prepare().</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ObservedList.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList" title="pipeline.hsd.tasks.imaging.imaging_params.ObservedList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservedList</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.NewType.html#pipeline.hsd.tasks.imaging.imaging_params.NewType" title="pipeline.hsd.tasks.imaging.imaging_params.NewType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NewType</span></code></a></p></td>
+<td><p>NewType creates simple unique types with almost zero runtime overhead. NewType(name, tp) is considered a subtype of tp by static type checkers. At runtime, NewType(name, tp) returns a dummy callable that simply returns its argument. Usage::.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ObservedList.html#pipeline.hsd.tasks.imaging.imaging_params.ObservedList" title="pipeline.hsd.tasks.imaging.imaging_params.ObservedList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservedList</span></code></a></p></td>
 <td><p>Class inherit list to observe its behavior.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.Parameters.html#pipeline.hsd.tasks.imaging.imaging_params.Parameters" title="pipeline.hsd.tasks.imaging.imaging_params.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.Parameters.html#pipeline.hsd.tasks.imaging.imaging_params.Parameters" title="pipeline.hsd.tasks.imaging.imaging_params.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a></p></td>
 <td><p>Abstract class of Parameter object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters.html#pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters" title="pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PostProcessParameters</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters.html#pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters" title="pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PostProcessParameters</span></code></a></p></td>
 <td><p>Parameters for post processing of image generating.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReductionGroupParameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReductionGroupParameters</span></code></a></p></td>
 <td><p>Parameters of Reduction Group Processing.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters.html#pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters" title="pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TheoreticalImageRmsParameters</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters.html#pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters" title="pipeline.hsd.tasks.imaging.imaging_params.TheoreticalImageRmsParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TheoreticalImageRmsParameters</span></code></a></p></td>
 <td><p>Parameter class of calculate_theoretical_image_rms().</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToCombineImageParameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ToCombineImageParameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToCombineImageParameters</span></code></a></p></td>
 <td><p>Parameter class to combine image.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.imaging_params.coordsys.html#pipeline.hsd.tasks.imaging.imaging_params.coordsys" title="pipeline.hsd.tasks.imaging.imaging_params.coordsys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coordsys</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -190,8 +203,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hsd.tasks.imaging.imaging.SensitivityInfo.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.imaging.imaging.SensitivityInfo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.imaging.imaging_params.initialize_common_parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hsd.tasks.imaging.imaging.RasterScanHeuristicsFailure.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.imaging.imaging.RasterScanHeuristicsFailure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.imaging.imaging_params.debugwrapper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

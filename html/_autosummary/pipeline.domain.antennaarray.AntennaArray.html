@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.domain.antennaarray.Baseline" href="pipeline.domain.antennaarray.Baseline.html" />
-    <link rel="prev" title="pipeline.domain.antennaarray" href="pipeline.domain.antennaarray.html" /> 
+    <link rel="prev" title="pipeline.domain.antennaarray.Antenna" href="pipeline.domain.antennaarray.Antenna.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -59,10 +59,28 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Antenna.html">pipeline.domain.Antenna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.AntennaArray.html">pipeline.domain.AntennaArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataDescription.html">pipeline.domain.DataDescription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataTable.html">pipeline.domain.DataTable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataType.html">pipeline.domain.DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Field.html">pipeline.domain.Field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.FluxMeasurement.html">pipeline.domain.FluxMeasurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.MeasurementSet.html">pipeline.domain.MeasurementSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.ObservingRun.html">pipeline.domain.ObservingRun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Polarization.html">pipeline.domain.Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Scan.html">pipeline.domain.Scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Source.html">pipeline.domain.Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindow.html">pipeline.domain.SpectralWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindowWithChannelSelection.html">pipeline.domain.SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.State.html">pipeline.domain.State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.antenna.html">pipeline.domain.antenna</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.domain.antennaarray.html">pipeline.domain.antennaarray</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.antennaarray.Antenna.html">pipeline.domain.antennaarray.Antenna</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.domain.antennaarray.AntennaArray</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.antennaarray.Baseline.html">pipeline.domain.antennaarray.Baseline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.antennaarray.Distance.html">pipeline.domain.antennaarray.Distance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.antennaarray.DistanceUnits.html">pipeline.domain.antennaarray.DistanceUnits</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.datadescription.html">pipeline.domain.datadescription</a></li>
@@ -114,7 +132,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -142,7 +160,7 @@
 <h1>pipeline.domain.antennaarray.AntennaArray<a class="headerlink" href="#pipeline-domain-antennaarray-antennaarray" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.antennaarray.AntennaArray">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antennas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AntennaArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antennas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>AntennaArray is a logical representation of the antenna array.</p>
 <dl class="field-list simple">
@@ -244,7 +262,7 @@ CASA script “simutil”.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.antennaarray.AntennaArray.get_antenna">
-<span class="sig-name descname"><span class="pre">get_antenna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_antenna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray.get_antenna" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_antenna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_antenna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray.get_antenna" title="Link to this definition"></a></dt>
 <dd><p>Return Antenna object for given antenna ID or name.</p>
 <p>If both ID and name are given, the antenna is searched for by ID.</p>
 <dl class="field-list simple">
@@ -286,7 +304,7 @@ known antenna, None will be returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.antennaarray.AntennaArray.get_offset">
-<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray.get_offset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.displays.pointing.Antenna.html#pipeline.infrastructure.displays.pointing.Antenna" title="pipeline.domain.antenna.Antenna"><span class="pre">Antenna</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.Distance.html#pipeline.domain.measures.Distance" title="pipeline.domain.measures.Distance"><span class="pre">Distance</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antennaarray.html#AntennaArray.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.AntennaArray.get_offset" title="Link to this definition"></a></dt>
 <dd><p>Get the offset of the given antenna from the centre of the array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -342,7 +360,7 @@ dictionary.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.domain.antennaarray.html" class="btn btn-neutral float-left" title="pipeline.domain.antennaarray" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.domain.antennaarray.Antenna.html" class="btn btn-neutral float-left" title="pipeline.domain.antennaarray.Antenna" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.domain.antennaarray.Baseline.html" class="btn btn-neutral float-right" title="pipeline.domain.antennaarray.Baseline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

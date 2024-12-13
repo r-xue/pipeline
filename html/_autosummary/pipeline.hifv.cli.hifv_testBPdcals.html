@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_testBPdcals">
-<span id="pipeline-hifv-cli-hifv-testbpdcals"></span><h1>pipeline.hifv.cli.hifv_testBPdcals<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_testBPdcals" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-testbpdcals">
+<h1>pipeline.hifv.cli.hifv_testBPdcals<a class="headerlink" href="#pipeline-hifv-cli-hifv-testbpdcals" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_testBPdcals">
+<span class="sig-name descname"><span class="pre">hifv_testBPdcals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weakbp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doflagundernspwlimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_testBPdcals.html#hifv_testBPdcals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_testBPdcals" title="Link to this definition"></a></dt>
+<dd><p>Runs initial delay and bandpass calibration to setup for RFI flagging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>weakbp</strong> – Activate weak bandpass heuristics.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore Example:  refantignore=’ea02, ea03’</p></li>
+<li><p><strong>doflagundernspwlimit</strong> – If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>. Example: refant = ‘ea01, ea02’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Initial delay calibration to set up heuristic flagging:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_testBPdcals</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -1,23 +1,6 @@
 pipeline.hsd.cli.hsd\_exportdata
 ================================
 
-.. automodule:: pipeline.hsd.cli.hsd_exportdata
+.. currentmodule:: pipeline.hsd.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hsd_exportdata

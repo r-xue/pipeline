@@ -1,23 +1,6 @@
 pipeline.hifa.cli.hifa\_exportdata
 ==================================
 
-.. automodule:: pipeline.hifa.cli.hifa_exportdata
+.. currentmodule:: pipeline.hifa.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifa_exportdata

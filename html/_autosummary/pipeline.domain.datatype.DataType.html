@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.domain.field" href="pipeline.domain.field.html" />
-    <link rel="prev" title="pipeline.domain.datatype" href="pipeline.domain.datatype.html" /> 
+    <link rel="next" title="pipeline.domain.datatype.Enum" href="pipeline.domain.datatype.Enum.html" />
+    <link rel="prev" title="pipeline.domain.datatype.unique" href="pipeline.domain.datatype.unique.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -59,12 +59,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Antenna.html">pipeline.domain.Antenna</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.AntennaArray.html">pipeline.domain.AntennaArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataDescription.html">pipeline.domain.DataDescription</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataTable.html">pipeline.domain.DataTable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.DataType.html">pipeline.domain.DataType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Field.html">pipeline.domain.Field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.FluxMeasurement.html">pipeline.domain.FluxMeasurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.MeasurementSet.html">pipeline.domain.MeasurementSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.ObservingRun.html">pipeline.domain.ObservingRun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Polarization.html">pipeline.domain.Polarization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Scan.html">pipeline.domain.Scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.Source.html">pipeline.domain.Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindow.html">pipeline.domain.SpectralWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.SpectralWindowWithChannelSelection.html">pipeline.domain.SpectralWindowWithChannelSelection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.State.html">pipeline.domain.State</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.antenna.html">pipeline.domain.antenna</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.antennaarray.html">pipeline.domain.antennaarray</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.datadescription.html">pipeline.domain.datadescription</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.datatable.html">pipeline.domain.datatable</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.domain.datatype.html">pipeline.domain.datatype</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.datatype.unique.html">pipeline.domain.datatype.unique</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.domain.datatype.DataType</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.datatype.Enum.html">pipeline.domain.datatype.Enum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.datatype.attrgetter.html">pipeline.domain.datatype.attrgetter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.datatype.auto.html">pipeline.domain.datatype.auto</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.field.html">pipeline.domain.field</a></li>
@@ -113,7 +132,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -142,7 +161,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.datatype.DataType">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="pipeline.domain.datatype.Enum.html#pipeline.domain.datatype.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
 <p>A class to define DataType enum.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
@@ -174,34 +193,34 @@
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.RAW" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RAW</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RAW</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_ALL" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_ALL</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_ALL</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.ATMCORR" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMCORR</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMCORR</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.BASELINED" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASELINED</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASELINED</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONT_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONT_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONT_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONT_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONT_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_LINE_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_LINE_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_LINE_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="pipeline.domain.datatype.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_LINE_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_LINE_SCIENCE</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -214,7 +233,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.get_specmode_datatypes">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_specmode_datatypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType.get_specmode_datatypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType.get_specmode_datatypes" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_specmode_datatypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.h.tasks.applycal.applycal.DataType.html#pipeline.h.tasks.applycal.applycal.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType.get_specmode_datatypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType.get_specmode_datatypes" title="Link to this definition"></a></dt>
 <dd><p>Return valid datatypes for given intent and specmode.</p>
 <p>Return the list of valid datatypes depending on the intent and specmode,
 in order of preference for the automatic choice of datatype (if not
@@ -240,8 +259,8 @@ manually overridden).</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.domain.datatype.html" class="btn btn-neutral float-left" title="pipeline.domain.datatype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.domain.field.html" class="btn btn-neutral float-right" title="pipeline.domain.field" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.domain.datatype.unique.html" class="btn btn-neutral float-left" title="pipeline.domain.datatype.unique" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.domain.datatype.Enum.html" class="btn btn-neutral float-right" title="pipeline.domain.datatype.Enum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -13,6 +13,44 @@ pipeline.hifa.tasks
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      ALMAAntpos
+      ALMAExportData
+      ALMAImportData
+      ALMAPhcorBandpass
+      ALMARestoreData
+      ALMATsysflag
+      Bandpassflag
+      BpSolint
+      DiffGaincal
+      FlagDeterALMA
+      FlagTargetsALMA
+      FluxcalFlag
+      GaincalSnr
+      GcorFluxscale
+      Gfluxscaleflag
+      ImagePreCheck
+      LockRefAnt
+      Polcal
+      Polcalflag
+      Renorm
+      SessionALMAPhcorBandpass
+      SessionGcorFluxscale
+      SessionRefAnt
+      SpwPhaseup
+      Targetflag
+      TimeGaincal
+      TsysFlagContamination
+      UnlockRefAnt
+      Wvrgcal
+      Wvrgcalflag
+   
    
 
    

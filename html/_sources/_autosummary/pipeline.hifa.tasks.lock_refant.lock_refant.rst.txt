@@ -20,6 +20,7 @@ pipeline.hifa.tasks.lock\_refant.lock\_refant
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
       LockRefAnt
       LockRefAntInputs
       LockRefAntResults

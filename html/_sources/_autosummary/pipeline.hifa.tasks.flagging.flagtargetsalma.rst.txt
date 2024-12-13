@@ -9,6 +9,14 @@ pipeline.hifa.tasks.flagging.flagtargetsalma
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      sanitize_for_ms
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifa.tasks.flagging.flagtargetsalma
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       FlagTargetsALMA
       FlagTargetsALMAInputs
       FlagTargetsALMAResults

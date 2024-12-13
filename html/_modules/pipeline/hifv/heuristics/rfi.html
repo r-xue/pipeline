@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -128,7 +128,7 @@
 
 
 <div class="viewcode-block" id="RflagDevHeuristic">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.RflagDevHeuristic.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic.html#pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic">[docs]</a>
 <span class="k">class</span> <span class="nc">RflagDevHeuristic</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Heuristics for Rflag thresholds.</span>
 <span class="sd">    see PIPE-685/987</span>
@@ -140,7 +140,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spw_rms_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_spw_rms_scale</span><span class="p">(</span><span class="n">ignore_sefd</span><span class="o">=</span><span class="n">ignore_sefd</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RflagDevHeuristic.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.RflagDevHeuristic.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic.html#pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rflag_report</span><span class="p">):</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">baseband_spws_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_vla_baseband_spws</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -153,7 +153,7 @@
 
 
 <div class="viewcode-block" id="RflagDevHeuristic.get_vla_sefd">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.RflagDevHeuristic.html#pipeline.hifv.heuristics.rfi.RflagDevHeuristic.get_vla_sefd">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic.html#pipeline.hifv.tasks.flagging.checkflag.RflagDevHeuristic.get_vla_sefd">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_vla_sefd</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the VLA SEFD profile.</span>
@@ -360,7 +360,7 @@
 
 
 <div class="viewcode-block" id="mssel_valid">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.mssel_valid.html#pipeline.hifv.heuristics.rfi.mssel_valid">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.flagging.checkflag.mssel_valid.html#pipeline.hifv.tasks.flagging.checkflag.mssel_valid">[docs]</a>
 <span class="k">def</span> <span class="nf">mssel_valid</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvdist</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the data selection is valid (i.e. not a null selection).</span>
 
@@ -376,7 +376,7 @@
 
 
 <div class="viewcode-block" id="get_amp_range">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.get_amp_range.html#pipeline.hifv.heuristics.rfi.get_amp_range">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.get_amp_range.html#pipeline.hifv.tasks.flagging.checkflag.get_amp_range">[docs]</a>
 <span class="k">def</span> <span class="nf">get_amp_range</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
                   <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                   <span class="n">useflags</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -475,7 +475,7 @@
 
 
 <div class="viewcode-block" id="plotms_get_xyrange">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.plotms_get_xyrange.html#pipeline.hifv.heuristics.rfi.plotms_get_xyrange">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.plotms_get_xyrange.html#pipeline.hifv.tasks.flagging.checkflag.plotms_get_xyrange">[docs]</a>
 <span class="k">def</span> <span class="nf">plotms_get_xyrange</span><span class="p">(</span><span class="n">plotms_log</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the CASAplotms log to obatin the range of plotted data points.</span>
 
@@ -504,7 +504,7 @@
 
 
 <div class="viewcode-block" id="plotms_get_autorange">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.plotms_get_autorange.html#pipeline.hifv.heuristics.rfi.plotms_get_autorange">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.plotms_get_autorange.html#pipeline.hifv.tasks.flagging.checkflag.plotms_get_autorange">[docs]</a>
 <span class="k">def</span> <span class="nf">plotms_get_autorange</span><span class="p">(</span><span class="n">xyrange</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the autoscale plotrange from CASAplotms based on data range.</span>
 
@@ -546,7 +546,7 @@
 
 
 <div class="viewcode-block" id="test_checkflag_dataselect">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.test_checkflag_dataselect.html#pipeline.hifv.heuristics.rfi.test_checkflag_dataselect">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.rfi.test_checkflag_dataselect.html#pipeline.hifv.tasks.flagging.checkflag.test_checkflag_dataselect">[docs]</a>
 <span class="k">def</span> <span class="nf">test_checkflag_dataselect</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test rfi flagging field/scan selection.</span>
 

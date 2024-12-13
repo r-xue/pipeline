@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_antpos
 ============================
 
-.. automodule:: pipeline.hif.cli.hif_antpos
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_antpos

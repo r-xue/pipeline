@@ -20,6 +20,7 @@ pipeline.hif.tasks.tclean.nomaskthresholdsequence
       :template: custom-class-template.rst
       :nosignatures:
    
+      BaseCleanSequence
       NoMaskThresholdSequence
    
    

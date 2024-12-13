@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_findcont
 ==============================
 
-.. automodule:: pipeline.hif.cli.hif_findcont
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_findcont

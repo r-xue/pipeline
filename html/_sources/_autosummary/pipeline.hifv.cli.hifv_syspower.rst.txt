@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_syspower
 ================================
 
-.. automodule:: pipeline.hifv.cli.hifv_syspower
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_syspower

@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hifa.tasks.importdata.qa.ous_parallactic_range" href="pipeline.hifa.tasks.importdata.qa.ous_parallactic_range.html" />
-    <link rel="prev" title="pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string" href="pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string.html" /> 
+    <link rel="prev" title="pipeline.hifa.tasks.importdata.dbfluxes.ExpatError" href="pipeline.hifa.tasks.importdata.dbfluxes.ExpatError.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -178,6 +182,27 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.ALMAImportDataQAHandler.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataQAHandler" title="pipeline.hifa.tasks.importdata.qa.ALMAImportDataQAHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAImportDataQAHandler</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.ALMAImportDataResults.html#pipeline.hifa.tasks.importdata.qa.ALMAImportDataResults" title="pipeline.hifa.tasks.importdata.qa.ALMAImportDataResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAImportDataResults</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.Field.html#pipeline.hifa.tasks.importdata.qa.Field" title="pipeline.hifa.tasks.importdata.qa.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a></p></td>
+<td><p>A class to store logical representation of a field.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.MeasurementSet.html#pipeline.hifa.tasks.importdata.qa.MeasurementSet" title="pipeline.hifa.tasks.importdata.qa.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.ParallacticAngle.html#pipeline.hifa.tasks.importdata.qa.ParallacticAngle" title="pipeline.hifa.tasks.importdata.qa.ParallacticAngle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParallacticAngle</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.PositiveDefiniteAngle.html#pipeline.hifa.tasks.importdata.qa.PositiveDefiniteAngle" title="pipeline.hifa.tasks.importdata.qa.PositiveDefiniteAngle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PositiveDefiniteAngle</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.SignedAngle.html#pipeline.hifa.tasks.importdata.qa.SignedAngle" title="pipeline.hifa.tasks.importdata.qa.SignedAngle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SignedAngle</span></code></a></p></td>
+<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.importdata.qa.chain.html#pipeline.hifa.tasks.importdata.qa.chain" title="pipeline.hifa.tasks.importdata.qa.chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chain</span></code></a></p></td>
+<td><p>chain(<a href="#id1"><span class="problematic" id="id2">*</span></a>iterables) --&gt; chain object</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -186,7 +211,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.importdata.dbfluxes.sanitize_string" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.importdata.dbfluxes.ExpatError.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.importdata.dbfluxes.ExpatError" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hifa.tasks.importdata.qa.ous_parallactic_range.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.importdata.qa.ous_parallactic_range" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

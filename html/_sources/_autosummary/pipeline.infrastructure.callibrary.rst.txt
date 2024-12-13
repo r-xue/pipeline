@@ -17,6 +17,7 @@ pipeline.infrastructure.callibrary
    
       ant_add
       ant_sub
+      applycaltocallib
       consolidate_calibrations
       contiguous_sequences
       copy_calapplication

@@ -9,6 +9,14 @@ pipeline.hsd.tasks.baseline.simplegrid
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      cos
+   
    
 
    
@@ -20,6 +28,8 @@ pipeline.hsd.tasks.baseline.simplegrid
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataTableIndexer
+      DataType
       SDSimpleGridding
       SDSimpleGriddingInputs
       SDSimpleGriddingResults

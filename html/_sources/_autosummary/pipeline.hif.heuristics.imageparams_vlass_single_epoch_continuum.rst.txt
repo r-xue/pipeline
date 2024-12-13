@@ -20,9 +20,12 @@ pipeline.hif.heuristics.imageparams\_vlass\_single\_epoch\_continuum
       :template: custom-class-template.rst
       :nosignatures:
    
+      ImageParamsHeuristics
       ImageParamsHeuristicsVlassSeCont
       ImageParamsHeuristicsVlassSeContAWPP001
       ImageParamsHeuristicsVlassSeContMosaic
+      ImagerParameters
+      PyParallelContSynthesisImager
    
    
 

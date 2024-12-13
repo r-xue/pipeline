@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_findcont">
-<span id="pipeline-hif-cli-hif-findcont"></span><h1>pipeline.hif.cli.hif_findcont<a class="headerlink" href="#module-pipeline.hif.cli.hif_findcont" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-findcont">
+<h1>pipeline.hif.cli.hif_findcont<a class="headerlink" href="#pipeline-hif-cli-hif-findcont" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_findcont">
+<span class="sig-name descname"><span class="pre">hif_findcont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_mosweight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_perchanweightdensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_findcont.html#hif_findcont"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_findcont" title="Link to this definition"></a></dt>
+<dd><p>Find continuum frequency ranges</p>
+<p>Find continuum frequency ranges for a list of specified targets.</p>
+<p>If the cont.dat file is not already present in the working directory, then dirty image
+cubes are created for each spectral window of each science target at the native channel
+resolution unless the <code class="docutils literal notranslate"><span class="pre">nbins</span></code> parameter was used in the preceding hif_makeimlist stage.
+Robust=1 Briggs weighting is used for optimal line sensitivity, even if a different
+robust had been chosen in hifa_imageprecheck to match the PI requested angular resolution.
+Using moment0 and moment8 images of each cube, SNR-based masks are created, and the mean
+spectrum of the joint mask is computed and evaluated with extensive heuristics to find the
+channel ranges that are likely to be free of line emission.  Warnings are generated if
+the channel ranges contain a small fraction of the bandwidth, or sample only a limited
+extent of the spectrum.</p>
+<p>If the cont.dat file already exists in the working directory before this task is executed,
+then it will first examine the contents. For any spw that already has frequency ranges
+defined in this file, it will not perform the analysis described above in favor of the
+a priori ranges. For spws not listed in a pre-existing file, it will analyze them as
+normal and update the file. In either case, the cont.dat file is used by the subsequent
+hif_uvcontsub and hif_makeimages stages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>target_list</strong> – Dictionary specifying targets to be imaged; blank will read list from context.</p></li>
+<li><p><strong>hm_mosweight</strong> – Mosaic weighting. Defaults to ‘’ to enable the automatic heuristics calculation.
+Can be set to True or False manually.</p></li>
+<li><p><strong>hm_perchanweightdensity</strong> – Calculate the weight density for each channel independently.
+Defaults to ‘’ to enable the automatic heuristics calculation. Can be set to True or False manually.</p></li>
+<li><p><strong>hm_weighting</strong> – Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</p></li>
+<li><p><strong>datacolumn</strong> – Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Perform continuum frequency range detection for all science targets and spws:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_findcont</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -20,6 +20,10 @@ pipeline.hsd.tasks.importdata.qa
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
+      MeasurementSet
+      QAPlugin
+      QAScore
       SDImportDataListQAHandler
       SDImportDataQAHandler
    

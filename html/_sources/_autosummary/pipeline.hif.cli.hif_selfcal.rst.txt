@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_selfcal
 =============================
 
-.. automodule:: pipeline.hif.cli.hif_selfcal
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_selfcal

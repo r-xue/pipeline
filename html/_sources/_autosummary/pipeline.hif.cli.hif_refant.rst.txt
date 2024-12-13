@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_refant
 ============================
 
-.. automodule:: pipeline.hif.cli.hif_refant
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_refant

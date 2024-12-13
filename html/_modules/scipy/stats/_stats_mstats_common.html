@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scipy.stats._stats_mstats_common &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scipy.stats._stats_mstats_common</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scipy.stats._stats_mstats_common</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats._stats_py</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">distributions</span>
+<span class="kn">from</span> <span class="nn">.._lib._bunch</span> <span class="kn">import</span> <span class="n">_make_tuple_bunch</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_find_repeats&#39;</span><span class="p">,</span> <span class="s1">&#39;linregress&#39;</span><span class="p">,</span> <span class="s1">&#39;theilslopes&#39;</span><span class="p">,</span> <span class="s1">&#39;siegelslopes&#39;</span><span class="p">]</span>
+
+<span class="c1"># This is not a namedtuple for backwards compatibility. See PR #12983</span>
+<span class="n">LinregressResult</span> <span class="o">=</span> <span class="n">_make_tuple_bunch</span><span class="p">(</span><span class="s1">&#39;LinregressResult&#39;</span><span class="p">,</span>
+                                     <span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;intercept&#39;</span><span class="p">,</span> <span class="s1">&#39;rvalue&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;pvalue&#39;</span><span class="p">,</span> <span class="s1">&#39;stderr&#39;</span><span class="p">],</span>
+                                     <span class="n">extra_field_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;intercept_stderr&#39;</span><span class="p">])</span>
+<span class="n">TheilslopesResult</span> <span class="o">=</span> <span class="n">_make_tuple_bunch</span><span class="p">(</span><span class="s1">&#39;TheilslopesResult&#39;</span><span class="p">,</span>
+                                      <span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;intercept&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;low_slope&#39;</span><span class="p">,</span> <span class="s1">&#39;high_slope&#39;</span><span class="p">])</span>
+<span class="n">SiegelslopesResult</span> <span class="o">=</span> <span class="n">_make_tuple_bunch</span><span class="p">(</span><span class="s1">&#39;SiegelslopesResult&#39;</span><span class="p">,</span>
+                                       <span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;intercept&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="linregress">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.linregress.html#pipeline.hifv.heuristics.vip_helper_functions.linregress">[docs]</a>
+<span class="k">def</span> <span class="nf">linregress</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate a linear least-squares regression for two sets of measurements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x, y : array_like</span>
+<span class="sd">        Two sets of measurements.  Both arrays should have the same length.  If</span>
+<span class="sd">        only `x` is given (and ``y=None``), then it must be a two-dimensional</span>
+<span class="sd">        array where one dimension has length 2.  The two sets of measurements</span>
+<span class="sd">        are then found by splitting the array along the length-2 dimension. In</span>
+<span class="sd">        the case where ``y=None`` and `x` is a 2x2 array, ``linregress(x)`` is</span>
+<span class="sd">        equivalent to ``linregress(x[0], x[1])``.</span>
+<span class="sd">    alternative : {&#39;two-sided&#39;, &#39;less&#39;, &#39;greater&#39;}, optional</span>
+<span class="sd">        Defines the alternative hypothesis. Default is &#39;two-sided&#39;.</span>
+<span class="sd">        The following options are available:</span>
+
+<span class="sd">        * &#39;two-sided&#39;: the slope of the regression line is nonzero</span>
+<span class="sd">        * &#39;less&#39;: the slope of the regression line is less than zero</span>
+<span class="sd">        * &#39;greater&#39;:  the slope of the regression line is greater than zero</span>
+
+<span class="sd">        .. versionadded:: 1.7.0</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : ``LinregressResult`` instance</span>
+<span class="sd">        The return value is an object with the following attributes:</span>
+
+<span class="sd">        slope : float</span>
+<span class="sd">            Slope of the regression line.</span>
+<span class="sd">        intercept : float</span>
+<span class="sd">            Intercept of the regression line.</span>
+<span class="sd">        rvalue : float</span>
+<span class="sd">            The Pearson correlation coefficient. The square of ``rvalue``</span>
+<span class="sd">            is equal to the coefficient of determination.</span>
+<span class="sd">        pvalue : float</span>
+<span class="sd">            The p-value for a hypothesis test whose null hypothesis is</span>
+<span class="sd">            that the slope is zero, using Wald Test with t-distribution of</span>
+<span class="sd">            the test statistic. See `alternative` above for alternative</span>
+<span class="sd">            hypotheses.</span>
+<span class="sd">        stderr : float</span>
+<span class="sd">            Standard error of the estimated slope (gradient), under the</span>
+<span class="sd">            assumption of residual normality.</span>
+<span class="sd">        intercept_stderr : float</span>
+<span class="sd">            Standard error of the estimated intercept, under the assumption</span>
+<span class="sd">            of residual normality.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    scipy.optimize.curve_fit :</span>
+<span class="sd">        Use non-linear least squares to fit a function to data.</span>
+<span class="sd">    scipy.optimize.leastsq :</span>
+<span class="sd">        Minimize the sum of squares of a set of equations.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Missing values are considered pair-wise: if a value is missing in `x`,</span>
+<span class="sd">    the corresponding value in `y` is masked.</span>
+
+<span class="sd">    For compatibility with older versions of SciPy, the return value acts</span>
+<span class="sd">    like a ``namedtuple`` of length 5, with fields ``slope``, ``intercept``,</span>
+<span class="sd">    ``rvalue``, ``pvalue`` and ``stderr``, so one can continue to write::</span>
+
+<span class="sd">        slope, intercept, r, p, se = linregress(x, y)</span>
+
+<span class="sd">    With that style, however, the standard error of the intercept is not</span>
+<span class="sd">    available.  To have access to all the computed values, including the</span>
+<span class="sd">    standard error of the intercept, use the return value as an object</span>
+<span class="sd">    with attributes, e.g.::</span>
+
+<span class="sd">        result = linregress(x, y)</span>
+<span class="sd">        print(result.intercept, result.intercept_stderr)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy import stats</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng()</span>
+
+<span class="sd">    Generate some data:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = rng.random(10)</span>
+<span class="sd">    &gt;&gt;&gt; y = 1.6*x + rng.random(10)</span>
+
+<span class="sd">    Perform the linear regression:</span>
+
+<span class="sd">    &gt;&gt;&gt; res = stats.linregress(x, y)</span>
+
+<span class="sd">    Coefficient of determination (R-squared):</span>
+
+<span class="sd">    &gt;&gt;&gt; print(f&quot;R-squared: {res.rvalue**2:.6f}&quot;)</span>
+<span class="sd">    R-squared: 0.717533</span>
+
+<span class="sd">    Plot the data along with the fitted line:</span>
+
+<span class="sd">    &gt;&gt;&gt; plt.plot(x, y, &#39;o&#39;, label=&#39;original data&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(x, res.intercept + res.slope*x, &#39;r&#39;, label=&#39;fitted line&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.legend()</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+
+<span class="sd">    Calculate 95% confidence interval on slope and intercept:</span>
+
+<span class="sd">    &gt;&gt;&gt; # Two-sided inverse Students t-distribution</span>
+<span class="sd">    &gt;&gt;&gt; # p - probability, df - degrees of freedom</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.stats import t</span>
+<span class="sd">    &gt;&gt;&gt; tinv = lambda p, df: abs(t.ppf(p/2, df))</span>
+
+<span class="sd">    &gt;&gt;&gt; ts = tinv(0.05, len(x)-2)</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;slope (95%): {res.slope:.6f} +/- {ts*res.stderr:.6f}&quot;)</span>
+<span class="sd">    slope (95%): 1.453392 +/- 0.743465</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;intercept (95%): {res.intercept:.6f}&quot;</span>
+<span class="sd">    ...       f&quot; +/- {ts*res.intercept_stderr:.6f}&quot;)</span>
+<span class="sd">    intercept (95%): 0.616950 +/- 0.544475</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TINY</span> <span class="o">=</span> <span class="mf">1.0e-20</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># x is a (2, N) or (N, 2) shaped array_like</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If only `x` is given as input, it has to &quot;</span>
+                             <span class="s2">&quot;be of shape (2, N) or (N, 2); provided shape &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;was </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inputs must not be empty.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot calculate a linear regression &quot;</span>
+                         <span class="s2">&quot;if all x values are identical&quot;</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">xmean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">ymean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Average sums of square differences from the mean</span>
+    <span class="c1">#   ssxm = mean( (x-mean(x))^2 )</span>
+    <span class="c1">#   ssxym = mean( (x-mean(x)) * (y-mean(y)) )</span>
+    <span class="n">ssxm</span><span class="p">,</span> <span class="n">ssxym</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ssym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span>
+
+    <span class="c1"># R-value</span>
+    <span class="c1">#   r = ssxym / sqrt( ssxm * ssym )</span>
+    <span class="k">if</span> <span class="n">ssxm</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">ssym</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="c1"># If the denominator was going to be 0</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ssxym</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ssxm</span> <span class="o">*</span> <span class="n">ssym</span><span class="p">)</span>
+        <span class="c1"># Test for numerical error propagation (make sure -1 &lt; r &lt; 1)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">elif</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+
+    <span class="n">slope</span> <span class="o">=</span> <span class="n">ssxym</span> <span class="o">/</span> <span class="n">ssxm</span>
+    <span class="n">intercept</span> <span class="o">=</span> <span class="n">ymean</span> <span class="o">-</span> <span class="n">slope</span><span class="o">*</span><span class="n">xmean</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># handle case when only two points are passed in</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">slope_stderr</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">intercept_stderr</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">2</span>  <span class="c1"># Number of degrees of freedom</span>
+        <span class="c1"># n-2 degrees of freedom because 2 has been used up</span>
+        <span class="c1"># to estimate the mean and standard deviation</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">df</span> <span class="o">/</span> <span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">r</span> <span class="o">+</span> <span class="n">TINY</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">r</span> <span class="o">+</span> <span class="n">TINY</span><span class="p">)))</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">prob</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">_stats_py</span><span class="o">.</span><span class="n">_ttest_finish</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">alternative</span><span class="p">)</span>
+
+        <span class="n">slope_stderr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">ssym</span> <span class="o">/</span> <span class="n">ssxm</span> <span class="o">/</span> <span class="n">df</span><span class="p">)</span>
+
+        <span class="c1"># Also calculate the standard error of the intercept</span>
+        <span class="c1"># The following relationship is used:</span>
+        <span class="c1">#   ssxm = mean( (x-mean(x))^2 )</span>
+        <span class="c1">#        = ssx - sx*sx</span>
+        <span class="c1">#        = mean( x^2 ) - mean(x)^2</span>
+        <span class="n">intercept_stderr</span> <span class="o">=</span> <span class="n">slope_stderr</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ssxm</span> <span class="o">+</span> <span class="n">xmean</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">LinregressResult</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">intercept</span><span class="p">,</span> <span class="n">rvalue</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
+                            <span class="n">pvalue</span><span class="o">=</span><span class="n">prob</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">slope_stderr</span><span class="p">,</span>
+                            <span class="n">intercept_stderr</span><span class="o">=</span><span class="n">intercept_stderr</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">theilslopes</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;separate&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Theil-Sen estimator for a set of points (x, y).</span>
+
+<span class="sd">    `theilslopes` implements a method for robust linear regression.  It</span>
+<span class="sd">    computes the slope as the median of all slopes between paired values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array_like</span>
+<span class="sd">        Dependent variable.</span>
+<span class="sd">    x : array_like or None, optional</span>
+<span class="sd">        Independent variable. If None, use ``arange(len(y))`` instead.</span>
+<span class="sd">    alpha : float, optional</span>
+<span class="sd">        Confidence degree between 0 and 1. Default is 95% confidence.</span>
+<span class="sd">        Note that `alpha` is symmetric around 0.5, i.e. both 0.1 and 0.9 are</span>
+<span class="sd">        interpreted as &quot;find the 90% confidence interval&quot;.</span>
+<span class="sd">    method : {&#39;joint&#39;, &#39;separate&#39;}, optional</span>
+<span class="sd">        Method to be used for computing estimate for intercept.</span>
+<span class="sd">        Following methods are supported,</span>
+
+<span class="sd">            * &#39;joint&#39;: Uses np.median(y - slope * x) as intercept.</span>
+<span class="sd">            * &#39;separate&#39;: Uses np.median(y) - slope * np.median(x)</span>
+<span class="sd">                          as intercept.</span>
+
+<span class="sd">        The default is &#39;separate&#39;.</span>
+
+<span class="sd">        .. versionadded:: 1.8.0</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : ``TheilslopesResult`` instance</span>
+<span class="sd">        The return value is an object with the following attributes:</span>
+
+<span class="sd">        slope : float</span>
+<span class="sd">            Theil slope.</span>
+<span class="sd">        intercept : float</span>
+<span class="sd">            Intercept of the Theil line.</span>
+<span class="sd">        low_slope : float</span>
+<span class="sd">            Lower bound of the confidence interval on `slope`.</span>
+<span class="sd">        high_slope : float</span>
+<span class="sd">            Upper bound of the confidence interval on `slope`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    siegelslopes : a similar technique using repeated medians</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The implementation of `theilslopes` follows [1]_. The intercept is</span>
+<span class="sd">    not defined in [1]_, and here it is defined as ``median(y) -</span>
+<span class="sd">    slope*median(x)``, which is given in [3]_. Other definitions of</span>
+<span class="sd">    the intercept exist in the literature such as  ``median(y - slope*x)``</span>
+<span class="sd">    in [4]_. The approach to compute the intercept can be determined by the</span>
+<span class="sd">    parameter ``method``. A confidence interval for the intercept is not</span>
+<span class="sd">    given as this question is not addressed in [1]_.</span>
+
+<span class="sd">    For compatibility with older versions of SciPy, the return value acts</span>
+<span class="sd">    like a ``namedtuple`` of length 4, with fields ``slope``, ``intercept``,</span>
+<span class="sd">    ``low_slope``, and ``high_slope``, so one can continue to write::</span>
+
+<span class="sd">        slope, intercept, low_slope, high_slope = theilslopes(y, x)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] P.K. Sen, &quot;Estimates of the regression coefficient based on</span>
+<span class="sd">           Kendall&#39;s tau&quot;, J. Am. Stat. Assoc., Vol. 63, pp. 1379-1389, 1968.</span>
+<span class="sd">    .. [2] H. Theil, &quot;A rank-invariant method of linear and polynomial</span>
+<span class="sd">           regression analysis I, II and III&quot;,  Nederl. Akad. Wetensch., Proc.</span>
+<span class="sd">           53:, pp. 386-392, pp. 521-525, pp. 1397-1412, 1950.</span>
+<span class="sd">    .. [3] W.L. Conover, &quot;Practical nonparametric statistics&quot;, 2nd ed.,</span>
+<span class="sd">           John Wiley and Sons, New York, pp. 493.</span>
+<span class="sd">    .. [4] https://en.wikipedia.org/wiki/Theil%E2%80%93Sen_estimator</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy import stats</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+
+<span class="sd">    &gt;&gt;&gt; x = np.linspace(-5, 5, num=150)</span>
+<span class="sd">    &gt;&gt;&gt; y = x + np.random.normal(size=x.size)</span>
+<span class="sd">    &gt;&gt;&gt; y[11:15] += 10  # add outliers</span>
+<span class="sd">    &gt;&gt;&gt; y[-5:] -= 7</span>
+
+<span class="sd">    Compute the slope, intercept and 90% confidence interval.  For comparison,</span>
+<span class="sd">    also compute the least-squares fit with `linregress`:</span>
+
+<span class="sd">    &gt;&gt;&gt; res = stats.theilslopes(y, x, 0.90, method=&#39;separate&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; lsq_res = stats.linregress(x, y)</span>
+
+<span class="sd">    Plot the results. The Theil-Sen regression line is shown in red, with the</span>
+<span class="sd">    dashed red lines illustrating the confidence interval of the slope (note</span>
+<span class="sd">    that the dashed red lines are not the confidence interval of the regression</span>
+<span class="sd">    as the confidence interval of the intercept is not included). The green</span>
+<span class="sd">    line shows the least-squares fit for comparison.</span>
+
+<span class="sd">    &gt;&gt;&gt; fig = plt.figure()</span>
+<span class="sd">    &gt;&gt;&gt; ax = fig.add_subplot(111)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, y, &#39;b.&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, res[1] + res[0] * x, &#39;r-&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, res[1] + res[2] * x, &#39;r--&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, res[1] + res[3] * x, &#39;r--&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, lsq_res[1] + lsq_res[0] * x, &#39;g-&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;joint&#39;</span><span class="p">,</span> <span class="s1">&#39;separate&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;method must be either &#39;joint&#39; or &#39;separate&#39;.&quot;</span>
+                          <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; is invalid.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">)))</span>
+    <span class="c1"># We copy both x and y so we can use _find_repeats.</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incompatible lengths ! (</span><span class="si">%s</span><span class="s2">&lt;&gt;</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span>
+                             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+    <span class="c1"># Compute sorted slopes only when deltax &gt; 0</span>
+    <span class="n">deltax</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span>
+    <span class="n">deltay</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span>
+    <span class="n">slopes</span> <span class="o">=</span> <span class="n">deltay</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">deltax</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">slopes</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;All `x` coordinates are identical.&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">slopes</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">medslope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">slopes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;joint&#39;</span><span class="p">:</span>
+        <span class="n">medinter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">medslope</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">medinter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">medslope</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># Now compute confidence intervals</span>
+    <span class="k">if</span> <span class="n">alpha</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">distributions</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
+    <span class="c1"># This implements (2.6) from Sen (1968)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">nxreps</span> <span class="o">=</span> <span class="n">_find_repeats</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">nyreps</span> <span class="o">=</span> <span class="n">_find_repeats</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slopes</span><span class="p">)</span>       <span class="c1"># N in Sen (1968)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>            <span class="c1"># n in Sen (1968)</span>
+    <span class="c1"># Equation 2.6 in Sen (1968):</span>
+    <span class="n">sigsq</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">18.</span> <span class="o">*</span> <span class="p">(</span><span class="n">ny</span> <span class="o">*</span> <span class="p">(</span><span class="n">ny</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ny</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span> <span class="o">-</span>
+                     <span class="nb">sum</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">nxreps</span><span class="p">)</span> <span class="o">-</span>
+                     <span class="nb">sum</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">nyreps</span><span class="p">))</span>
+    <span class="c1"># Find the confidence interval indices in `slopes`</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigsq</span><span class="p">)</span>
+        <span class="n">Ru</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">nt</span> <span class="o">-</span> <span class="n">z</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">slopes</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">Rl</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">nt</span> <span class="o">+</span> <span class="n">z</span><span class="o">*</span><span class="n">sigma</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">slopes</span><span class="p">[[</span><span class="n">Rl</span><span class="p">,</span> <span class="n">Ru</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TheilslopesResult</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="n">medslope</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">medinter</span><span class="p">,</span>
+                             <span class="n">low_slope</span><span class="o">=</span><span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high_slope</span><span class="o">=</span><span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_find_repeats</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="c1"># This function assumes it may clobber its input.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+
+    <span class="c1"># XXX This cast was previously needed for the Fortran implementation,</span>
+    <span class="c1"># should we ditch it?</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="c1"># Taken from NumPy 1.9&#39;s np.unique.</span>
+    <span class="n">change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="kc">True</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">unique</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">change</span><span class="p">]</span>
+    <span class="n">change_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="o">+</span> <span class="p">([</span><span class="n">arr</span><span class="o">.</span><span class="n">size</span><span class="p">],))</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">change_idx</span><span class="p">)</span>
+    <span class="n">atleast2</span> <span class="o">=</span> <span class="n">freq</span> <span class="o">&gt;</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">unique</span><span class="p">[</span><span class="n">atleast2</span><span class="p">],</span> <span class="n">freq</span><span class="p">[</span><span class="n">atleast2</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">siegelslopes</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hierarchical&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the Siegel estimator for a set of points (x, y).</span>
+
+<span class="sd">    `siegelslopes` implements a method for robust linear regression</span>
+<span class="sd">    using repeated medians (see [1]_) to fit a line to the points (x, y).</span>
+<span class="sd">    The method is robust to outliers with an asymptotic breakdown point</span>
+<span class="sd">    of 50%.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : array_like</span>
+<span class="sd">        Dependent variable.</span>
+<span class="sd">    x : array_like or None, optional</span>
+<span class="sd">        Independent variable. If None, use ``arange(len(y))`` instead.</span>
+<span class="sd">    method : {&#39;hierarchical&#39;, &#39;separate&#39;}</span>
+<span class="sd">        If &#39;hierarchical&#39;, estimate the intercept using the estimated</span>
+<span class="sd">        slope ``slope`` (default option).</span>
+<span class="sd">        If &#39;separate&#39;, estimate the intercept independent of the estimated</span>
+<span class="sd">        slope. See Notes for details.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : ``SiegelslopesResult`` instance</span>
+<span class="sd">        The return value is an object with the following attributes:</span>
+
+<span class="sd">        slope : float</span>
+<span class="sd">            Estimate of the slope of the regression line.</span>
+<span class="sd">        intercept : float</span>
+<span class="sd">            Estimate of the intercept of the regression line.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    theilslopes : a similar technique without repeated medians</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    With ``n = len(y)``, compute ``m_j`` as the median of</span>
+<span class="sd">    the slopes from the point ``(x[j], y[j])`` to all other `n-1` points.</span>
+<span class="sd">    ``slope`` is then the median of all slopes ``m_j``.</span>
+<span class="sd">    Two ways are given to estimate the intercept in [1]_ which can be chosen</span>
+<span class="sd">    via the parameter ``method``.</span>
+<span class="sd">    The hierarchical approach uses the estimated slope ``slope``</span>
+<span class="sd">    and computes ``intercept`` as the median of ``y - slope*x``.</span>
+<span class="sd">    The other approach estimates the intercept separately as follows: for</span>
+<span class="sd">    each point ``(x[j], y[j])``, compute the intercepts of all the `n-1`</span>
+<span class="sd">    lines through the remaining points and take the median ``i_j``.</span>
+<span class="sd">    ``intercept`` is the median of the ``i_j``.</span>
+
+<span class="sd">    The implementation computes `n` times the median of a vector of size `n`</span>
+<span class="sd">    which can be slow for large vectors. There are more efficient algorithms</span>
+<span class="sd">    (see [2]_) which are not implemented here.</span>
+
+<span class="sd">    For compatibility with older versions of SciPy, the return value acts</span>
+<span class="sd">    like a ``namedtuple`` of length 2, with fields ``slope`` and</span>
+<span class="sd">    ``intercept``, so one can continue to write::</span>
+
+<span class="sd">        slope, intercept = siegelslopes(y, x)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] A. Siegel, &quot;Robust Regression Using Repeated Medians&quot;,</span>
+<span class="sd">           Biometrika, Vol. 69, pp. 242-244, 1982.</span>
+
+<span class="sd">    .. [2] A. Stein and M. Werman, &quot;Finding the repeated median regression</span>
+<span class="sd">           line&quot;, Proceedings of the Third Annual ACM-SIAM Symposium on</span>
+<span class="sd">           Discrete Algorithms, pp. 409-413, 1992.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from scipy import stats</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+
+<span class="sd">    &gt;&gt;&gt; x = np.linspace(-5, 5, num=150)</span>
+<span class="sd">    &gt;&gt;&gt; y = x + np.random.normal(size=x.size)</span>
+<span class="sd">    &gt;&gt;&gt; y[11:15] += 10  # add outliers</span>
+<span class="sd">    &gt;&gt;&gt; y[-5:] -= 7</span>
+
+<span class="sd">    Compute the slope and intercept.  For comparison, also compute the</span>
+<span class="sd">    least-squares fit with `linregress`:</span>
+
+<span class="sd">    &gt;&gt;&gt; res = stats.siegelslopes(y, x)</span>
+<span class="sd">    &gt;&gt;&gt; lsq_res = stats.linregress(x, y)</span>
+
+<span class="sd">    Plot the results. The Siegel regression line is shown in red. The green</span>
+<span class="sd">    line shows the least-squares fit for comparison.</span>
+
+<span class="sd">    &gt;&gt;&gt; fig = plt.figure()</span>
+<span class="sd">    &gt;&gt;&gt; ax = fig.add_subplot(111)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, y, &#39;b.&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, res[1] + res[0] * x, &#39;r-&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ax.plot(x, lsq_res[1] + lsq_res[0] * x, &#39;g-&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;hierarchical&#39;</span><span class="p">,</span> <span class="s1">&#39;separate&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;method can only be &#39;hierarchical&#39; or &#39;separate&#39;&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incompatible lengths ! (</span><span class="si">%s</span><span class="s2">&lt;&gt;</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span>
+                             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+    <span class="n">deltax</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span>
+    <span class="n">deltay</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span>
+    <span class="n">slopes</span><span class="p">,</span> <span class="n">intercepts</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+        <span class="n">id_nonzero</span> <span class="o">=</span> <span class="n">deltax</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="n">slopes_j</span> <span class="o">=</span> <span class="n">deltay</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">id_nonzero</span><span class="p">]</span> <span class="o">/</span> <span class="n">deltax</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">id_nonzero</span><span class="p">]</span>
+        <span class="n">medslope_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">slopes_j</span><span class="p">)</span>
+        <span class="n">slopes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">medslope_j</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;separate&#39;</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span>
+            <span class="n">medintercept_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">id_nonzero</span><span class="p">]</span> <span class="o">/</span> <span class="n">deltax</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">id_nonzero</span><span class="p">])</span>
+            <span class="n">intercepts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">medintercept_j</span><span class="p">)</span>
+
+    <span class="n">medslope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">slopes</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;separate&quot;</span><span class="p">:</span>
+        <span class="n">medinter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">intercepts</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">medinter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">medslope</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SiegelslopesResult</span><span class="p">(</span><span class="n">slope</span><span class="o">=</span><span class="n">medslope</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="n">medinter</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

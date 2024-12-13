@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.infrastructure.displays.plotpwv.MAD" href="pipeline.infrastructure.displays.plotpwv.MAD.html" />
-    <link rel="prev" title="pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm" href="pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm.html" /> 
+    <link rel="prev" title="pipeline.infrastructure.displays.plotmosaic.Line2D" href="pipeline.infrastructure.displays.plotmosaic.Line2D.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +78,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +165,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -184,8 +197,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.MAD.html#pipeline.infrastructure.displays.plotpwv.MAD" title="pipeline.infrastructure.displays.plotpwv.MAD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAD</span></code></a></p></td>
 <td><p>Median Absolute Deviation along given axis of an array:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.getObservatoryName.html#pipeline.infrastructure.displays.plotpwv.getObservatoryName" title="pipeline.infrastructure.displays.plotpwv.getObservatoryName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getObservatoryName</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.RescaleXAxisTimeTicks.html#pipeline.infrastructure.displays.plotpwv.RescaleXAxisTimeTicks" title="pipeline.infrastructure.displays.plotpwv.RescaleXAxisTimeTicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RescaleXAxisTimeTicks</span></code></a></p></td>
+<td><p>Plotting utility routine</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.getObservatoryName.html#pipeline.infrastructure.displays.plotpwv.getObservatoryName" title="pipeline.infrastructure.displays.plotpwv.getObservatoryName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getObservatoryName</span></code></a></p></td>
 <td><p>Returns the observatory name in the specified ms.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.mjd_seconds_to_datetime.html#pipeline.infrastructure.displays.plotpwv.mjd_seconds_to_datetime" title="pipeline.infrastructure.displays.plotpwv.mjd_seconds_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mjd_seconds_to_datetime</span></code></a></p></td>
+<td><p>Convert list of MJD seconds to a list of equivalent datetime objects.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.plotPWV.html#pipeline.infrastructure.displays.plotpwv.plotPWV" title="pipeline.infrastructure.displays.plotpwv.plotPWV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plotPWV</span></code></a></p></td>
 <td><p>Read and plot the PWV values from the ms via the ASDM_CALWVR table.</p></td>
@@ -196,6 +215,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.readPWVFromMS.html#pipeline.infrastructure.displays.plotpwv.readPWVFromMS" title="pipeline.infrastructure.displays.plotpwv.readPWVFromMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readPWVFromMS</span></code></a></p></td>
 <td><p>Reads all the PWV values from a measurement set, returning a list of lists:   [[mjdsec], [pwv], [antennaName]]</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.splev.html#pipeline.infrastructure.displays.plotpwv.splev" title="pipeline.infrastructure.displays.plotpwv.splev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splev</span></code></a></p></td>
+<td><p>Evaluate a B-spline or its derivatives.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.splrep.html#pipeline.infrastructure.displays.plotpwv.splrep" title="pipeline.infrastructure.displays.plotpwv.splrep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splrep</span></code></a></p></td>
+<td><p>Find the B-spline representation of a 1-D curve.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -204,7 +229,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.displays.plotmosaic.primary_beam_fwhm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.infrastructure.displays.plotmosaic.Line2D.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.displays.plotmosaic.Line2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.infrastructure.displays.plotpwv.MAD.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.displays.plotpwv.MAD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

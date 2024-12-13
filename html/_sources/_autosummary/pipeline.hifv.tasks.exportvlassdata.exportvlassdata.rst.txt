@@ -17,6 +17,7 @@ pipeline.hifv.tasks.exportvlassdata.exportvlassdata
    
       atoi
       natural_keys
+      predict_kernel
    
    
 
@@ -29,6 +30,7 @@ pipeline.hifv.tasks.exportvlassdata.exportvlassdata
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Exportvlassdata
       ExportvlassdataInputs
       ExportvlassdataResults

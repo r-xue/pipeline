@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casatools.quanta &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casatools.quanta</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casatools.quanta</h1><div class="highlight"><pre>
+<span></span><span class="c1">##################### generated by xml-casa (v2) from quanta.xml ####################</span>
+<span class="c1">##################### c60b82eff813fa8938533b4f7a1d5566 ##############################</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span> 
+<span class="kn">from</span> <span class="nn">.__casac__.quanta</span> <span class="kn">import</span> <span class="n">quanta</span> <span class="k">as</span> <span class="n">_quanta</span>
+
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">create_error_string</span>
+<span class="kn">from</span> <span class="nn">.typecheck</span> <span class="kn">import</span> <span class="n">CasaValidator</span> <span class="k">as</span> <span class="n">_validator</span>
+<span class="n">_pc</span> <span class="o">=</span> <span class="n">_validator</span><span class="p">(</span> <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.coercetype</span> <span class="kn">import</span> <span class="n">coerce</span> <span class="k">as</span> <span class="n">_coerce</span>
+
+
+<span class="k">class</span> <span class="nc">quanta</span><span class="p">:</span>
+    <span class="n">_info_group_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;quanta&quot;&quot;&quot;</span>
+    <span class="n">_info_desc_</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;quanta tool handles units and quantities</span>
+<span class="s2">      &quot;&quot;&quot;</span>
+    <span class="c1">### self</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a quanta tool on the specified host (or by default the</span>
+<span class="sd">        host you are running on).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;swig_object&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span> <span class="o">=</span> <span class="n">_quanta</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">convertfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">outunit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;convertfreq converts a frequency quantity to another unit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">convertfreq</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">outunit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">convertdop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">outunit</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;convertfreq converts a velocity quantity to another unit. Units are either</span>
+<span class="sd">        velocity or dimensionless.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">convertdop</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">outunit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">quantity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">unitname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keepshape</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;quantity makes a quantity from a string, or from a value and a</span>
+<span class="sd">        string. Note that a function unit exists which is a synonym for</span>
+<span class="sd">        quantity. If only a string is given, it can be a scalar string.</span>
+<span class="sd">        The result will be a scalar quantity.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        If a numeric value and a unit string</span>
+<span class="sd">        are given, the numeric value can be any numeric type, and can also be</span>
+<span class="sd">        a vector of numeric values.  print qa.map() to get a list of recognized units.</span>
+<span class="sd">        &#39;d&#39; is usually days, but can be degrees (see example).</span>
+<span class="sd">        </span>
+<span class="sd">        The keepshape input parameter is only relevant if v is a multi-dimensional array.</span>
+<span class="sd">        In this case, if true, the output value array will have the same shape as v. If false,</span>
+<span class="sd">        a one-dimensional array is returned with length equal to the number of elements in</span>
+<span class="sd">        v. The default value is false in order to preserve backward compatibility with</span>
+<span class="sd">        previous versions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unitname</span><span class="p">,</span> <span class="n">keepshape</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;getvalue returns the internal value of a quantity. It also can handle a 1-D</span>
+<span class="sd">        array of quantities, but multi-dimensional arrays are not supported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getunit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;getunit returns the internal unit string of a quantity. Note that 1-D arrays</span>
+<span class="sd">        are supported, but multi-dimensional arrays are not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;canonical (with alias canon) gets the canonical value of a quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">canonical</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">canon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;canon gets the canonical value of a quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">canon</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">outunit</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;convert converts a quantity to another unit. If no output unit given,</span>
+<span class="sd">        conversion is to canonical units</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">outunit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;define defines the name and value of a user defined unit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;map lists the known mapping of units and constants. It has a single argument,</span>
+<span class="sd">        which can be a coded string (no-case, minimax match):</span>
+<span class="sd">        begin{description}</span>
+<span class="sd">        item[all] all of the following units (not constants): also the default</span>
+<span class="sd">        item[Prefix] known decimal prefixes</span>
+<span class="sd">        item[SI] known SI units</span>
+<span class="sd">        item[Customary] a set of customary units known to programs</span>
+<span class="sd">        item[User] units defined by the user</span>
+<span class="sd">        item[Constants] known constants (note: only &#39;const&#39;, &#39;Const&#39;, &#39;constants&#39;</span>
+<span class="sd">        and &#39;Constants&#39; recognised).</span>
+<span class="sd">        end{description}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">maprec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;maprec returns a record with the known mapping of units and constants. It has a single argument,</span>
+<span class="sd">        which can be a coded string (no-case, minimax match):</span>
+<span class="sd">        begin{description}</span>
+<span class="sd">        item[all] all of the following units (not constants): also the default</span>
+<span class="sd">        item[Prefix] known decimal prefixes</span>
+<span class="sd">        item[SI] known SI units</span>
+<span class="sd">        item[Customary] a set of customary units known to programs</span>
+<span class="sd">        item[User] units defined by the user</span>
+<span class="sd">        end{description}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">maprec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;fits defines some unit names used in reading and writing FITS files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">fits</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="p">[</span>  <span class="p">],</span> <span class="n">showform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;angle converts an angle quantity to a formatted string. The formatting</span>
+<span class="sd">        information is a precision (0 is default, 6 includes +-ddd.mm.ss) and a</span>
+<span class="sd">        string array of codes (no-case, minimax match):</span>
+<span class="sd">        Codes include:</span>
+<span class="sd">        begin{description}</span>
+<span class="sd">        item[clean] delete leading/trailing superfluous separators</span>
+<span class="sd">        item[no_d] do not show degrees part</span>
+<span class="sd">        item[no_dm] do not show degrees and minutes part</span>
+<span class="sd">        item[dig2] show only 2 digits of degrees in angle format</span>
+<span class="sd">        item[time] show as time (hh:mm:ss.ttt) rather than as angle</span>
+<span class="sd">        end{description}</span>
+<span class="sd">        If a multi-dimensional value is given for the value $v$, the returned value</span>
+<span class="sd">        is a string vector of a length equal to last dimension. Each string has a</span>
+<span class="sd">        number of fields equal to the number of elements in all earlier</span>
+<span class="sd">        dimensions. If the {em showform} is $T$, each vector element is surrounded</span>
+<span class="sd">        by a pair of square brackets if there is more than one entry, and fields are</span>
+<span class="sd">        separated by a &#39;,&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="n">showform</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">form</span><span class="o">=</span><span class="p">[</span>  <span class="p">],</span> <span class="n">showform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;time converts a time quantity to a formatted string. The formatting</span>
+<span class="sd">        information is a precision (0 is default, 6 includes hh.mm.ss) and a</span>
+<span class="sd">        string array of codes (no-case, minimax match):</span>
+<span class="sd">        Codes include:</span>
+<span class="sd">        begin{description}</span>
+<span class="sd">        item[clean] delete leading/trailing superfluous separators</span>
+<span class="sd">        item[no_d] do not show hours part</span>
+<span class="sd">        item[no_dm] do not show hours and minutes part</span>
+<span class="sd">        item[ymd] include a date as yyyy/mm/dd (date is by default not shown)</span>
+<span class="sd">        item[dmy] include a date as ddMMMyyyy (date is by default not shown)</span>
+<span class="sd">        item[mjd] include a date as Modified Julian Day (date is by default not shown)</span>
+<span class="sd">        item[fits] include a date and show time in FITS format: le from OS</span>
+<span class="sd">        item[angle] show in angle (dd.mm.ss.ttt) rather than time format</span>
+<span class="sd">        item[day] prefix day-of-week to output</span>
+<span class="sd">        item[local] show local time rather than UTC (add timezone offset)</span>
+<span class="sd">        item[no_time] suppress printing of time part</span>
+<span class="sd">        end{description}</span>
+<span class="sd">        If a multi-dimensional value is given for the value $v$, the returned value</span>
+<span class="sd">        is a string vector of a length equal to last dimension. Each string has a</span>
+<span class="sd">        number of fields equal to the number of elements in all earlier</span>
+<span class="sd">        dimensions. If the {em showform} is $T$, each vector element is surrounded</span>
+<span class="sd">        by a pair of square brackets if there is more than one entry, and fields are</span>
+<span class="sd">        separated by a &#39;,&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="n">showform</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;add adds two quantities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;sub subtracts two quantities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">mul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mul multiplies two quantities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">div</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;div divides two quantities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">neg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;neg negates a quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">neg</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;norm normalise angles in interval of $2pi$ radians. The default interval is</span>
+<span class="sd">        from -0.5 to +0.5 of a full interval (i.e. from -180 to +180 degrees). The</span>
+<span class="sd">        lower end of the interval can be set as a fraction of $2pi$</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">le</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;le compares two quantities for less than or equal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;lt compares two quantities for less than.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;eq compares two quantities for equality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ne</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ne compares two quantities for non equality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;gt compares two quantities for greater than.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ge  compares two quantities for greater than or equal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;sin gives sine of angle quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;cos gives cosine of angle quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;tan gives tangent of angle quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">asin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;asin gives arcsine of non-dimensioned quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">acos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;acos gives arccosine of non-dimensioned quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">atan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;atan gives arctangent of non-dimensioned quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">atan2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;atan gives arctangent of two non-dimensioned quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;abs gives absolute value of quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ceil</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ceil gives ceiling value of quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;floor gives flooring value of quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;log gives natural logarithm of dimensionless quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">log10</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;log10 gives logarithm of dimensionless quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;exp gives exponential value of dimensionless quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;sqrt gives square root of quantity with only even powered dimensions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compare compares the dimensionality of units of two qauntities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;check checks if the argument has a properly defined unit string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">checkfreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cm</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;checkfreq checks if the argument has a properly defined frequency interpretable</span>
+<span class="sd">        unit string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">checkfreq</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;pow raises a quantity to an integer power</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">constants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="s1">&#39;pi&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;constants gets a named constant quantity. Names (no-case, minimax) are:</span>
+<span class="sd">        </span>
+<span class="sd">        pi    3.14..                    3.14159</span>
+<span class="sd">        ee    2.71..                    2.71828</span>
+<span class="sd">        c     light vel.                2.99792e+08 m/s</span>
+<span class="sd">        G     grav. const               6.67259e-11 N.m2/kg2</span>
+<span class="sd">        h     Planck const              6.62608e-34 J.s</span>
+<span class="sd">        HI    HI line                   1420.41 MHz</span>
+<span class="sd">        R     gas const                 8.31451 J/K/mol</span>
+<span class="sd">        NA    Avogadro number           6.02214e+23 mol-1</span>
+<span class="sd">        e     electron charge           1.60218e-19 C</span>
+<span class="sd">        mp    proton mass               1.67262e-27 kg</span>
+<span class="sd">        mp_me mp/me                     1836.15</span>
+<span class="sd">        mu0   permeability vac.         1.25664e-06 H/m</span>
+<span class="sd">        eps0  permittivity vac.         1.60218e-19 C</span>
+<span class="sd">        k     Boltzmann const           1.38066e-23 J/K</span>
+<span class="sd">        F     Faraday const             96485.3 C/mol</span>
+<span class="sd">        me    electron mass             9.10939e-31 kg</span>
+<span class="sd">        re    electron radius           2.8179e-15 m</span>
+<span class="sd">        a0    Bohr&#39;s radius             5.2918e-11 m</span>
+<span class="sd">        R0    solar radius              6.9599e+08 m</span>
+<span class="sd">        k2    IAU grav. const^2         0.000295912 AU3/d2/S0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">constants</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">isangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;isangle checks if the argument is a valid angle/time quantity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">isangle</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">totime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;totime converts an angle quantity (or a time) to a time quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">totime</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">toangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;toangle converts a time quantity (or an angle) to an angle quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">toangle</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">splitdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;splitdate splits a date/time quantity into a record with constituent fields</span>
+<span class="sd">        like year, yearday, month etc. All fields will be integer (to enable use as</span>
+<span class="sd">        index and easy personal formatting), with the exception of the {em s} field</span>
+<span class="sd">        which is a double float. See the example for the fields returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">splitdate</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">prec</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">9</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;tos converts a quantity to a string with the precision defined with</span>
+<span class="sd">        the {em setformat(&#39;prec&#39;)} (which defaults to 9). If the optional</span>
+<span class="sd">        {em prec} argument is set to an integer value greater than 1, that</span>
+<span class="sd">        precision is used in the conversion</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;type will return the tool name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kill</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Currently, this method is an NOP.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">kill</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="n">unitname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">keepshape</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;unit makes a quantity from a string, or from a value and a string.</span>
+<span class="sd">        Note that unit is a synonym for quantity (see description and example there).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">unit</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unitname</span><span class="p">,</span> <span class="n">keepshape</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">isquantity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the operand is a correct quantity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">isquantity</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">setformat</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;getformat returns the current format value set for the different</span>
+<span class="sd">        format possibilities. See the</span>
+<span class="sd">        setformat function for the</span>
+<span class="sd">        different format type descriptions. The known types are: </span>
+<span class="sd">        prec, aprec, tprec, long, lat, len, dtime, elev, auto, vel, freq,</span>
+<span class="sd">        dop, unit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">getformat</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">formxxx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="p">[</span> <span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;dms&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;form.xxx (xxx can be lat, long, len, vel, freq, dtime, unit) will format the</span>
+<span class="sd">        input into a string using the global format information set by setformat().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_swigobj</span><span class="o">.</span><span class="n">formxxx</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

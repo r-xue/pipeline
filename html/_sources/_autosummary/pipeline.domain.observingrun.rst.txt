@@ -28,6 +28,8 @@ pipeline.domain.observingrun
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
+      MeasurementSet
       ObservingRun
    
    

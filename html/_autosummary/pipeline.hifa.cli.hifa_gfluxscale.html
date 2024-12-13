@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,111 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_gfluxscale">
-<span id="pipeline-hifa-cli-hifa-gfluxscale"></span><h1>pipeline.hifa.cli.hifa_gfluxscale<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_gfluxscale" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-gfluxscale">
+<h1>pipeline.hifa.cli.hifa_gfluxscale<a class="headerlink" href="#pipeline-hifa-cli-hifa-gfluxscale" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_gfluxscale">
+<span class="sig-name descname"><span class="pre">hifa_gfluxscale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refspwmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsolint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_resolvecals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp_outlier_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_gfluxscale.html#hifa_gfluxscale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_gfluxscale" title="Link to this definition"></a></dt>
+<dd><p>Derive flux density scales from standard calibrators</p>
+<p>Derive flux densities for point source transfer calibrators using flux models
+for reference calibrators.</p>
+<p>Flux values are determined by:</p>
+<ul class="simple">
+<li><p>computing phase only solutions for all the science spectral windows
+using the calibrator data selected by the <code class="docutils literal notranslate"><span class="pre">reference</span></code> and <code class="docutils literal notranslate"><span class="pre">refintent</span></code>
+parameters and the <code class="docutils literal notranslate"><span class="pre">transfer</span></code> and <code class="docutils literal notranslate"><span class="pre">transintent</span></code> parameters, the value
+of the <code class="docutils literal notranslate"><span class="pre">phaseupsolint</span></code> parameter, and any spw combination determined
+in hifa_spwphaseup.</p></li>
+<li><p>computing complex amplitude only solutions for all the science spectral
+windows using calibrator data selected with <code class="docutils literal notranslate"><span class="pre">reference</span></code> and
+<code class="docutils literal notranslate"><span class="pre">refintent</span></code> parameters and the <code class="docutils literal notranslate"><span class="pre">transfer</span></code> and <code class="docutils literal notranslate"><span class="pre">transintent</span></code>
+parameters, the value of the <code class="docutils literal notranslate"><span class="pre">solint</span></code> parameter.</p></li>
+<li><p>examining the amplitude-only solutions for obvious outliers and flagging
+them in the caltable.</p></li>
+<li><p>transferring the flux scale from the reference calibrators to the transfer
+calibrators using <code class="docutils literal notranslate"><span class="pre">refspwmap</span></code> for windows without data in the reference
+calibrators.</p></li>
+<li><p>inserting the computed flux density values into the MODEL_DATA column.</p></li>
+</ul>
+<p>Resolved calibrators are handled via antenna selection either automatically
+(<code class="docutils literal notranslate"><span class="pre">hm_resolvedcals</span></code> = ‘automatic’) or manually (<code class="docutils literal notranslate"><span class="pre">hm_resolvedcals</span></code> =
+‘manual’). In the former case, antennas closer to the reference antenna than
+the uv distance where visibilities fall to <code class="docutils literal notranslate"><span class="pre">peak_fraction</span></code> of the peak are
+used. In manual mode, the antennas specified in <code class="docutils literal notranslate"><span class="pre">antenna</span></code> are used.</p>
+<p>Note that the flux corrected calibration table computed internally is
+not currently used in later pipeline apply calibration steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: [‘M32A.ms’, ‘M32B.ms’]</p></li>
+<li><p><strong>reference</strong> – A string containing a comma delimited list of field names
+defining the reference calibrators. Defaults to field names with
+intent ‘<cite>*AMP*</cite>’.
+Example: reference=’M82,3C273’</p></li>
+<li><p><strong>transfer</strong> – A string containing a comma delimited list of field names
+defining the transfer calibrators. Defaults to field names with
+intent ‘<cite>*PHASE*</cite>’.
+Example: transfer=’J1328+041,J1206+30’</p></li>
+<li><p><strong>refintent</strong> – A string containing a comma delimited list of intents
+used to select the reference calibrators. Defaults to ‘AMPLITUDE’.
+Example: refintent=’’, refintent=’AMPLITUDE’</p></li>
+<li><p><strong>transintent</strong> – A string containing a comma delimited list of intents
+defining the transfer calibrators. Defaults to
+‘PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE’.
+Example: transintent=’’, transintent=’PHASE,BANDPASS’</p></li>
+<li><p><strong>refspwmap</strong> – Vector of spectral window ids enabling scaling across
+spectral windows. Defaults to no scaling.
+Example: refspwmap=[1,1,3,3] - (4 spws, reference fields in 1 and 3, transfer
+fields in 0,1,2,3</p></li>
+<li><p><strong>reffile</strong> – Path to a file containing flux densities for calibrators.
+Setjy will be run for any that have both reference and transfer intents.
+Values given in this file will take precedence over MODEL column values
+set by previous tasks. By default, the path is set to the CSV file created
+by hifa_importdata, consisting of catalogue fluxes extracted from the ASDM
+and / or edited by the user.
+example: reffile=’’, reffile=’working/flux.csv’</p></li>
+<li><p><strong>phaseupsolint</strong> – Time solution intervals in CASA syntax for the phase solution.
+example: phaseupsolint=’inf’, phaseupsolint=’int’, phaseupsolint=’100sec’</p></li>
+<li><p><strong>solint</strong> – Time solution intervals in CASA syntax for the amplitude solution.
+example: solint=’inf’, solint=’int’, solint=’100sec’</p></li>
+<li><p><strong>minsnr</strong> – Minimum signal-to-noise ratio for gain calibration solutions.
+example: minsnr=1.5, minsnr=0.0</p></li>
+<li><p><strong>refant</strong> – A string specifying the reference antenna(s). By default,
+this is read from the context.
+Example: refant=’DV05’</p></li>
+<li><p><strong>hm_resolvedcals</strong> – Heuristics method for handling resolved calibrators. The
+options are ‘automatic’ and ‘manual’. In automatic mode,
+antennas closer to the reference antenna than the uv
+distance where visibilities fall to <code class="docutils literal notranslate"><span class="pre">peak_fraction</span></code> of the
+peak are used. In manual mode, the antennas specified in
+<code class="docutils literal notranslate"><span class="pre">antenna</span></code> are used.</p></li>
+<li><p><strong>antenna</strong> – A comma delimited string specifying the antenna names or ids
+to be used for the fluxscale determination. Used in
+<code class="docutils literal notranslate"><span class="pre">hm_resolvedcals</span></code> = ‘manual’ mode.
+Example: antenna=’DV16,DV07,DA12,DA08’</p></li>
+<li><p><strong>peak_fraction</strong> – The limiting UV distance from the reference antenna for
+antennas to be included in the flux calibration. Defined as
+the point where the calibrator visibilities have fallen to
+<code class="docutils literal notranslate"><span class="pre">peak_fraction</span></code> of the peak value.</p></li>
+<li><p><strong>amp_outlier_sigma</strong> – Sigma threshold used to identify outliers in the amplitude
+caltable. Default: 50.0.
+Example: amp_outlier_sigma=30.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Compute flux values for the phase calibrator using model data from
+the amplitude calibrator:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_gfluxscale</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

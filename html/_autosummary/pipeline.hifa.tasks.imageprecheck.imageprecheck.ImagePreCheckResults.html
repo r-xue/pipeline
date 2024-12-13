@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifa.tasks.imageprecheck.qa" href="pipeline.hifa.tasks.imageprecheck.qa.html" />
+    <link rel="next" title="pipeline.hifa.tasks.imageprecheck.imageprecheck.Sensitivity" href="pipeline.hifa.tasks.imageprecheck.imageprecheck.Sensitivity.html" />
     <link rel="prev" title="pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs" href="pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -150,7 +154,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckResults">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ImagePreCheckResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">real_repr_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr_target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr_spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reprBW_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reprBW_nbin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minAcceptableAngResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.0arcsec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxAcceptableAngResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.0arcsec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxAllowedBeamAxialRatio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_minAcceptableAngResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.0arcsec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_maxAcceptableAngResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.0arcsec'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_maxAllowedBeamAxialRatio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivityGoal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0mJy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivity_bandwidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_continuum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_spw_cont_sensitivities_all_chan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synthesized_beams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beamRatios</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/tasks/imageprecheck/imageprecheck.html#ImagePreCheckResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckResults" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.basetask.Results.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Results.html#pipeline.hsd.tasks.exportdata.almasdaqua.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -207,7 +211,7 @@ stage counters as necessary in preparation for the next task.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifa.tasks.imageprecheck.qa.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.imageprecheck.qa" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hifa.tasks.imageprecheck.imageprecheck.Sensitivity.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.imageprecheck.imageprecheck.Sensitivity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hifa.heuristics.snr.LOG" href="pipeline.hifa.heuristics.snr.LOG.html" />
-    <link rel="prev" title="pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band" href="pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band.html" /> 
+    <link rel="prev" title="pipeline.hifa.heuristics.phasespwmap.SpectralWindow" href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -162,32 +166,38 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.compute_gaincalsnr.html#pipeline.hifa.heuristics.snr.compute_gaincalsnr" title="pipeline.hifa.heuristics.snr.compute_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_gaincalsnr</span></code></a></p></td>
 <td><p>Compute the gain to signal-to-noise given the spw list and the spw dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.estimate_bpsolint.html#pipeline.hifa.heuristics.snr.estimate_bpsolint" title="pipeline.hifa.heuristics.snr.estimate_bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_bpsolint</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.deepcopy.html#pipeline.hifa.heuristics.snr.deepcopy" title="pipeline.hifa.heuristics.snr.deepcopy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deepcopy</span></code></a></p></td>
+<td><p>Deep copy operation on arbitrary Python objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.estimate_bpsolint.html#pipeline.hifa.heuristics.snr.estimate_bpsolint" title="pipeline.hifa.heuristics.snr.estimate_bpsolint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_bpsolint</span></code></a></p></td>
 <td><p>Estimate the optimal solint for the selected bandpass data and return the solution in the form of a dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.estimate_gaincalsnr.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr" title="pipeline.hifa.heuristics.snr.estimate_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_gaincalsnr</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.estimate_gaincalsnr.html#pipeline.hifa.heuristics.snr.estimate_gaincalsnr" title="pipeline.hifa.heuristics.snr.estimate_gaincalsnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_gaincalsnr</span></code></a></p></td>
 <td><p>Estimate the signal to noise of the phase measurements and return it in the form of a dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_fluxinfo.html#pipeline.hifa.heuristics.snr.get_fluxinfo" title="pipeline.hifa.heuristics.snr.get_fluxinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fluxinfo</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_fluxinfo.html#pipeline.hifa.heuristics.snr.get_fluxinfo" title="pipeline.hifa.heuristics.snr.get_fluxinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fluxinfo</span></code></a></p></td>
 <td><p>Retrieve the fluxes of selected sources from the pipeline context as a function of spw id and return the results in a dictinary indexed by spw id.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_mediantemp.html#pipeline.hifa.heuristics.snr.get_mediantemp" title="pipeline.hifa.heuristics.snr.get_mediantemp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mediantemp</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_mediantemp.html#pipeline.hifa.heuristics.snr.get_mediantemp" title="pipeline.hifa.heuristics.snr.get_mediantemp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mediantemp</span></code></a></p></td>
 <td><p>Get median Tsys, Trx, or Tsky temperatures as a function of spw and return a dictionary</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_obsinfo.html#pipeline.hifa.heuristics.snr.get_obsinfo" title="pipeline.hifa.heuristics.snr.get_obsinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_obsinfo</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_obsinfo.html#pipeline.hifa.heuristics.snr.get_obsinfo" title="pipeline.hifa.heuristics.snr.get_obsinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_obsinfo</span></code></a></p></td>
 <td><p>Get the observing information as a function of spw id  and return a dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_tsysinfo.html#pipeline.hifa.heuristics.snr.get_tsysinfo" title="pipeline.hifa.heuristics.snr.get_tsysinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tsysinfo</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.get_tsysinfo.html#pipeline.hifa.heuristics.snr.get_tsysinfo" title="pipeline.hifa.heuristics.snr.get_tsysinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tsysinfo</span></code></a></p></td>
 <td><p>Get the tsys information as functions of spw and return a dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.join_dicts.html#pipeline.hifa.heuristics.snr.join_dicts" title="pipeline.hifa.heuristics.snr.join_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_dicts</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.join_dicts.html#pipeline.hifa.heuristics.snr.join_dicts" title="pipeline.hifa.heuristics.snr.join_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_dicts</span></code></a></p></td>
 <td><p>Combine all the input dictionaries and output the spw dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.make_tsyslists.html#pipeline.hifa.heuristics.snr.make_tsyslists" title="pipeline.hifa.heuristics.snr.make_tsyslists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_tsyslists</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.make_tsyslists.html#pipeline.hifa.heuristics.snr.make_tsyslists" title="pipeline.hifa.heuristics.snr.make_tsyslists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_tsyslists</span></code></a></p></td>
 <td><p>Utility routine for constructing the tsys spw list and the observing scan list from the tysdict produced by get_tsysinfo.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.nextHighestDivisibleInt.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt" title="pipeline.hifa.heuristics.snr.nextHighestDivisibleInt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextHighestDivisibleInt</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.nextHighestDivisibleInt.html#pipeline.hifa.heuristics.snr.nextHighestDivisibleInt" title="pipeline.hifa.heuristics.snr.nextHighestDivisibleInt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nextHighestDivisibleInt</span></code></a></p></td>
 <td><p>Checks whether an integer is evenly divisible by a second integer, and if not, finds the next higher integer that is.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.heuristics.snr.round_up.html#pipeline.hifa.heuristics.snr.round_up" title="pipeline.hifa.heuristics.snr.round_up"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_up</span></code></a></p></td>
+<td><p>Round to nearest integer away from zero.</p></td>
 </tr>
 </tbody>
 </table>
@@ -197,7 +207,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band.html" class="btn btn-neutral float-left" title="pipeline.hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.heuristics.phasespwmap.SpectralWindow.html" class="btn btn-neutral float-left" title="pipeline.hifa.heuristics.phasespwmap.SpectralWindow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hifa.heuristics.snr.LOG.html" class="btn btn-neutral float-right" title="pipeline.hifa.heuristics.snr.LOG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

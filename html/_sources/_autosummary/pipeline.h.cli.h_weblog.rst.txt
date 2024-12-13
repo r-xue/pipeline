@@ -1,23 +1,6 @@
 pipeline.h.cli.h\_weblog
 ========================
 
-.. automodule:: pipeline.h.cli.h_weblog
+.. currentmodule:: pipeline.h.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: h_weblog

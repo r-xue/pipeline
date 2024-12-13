@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_targetflag">
-<span id="pipeline-hifa-cli-hifa-targetflag"></span><h1>pipeline.hifa.cli.hifa_targetflag<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_targetflag" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-targetflag">
+<h1>pipeline.hifa.cli.hifa_targetflag<a class="headerlink" href="#pipeline-hifa-cli-hifa-targetflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_targetflag">
+<span class="sig-name descname"><span class="pre">hifa_targetflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_targetflag.html#hifa_targetflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_targetflag" title="Link to this definition"></a></dt>
+<dd><p>Flag target source outliers</p>
+<p>This task flags very obvious target source outliers. The calibration tables and
+flags accumulated in the cal library up to this point are pre-applied, then
+hif_correctedampflag is called for just the TARGET intent. Any resulting
+flags are applied and the calibration library is restored to the state before
+calling this task.</p>
+<p>Because science targets are generally not point sources, the flagging algorithm
+needs to be more clever than for point source calibrators. The algorithm identifies
+outliers by examining statistics within successive overlapping radial uv bins,
+allowing it to adapt to an arbitrary uv structure. Outliers must appear to be a
+potential outlier in two bins in order to be declared an outlier.  To further avoid
+overflagging of good data, only the highest threshold levels are used (+12/-13 sigma).
+This stage does can add significant processing time, particularly in making the plots.
+So to save time, the amp vs. time plots are created only if flags are generated, and
+the amp vs. uv distance plots are made for only those spws that generated flags.
+Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
+plots only show field IDs with new flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Run with recommended settings to flag outliers in science target(s):</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_targetflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

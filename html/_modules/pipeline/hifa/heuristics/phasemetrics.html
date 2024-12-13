@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -133,7 +133,7 @@
 
 
 <div class="viewcode-block" id="PhaseStabilityHeuristics">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">PhaseStabilityHeuristics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputsin</span><span class="p">,</span> <span class="n">outlier_limit</span><span class="p">,</span> <span class="n">flag_tolerance</span><span class="p">,</span> <span class="n">max_poor_ant</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">inputsin</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
@@ -243,7 +243,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_setup_info</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PhaseStabilityHeuristics.analysis">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.analysis">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.analysis">[docs]</a>
     <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do the phase RMS calculation, outlier analysis,</span>
@@ -998,7 +998,7 @@
         <span class="k">return</span> <span class="n">qa_spw_list</span>
 
 <div class="viewcode-block" id="PhaseStabilityHeuristics.phase_unwrap">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.phase_unwrap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.phase_unwrap">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">phase_unwrap</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1016,7 +1016,7 @@
 
     
 <div class="viewcode-block" id="PhaseStabilityHeuristics.mad">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.mad">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.mad">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">mad</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1033,7 +1033,7 @@
 
 
 <div class="viewcode-block" id="PhaseStabilityHeuristics.std_overlapping_avg">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.std_overlapping_avg">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.std_overlapping_avg">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">std_overlapping_avg</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">diffTime</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">over</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1075,7 +1075,7 @@
 
 
 <div class="viewcode-block" id="PhaseStabilityHeuristics.ave_phase">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.html#pipeline.hifa.heuristics.phasemetrics.PhaseStabilityHeuristics.ave_phase">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.html#pipeline.hifa.tasks.spwphaseup.spwphaseup.PhaseStabilityHeuristics.ave_phase">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">ave_phase</span><span class="p">(</span><span class="n">phase</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">diffTime</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">over</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>

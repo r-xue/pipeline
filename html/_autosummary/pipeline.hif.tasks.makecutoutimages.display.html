@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary" href="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary.html" />
-    <link rel="prev" title="pipeline.hif.tasks.makecutoutimages" href="pipeline.hif.tasks.makecutoutimages.html" /> 
+    <link rel="prev" title="pipeline.hif.tasks.makecutoutimages.Makecutoutimages" href="pipeline.hif.tasks.makecutoutimages.Makecutoutimages.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -152,6 +156,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary.html#pipeline.hif.tasks.makecutoutimages.display.get_stats_summary" title="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_stats_summary</span></code></a></p></td>
 <td><p>Reorganize the raw stats (spw,imtype) into a layout (imtype,property) more convenient for tabulation.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.matplotlibrc_formal.html#pipeline.hif.tasks.makecutoutimages.display.matplotlibrc_formal" title="pipeline.hif.tasks.makecutoutimages.display.matplotlibrc_formal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlibrc_formal</span></code></a></p></td>
+<td><p>A custom matplotlib plotting style.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -160,13 +167,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.CutoutimagesSummary.html#pipeline.hif.tasks.makecutoutimages.display.CutoutimagesSummary" title="pipeline.hif.tasks.makecutoutimages.display.CutoutimagesSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CutoutimagesSummary</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.ImageStats.html#pipeline.hif.tasks.makecutoutimages.display.ImageStats" title="pipeline.hif.tasks.makecutoutimages.display.ImageStats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageStats</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.ImageHistDisplay.html#pipeline.hif.tasks.makecutoutimages.display.ImageHistDisplay" title="pipeline.hif.tasks.makecutoutimages.display.ImageHistDisplay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageHistDisplay</span></code></a></p></td>
+<td><p>A display class to generate histogram of a CASA image</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.ImageStats.html#pipeline.hif.tasks.makecutoutimages.display.ImageStats" title="pipeline.hif.tasks.makecutoutimages.display.ImageStats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageStats</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary" title="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VlassCubeCutoutRmsSummary</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary" title="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutRmsSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VlassCubeCutoutRmsSummary</span></code></a></p></td>
 <td><p>A class for the VLASS-CUBE makecutout rms-vs-frequency summary plots.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary" title="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VlassCubeCutoutimagesSummary</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary.html#pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary" title="pipeline.hif.tasks.makecutoutimages.display.VlassCubeCutoutimagesSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VlassCubeCutoutimagesSummary</span></code></a></p></td>
 <td><p>A class for the VLASS-CUBE makecutout image summary plots.</p></td>
 </tr>
 </tbody>
@@ -177,7 +187,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hif.tasks.makecutoutimages.html" class="btn btn-neutral float-left" title="pipeline.hif.tasks.makecutoutimages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hif.tasks.makecutoutimages.Makecutoutimages.html" class="btn btn-neutral float-left" title="pipeline.hif.tasks.makecutoutimages.Makecutoutimages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary.html" class="btn btn-neutral float-right" title="pipeline.hif.tasks.makecutoutimages.display.get_stats_summary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

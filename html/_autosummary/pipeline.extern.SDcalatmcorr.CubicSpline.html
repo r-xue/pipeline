@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.extern.SDcalatmcorr.CubicSpline &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.extern.SDcalatmcorr.aftool" href="pipeline.extern.SDcalatmcorr.aftool.html" />
+    <link rel="prev" title="pipeline.extern.SDcalatmcorr.smooth" href="pipeline.extern.SDcalatmcorr.smooth.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.extern.SDcalatmcorr.html">pipeline.extern.SDcalatmcorr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.TsysDataClassFile.html">pipeline.extern.TsysDataClassFile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.XmlObjectifier.html">pipeline.extern.XmlObjectifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.adopted.html">pipeline.extern.adopted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almahelpers.html">pipeline.extern.almahelpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almarenorm.html">pipeline.extern.almarenorm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.almarenorm_pl2023.html">pipeline.extern.almarenorm_pl2023</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.findContinuum.html">pipeline.extern.findContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.extern.tsys_contamination.html">pipeline.extern.tsys_contamination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.html">pipeline.extern</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.extern.SDcalatmcorr.html">pipeline.extern.SDcalatmcorr</a></li>
+      <li class="breadcrumb-item active">pipeline.extern.SDcalatmcorr.CubicSpline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.extern.SDcalatmcorr.CubicSpline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-extern-sdcalatmcorr-cubicspline">
+<h1>pipeline.extern.SDcalatmcorr.CubicSpline<a class="headerlink" href="#pipeline-extern-sdcalatmcorr-cubicspline" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CubicSpline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'not-a-knot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/interpolate/_cubic.html#CubicSpline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CubicHermiteSpline</span></code></p>
+<p>Cubic spline data interpolator.</p>
+<p>Interpolate data with a piecewise cubic polynomial which is twice
+continuously differentiable <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The result is represented as a <cite>PPoly</cite>
+instance with breakpoints matching the given data.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>x</strong> (<em>array_like, shape (n,)</em>) – 1-D array containing values of the independent variable.
+Values must be real, finite and in strictly increasing order.</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – Array containing values of the dependent variable. It can have
+arbitrary number of dimensions, but the length along <code class="docutils literal notranslate"><span class="pre">axis</span></code>
+(see below) must match the length of <code class="docutils literal notranslate"><span class="pre">x</span></code>. Values must be finite.</p></li>
+<li><p><strong>axis</strong> (<em>int, optional</em>) – Axis along which <cite>y</cite> is assumed to be varying. Meaning that for
+<code class="docutils literal notranslate"><span class="pre">x[i]</span></code> the corresponding values are <code class="docutils literal notranslate"><span class="pre">np.take(y,</span> <span class="pre">i,</span> <span class="pre">axis=axis)</span></code>.
+Default is 0.</p></li>
+<li><p><strong>bc_type</strong> (<em>string or 2-tuple, optional</em>) – Boundary condition type. Two additional equations, given by the
+boundary conditions, are required to determine all coefficients of
+polynomials on each segment <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<p>If <cite>bc_type</cite> is a string, then the specified condition will be applied
+at both ends of a spline. Available conditions are:</p>
+<ul class="simple">
+<li><p>‘not-a-knot’ (default): The first and second segment at a curve end
+are the same polynomial. It is a good default when there is no
+information on boundary conditions.</p></li>
+<li><p>‘periodic’: The interpolated functions is assumed to be periodic
+of period <code class="docutils literal notranslate"><span class="pre">x[-1]</span> <span class="pre">-</span> <span class="pre">x[0]</span></code>. The first and last value of <cite>y</cite> must be
+identical: <code class="docutils literal notranslate"><span class="pre">y[0]</span> <span class="pre">==</span> <span class="pre">y[-1]</span></code>. This boundary condition will result in
+<code class="docutils literal notranslate"><span class="pre">y'[0]</span> <span class="pre">==</span> <span class="pre">y'[-1]</span></code> and <code class="docutils literal notranslate"><span class="pre">y''[0]</span> <span class="pre">==</span> <span class="pre">y''[-1]</span></code>.</p></li>
+<li><p>‘clamped’: The first derivative at curves ends are zero. Assuming
+a 1D <cite>y</cite>, <code class="docutils literal notranslate"><span class="pre">bc_type=((1,</span> <span class="pre">0.0),</span> <span class="pre">(1,</span> <span class="pre">0.0))</span></code> is the same condition.</p></li>
+<li><p>‘natural’: The second derivative at curve ends are zero. Assuming
+a 1D <cite>y</cite>, <code class="docutils literal notranslate"><span class="pre">bc_type=((2,</span> <span class="pre">0.0),</span> <span class="pre">(2,</span> <span class="pre">0.0))</span></code> is the same condition.</p></li>
+</ul>
+<p>If <cite>bc_type</cite> is a 2-tuple, the first and the second value will be
+applied at the curve start and end respectively. The tuple values can
+be one of the previously mentioned strings (except ‘periodic’) or a
+tuple <cite>(order, deriv_values)</cite> allowing to specify arbitrary
+derivatives at curve ends:</p>
+<ul class="simple">
+<li><p><cite>order</cite>: the derivative order, 1 or 2.</p></li>
+<li><p><cite>deriv_value</cite>: array_like containing derivative values, shape must
+be the same as <cite>y</cite>, excluding <code class="docutils literal notranslate"><span class="pre">axis</span></code> dimension. For example, if
+<cite>y</cite> is 1-D, then <cite>deriv_value</cite> must be a scalar. If <cite>y</cite> is 3-D with
+the shape (n0, n1, n2) and axis=2, then <cite>deriv_value</cite> must be 2-D
+and have the shape (n0, n1).</p></li>
+</ul>
+</li>
+<li><p><strong>extrapolate</strong> (<em>{bool, ‘periodic’, None}, optional</em>) – If bool, determines whether to extrapolate to out-of-bounds points
+based on first and last intervals, or to return NaNs. If ‘periodic’,
+periodic extrapolation is used. If None (default), <code class="docutils literal notranslate"><span class="pre">extrapolate</span></code> is
+set to ‘periodic’ for <code class="docutils literal notranslate"><span class="pre">bc_type='periodic'</span></code> and to True otherwise.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray</em><em>, </em><em>shape</em><em> (</em><em>n</em><em>,</em><em>)</em>) – Breakpoints. The same <code class="docutils literal notranslate"><span class="pre">x</span></code> which was passed to the constructor.</p></li>
+<li><p><strong>c</strong> (<em>ndarray</em><em>, </em><em>shape</em><em> (</em><em>4</em><em>, </em><em>n-1</em><em>, </em><em>...</em><em>)</em>) – Coefficients of the polynomials on each segment. The trailing
+dimensions match the dimensions of <cite>y</cite>, excluding <code class="docutils literal notranslate"><span class="pre">axis</span></code>.
+For example, if <cite>y</cite> is 1-d, then <code class="docutils literal notranslate"><span class="pre">c[k,</span> <span class="pre">i]</span></code> is a coefficient for
+<code class="docutils literal notranslate"><span class="pre">(x-x[i])**(3-k)</span></code> on the segment between <code class="docutils literal notranslate"><span class="pre">x[i]</span></code> and <code class="docutils literal notranslate"><span class="pre">x[i+1]</span></code>.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Interpolation axis. The same axis which was passed to the
+constructor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.__call__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.derivative">
+<span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.derivative" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.antiderivative">
+<span class="sig-name descname"><span class="pre">antiderivative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.antiderivative" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.integrate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.roots">
+<span class="sig-name descname"><span class="pre">roots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.roots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Akima1DInterpolator</span></code></dt><dd><p>Akima 1D interpolator.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">PchipInterpolator</span></code></dt><dd><p>PCHIP 1-D monotonic cubic interpolator.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">PPoly</span></code></dt><dd><p>Piecewise polynomial in terms of coefficients and breakpoints.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Parameters <cite>bc_type</cite> and <code class="docutils literal notranslate"><span class="pre">extrapolate</span></code> work independently, i.e. the
+former controls only construction of a spline, and the latter only
+evaluation.</p>
+<p>When a boundary condition is ‘not-a-knot’ and n = 2, it is replaced by
+a condition that the first derivative is equal to the linear interpolant
+slope. When both boundary conditions are ‘not-a-knot’ and n = 3, the
+solution is sought as a parabola passing through given points.</p>
+<p>When ‘not-a-knot’ boundary conditions is applied to both ends, the
+resulting spline will be the same as returned by <cite>splrep</cite> (with <code class="docutils literal notranslate"><span class="pre">s=0</span></code>)
+and <cite>InterpolatedUnivariateSpline</cite>, but these two methods use a
+representation in B-spline basis.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.18.0.</span></p>
+</div>
+<p class="rubric">Examples</p>
+<p>In this example the cubic spline is used to interpolate a sampled sinusoid.
+You can see that the spline continuity property holds for the first and
+second derivatives and violates only for the third derivative.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">CubicSpline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cs</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">9.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;S&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;S&#39;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;S&#39;&#39;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;S&#39;&#39;&#39;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the second example, the unit circle is interpolated with a spline. A
+periodic boundary condition is used. You can see that the first derivative
+values, ds/dx=0, ds/dy=1 at the periodic point (1, 0) are correctly
+computed. Note that a circle cannot be exactly represented by a cubic
+spline. To increase precision, more breakpoints would be required.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cs</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bc_type</span><span class="o">=</span><span class="s1">&#39;periodic&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ds/dx=</span><span class="si">{:.1f}</span><span class="s2"> ds/dy=</span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cs</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cs</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">ds/dx=0.0 ds/dy=1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">cs</span><span class="p">(</span><span class="n">xs</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;spline&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The third example is the interpolation of a polynomial y = x**3 on the
+interval 0 &lt;= x&lt;= 1. A cubic spline can represent this function exactly.
+To achieve that we need to specify values and first derivatives at
+endpoints of the interval. Note that y’ = 3 * x**2 and thus y’(0) = 0 and
+y’(1) = 3.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cs</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">bc_type</span><span class="o">=</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">cs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikiversity.org/wiki/Cubic_Spline_Interpolation">Cubic Spline Interpolation</a>
+on Wikiversity.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Carl de Boor, “A Practical Guide to Splines”, Springer-Verlag, 1978.</p>
+</aside>
+</aside>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id5" title="pipeline.extern.SDcalatmcorr.CubicSpline.antiderivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antiderivative</span></code></a></p></td>
+<td><p>Construct a new piecewise polynomial representing the antiderivative.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.SDcalatmcorr.CubicSpline.construct_fast" title="pipeline.extern.SDcalatmcorr.CubicSpline.construct_fast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct_fast</span></code></a></p></td>
+<td><p>Construct the piecewise polynomial without making checks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id6" title="pipeline.extern.SDcalatmcorr.CubicSpline.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></p></td>
+<td><p>Construct a new piecewise polynomial representing the derivative.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.SDcalatmcorr.CubicSpline.extend" title="pipeline.extern.SDcalatmcorr.CubicSpline.extend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code></a></p></td>
+<td><p>Add additional breakpoints and coefficients to the polynomial.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.SDcalatmcorr.CubicSpline.from_bernstein_basis" title="pipeline.extern.SDcalatmcorr.CubicSpline.from_bernstein_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_bernstein_basis</span></code></a></p></td>
+<td><p>Construct a piecewise polynomial in the power basis from a polynomial in Bernstein basis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.extern.SDcalatmcorr.CubicSpline.from_spline" title="pipeline.extern.SDcalatmcorr.CubicSpline.from_spline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_spline</span></code></a></p></td>
+<td><p>Construct a piecewise polynomial from a spline</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id7" title="pipeline.extern.SDcalatmcorr.CubicSpline.integrate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integrate</span></code></a></p></td>
+<td><p>Compute a definite integral over a piecewise polynomial.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id8" title="pipeline.extern.SDcalatmcorr.CubicSpline.roots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roots</span></code></a></p></td>
+<td><p>Find real roots of the piecewise polynomial.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.extern.SDcalatmcorr.CubicSpline.solve" title="pipeline.extern.SDcalatmcorr.CubicSpline.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a></p></td>
+<td><p>Find real solutions of the equation <code class="docutils literal notranslate"><span class="pre">pp(x)</span> <span class="pre">==</span> <span class="pre">y</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extrapolate</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">axis</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the piecewise polynomial or its derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Points to evaluate the interpolant at.</p></li>
+<li><p><strong>nu</strong> (<em>int, optional</em>) – Order of derivative to evaluate. Must be non-negative.</p></li>
+<li><p><strong>extrapolate</strong> (<em>{bool, ‘periodic’, None}, optional</em>) – If bool, determines whether to extrapolate to out-of-bounds points
+based on first and last intervals, or to return NaNs.
+If ‘periodic’, periodic extrapolation is used.
+If None (default), use <cite>self.extrapolate</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>y</strong> – Interpolated values. Shape is determined by replacing
+the interpolation axis in the original array with the shape of x.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Derivatives are evaluated piecewise for each polynomial
+segment, even if the polynomial is not differentiable at the
+breakpoints. The polynomial intervals are considered half-open,
+<code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b)</span></code>, except for the last interval which is closed
+<code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b]</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">antiderivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd><p>Construct a new piecewise polynomial representing the antiderivative.</p>
+<p>Antiderivative is also the indefinite integral of the function,
+and derivative is its inverse operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nu</strong> (<em>int, optional</em>) – Order of antiderivative to evaluate. Default is 1, i.e., compute
+the first integral. If negative, the derivative is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pp</strong> – Piecewise polynomial of order k2 = k + n representing
+the antiderivative of this polynomial.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PPoly</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The antiderivative returned by this function is continuous and
+continuously differentiable to order n-1, up to floating point
+rounding error.</p>
+<p>If antiderivative is computed and <code class="docutils literal notranslate"><span class="pre">self.extrapolate='periodic'</span></code>,
+it will be set to False for the returned instance. This is done because
+the antiderivative is no longer periodic and its correct evaluation
+outside of the initially given x interval is difficult.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.construct_fast">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.construct_fast" title="Link to this definition"></a></dt>
+<dd><p>Construct the piecewise polynomial without making checks.</p>
+<p>Takes the same parameters as the constructor. Input arguments
+<code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> must be arrays of the correct shape and type. The
+<code class="docutils literal notranslate"><span class="pre">c</span></code> array can only be of dtypes float and complex, and <code class="docutils literal notranslate"><span class="pre">x</span></code>
+array must have dtype float.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd><p>Construct a new piecewise polynomial representing the derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nu</strong> (<em>int, optional</em>) – Order of derivative to evaluate. Default is 1, i.e., compute the
+first derivative. If negative, the antiderivative is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pp</strong> – Piecewise polynomial of order k2 = k - n representing the derivative
+of this polynomial.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PPoly</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Derivatives are evaluated piecewise for each polynomial
+segment, even if the polynomial is not differentiable at the
+breakpoints. The polynomial intervals are considered half-open,
+<code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b)</span></code>, except for the last interval which is closed
+<code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b]</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.extend" title="Link to this definition"></a></dt>
+<dd><p>Add additional breakpoints and coefficients to the polynomial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>ndarray, size (k, m, …)</em>) – Additional coefficients for polynomials in intervals. Note that
+the first additional interval will be formed using one of the
+<code class="docutils literal notranslate"><span class="pre">self.x</span></code> end points.</p></li>
+<li><p><strong>x</strong> (<em>ndarray, size (m,)</em>) – Additional breakpoints. Must be sorted in the same order as
+<code class="docutils literal notranslate"><span class="pre">self.x</span></code> and either to the right or to the left of the current
+breakpoints.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.from_bernstein_basis">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_bernstein_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.from_bernstein_basis" title="Link to this definition"></a></dt>
+<dd><p>Construct a piecewise polynomial in the power basis
+from a polynomial in Bernstein basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bp</strong> (<em>BPoly</em>) – A Bernstein basis polynomial, as created by BPoly</p></li>
+<li><p><strong>extrapolate</strong> (<em>bool or ‘periodic’, optional</em>) – If bool, determines whether to extrapolate to out-of-bounds points
+based on first and last intervals, or to return NaNs.
+If ‘periodic’, periodic extrapolation is used. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.from_spline">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_spline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.from_spline" title="Link to this definition"></a></dt>
+<dd><p>Construct a piecewise polynomial from a spline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tck</strong> – A spline, as returned by <cite>splrep</cite> or a BSpline object.</p></li>
+<li><p><strong>extrapolate</strong> (<em>bool or ‘periodic’, optional</em>) – If bool, determines whether to extrapolate to out-of-bounds points
+based on first and last intervals, or to return NaNs.
+If ‘periodic’, periodic extrapolation is used. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd><p>Compute a definite integral over a piecewise polynomial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em>) – Lower integration bound</p></li>
+<li><p><strong>b</strong> (<em>float</em>) – Upper integration bound</p></li>
+<li><p><strong>extrapolate</strong> (<em>{bool, ‘periodic’, None}, optional</em>) – If bool, determines whether to extrapolate to out-of-bounds points
+based on first and last intervals, or to return NaNs.
+If ‘periodic’, periodic extrapolation is used.
+If None (default), use <cite>self.extrapolate</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ig</strong> – Definite integral of the piecewise polynomial over [a, b]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">roots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discontinuity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd><p>Find real roots of the piecewise polynomial.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discontinuity</strong> (<em>bool, optional</em>) – Whether to report sign changes across discontinuities at
+breakpoints as roots.</p></li>
+<li><p><strong>extrapolate</strong> (<em>{bool, ‘periodic’, None}, optional</em>) – If bool, determines whether to return roots from the polynomial
+extrapolated based on first and last intervals, ‘periodic’ works
+the same as False. If None (default), use <cite>self.extrapolate</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>roots</strong> – Roots of the polynomial(s).</p>
+<p>If the PPoly object describes multiple polynomials, the
+return value is an object array whose each element is an
+ndarray containing the roots.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PPoly.solve</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.extern.SDcalatmcorr.CubicSpline.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discontinuity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.SDcalatmcorr.CubicSpline.solve" title="Link to this definition"></a></dt>
+<dd><p>Find real solutions of the equation <code class="docutils literal notranslate"><span class="pre">pp(x)</span> <span class="pre">==</span> <span class="pre">y</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>float, optional</em>) – Right-hand side. Default is zero.</p></li>
+<li><p><strong>discontinuity</strong> (<em>bool, optional</em>) – Whether to report sign changes across discontinuities at
+breakpoints as roots.</p></li>
+<li><p><strong>extrapolate</strong> (<em>{bool, ‘periodic’, None}, optional</em>) – If bool, determines whether to return roots from the polynomial
+extrapolated based on first and last intervals, ‘periodic’ works
+the same as False. If None (default), use <cite>self.extrapolate</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>roots</strong> – Roots of the polynomial(s).</p>
+<p>If the PPoly object describes multiple polynomials, the
+return value is an object array whose each element is an
+ndarray containing the roots.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This routine works only on real-valued polynomials.</p>
+<p>If the piecewise polynomial contains sections that are
+identically zero, the root list will contain the start point
+of the corresponding interval, followed by a <code class="docutils literal notranslate"><span class="pre">nan</span></code> value.</p>
+<p>If the polynomial is discontinuous across a breakpoint, and
+there is a sign change across the breakpoint, this is reported
+if the <cite>discont</cite> parameter is True.</p>
+<p class="rubric">Examples</p>
+<p>Finding roots of <code class="docutils literal notranslate"><span class="pre">[x**2</span> <span class="pre">-</span> <span class="pre">1,</span> <span class="pre">(x</span> <span class="pre">-</span> <span class="pre">1)**2]</span></code> defined on intervals
+<code class="docutils literal notranslate"><span class="pre">[-2,</span> <span class="pre">1],</span> <span class="pre">[1,</span> <span class="pre">2]</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">PPoly</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pp</span> <span class="o">=</span> <span class="n">PPoly</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pp</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="go">array([-1.,  1.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.extern.SDcalatmcorr.smooth.html" class="btn btn-neutral float-left" title="pipeline.extern.SDcalatmcorr.smooth" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.extern.SDcalatmcorr.aftool.html" class="btn btn-neutral float-right" title="pipeline.extern.SDcalatmcorr.aftool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -13,6 +13,16 @@ pipeline.hifa.tasks.unlock\_refant
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      T2_4MDetailsDefaultRenderer
+      UnlockRefAnt
+   
    
 
    

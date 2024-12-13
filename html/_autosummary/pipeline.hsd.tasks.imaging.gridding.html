@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -157,22 +161,31 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase" title="pipeline.hsd.tasks.imaging.gridding.GriddingBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingBase</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.Accumulator.html#pipeline.hsd.tasks.imaging.gridding.Accumulator" title="pipeline.hsd.tasks.imaging.gridding.Accumulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Accumulator</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingInputs.html#pipeline.hsd.tasks.imaging.gridding.GriddingInputs" title="pipeline.hsd.tasks.imaging.gridding.GriddingInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingInputs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.DataTableIndexer.html#pipeline.hsd.tasks.imaging.gridding.DataTableIndexer" title="pipeline.hsd.tasks.imaging.gridding.DataTableIndexer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTableIndexer</span></code></a></p></td>
+<td><p>Map between serial indices and per-MS row indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.DataType.html#pipeline.hsd.tasks.imaging.gridding.DataType" title="pipeline.hsd.tasks.imaging.gridding.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingBase.html#pipeline.hsd.tasks.imaging.gridding.GriddingBase" title="pipeline.hsd.tasks.imaging.gridding.GriddingBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingBase</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingResults.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults" title="pipeline.hsd.tasks.imaging.gridding.GriddingResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingResults</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingInputs.html#pipeline.hsd.tasks.imaging.gridding.GriddingInputs" title="pipeline.hsd.tasks.imaging.gridding.GriddingInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.MultiPointGridding.html#pipeline.hsd.tasks.imaging.gridding.MultiPointGridding" title="pipeline.hsd.tasks.imaging.gridding.MultiPointGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiPointGridding</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.GriddingResults.html#pipeline.hsd.tasks.imaging.gridding.GriddingResults" title="pipeline.hsd.tasks.imaging.gridding.GriddingResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GriddingResults</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.RasterGridding.html#pipeline.hsd.tasks.imaging.gridding.RasterGridding" title="pipeline.hsd.tasks.imaging.gridding.RasterGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RasterGridding</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.MultiPointGridding.html#pipeline.hsd.tasks.imaging.gridding.MultiPointGridding" title="pipeline.hsd.tasks.imaging.gridding.MultiPointGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultiPointGridding</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.SinglePointGridding.html#pipeline.hsd.tasks.imaging.gridding.SinglePointGridding" title="pipeline.hsd.tasks.imaging.gridding.SinglePointGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SinglePointGridding</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.RasterGridding.html#pipeline.hsd.tasks.imaging.gridding.RasterGridding" title="pipeline.hsd.tasks.imaging.gridding.RasterGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RasterGridding</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.imaging.gridding.SinglePointGridding.html#pipeline.hsd.tasks.imaging.gridding.SinglePointGridding" title="pipeline.hsd.tasks.imaging.gridding.SinglePointGridding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SinglePointGridding</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

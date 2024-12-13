@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -135,7 +135,7 @@
 
 
 <div class="viewcode-block" id="ApplycalInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalInputs defines the inputs for the Applycal pipeline task.</span>
@@ -208,7 +208,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 <div class="viewcode-block" id="ApplycalInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;flagsum&#39;</span><span class="p">]</span>
@@ -220,7 +220,7 @@
 
 
 <div class="viewcode-block" id="ApplycalResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.ApplycalResults.html#pipeline.h.tasks.ApplycalResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalResults.html#pipeline.h.tasks.ApplycalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalResults is the results class for the pipeline Applycal task.</span>
@@ -249,7 +249,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
 
 <div class="viewcode-block" id="ApplycalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.ApplycalResults.html#pipeline.h.tasks.ApplycalResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalResults.html#pipeline.h.tasks.ApplycalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Merges these results with the given context by examining the context</span>
@@ -291,7 +291,7 @@
 
 
 <div class="viewcode-block" id="SerialApplycal">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialApplycal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applycal executes CASA applycal tasks for the current active context</span>
@@ -320,7 +320,7 @@
         <span class="k">return</span> <span class="n">template</span>
 
 <div class="viewcode-block" id="SerialApplycal.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -410,13 +410,13 @@
 
 
 <div class="viewcode-block" id="SerialApplycal.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
 <div class="viewcode-block" id="SerialApplycal.process_flagsummary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.process_flagsummary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.process_flagsummary">[docs]</a>
     <span class="k">def</span> <span class="nf">process_flagsummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flagsummary</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Template entry point for processing flagdata summary dicts. Override</span>
@@ -432,7 +432,7 @@
 
 
 <div class="viewcode-block" id="reshape_flagdata_summary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.reshape_flagdata_summary.html#pipeline.h.tasks.reshape_flagdata_summary">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.baselineflag.reshape_flagdata_summary.html#pipeline.h.tasks.reshape_flagdata_summary">[docs]</a>
 <span class="k">def</span> <span class="nf">reshape_flagdata_summary</span><span class="p">(</span><span class="n">flagdata_result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reshape a flagdata result so that results are grouped by field.</span>

@@ -20,6 +20,7 @@ pipeline.hifa.tasks.fluxscale.gcorfluxscale
       copy_flux_measurement
       get_field_name
       map_spw_names_to_id
+      reduce
    
    
 
@@ -32,9 +33,13 @@ pipeline.hifa.tasks.fluxscale.gcorfluxscale
       :template: custom-class-template.rst
       :nosignatures:
    
+      FlagdataSetter
+      FluxMeasurement
+      GaincalResults
       GcorFluxscale
       GcorFluxscaleInputs
       GcorFluxscaleResults
+      MeasurementSet
       SessionGcorFluxscale
       SessionGcorFluxscaleInputs
    

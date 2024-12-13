@@ -20,6 +20,7 @@ pipeline.hif.tasks.tclean.plot\_spectra
       addFrequencyAxisAbove
       casaRestToTopo
       cubeFrameToTopo
+      degrees
       frames
       imheadlist
       lsrkToRest

@@ -9,9 +9,38 @@ pipeline.h.heuristics
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      tsysspwmap
+   
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      AntposCaltable
+      BandpassCaltable
+      EchoHeuristic
+      FluxCaltable
+      GainCurvestable
+      GaincalCaltable
+      HeuristicsLineFinder
+      IntentFieldnames
+      OpCaltable
+      RqCaltable
+      SwpowCaltable
+      TsysCaltable
+      WvrgCaltable
    
    
 
@@ -32,5 +61,4 @@ pipeline.h.heuristics
    linefinder
    linefinder_test
    tsysnormalize
-   tsysspwmap
 

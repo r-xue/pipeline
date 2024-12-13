@@ -1,0 +1,2149 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.common.rasterutil.Line2D &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.hsd.tasks.common.rasterutil.MetaDataSet" href="pipeline.hsd.tasks.common.rasterutil.MetaDataSet.html" />
+    <link rel="prev" title="pipeline.hsd.tasks.common.rasterutil.ImageMagickWriter" href="pipeline.hsd.tasks.common.rasterutil.ImageMagickWriter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.cli.html">pipeline.hsd.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.heuristics.html">pipeline.hsd.heuristics</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.hsd.templates.html">pipeline.hsd.templates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.html">pipeline.hsd</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.html">pipeline.hsd.tasks</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.html">pipeline.hsd.tasks.common</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.hsd.tasks.common.rasterutil.html">pipeline.hsd.tasks.common.rasterutil</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.common.rasterutil.Line2D</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.hsd.tasks.common.rasterutil.Line2D.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-hsd-tasks-common-rasterutil-line2d">
+<h1>pipeline.hsd.tasks.common.rasterutil.Line2D<a class="headerlink" href="#pipeline-hsd-tasks-common-rasterutil-line2d" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Line2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markeredgewidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markeredgecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markerfacecolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markerfacecoloralt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialiased</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dash_capstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_capstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dash_joinstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_joinstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pickradius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markevery</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code></p>
+<p>A line - the line can have both a solid linestyle connecting all
+the vertices, and a marker at each vertex.  Additionally, the
+drawing of the solid line is influenced by the drawstyle, e.g., one
+can create “stepped” lines in various styles.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callback</span></code></a></p></td>
+<td><p>Add a callback function that will be called whenever one of the <cite>.Artist</cite>'s properties changes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.contains" title="pipeline.hsd.tasks.common.rasterutil.Line2D.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a></p></td>
+<td><p>Test whether <em>mouseevent</em> occurred on the line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.convert_xunits" title="pipeline.hsd.tasks.common.rasterutil.Line2D.convert_xunits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_xunits</span></code></a></p></td>
+<td><p>Convert <em>x</em> using the unit type of the xaxis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.convert_yunits" title="pipeline.hsd.tasks.common.rasterutil.Line2D.convert_yunits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_yunits</span></code></a></p></td>
+<td><p>Convert <em>y</em> using the unit type of the yaxis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.draw" title="pipeline.hsd.tasks.common.rasterutil.Line2D.draw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw</span></code></a></p></td>
+<td><p>Draw the Artist (and its children) using the given renderer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.findobj" title="pipeline.hsd.tasks.common.rasterutil.Line2D.findobj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">findobj</span></code></a></p></td>
+<td><p>Find artist objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_cursor_data</span></code></a></p></td>
+<td><p>Return a string representation of <em>data</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_aa" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_aa"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_aa</span></code></a></p></td>
+<td><p>Alias for <cite>get_antialiased</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_agg_filter" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_agg_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_agg_filter</span></code></a></p></td>
+<td><p>Return filter function to be used for agg filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_alpha" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alpha</span></code></a></p></td>
+<td><p>Return the alpha value used for blending - not supported on all backends.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_animated" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_animated</span></code></a></p></td>
+<td><p>Return whether the artist is animated.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_antialiased" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_antialiased"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_antialiased</span></code></a></p></td>
+<td><p>Return whether antialiased rendering is used.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_bbox" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bbox</span></code></a></p></td>
+<td><p>Get the bounding box of this line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_c" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_c</span></code></a></p></td>
+<td><p>Alias for <cite>get_color</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_children" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_children</span></code></a></p></td>
+<td><p>Return a list of the child <cite>.Artist</cite>s of this <cite>.Artist</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_box" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_box</span></code></a></p></td>
+<td><p>Return the clipbox.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_on" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_on</span></code></a></p></td>
+<td><p>Return whether the artist uses clipping.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_path" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_path</span></code></a></p></td>
+<td><p>Return the clip path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_color" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_color</span></code></a></p></td>
+<td><p>Return the line color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code></a></p></td>
+<td><p>Return the cursor data for a given event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_capstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_capstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dash_capstyle</span></code></a></p></td>
+<td><p>Return the <cite>.CapStyle</cite> for dashed lines.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_joinstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_joinstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dash_joinstyle</span></code></a></p></td>
+<td><p>Return the <cite>.JoinStyle</cite> for dashed lines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a></p></td>
+<td><p>Return the line data as an <code class="docutils literal notranslate"><span class="pre">(xdata,</span> <span class="pre">ydata)</span></code> pair.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_drawstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_drawstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_drawstyle</span></code></a></p></td>
+<td><p>Return the drawstyle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ds" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ds</span></code></a></p></td>
+<td><p>Alias for <cite>get_drawstyle</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_figure" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code></a></p></td>
+<td><p>Return the <cite>.Figure</cite> instance the artist belongs to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_fillstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_fillstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fillstyle</span></code></a></p></td>
+<td><p>Return the marker fill style.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_gapcolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_gapcolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gapcolor</span></code></a></p></td>
+<td><p>Return the line gapcolor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_gid" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gid</span></code></a></p></td>
+<td><p>Return the group id.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_in_layout" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_in_layout</span></code></a></p></td>
+<td><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout calculations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_label" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a></p></td>
+<td><p>Return the label used for this artist in the legend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_linestyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_linestyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linestyle</span></code></a></p></td>
+<td><p>Return the linestyle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_linewidth" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_linewidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linewidth</span></code></a></p></td>
+<td><p>Return the linewidth in points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ls" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ls"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ls</span></code></a></p></td>
+<td><p>Alias for <cite>get_linestyle</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_lw" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_lw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_lw</span></code></a></p></td>
+<td><p>Alias for <cite>get_linewidth</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_marker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_marker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_marker</span></code></a></p></td>
+<td><p>Return the line marker.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgecolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgecolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markeredgecolor</span></code></a></p></td>
+<td><p>Return the marker edge color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgewidth" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgewidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markeredgewidth</span></code></a></p></td>
+<td><p>Return the marker edge width in points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markerfacecolor</span></code></a></p></td>
+<td><p>Return the marker face color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecoloralt" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecoloralt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markerfacecoloralt</span></code></a></p></td>
+<td><p>Return the alternate marker face color.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markersize" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markersize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markersize</span></code></a></p></td>
+<td><p>Return the marker size in points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markevery" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markevery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markevery</span></code></a></p></td>
+<td><p>Return the markevery setting for marker subsampling.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mec" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mec</span></code></a></p></td>
+<td><p>Alias for <cite>get_markeredgecolor</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mew" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mew"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mew</span></code></a></p></td>
+<td><p>Alias for <cite>get_markeredgewidth</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfc" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mfc</span></code></a></p></td>
+<td><p>Alias for <cite>get_markerfacecolor</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfcalt" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfcalt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mfcalt</span></code></a></p></td>
+<td><p>Alias for <cite>get_markerfacecoloralt</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mouseover" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mouseover</span></code></a></p></td>
+<td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ms" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ms</span></code></a></p></td>
+<td><p>Alias for <cite>get_markersize</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_path" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path</span></code></a></p></td>
+<td><p>Return the <cite>~matplotlib.path.Path</cite> associated with this line.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a></p></td>
+<td><p>Return the picking behavior of the artist.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_pickradius" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_pickradius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pickradius</span></code></a></p></td>
+<td><p>Return the pick radius used for containment tests.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_rasterized" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code></a></p></td>
+<td><p>Return whether the artist is to be rasterized.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_sketch_params" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code></a></p></td>
+<td><p>Return the sketch parameters for the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_snap" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code></a></p></td>
+<td><p>Return the snap setting.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_capstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_capstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solid_capstyle</span></code></a></p></td>
+<td><p>Return the <cite>.CapStyle</cite> for solid lines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_joinstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_joinstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solid_joinstyle</span></code></a></p></td>
+<td><p>Return the <cite>.JoinStyle</cite> for solid lines.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_tightbbox" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_tightbbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code></a></p></td>
+<td><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_transform" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code></a></p></td>
+<td><p>Return the <cite>.Transform</cite> instance used by this artist.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_transformed_clip_path_and_affine" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_transformed_clip_path_and_affine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transformed_clip_path_and_affine</span></code></a></p></td>
+<td><p>Return the clip path with the non-affine part of its transformation applied, and the remaining affine part of its transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_url" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a></p></td>
+<td><p>Return the url.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_visible" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code></a></p></td>
+<td><p>Return the visibility.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_window_extent" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_window_extent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code></a></p></td>
+<td><p>Get the artist's bounding box in display space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_xdata" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_xdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xdata</span></code></a></p></td>
+<td><p>Return the xdata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_xydata" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_xydata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xydata</span></code></a></p></td>
+<td><p>Return the <em>xy</em> data as a Nx2 numpy array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ydata" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ydata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ydata</span></code></a></p></td>
+<td><p>Return the ydata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_zorder" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zorder</span></code></a></p></td>
+<td><p>Return the artist's zorder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.have_units" title="pipeline.hsd.tasks.common.rasterutil.Line2D.have_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">have_units</span></code></a></p></td>
+<td><p>Return whether units are set on any axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.is_dashed" title="pipeline.hsd.tasks.common.rasterutil.Line2D.is_dashed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_dashed</span></code></a></p></td>
+<td><p>Return whether line has a dashed linestyle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.is_transform_set" title="pipeline.hsd.tasks.common.rasterutil.Line2D.is_transform_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transform_set</span></code></a></p></td>
+<td><p>Return whether the Artist has an explicitly set transform.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pchanged" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pchanged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pchanged</span></code></a></p></td>
+<td><p>Call all of the registered callbacks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pick" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p></td>
+<td><p>Process a pick event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickable" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p></td>
+<td><p>Return whether the artist is pickable.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.properties" title="pipeline.hsd.tasks.common.rasterutil.Line2D.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a></p></td>
+<td><p>Return a dictionary of all the properties of the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">recache</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">recache_always</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove" title="pipeline.hsd.tasks.common.rasterutil.Line2D.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></p></td>
+<td><p>Remove the artist from the figure if possible.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code></a></p></td>
+<td><p>Remove a callback based on its observer id.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a></p></td>
+<td><p>Set multiple properties at once.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_aa" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_aa"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_aa</span></code></a></p></td>
+<td><p>Alias for <cite>set_antialiased</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_agg_filter" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_agg_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_agg_filter</span></code></a></p></td>
+<td><p>Set the agg filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_alpha" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alpha</span></code></a></p></td>
+<td><p>Set the alpha value used for blending - not supported on all backends.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_animated" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_animated</span></code></a></p></td>
+<td><p>Set whether the artist is intended to be used in an animation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_antialiased" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_antialiased"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_antialiased</span></code></a></p></td>
+<td><p>Set whether to use antialiased rendering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_c" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_c</span></code></a></p></td>
+<td><p>Alias for <cite>set_color</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_box" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_box</span></code></a></p></td>
+<td><p>Set the artist's clip <cite>.Bbox</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_on" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_on</span></code></a></p></td>
+<td><p>Set whether the artist uses clipping.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_path" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_path</span></code></a></p></td>
+<td><p>Set the artist's clip path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_color" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color</span></code></a></p></td>
+<td><p>Set the color of the line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_capstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_capstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dash_capstyle</span></code></a></p></td>
+<td><p>How to draw the end caps if the line is <cite>~Line2D.is_dashed</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_joinstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_joinstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dash_joinstyle</span></code></a></p></td>
+<td><p>How to join segments of the line if it <cite>~Line2D.is_dashed</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dashes</span></code></a></p></td>
+<td><p>Set the dash sequence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data</span></code></a></p></td>
+<td><p>Set the x and y data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_drawstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_drawstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_drawstyle</span></code></a></p></td>
+<td><p>Set the drawstyle of the plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ds" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ds</span></code></a></p></td>
+<td><p>Alias for <cite>set_drawstyle</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_figure" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_figure</span></code></a></p></td>
+<td><p>Set the <cite>.Figure</cite> instance the artist belongs to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_fillstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_fillstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fillstyle</span></code></a></p></td>
+<td><p>Set the marker fill style.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_gapcolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_gapcolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gapcolor</span></code></a></p></td>
+<td><p>Set a color to fill the gaps in the dashed line style.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_gid" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gid</span></code></a></p></td>
+<td><p>Set the (group) id for the artist.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_in_layout" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_in_layout</span></code></a></p></td>
+<td><p>Set if artist is to be included in layout calculations, E.g.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_label" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_label</span></code></a></p></td>
+<td><p>Set a label that will be displayed in the legend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_linestyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_linestyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linestyle</span></code></a></p></td>
+<td><p>Set the linestyle of the line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_linewidth" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_linewidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linewidth</span></code></a></p></td>
+<td><p>Set the line width in points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ls" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ls"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ls</span></code></a></p></td>
+<td><p>Alias for <cite>set_linestyle</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_lw" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_lw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lw</span></code></a></p></td>
+<td><p>Alias for <cite>set_linewidth</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_marker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_marker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_marker</span></code></a></p></td>
+<td><p>Set the line marker.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgecolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgecolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markeredgecolor</span></code></a></p></td>
+<td><p>Set the marker edge color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgewidth" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgewidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markeredgewidth</span></code></a></p></td>
+<td><p>Set the marker edge width in points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecolor" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecolor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markerfacecolor</span></code></a></p></td>
+<td><p>Set the marker face color.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecoloralt" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecoloralt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markerfacecoloralt</span></code></a></p></td>
+<td><p>Set the alternate marker face color.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markersize" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markersize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markersize</span></code></a></p></td>
+<td><p>Set the marker size in points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markevery" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markevery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_markevery</span></code></a></p></td>
+<td><p>Set the markevery property to subsample the plot when using markers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mec" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mec</span></code></a></p></td>
+<td><p>Alias for <cite>set_markeredgecolor</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mew" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mew"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mew</span></code></a></p></td>
+<td><p>Alias for <cite>set_markeredgewidth</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfc" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mfc</span></code></a></p></td>
+<td><p>Alias for <cite>set_markerfacecolor</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfcalt" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfcalt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mfcalt</span></code></a></p></td>
+<td><p>Alias for <cite>set_markerfacecoloralt</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mouseover" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mouseover</span></code></a></p></td>
+<td><p>Set whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ms" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ms</span></code></a></p></td>
+<td><p>Alias for <cite>set_markersize</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_path_effects" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_path_effects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code></a></p></td>
+<td><p>Set the path effects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a></p></td>
+<td><p>Set the event picker details for the line.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_pickradius" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_pickradius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pickradius</span></code></a></p></td>
+<td><p>Set the pick radius used for containment tests.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_rasterized" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code></a></p></td>
+<td><p>Force rasterized (bitmap) drawing for vector graphics output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_sketch_params" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code></a></p></td>
+<td><p>Set the sketch parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_snap" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code></a></p></td>
+<td><p>Set the snapping behavior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_capstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_capstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_solid_capstyle</span></code></a></p></td>
+<td><p>How to draw the end caps if the line is solid (not <cite>~Line2D.is_dashed</cite>)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_joinstyle" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_joinstyle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_solid_joinstyle</span></code></a></p></td>
+<td><p>How to join segments if the line is solid (not <cite>~Line2D.is_dashed</cite>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_transform" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code></a></p></td>
+<td><p>Set the artist transform.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_url" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_url</span></code></a></p></td>
+<td><p>Set the url for the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_visible" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_visible</span></code></a></p></td>
+<td><p>Set the artist's visibility.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_xdata" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_xdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_xdata</span></code></a></p></td>
+<td><p>Set the data array for x.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ydata" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ydata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ydata</span></code></a></p></td>
+<td><p>Set the data array for y.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_zorder" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code></a></p></td>
+<td><p>Set the zorder for the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.update" title="pipeline.hsd.tasks.common.rasterutil.Line2D.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a></p></td>
+<td><p>Update this artist's properties from the dict <em>props</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.update_from" title="pipeline.hsd.tasks.common.rasterutil.Line2D.update_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code></a></p></td>
+<td><p>Copy properties from <em>other</em> to self.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.axes" title="pipeline.hsd.tasks.common.rasterutil.Line2D.axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes</span></code></a></p></td>
+<td><p>The <cite>~.axes.Axes</cite> instance the artist resides in, or <em>None</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drawStyleKeys</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drawStyles</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fillStyles</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">filled_markers</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">lineStyles</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">markers</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.mouseover" title="pipeline.hsd.tasks.common.rasterutil.Line2D.mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></a></p></td>
+<td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickradius" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pickradius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickradius</span></code></a></p></td>
+<td><p>Return the pick radius used for containment tests.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.stale" title="pipeline.hsd.tasks.common.rasterutil.Line2D.stale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stale</span></code></a></p></td>
+<td><p>Whether the artist is 'stale' and needs to be re-drawn for the output to match the internal state of the artist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.sticky_edges" title="pipeline.hsd.tasks.common.rasterutil.Line2D.sticky_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sticky_edges</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> sticky edge lists for autoscaling.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zorder</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback">
+<span class="sig-name descname"><span class="pre">add_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback" title="Link to this definition"></a></dt>
+<dd><p>Add a callback function that will be called whenever one of the
+<cite>.Artist</cite>’s properties changes.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) –</p>
+<p>The callback function. It must have the signature:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">artist</span><span class="p">:</span> <span class="n">Artist</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</pre></div>
+</div>
+<p>where <em>artist</em> is the calling <cite>.Artist</cite>. Return values may exist
+but are ignored.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The observer id associated with the callback. This id can be
+used for removing the callback with <cite>.remove_callback</cite> later.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.axes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.axes" title="Link to this definition"></a></dt>
+<dd><p>The <cite>~.axes.Axes</cite> instance the artist resides in, or <em>None</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouseevent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.contains" title="Link to this definition"></a></dt>
+<dd><p>Test whether <em>mouseevent</em> occurred on the line.</p>
+<p>An event is deemed to have occurred “on” the line if it is less
+than <code class="docutils literal notranslate"><span class="pre">self.pickradius</span></code> (default: 5 points) away from it.  Use
+<cite>~.Line2D.get_pickradius</cite> or <cite>~.Line2D.set_pickradius</cite> to get or set
+the pick radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mouseevent</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul>
+<li><p><strong>contains</strong> (<em>bool</em>) – Whether any values are within the radius.</p></li>
+<li><p><strong>details</strong> (<em>dict</em>) – A dictionary <code class="docutils literal notranslate"><span class="pre">{'ind':</span> <span class="pre">pointlist}</span></code>, where <em>pointlist</em> is a
+list of points of the line that are within the pickradius around
+the event position.</p>
+<p>TODO: sort returned indices by distance</p>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.convert_xunits">
+<span class="sig-name descname"><span class="pre">convert_xunits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.convert_xunits" title="Link to this definition"></a></dt>
+<dd><p>Convert <em>x</em> using the unit type of the xaxis.</p>
+<p>If the artist is not contained in an Axes or if the xaxis does not
+have units, <em>x</em> itself is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.convert_yunits">
+<span class="sig-name descname"><span class="pre">convert_yunits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.convert_yunits" title="Link to this definition"></a></dt>
+<dd><p>Convert <em>y</em> using the unit type of the yaxis.</p>
+<p>If the artist is not contained in an Axes or if the yaxis does not
+have units, <em>y</em> itself is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.draw">
+<span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.draw" title="Link to this definition"></a></dt>
+<dd><p>Draw the Artist (and its children) using the given renderer.</p>
+<p>This has no effect if the artist is not visible (<cite>.Artist.get_visible</cite>
+returns False).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass.)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method is overridden in the Artist subclasses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.findobj">
+<span class="sig-name descname"><span class="pre">findobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.findobj" title="Link to this definition"></a></dt>
+<dd><p>Find artist objects.</p>
+<p>Recursively find all <cite>.Artist</cite> instances contained in the artist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>match</strong> – A filter criterion for the matches. This can be</p>
+<ul>
+<li><p><em>None</em>: Return all objects contained in artist.</p></li>
+<li><p>A function with signature <code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">match(artist:</span> <span class="pre">Artist)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code>.
+The result will only contain artists for which the function
+returns <em>True</em>.</p></li>
+<li><p>A class instance: e.g., <cite>.Line2D</cite>. The result will only contain
+artists of this class or its subclasses (<code class="docutils literal notranslate"><span class="pre">isinstance</span></code> check).</p></li>
+</ul>
+</li>
+<li><p><strong>include_self</strong> (<em>bool</em>) – Include <em>self</em> in the list to be checked for a match.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of <cite>.Artist</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data">
+<span class="sig-name descname"><span class="pre">format_cursor_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data" title="Link to this definition"></a></dt>
+<dd><p>Return a string representation of <em>data</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is intended to be overridden by artist subclasses.
+As an end-user of Matplotlib you will most likely not call this
+method yourself.</p>
+</div>
+<p>The default implementation converts ints and floats and arrays of ints
+and floats into a comma-separated string enclosed in square brackets,
+unless the artist has an associated colorbar, in which case scalar
+values are formatted using the colorbar’s formatter.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_aa">
+<span class="sig-name descname"><span class="pre">get_aa</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_aa" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_antialiased</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_agg_filter">
+<span class="sig-name descname"><span class="pre">get_agg_filter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_agg_filter" title="Link to this definition"></a></dt>
+<dd><p>Return filter function to be used for agg filter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_alpha">
+<span class="sig-name descname"><span class="pre">get_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_alpha" title="Link to this definition"></a></dt>
+<dd><p>Return the alpha value used for blending - not supported on all
+backends.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_animated">
+<span class="sig-name descname"><span class="pre">get_animated</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_animated" title="Link to this definition"></a></dt>
+<dd><p>Return whether the artist is animated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_antialiased">
+<span class="sig-name descname"><span class="pre">get_antialiased</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_antialiased"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_antialiased" title="Link to this definition"></a></dt>
+<dd><p>Return whether antialiased rendering is used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_bbox">
+<span class="sig-name descname"><span class="pre">get_bbox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_bbox" title="Link to this definition"></a></dt>
+<dd><p>Get the bounding box of this line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_c">
+<span class="sig-name descname"><span class="pre">get_c</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_c" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_color</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_children">
+<span class="sig-name descname"><span class="pre">get_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_children" title="Link to this definition"></a></dt>
+<dd><p>Return a list of the child <cite>.Artist</cite>s of this <cite>.Artist</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_box">
+<span class="sig-name descname"><span class="pre">get_clip_box</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_box" title="Link to this definition"></a></dt>
+<dd><p>Return the clipbox.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_on">
+<span class="sig-name descname"><span class="pre">get_clip_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_on" title="Link to this definition"></a></dt>
+<dd><p>Return whether the artist uses clipping.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_path">
+<span class="sig-name descname"><span class="pre">get_clip_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_clip_path" title="Link to this definition"></a></dt>
+<dd><p>Return the clip path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_color">
+<span class="sig-name descname"><span class="pre">get_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_color" title="Link to this definition"></a></dt>
+<dd><p>Return the line color.</p>
+<p>See also <cite>~.Line2D.set_color</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data">
+<span class="sig-name descname"><span class="pre">get_cursor_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data" title="Link to this definition"></a></dt>
+<dd><p>Return the cursor data for a given event.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is intended to be overridden by artist subclasses.
+As an end-user of Matplotlib you will most likely not call this
+method yourself.</p>
+</div>
+<p>Cursor data can be used by Artists to provide additional context
+information for a given event. The default implementation just returns
+<em>None</em>.</p>
+<p>Subclasses can override the method and return arbitrary data. However,
+when doing so, they must ensure that <cite>.format_cursor_data</cite> can convert
+the data to a string representation.</p>
+<p>The only current use case is displaying the z-value of an <cite>.AxesImage</cite>
+in the status bar of a plot window, while moving the mouse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.format_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_cursor_data</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_capstyle">
+<span class="sig-name descname"><span class="pre">get_dash_capstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_dash_capstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_capstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.CapStyle</cite> for dashed lines.</p>
+<p>See also <cite>~.Line2D.set_dash_capstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_joinstyle">
+<span class="sig-name descname"><span class="pre">get_dash_joinstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_dash_joinstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_dash_joinstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.JoinStyle</cite> for dashed lines.</p>
+<p>See also <cite>~.Line2D.set_dash_joinstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_data" title="Link to this definition"></a></dt>
+<dd><p>Return the line data as an <code class="docutils literal notranslate"><span class="pre">(xdata,</span> <span class="pre">ydata)</span></code> pair.</p>
+<p>If <em>orig</em> is <em>True</em>, return the original data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_drawstyle">
+<span class="sig-name descname"><span class="pre">get_drawstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_drawstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_drawstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the drawstyle.</p>
+<p>See also <cite>~.Line2D.set_drawstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ds">
+<span class="sig-name descname"><span class="pre">get_ds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ds" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_drawstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_figure">
+<span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_figure" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.Figure</cite> instance the artist belongs to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_fillstyle">
+<span class="sig-name descname"><span class="pre">get_fillstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_fillstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_fillstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the marker fill style.</p>
+<p>See also <cite>~.Line2D.set_fillstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_gapcolor">
+<span class="sig-name descname"><span class="pre">get_gapcolor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_gapcolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_gapcolor" title="Link to this definition"></a></dt>
+<dd><p>Return the line gapcolor.</p>
+<p>See also <cite>~.Line2D.set_gapcolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_gid">
+<span class="sig-name descname"><span class="pre">get_gid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_gid" title="Link to this definition"></a></dt>
+<dd><p>Return the group id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_in_layout">
+<span class="sig-name descname"><span class="pre">get_in_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_in_layout" title="Link to this definition"></a></dt>
+<dd><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout
+calculations.</p>
+<p>E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
+<cite>.Figure.tight_layout()</cite>, and
+<code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_label">
+<span class="sig-name descname"><span class="pre">get_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_label" title="Link to this definition"></a></dt>
+<dd><p>Return the label used for this artist in the legend.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_linestyle">
+<span class="sig-name descname"><span class="pre">get_linestyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_linestyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_linestyle" title="Link to this definition"></a></dt>
+<dd><p>Return the linestyle.</p>
+<p>See also <cite>~.Line2D.set_linestyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_linewidth">
+<span class="sig-name descname"><span class="pre">get_linewidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_linewidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_linewidth" title="Link to this definition"></a></dt>
+<dd><p>Return the linewidth in points.</p>
+<p>See also <cite>~.Line2D.set_linewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ls">
+<span class="sig-name descname"><span class="pre">get_ls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ls" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_linestyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_lw">
+<span class="sig-name descname"><span class="pre">get_lw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_lw" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_linewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_marker">
+<span class="sig-name descname"><span class="pre">get_marker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_marker" title="Link to this definition"></a></dt>
+<dd><p>Return the line marker.</p>
+<p>See also <cite>~.Line2D.set_marker</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgecolor">
+<span class="sig-name descname"><span class="pre">get_markeredgecolor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markeredgecolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgecolor" title="Link to this definition"></a></dt>
+<dd><p>Return the marker edge color.</p>
+<p>See also <cite>~.Line2D.set_markeredgecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgewidth">
+<span class="sig-name descname"><span class="pre">get_markeredgewidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markeredgewidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markeredgewidth" title="Link to this definition"></a></dt>
+<dd><p>Return the marker edge width in points.</p>
+<p>See also <cite>~.Line2D.set_markeredgewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecolor">
+<span class="sig-name descname"><span class="pre">get_markerfacecolor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markerfacecolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecolor" title="Link to this definition"></a></dt>
+<dd><p>Return the marker face color.</p>
+<p>See also <cite>~.Line2D.set_markerfacecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecoloralt">
+<span class="sig-name descname"><span class="pre">get_markerfacecoloralt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markerfacecoloralt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markerfacecoloralt" title="Link to this definition"></a></dt>
+<dd><p>Return the alternate marker face color.</p>
+<p>See also <cite>~.Line2D.set_markerfacecoloralt</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markersize">
+<span class="sig-name descname"><span class="pre">get_markersize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markersize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markersize" title="Link to this definition"></a></dt>
+<dd><p>Return the marker size in points.</p>
+<p>See also <cite>~.Line2D.set_markersize</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_markevery">
+<span class="sig-name descname"><span class="pre">get_markevery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_markevery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_markevery" title="Link to this definition"></a></dt>
+<dd><p>Return the markevery setting for marker subsampling.</p>
+<p>See also <cite>~.Line2D.set_markevery</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mec">
+<span class="sig-name descname"><span class="pre">get_mec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mec" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_markeredgecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mew">
+<span class="sig-name descname"><span class="pre">get_mew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mew" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_markeredgewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfc">
+<span class="sig-name descname"><span class="pre">get_mfc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfc" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_markerfacecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfcalt">
+<span class="sig-name descname"><span class="pre">get_mfcalt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mfcalt" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_markerfacecoloralt</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_mouseover">
+<span class="sig-name descname"><span class="pre">get_mouseover</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_mouseover" title="Link to this definition"></a></dt>
+<dd><p>Return whether this artist is queried for custom context information
+when the mouse cursor moves over it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ms">
+<span class="sig-name descname"><span class="pre">get_ms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ms" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>get_markersize</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_path">
+<span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_path" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>~matplotlib.path.Path</cite> associated with this line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker">
+<span class="sig-name descname"><span class="pre">get_picker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker" title="Link to this definition"></a></dt>
+<dd><p>Return the picking behavior of the artist.</p>
+<p>The possible values are described in <cite>.set_picker</cite>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickable" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pick" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_pickradius">
+<span class="sig-name descname"><span class="pre">get_pickradius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_pickradius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_pickradius" title="Link to this definition"></a></dt>
+<dd><p>Return the pick radius used for containment tests.</p>
+<p>See <cite>.contains</cite> for more details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_rasterized">
+<span class="sig-name descname"><span class="pre">get_rasterized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_rasterized" title="Link to this definition"></a></dt>
+<dd><p>Return whether the artist is to be rasterized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_sketch_params">
+<span class="sig-name descname"><span class="pre">get_sketch_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_sketch_params" title="Link to this definition"></a></dt>
+<dd><p>Return the sketch parameters for the artist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A 3-tuple with the following elements:</p>
+<ul class="simple">
+<li><p><em>scale</em>: The amplitude of the wiggle perpendicular to the
+source line.</p></li>
+<li><p><em>length</em>: The length of the wiggle along the line.</p></li>
+<li><p><em>randomness</em>: The scale factor by which the length is
+shrunken or expanded.</p></li>
+</ul>
+<p>Returns <em>None</em> if no sketch parameters were set.</p>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_snap">
+<span class="sig-name descname"><span class="pre">get_snap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_snap" title="Link to this definition"></a></dt>
+<dd><p>Return the snap setting.</p>
+<p>See <cite>.set_snap</cite> for details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_capstyle">
+<span class="sig-name descname"><span class="pre">get_solid_capstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_solid_capstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_capstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.CapStyle</cite> for solid lines.</p>
+<p>See also <cite>~.Line2D.set_solid_capstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_joinstyle">
+<span class="sig-name descname"><span class="pre">get_solid_joinstyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_solid_joinstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_solid_joinstyle" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.JoinStyle</cite> for solid lines.</p>
+<p>See also <cite>~.Line2D.set_solid_joinstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_tightbbox">
+<span class="sig-name descname"><span class="pre">get_tightbbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_tightbbox" title="Link to this definition"></a></dt>
+<dd><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass) – renderer that will be used to draw the figures (i.e.
+<code class="docutils literal notranslate"><span class="pre">fig.canvas.get_renderer()</span></code>)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>.Bbox</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_transform">
+<span class="sig-name descname"><span class="pre">get_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_transform" title="Link to this definition"></a></dt>
+<dd><p>Return the <cite>.Transform</cite> instance used by this artist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_transformed_clip_path_and_affine">
+<span class="sig-name descname"><span class="pre">get_transformed_clip_path_and_affine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_transformed_clip_path_and_affine" title="Link to this definition"></a></dt>
+<dd><p>Return the clip path with the non-affine part of its
+transformation applied, and the remaining affine part of its
+transformation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_url">
+<span class="sig-name descname"><span class="pre">get_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_url" title="Link to this definition"></a></dt>
+<dd><p>Return the url.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_visible">
+<span class="sig-name descname"><span class="pre">get_visible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_visible" title="Link to this definition"></a></dt>
+<dd><p>Return the visibility.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_window_extent">
+<span class="sig-name descname"><span class="pre">get_window_extent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_window_extent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_window_extent" title="Link to this definition"></a></dt>
+<dd><p>Get the artist’s bounding box in display space.</p>
+<p>The bounding box’ width and height are nonnegative.</p>
+<p>Subclasses should override for inclusion in the bounding box
+“tight” calculation. Default is to return an empty bounding
+box at 0, 0.</p>
+<p>Be careful when using this function, the results will not update
+if the artist window extent of the artist changes.  The extent
+can change due to any changes in the transform stack, such as
+changing the axes limits, the figure size, or the canvas used
+(as is done when saving a figure).  This can lead to unexpected
+behavior where interactive figures will look fine on the screen,
+but will save incorrectly.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_xdata">
+<span class="sig-name descname"><span class="pre">get_xdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_xdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_xdata" title="Link to this definition"></a></dt>
+<dd><p>Return the xdata.</p>
+<p>If <em>orig</em> is <em>True</em>, return the original data, else the
+processed data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_xydata">
+<span class="sig-name descname"><span class="pre">get_xydata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_xydata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_xydata" title="Link to this definition"></a></dt>
+<dd><p>Return the <em>xy</em> data as a Nx2 numpy array.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_ydata">
+<span class="sig-name descname"><span class="pre">get_ydata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.get_ydata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_ydata" title="Link to this definition"></a></dt>
+<dd><p>Return the ydata.</p>
+<p>If <em>orig</em> is <em>True</em>, return the original data, else the
+processed data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.get_zorder">
+<span class="sig-name descname"><span class="pre">get_zorder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_zorder" title="Link to this definition"></a></dt>
+<dd><p>Return the artist’s zorder.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.have_units">
+<span class="sig-name descname"><span class="pre">have_units</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.have_units" title="Link to this definition"></a></dt>
+<dd><p>Return whether units are set on any axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.is_dashed">
+<span class="sig-name descname"><span class="pre">is_dashed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.is_dashed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.is_dashed" title="Link to this definition"></a></dt>
+<dd><p>Return whether line has a dashed linestyle.</p>
+<p>A custom linestyle is assumed to be dashed, we do not inspect the
+<code class="docutils literal notranslate"><span class="pre">onoffseq</span></code> directly.</p>
+<p>See also <cite>~.Line2D.set_linestyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.is_transform_set">
+<span class="sig-name descname"><span class="pre">is_transform_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.is_transform_set" title="Link to this definition"></a></dt>
+<dd><p>Return whether the Artist has an explicitly set transform.</p>
+<p>This is <em>True</em> after <cite>.set_transform</cite> has been called.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.mouseover">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mouseover</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.mouseover" title="Link to this definition"></a></dt>
+<dd><p>Return whether this artist is queried for custom context information
+when the mouse cursor moves over it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.pchanged">
+<span class="sig-name descname"><span class="pre">pchanged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pchanged" title="Link to this definition"></a></dt>
+<dd><p>Call all of the registered callbacks.</p>
+<p>This function is triggered internally when a property is changed.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callback</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.pick">
+<span class="sig-name descname"><span class="pre">pick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouseevent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pick" title="Link to this definition"></a></dt>
+<dd><p>Process a pick event.</p>
+<p>Each child artist will fire a pick event if <em>mouseevent</em> is over
+the artist and the artist has picker set.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickable" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.pickable">
+<span class="sig-name descname"><span class="pre">pickable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickable" title="Link to this definition"></a></dt>
+<dd><p>Return whether the artist is pickable.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pick" title="pipeline.hsd.tasks.common.rasterutil.Line2D.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.pickradius">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pickradius</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.pickradius" title="Link to this definition"></a></dt>
+<dd><p>Return the pick radius used for containment tests.</p>
+<p>See <cite>.contains</cite> for more details.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.properties">
+<span class="sig-name descname"><span class="pre">properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.properties" title="Link to this definition"></a></dt>
+<dd><p>Return a dictionary of all the properties of the artist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove the artist from the figure if possible.</p>
+<p>The effect will not be visible until the figure is redrawn, e.g.,
+with <cite>.FigureCanvasBase.draw_idle</cite>.  Call <cite>~.axes.Axes.relim</cite> to
+update the axes limits if desired.</p>
+<p>Note: <cite>~.axes.Axes.relim</cite> will not see collections even if the
+collection was added to the axes with <em>autolim</em> = True.</p>
+<p>Note: there is no support for removing the artist’s legend entry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback">
+<span class="sig-name descname"><span class="pre">remove_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.remove_callback" title="Link to this definition"></a></dt>
+<dd><p>Remove a callback based on its observer id.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback" title="pipeline.hsd.tasks.common.rasterutil.Line2D.add_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callback</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_filter=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">animated=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialiased=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_box=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_on=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_path=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dash_capstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dash_joinstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dashes=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drawstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapcolor=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gid=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_layout=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markeredgecolor=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markeredgewidth=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markerfacecolor=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markerfacecoloralt=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markevery=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mouseover=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_effects=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pickradius=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rasterized=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sketch_params=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snap=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_capstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_joinstyle=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdata=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata=&lt;UNSET&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zorder=&lt;UNSET&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set" title="Link to this definition"></a></dt>
+<dd><p>Set multiple properties at once.</p>
+<p>Supported properties are</p>
+<dl class="simple">
+<dt>Properties:</dt><dd><p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
+alpha: scalar or None
+animated: bool
+antialiased: bool
+clip_box: <cite>.Bbox</cite>
+clip_on: bool
+clip_path: Patch or (Path, Transform) or None
+color: color
+dash_capstyle: <cite>.CapStyle</cite> or {‘butt’, ‘projecting’, ‘round’}
+dash_joinstyle: <cite>.JoinStyle</cite> or {‘miter’, ‘round’, ‘bevel’}
+dashes: sequence of floats (on/off ink in points) or (None, None)
+data: (2, N) array or two 1D arrays
+drawstyle: {‘default’, ‘steps’, ‘steps-pre’, ‘steps-mid’, ‘steps-post’}, default: ‘default’
+figure: <cite>.Figure</cite>
+fillstyle: {‘full’, ‘left’, ‘right’, ‘bottom’, ‘top’, ‘none’}
+gapcolor: color or None
+gid: str
+in_layout: bool
+label: object
+linestyle: {‘-’, ‘–’, ‘-.’, ‘:’, ‘’, (offset, on-off-seq), …}
+linewidth: float
+marker: marker style string, <cite>~.path.Path</cite> or <cite>~.markers.MarkerStyle</cite>
+markeredgecolor: color
+markeredgewidth: float
+markerfacecolor: color
+markerfacecoloralt: color
+markersize: float
+markevery: None or int or (int, int) or slice or list[int] or float or (float, float) or list[bool]
+mouseover: bool
+path_effects: <cite>.AbstractPathEffect</cite>
+picker: float or callable[[Artist, Event], tuple[bool, dict]]
+pickradius: unknown
+rasterized: bool
+sketch_params: (scale: float, length: float, randomness: float)
+snap: bool or None
+solid_capstyle: <cite>.CapStyle</cite> or {‘butt’, ‘projecting’, ‘round’}
+solid_joinstyle: <cite>.JoinStyle</cite> or {‘miter’, ‘round’, ‘bevel’}
+transform: unknown
+url: str
+visible: bool
+xdata: 1D array
+ydata: 1D array
+zorder: float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_aa">
+<span class="sig-name descname"><span class="pre">set_aa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_aa" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_antialiased</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_agg_filter">
+<span class="sig-name descname"><span class="pre">set_agg_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_agg_filter" title="Link to this definition"></a></dt>
+<dd><p>Set the agg filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter_func</strong> (<em>callable</em>) – A filter function, which takes a (m, n, depth) float array
+and a dpi value, and returns a (m, n, depth) array and two
+offsets from the bottom left corner of the image</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_alpha">
+<span class="sig-name descname"><span class="pre">set_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_alpha" title="Link to this definition"></a></dt>
+<dd><p>Set the alpha value used for blending - not supported on all backends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> (<em>scalar or None</em>) – <em>alpha</em> must be within the 0-1 range, inclusive.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_animated">
+<span class="sig-name descname"><span class="pre">set_animated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_animated" title="Link to this definition"></a></dt>
+<dd><p>Set whether the artist is intended to be used in an animation.</p>
+<p>If True, the artist is excluded from regular drawing of the figure.
+You have to call <cite>.Figure.draw_artist</cite> / <cite>.Axes.draw_artist</cite>
+explicitly on the artist. This approach is used to speed up animations
+using blitting.</p>
+<p>See also <cite>matplotlib.animation</cite> and
+<span class="xref std std-doc">/tutorials/advanced/blitting</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_antialiased">
+<span class="sig-name descname"><span class="pre">set_antialiased</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_antialiased"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_antialiased" title="Link to this definition"></a></dt>
+<dd><p>Set whether to use antialiased rendering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_c">
+<span class="sig-name descname"><span class="pre">set_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_c" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_color</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_box">
+<span class="sig-name descname"><span class="pre">set_clip_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clipbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_box" title="Link to this definition"></a></dt>
+<dd><p>Set the artist’s clip <cite>.Bbox</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clipbox</strong> (<cite>.Bbox</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_on">
+<span class="sig-name descname"><span class="pre">set_clip_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_on" title="Link to this definition"></a></dt>
+<dd><p>Set whether the artist uses clipping.</p>
+<p>When False artists will be visible outside of the Axes which
+can lead to unexpected results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_path">
+<span class="sig-name descname"><span class="pre">set_clip_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_clip_path" title="Link to this definition"></a></dt>
+<dd><p>Set the artist’s clip path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<cite>.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
+well. If <em>None</em>, a previously set clip path is removed.</p></li>
+<li><p><strong>transform</strong> (<cite>~matplotlib.transforms.Transform</cite>, optional) – Only used if <em>path</em> is a <cite>.Path</cite>, in which case the given <cite>.Path</cite>
+is converted to a <cite>.TransformedPath</cite> using <em>transform</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>For efficiency, if <em>path</em> is a <cite>.Rectangle</cite> this method will set the
+clipping box to the corresponding rectangle and set the clipping path
+to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>For technical reasons (support of <cite>~.Artist.set</cite>), a tuple
+(<em>path</em>, <em>transform</em>) is also accepted as a single positional
+parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_color">
+<span class="sig-name descname"><span class="pre">set_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_color" title="Link to this definition"></a></dt>
+<dd><p>Set the color of the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>color</strong> (<em>color</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_capstyle">
+<span class="sig-name descname"><span class="pre">set_dash_capstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_dash_capstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_capstyle" title="Link to this definition"></a></dt>
+<dd><p>How to draw the end caps if the line is <cite>~Line2D.is_dashed</cite>.</p>
+<p>The default capstyle is <a href="#id1"><span class="problematic" id="id2">:rc:`lines.dash_capstyle`</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<cite>.CapStyle</cite> or {‘butt’, ‘projecting’, ‘round’})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_joinstyle">
+<span class="sig-name descname"><span class="pre">set_dash_joinstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_dash_joinstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dash_joinstyle" title="Link to this definition"></a></dt>
+<dd><p>How to join segments of the line if it <cite>~Line2D.is_dashed</cite>.</p>
+<p>The default joinstyle is <a href="#id3"><span class="problematic" id="id4">:rc:`lines.dash_joinstyle`</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<cite>.JoinStyle</cite> or {‘miter’, ‘round’, ‘bevel’})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes">
+<span class="sig-name descname"><span class="pre">set_dashes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_dashes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes" title="Link to this definition"></a></dt>
+<dd><p>Set the dash sequence.</p>
+<p>The dash sequence is a sequence of floats of even length describing
+the length of dashes and spaces in points.</p>
+<p>For example, (5, 2, 1, 2) describes a sequence of 5 point and 1 point
+dashes separated by 2 point spaces.</p>
+<p>See also <cite>~.Line2D.set_gapcolor</cite>, which allows those spaces to be
+filled with a color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>sequence of floats (on/off ink in points) or (None, None)</em>) – If <em>seq</em> is empty or <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code>, the linestyle will be set
+to solid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_data">
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_data" title="Link to this definition"></a></dt>
+<dd><p>Set the x and y data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*args</strong> (<em>(2, N) array or two 1D arrays</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_drawstyle">
+<span class="sig-name descname"><span class="pre">set_drawstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drawstyle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_drawstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_drawstyle" title="Link to this definition"></a></dt>
+<dd><p>Set the drawstyle of the plot.</p>
+<p>The drawstyle determines how the points are connected.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>drawstyle</strong> (<em>{‘default’, ‘steps’, ‘steps-pre’, ‘steps-mid’, ‘steps-post’}, default: ‘default’</em>) – For ‘default’, the points are connected with straight lines.</p>
+<p>The steps variants connect the points with step-like lines,
+i.e. horizontal lines with vertical steps. They differ in the
+location of the step:</p>
+<ul class="simple">
+<li><p>‘steps-pre’: The step is at the beginning of the line segment,
+i.e. the line will be at the y-value of point to the right.</p></li>
+<li><p>‘steps-mid’: The step is halfway between the points.</p></li>
+<li><p>‘steps-post: The step is at the end of the line segment,
+i.e. the line will be at the y-value of the point to the left.</p></li>
+<li><p>‘steps’ is equal to ‘steps-pre’ and is maintained for
+backward-compatibility.</p></li>
+</ul>
+<p>For examples see <span class="xref std std-doc">/gallery/lines_bars_and_markers/step_demo</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ds">
+<span class="sig-name descname"><span class="pre">set_ds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drawstyle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ds" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_drawstyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_figure">
+<span class="sig-name descname"><span class="pre">set_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_figure" title="Link to this definition"></a></dt>
+<dd><p>Set the <cite>.Figure</cite> instance the artist belongs to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fig</strong> (<cite>.Figure</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_fillstyle">
+<span class="sig-name descname"><span class="pre">set_fillstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_fillstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_fillstyle" title="Link to this definition"></a></dt>
+<dd><p>Set the marker fill style.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fs</strong> (<em>{‘full’, ‘left’, ‘right’, ‘bottom’, ‘top’, ‘none’}</em>) – Possible values:</p>
+<ul class="simple">
+<li><p>‘full’: Fill the whole marker with the <em>markerfacecolor</em>.</p></li>
+<li><p>‘left’, ‘right’, ‘bottom’, ‘top’: Fill the marker half at
+the given side with the <em>markerfacecolor</em>. The other
+half of the marker is filled with <em>markerfacecoloralt</em>.</p></li>
+<li><p>‘none’: No filling.</p></li>
+</ul>
+<p>For examples see <span class="xref std std-ref">marker_fill_styles</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_gapcolor">
+<span class="sig-name descname"><span class="pre">set_gapcolor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gapcolor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_gapcolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_gapcolor" title="Link to this definition"></a></dt>
+<dd><p>Set a color to fill the gaps in the dashed line style.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Striped lines are created by drawing two interleaved dashed lines.
+There can be overlaps between those two, which may result in
+artifacts when using transparency.</p>
+<p>This functionality is experimental and may change.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gapcolor</strong> (<em>color or None</em>) – The color with which to fill the gaps. If None, the gaps are
+unfilled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_gid">
+<span class="sig-name descname"><span class="pre">set_gid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_gid" title="Link to this definition"></a></dt>
+<dd><p>Set the (group) id for the artist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gid</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_in_layout">
+<span class="sig-name descname"><span class="pre">set_in_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_in_layout" title="Link to this definition"></a></dt>
+<dd><p>Set if artist is to be included in layout calculations,
+E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
+<cite>.Figure.tight_layout()</cite>, and
+<code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>in_layout</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_label">
+<span class="sig-name descname"><span class="pre">set_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_label" title="Link to this definition"></a></dt>
+<dd><p>Set a label that will be displayed in the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>object</em>) – <em>s</em> will be converted to a string by calling <cite>str</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_linestyle">
+<span class="sig-name descname"><span class="pre">set_linestyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_linestyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_linestyle" title="Link to this definition"></a></dt>
+<dd><p>Set the linestyle of the line.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ls</strong> (<em>{‘-’, ‘–’, ‘-.’, ‘:’, ‘’, (offset, on-off-seq), …}</em>) – Possible values:</p>
+<ul>
+<li><p>A string:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>linestyle</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'-'</span></code> or <code class="docutils literal notranslate"><span class="pre">'solid'</span></code></p></td>
+<td><p>solid line</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'--'</span></code> or  <code class="docutils literal notranslate"><span class="pre">'dashed'</span></code></p></td>
+<td><p>dashed line</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'-.'</span></code> or  <code class="docutils literal notranslate"><span class="pre">'dashdot'</span></code></p></td>
+<td><p>dash-dotted line</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">':'</span></code> or <code class="docutils literal notranslate"><span class="pre">'dotted'</span></code></p></td>
+<td><p>dotted line</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'none'</span></code>, <code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'</span> <span class="pre">'</span></code>, or <code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p>draw nothing</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p>Alternatively a dash tuple of the following form can be
+provided:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">onoffseq</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">onoffseq</span></code> is an even length tuple of on and off ink
+in points. See also <a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes" title="pipeline.hsd.tasks.common.rasterutil.Line2D.set_dashes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_dashes()</span></code></a>.</p>
+</li>
+</ul>
+<p>For examples see <span class="xref std std-doc">/gallery/lines_bars_and_markers/linestyles</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_linewidth">
+<span class="sig-name descname"><span class="pre">set_linewidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_linewidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_linewidth" title="Link to this definition"></a></dt>
+<dd><p>Set the line width in points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>w</strong> (<em>float</em>) – Line width, in points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ls">
+<span class="sig-name descname"><span class="pre">set_ls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ls" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_linestyle</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_lw">
+<span class="sig-name descname"><span class="pre">set_lw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_lw" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_linewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_marker">
+<span class="sig-name descname"><span class="pre">set_marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_marker" title="Link to this definition"></a></dt>
+<dd><p>Set the line marker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>marker</strong> (marker style string, <cite>~.path.Path</cite> or <cite>~.markers.MarkerStyle</cite>) – See <cite>~matplotlib.markers</cite> for full description of possible
+arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgecolor">
+<span class="sig-name descname"><span class="pre">set_markeredgecolor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markeredgecolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgecolor" title="Link to this definition"></a></dt>
+<dd><p>Set the marker edge color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ec</strong> (<em>color</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgewidth">
+<span class="sig-name descname"><span class="pre">set_markeredgewidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ew</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markeredgewidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markeredgewidth" title="Link to this definition"></a></dt>
+<dd><p>Set the marker edge width in points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ew</strong> (<em>float</em>) – Marker edge width, in points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecolor">
+<span class="sig-name descname"><span class="pre">set_markerfacecolor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markerfacecolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecolor" title="Link to this definition"></a></dt>
+<dd><p>Set the marker face color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fc</strong> (<em>color</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecoloralt">
+<span class="sig-name descname"><span class="pre">set_markerfacecoloralt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markerfacecoloralt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markerfacecoloralt" title="Link to this definition"></a></dt>
+<dd><p>Set the alternate marker face color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fc</strong> (<em>color</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markersize">
+<span class="sig-name descname"><span class="pre">set_markersize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markersize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markersize" title="Link to this definition"></a></dt>
+<dd><p>Set the marker size in points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sz</strong> (<em>float</em>) – Marker size, in points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_markevery">
+<span class="sig-name descname"><span class="pre">set_markevery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">every</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_markevery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_markevery" title="Link to this definition"></a></dt>
+<dd><p>Set the markevery property to subsample the plot when using markers.</p>
+<p>e.g., if <code class="docutils literal notranslate"><span class="pre">every=5</span></code>, every 5-th marker will be plotted.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>every</strong> (<em>None or int or (int, int) or slice or list[int] or float or (float, float) or list[bool]</em>) – Which markers to plot.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">every=None</span></code>: every point will be plotted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=N</span></code>: every N-th marker will be plotted starting with
+marker 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=(start,</span> <span class="pre">N)</span></code>: every N-th marker, starting at index
+<em>start</em>, will be plotted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=slice(start,</span> <span class="pre">end,</span> <span class="pre">N)</span></code>: every N-th marker, starting at
+index <em>start</em>, up to but not including index <em>end</em>, will be
+plotted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=[i,</span> <span class="pre">j,</span> <span class="pre">m,</span> <span class="pre">...]</span></code>: only markers at the given indices
+will be plotted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=[True,</span> <span class="pre">False,</span> <span class="pre">True,</span> <span class="pre">...]</span></code>: only positions that are True
+will be plotted. The list must have the same length as the data
+points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=0.1</span></code>, (i.e. a float): markers will be spaced at
+approximately equal visual distances along the line; the distance
+along the line between markers is determined by multiplying the
+display-coordinate distance of the axes bounding-box diagonal
+by the value of <em>every</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">every=(0.5,</span> <span class="pre">0.1)</span></code> (i.e. a length-2 tuple of float): similar
+to <code class="docutils literal notranslate"><span class="pre">every=0.1</span></code> but the first marker will be offset along the
+line by 0.5 multiplied by the
+display-coordinate-diagonal-distance along the line.</p></li>
+</ul>
+<p>For examples see
+<span class="xref std std-doc">/gallery/lines_bars_and_markers/markevery_demo</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Setting <em>markevery</em> will still only draw markers at actual data points.
+While the float argument form aims for uniform visual spacing, it has
+to coerce from the ideal spacing to the nearest available data point.
+Depending on the number and distribution of data points, the result
+may still not look evenly spaced.</p>
+<p>When using a start offset to specify the first marker, the offset will
+be from the first data point which may be different from the first
+the visible data point if the plot is zoomed in.</p>
+<p>If zooming in on a plot when using float arguments then the actual
+data points that have markers will change because the distance between
+markers is always determined from the display-coordinates
+axes-bounding-box-diagonal regardless of the actual axes data limits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mec">
+<span class="sig-name descname"><span class="pre">set_mec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mec" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_markeredgecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mew">
+<span class="sig-name descname"><span class="pre">set_mew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ew</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mew" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_markeredgewidth</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfc">
+<span class="sig-name descname"><span class="pre">set_mfc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfc" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_markerfacecolor</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfcalt">
+<span class="sig-name descname"><span class="pre">set_mfcalt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mfcalt" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_markerfacecoloralt</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_mouseover">
+<span class="sig-name descname"><span class="pre">set_mouseover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouseover</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_mouseover" title="Link to this definition"></a></dt>
+<dd><p>Set whether this artist is queried for custom context information when
+the mouse cursor moves over it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mouseover</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data" title="pipeline.hsd.tasks.common.rasterutil.Line2D.get_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ToolCursorPosition</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">NavigationToolbar2</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ms">
+<span class="sig-name descname"><span class="pre">set_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ms" title="Link to this definition"></a></dt>
+<dd><p>Alias for <cite>set_markersize</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_path_effects">
+<span class="sig-name descname"><span class="pre">set_path_effects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_effects</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_path_effects" title="Link to this definition"></a></dt>
+<dd><p>Set the path effects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path_effects</strong> (<cite>.AbstractPathEffect</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker">
+<span class="sig-name descname"><span class="pre">set_picker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_picker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_picker" title="Link to this definition"></a></dt>
+<dd><p>Set the event picker details for the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>float or callable[[Artist, Event], tuple[bool, dict]]</em>) – If a float, it is used as the pick radius in points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_pickradius">
+<span class="sig-name descname"><span class="pre">set_pickradius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickradius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_pickradius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_pickradius" title="Link to this definition"></a></dt>
+<dd><p>Set the pick radius used for containment tests.</p>
+<p>See <cite>.contains</cite> for more details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pickradius</strong> (<em>float</em>) – Pick radius, in points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_rasterized">
+<span class="sig-name descname"><span class="pre">set_rasterized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rasterized</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_rasterized" title="Link to this definition"></a></dt>
+<dd><p>Force rasterized (bitmap) drawing for vector graphics output.</p>
+<p>Rasterized drawing is not supported by all artists. If you try to
+enable this on an artist that does not support it, the command has no
+effect and a warning will be issued.</p>
+<p>This setting is ignored for pixel-based output.</p>
+<p>See also <span class="xref std std-doc">/gallery/misc/rasterization_demo</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rasterized</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_sketch_params">
+<span class="sig-name descname"><span class="pre">set_sketch_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">randomness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_sketch_params" title="Link to this definition"></a></dt>
+<dd><p>Set the sketch parameters.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>scale</strong> (<em>float, optional</em>) – The amplitude of the wiggle perpendicular to the source
+line, in pixels.  If scale is <cite>None</cite>, or not provided, no
+sketch filter will be provided.</p></li>
+<li><p><strong>length</strong> (<em>float, optional</em>) – The length of the wiggle along the line, in pixels
+(default 128.0)</p></li>
+<li><p><strong>randomness</strong> (<em>float, optional</em>) – The scale factor by which the length is shrunken or
+expanded (default 16.0)</p>
+<p>The PGF backend uses this argument as an RNG seed and not as
+described above. Using the same seed yields the same random shape.</p>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_snap">
+<span class="sig-name descname"><span class="pre">set_snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_snap" title="Link to this definition"></a></dt>
+<dd><p>Set the snapping behavior.</p>
+<p>Snapping aligns positions with the pixel grid, which results in
+clearer images. For example, if a black line of 1px width was
+defined at a position in between two pixels, the resulting image
+would contain the interpolated value of that line in the pixel grid,
+which would be a grey value on both adjacent pixel positions. In
+contrast, snapping will move the line to the nearest integer pixel
+value, so that the resulting image will really contain a 1px wide
+black line.</p>
+<p>Snapping is currently only supported by the Agg and MacOSX backends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>snap</strong> (<em>bool or None</em>) – Possible values:</p>
+<ul class="simple">
+<li><p><em>True</em>: Snap vertices to the nearest pixel center.</p></li>
+<li><p><em>False</em>: Do not modify vertex positions.</p></li>
+<li><p><em>None</em>: (auto) If the path contains only rectilinear line
+segments, round to the nearest pixel center.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_capstyle">
+<span class="sig-name descname"><span class="pre">set_solid_capstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_solid_capstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_capstyle" title="Link to this definition"></a></dt>
+<dd><p>How to draw the end caps if the line is solid (not <cite>~Line2D.is_dashed</cite>)</p>
+<p>The default capstyle is <a href="#id5"><span class="problematic" id="id6">:rc:`lines.solid_capstyle`</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<cite>.CapStyle</cite> or {‘butt’, ‘projecting’, ‘round’})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_joinstyle">
+<span class="sig-name descname"><span class="pre">set_solid_joinstyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_solid_joinstyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_solid_joinstyle" title="Link to this definition"></a></dt>
+<dd><p>How to join segments if the line is solid (not <cite>~Line2D.is_dashed</cite>).</p>
+<p>The default joinstyle is <a href="#id7"><span class="problematic" id="id8">:rc:`lines.solid_joinstyle`</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<cite>.JoinStyle</cite> or {‘miter’, ‘round’, ‘bevel’})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_transform">
+<span class="sig-name descname"><span class="pre">set_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_transform" title="Link to this definition"></a></dt>
+<dd><p>Set the artist transform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<cite>.Transform</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_url">
+<span class="sig-name descname"><span class="pre">set_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_url" title="Link to this definition"></a></dt>
+<dd><p>Set the url for the artist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_visible">
+<span class="sig-name descname"><span class="pre">set_visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_visible" title="Link to this definition"></a></dt>
+<dd><p>Set the artist’s visibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_xdata">
+<span class="sig-name descname"><span class="pre">set_xdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_xdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_xdata" title="Link to this definition"></a></dt>
+<dd><p>Set the data array for x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>1D array</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_ydata">
+<span class="sig-name descname"><span class="pre">set_ydata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.set_ydata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_ydata" title="Link to this definition"></a></dt>
+<dd><p>Set the data array for y.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> (<em>1D array</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.set_zorder">
+<span class="sig-name descname"><span class="pre">set_zorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.set_zorder" title="Link to this definition"></a></dt>
+<dd><p>Set the zorder for the artist.  Artists with lower zorder
+values are drawn first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>level</strong> (<em>float</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.stale">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stale</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.stale" title="Link to this definition"></a></dt>
+<dd><p>Whether the artist is ‘stale’ and needs to be re-drawn for the output
+to match the internal state of the artist.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.sticky_edges">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sticky_edges</span></span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.sticky_edges" title="Link to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> sticky edge lists for autoscaling.</p>
+<p>When performing autoscaling, if a data limit coincides with a value in
+the corresponding sticky_edges list, then no margin will be added–the
+view limit “sticks” to the edge. A typical use case is histograms,
+where one usually expects no margin on the bottom edge (0) of the
+histogram.</p>
+<p>Moreover, margin expansion “bumps” against sticky edges and cannot
+cross them.  For example, if the upper data limit is 1.0, the upper
+view limit computed by simple margin application is 1.2, but there is a
+sticky edge at 1.1, then the actual upper view limit will be 1.1.</p>
+<p>This attribute cannot be assigned to; however, the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>
+lists can be modified in place as needed.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">artist</span><span class="o">.</span><span class="n">sticky_edges</span><span class="o">.</span><span class="n">x</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">artist</span><span class="o">.</span><span class="n">sticky_edges</span><span class="o">.</span><span class="n">y</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">props</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.update" title="Link to this definition"></a></dt>
+<dd><p>Update this artist’s properties from the dict <em>props</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>props</strong> (<em>dict</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsd.tasks.common.rasterutil.Line2D.update_from">
+<span class="sig-name descname"><span class="pre">update_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/lines.html#Line2D.update_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.common.rasterutil.Line2D.update_from" title="Link to this definition"></a></dt>
+<dd><p>Copy properties from <em>other</em> to self.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.hsd.tasks.common.rasterutil.ImageMagickWriter.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.common.rasterutil.ImageMagickWriter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.common.rasterutil.MetaDataSet.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.common.rasterutil.MetaDataSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

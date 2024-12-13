@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,60 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_setmodels">
-<span id="pipeline-hif-cli-hif-setmodels"></span><h1>pipeline.hif.cli.hif_setmodels<a class="headerlink" href="#module-pipeline.hif.cli.hif_setmodels" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-setmodels">
+<h1>pipeline.hif.cli.hif_setmodels<a class="headerlink" href="#pipeline-hif-cli-hif-setmodels" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_setmodels">
+<span class="sig-name descname"><span class="pre">hif_setmodels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normfluxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebychan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_setmodels.html#hif_setmodels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_setmodels" title="Link to this definition"></a></dt>
+<dd><p>Set calibrator source models</p>
+<p>Set model fluxes values for calibrator reference and transfer sources using lookup
+values. By default the reference sources are the flux calibrators and the transfer
+sources are the bandpass, phase, and check source calibrators. Reference sources
+which are also in the transfer source list are removed from the transfer source list.</p>
+<p>Built-in lookup tables are used to compute models for solar system object calibrators.
+Point source models are used for other calibrators with flux densities provided in the reference file.
+Normalized fluxes are computed for transfer sources if the <code class="docutils literal notranslate"><span class="pre">normfluxes</span></code> parameter is
+set to True.</p>
+<p>The default reference file is ‘flux.csv’ in the current working directory.
+This file is usually created in the importdata stage. The file is in
+‘csv’ format and contains the following comma delimited columns.</p>
+<p>vis,fieldid,spwid,I,Q,U,V,pix,comment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.
+example: [‘M32A.ms’, ‘M32B.ms’]</p></li>
+<li><p><strong>reference</strong> – A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with
+intent ‘AMPLITUDE’.
+example: ‘M82,3C273’</p></li>
+<li><p><strong>refintent</strong> – A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to ‘AMPLITUDE’.
+example: ‘BANDPASS’</p></li>
+<li><p><strong>transfer</strong> – A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with
+intent ‘’.
+example: ‘J1328+041,J1206+30’</p></li>
+<li><p><strong>transintent</strong> – A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to ‘BANDPASS,PHASE,CHECK’.
+‘’ stands for no transfer sources.
+example: ‘PHASE’</p></li>
+<li><p><strong>reffile</strong> – The reference file containing a lookup table of point source models This file currently defaults to ‘flux.csv’ in the working directory. This
+file must conform to the standard pipeline ‘flux.csv’ format
+example: ‘myfluxes.csv’</p></li>
+<li><p><strong>normfluxes</strong> – Normalize the transfer source flux densities.</p></li>
+<li><p><strong>scalebychan</strong> – Scale the flux density on a per channel basis or else on a per spw basis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Set model fluxes for the flux, bandpass, phase, and check sources.</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_setmodels</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

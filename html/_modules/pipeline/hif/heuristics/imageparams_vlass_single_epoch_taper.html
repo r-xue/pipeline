@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -119,7 +119,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeTaper</span><span class="p">(</span><span class="n">ImageParamsHeuristics</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
@@ -128,7 +128,7 @@
 
     <span class="c1"># niter</span>
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.niter_correction">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.niter_correction">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter_correction">[docs]</a>
     <span class="k">def</span> <span class="nf">niter_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">niter</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">mask_frac_rad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">niter</span><span class="p">:</span>
@@ -138,42 +138,42 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.niter">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.niter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.niter">[docs]</a>
     <span class="k">def</span> <span class="nf">niter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean niter parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">niter_correction</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.deconvolver">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.deconvolver">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.deconvolver">[docs]</a>
     <span class="k">def</span> <span class="nf">deconvolver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">stokes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean deconvolver parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;mtmfs&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.robust">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.robust">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.robust">[docs]</a>
     <span class="k">def</span> <span class="nf">robust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean robust parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">1.0</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.gridder">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.gridder">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.gridder">[docs]</a>
     <span class="k">def</span> <span class="nf">gridder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean gridder parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;mosaic&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.cell">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cell">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cell">[docs]</a>
     <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cell parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;1.8arcsec&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.imsize">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.imsize">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.imsize">[docs]</a>
     <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">primary_beam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sfpblimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centreonly</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean imsize parameter heuristics.&quot;&quot;&quot;</span>
@@ -181,42 +181,42 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.reffreq">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.reffreq">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.reffreq">[docs]</a>
     <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean reffreq parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;3.0GHz&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.cyclefactor">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cyclefactor">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cyclefactor">[docs]</a>
     <span class="k">def</span> <span class="nf">cyclefactor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iter0_dirty_dynamic_range</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cyclefactor parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">3.0</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.cycleniter">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.cycleniter">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.cycleniter">[docs]</a>
     <span class="k">def</span> <span class="nf">cycleniter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean cycleniter parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">2000</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.scales">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.scales">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.scales">[docs]</a>
     <span class="k">def</span> <span class="nf">scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean scales parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.uvtaper">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.uvtaper">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvtaper">[docs]</a>
     <span class="k">def</span> <span class="nf">uvtaper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beam_natural</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protect_long</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beam_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tapering_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repr_freq</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvtaper parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;7.0arcsec&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.uvrange">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.uvrange">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.uvrange">[docs]</a>
     <span class="k">def</span> <span class="nf">uvrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean uvrange parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
@@ -230,28 +230,28 @@
         <span class="k">return</span> <span class="mf">1000.</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.specmode">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.specmode">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.specmode">[docs]</a>
     <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean specmode parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;mfs&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.intent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.intent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.intent">[docs]</a>
     <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean intent parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;TARGET&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.nterms">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.nterms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nterms">[docs]</a>
     <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nterms parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">2</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.stokes">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.stokes">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.stokes">[docs]</a>
     <span class="k">def</span> <span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean stokes parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;I&#39;</span></div>
@@ -261,14 +261,14 @@
         <span class="k">return</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.conjbeams">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.conjbeams">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.conjbeams">[docs]</a>
     <span class="k">def</span> <span class="nf">conjbeams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean conjbeams parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.get_sensitivity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.get_sensitivity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.get_sensitivity">[docs]</a>
     <span class="k">def</span> <span class="nf">get_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_do</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">chansel</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">imsize</span><span class="p">,</span> <span class="n">weighting</span><span class="p">,</span> <span class="n">robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="p">):</span>
         <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
 
@@ -377,7 +377,7 @@
         <span class="k">return</span> <span class="n">fieldlist</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.keep_iterating">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.keep_iterating">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.keep_iterating">[docs]</a>
     <span class="k">def</span> <span class="nf">keep_iterating</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">,</span> <span class="n">tclean_stopcode</span><span class="p">,</span> <span class="n">dirty_dynamic_range</span><span class="p">,</span> <span class="n">residual_max</span><span class="p">,</span>
                        <span class="n">residual_robust_rms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">specmode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if another tclean iteration is necessary.&quot;&quot;&quot;</span>
@@ -391,7 +391,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.threshold">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.threshold">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.threshold">[docs]</a>
     <span class="k">def</span> <span class="nf">threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">hm_masking</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean threshold parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
@@ -406,7 +406,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.nsigma">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.nsigma">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.nsigma">[docs]</a>
     <span class="k">def</span> <span class="nf">nsigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hm_masking</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nsigma parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">hm_nsigma</span><span class="p">:</span>
@@ -421,7 +421,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeTaper.savemodel">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.savemodel">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_taper.ImageParamsHeuristicsVlassSeTaper.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeTaper.savemodel">[docs]</a>
     <span class="k">def</span> <span class="nf">savemodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean savemodel parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>

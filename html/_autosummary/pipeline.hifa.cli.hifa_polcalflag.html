@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_polcalflag">
-<span id="pipeline-hifa-cli-hifa-polcalflag"></span><h1>pipeline.hifa.cli.hifa_polcalflag<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_polcalflag" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-polcalflag">
+<h1>pipeline.hifa.cli.hifa_polcalflag<a class="headerlink" href="#pipeline-hifa-cli-hifa-polcalflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_polcalflag">
+<span class="sig-name descname"><span class="pre">hifa_polcalflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_polcalflag.html#hifa_polcalflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_polcalflag" title="Link to this definition"></a></dt>
+<dd><p>Flag polarization calibrators</p>
+<p>This task flags corrected visibility outliers in the polarization calibrator
+data using the hif_correctedampflag heuristics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Run with recommended settings to flag visibility outliers in the
+polarization calibrator data:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_polcalflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

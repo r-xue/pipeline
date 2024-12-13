@@ -20,6 +20,7 @@ pipeline.hif.tasks.lowgainflag.resultobjects
       :template: custom-class-template.rst
       :nosignatures:
    
+      FullyFlaggedAntennasNotification
       LowgainflagDataResults
       LowgainflagResults
       LowgainflagViewResults

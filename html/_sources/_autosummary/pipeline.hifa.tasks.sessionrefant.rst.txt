@@ -13,6 +13,15 @@ pipeline.hifa.tasks.sessionrefant
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      SessionRefAnt
+   
    
 
    

@@ -20,6 +20,7 @@ pipeline.hif.tasks.transformimagedata.transformimagedata
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Transformimagedata
       TransformimagedataInputs
       TransformimagedataResults

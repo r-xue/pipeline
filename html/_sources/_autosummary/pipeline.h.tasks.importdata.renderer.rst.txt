@@ -17,6 +17,7 @@ pipeline.h.tasks.importdata.renderer
    
       make_flux_table
       make_repsource_table
+      reduce
    
    
 
@@ -30,6 +31,7 @@ pipeline.h.tasks.importdata.renderer
       :nosignatures:
    
       FluxTR
+      FrequencyUnits
       RepsourceTR
       T2_4MDetailsImportDataRenderer
    

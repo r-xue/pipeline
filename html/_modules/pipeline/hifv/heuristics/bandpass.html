@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -120,7 +120,7 @@
 
 
 <div class="viewcode-block" id="removeRows">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.removeRows.html#pipeline.hifv.heuristics.bandpass.removeRows">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.removeRows.html#pipeline.hifv.heuristics.removeRows">[docs]</a>
 <span class="k">def</span> <span class="nf">removeRows</span><span class="p">(</span><span class="n">caltable</span><span class="p">,</span> <span class="n">spwids</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove rows from specified spwid from a CASA caltable.&quot;&quot;&quot;</span>
 
@@ -142,7 +142,7 @@
 
 
 <div class="viewcode-block" id="computeChanFlag">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.computeChanFlag.html#pipeline.hifv.heuristics.bandpass.computeChanFlag">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.computeChanFlag.html#pipeline.hifv.heuristics.computeChanFlag">[docs]</a>
 <span class="k">def</span> <span class="nf">computeChanFlag</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 
     <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -220,7 +220,7 @@
 
 
 <div class="viewcode-block" id="do_bandpass">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.do_bandpass.html#pipeline.hifv.heuristics.bandpass.do_bandpass">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.finalcals.finalcals.do_bandpass.html#pipeline.hifv.heuristics.do_bandpass">[docs]</a>
 <span class="k">def</span> <span class="nf">do_bandpass</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run CASA task bandpass&quot;&quot;&quot;</span>
@@ -292,7 +292,7 @@
 
 
 <div class="viewcode-block" id="do_bandpassweakbp">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.do_bandpassweakbp.html#pipeline.hifv.heuristics.bandpass.do_bandpassweakbp">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.do_bandpassweakbp.html#pipeline.hifv.heuristics.do_bandpassweakbp">[docs]</a>
 <span class="k">def</span> <span class="nf">do_bandpassweakbp</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run CASA task bandpass&quot;&quot;&quot;</span>
@@ -338,7 +338,7 @@
 
 
 <div class="viewcode-block" id="weakbp">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.bandpass.weakbp.html#pipeline.hifv.heuristics.bandpass.weakbp">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.finalcals.finalcals.weakbp.html#pipeline.hifv.heuristics.weakbp">[docs]</a>
 <span class="k">def</span> <span class="nf">weakbp</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">RefAntOutput</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ktypecaltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">bpdgain_touse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 

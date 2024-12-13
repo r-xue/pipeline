@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.h.cli.h_mssplit &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.h.cli.h_mssplit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.h.cli.h_mssplit</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<div class="viewcode-block" id="h_mssplit">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.h_mssplit.html#pipeline.cli.h_mssplit">[docs]</a>
+<span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
+<span class="k">def</span> <span class="nf">h_mssplit</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select data from calibrated MS(s) to form new MS(s) for imaging</span>
+
+<span class="sd">    Create new MeasurementSets for imaging from the corrected column of the input</span>
+<span class="sd">    MeasurementSet. By default all science target data is copied to the new MS. The new</span>
+<span class="sd">    MeasurementSet is not re-indexed to the selected data in the new MS will have the</span>
+<span class="sd">    same source, field, and spw names and ids as it does in the parent MS.</span>
+
+<span class="sd">    The results object for the pipeline task is returned.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets to be transformed. Defaults to the list of MeasurementSets specified in the pipeline import data task.</span>
+<span class="sd">            default &#39;&#39;: Split all MeasurementSets in the context.</span>
+<span class="sd">            example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+
+<span class="sd">        outputvis: The list of output split MeasurementSets. The output list must be the same length as the input list and the output names must be different</span>
+<span class="sd">            from the input names.</span>
+<span class="sd">            default &#39;&#39;, The output name defaults to &lt;msrootname&gt;_split.ms</span>
+<span class="sd">            example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+
+<span class="sd">        field: Set of data selection field names or ids, &#39;&#39; for all</span>
+
+<span class="sd">        intent: Select intents to split default: &#39;&#39;, All data is selected.</span>
+<span class="sd">            example: &#39;TARGET&#39;</span>
+
+<span class="sd">        spw: Select spectral windows to split. default: &#39;&#39;, All spws are selected</span>
+<span class="sd">            example: &#39;9&#39;, &#39;9,13,15&#39;</span>
+
+<span class="sd">        datacolumn: Select spectral windows to split. The standard CASA options are supported. example: &#39;corrected&#39;, &#39;model&#39;</span>
+
+<span class="sd">        chanbin: The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16. example: 2, 4</span>
+
+<span class="sd">        timebin: The time binning factor. &#39;0s&#39; for no binning example: &#39;10s&#39; for 10 second binning</span>
+
+<span class="sd">        replace: If a split was performed delete the parent MS and remove it from the context.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Create a 4X channel smoothed output MS from the input MS</span>
+
+<span class="sd">        &gt;&gt;&gt; h_mssplit(chanbin=4)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">##########################################################################</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">#  CASA task interface boilerplate code starts here. No edits should be  #</span>
+    <span class="c1">#  needed beyond this point.                                             #</span>
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">##########################################################################</span>
+
+    <span class="c1"># create a dictionary containing all the arguments given in the</span>
+    <span class="c1"># constructor</span>
+    <span class="n">all_inputs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">()</span>
+
+    <span class="c1"># get the name of this function for the weblog, eg. &#39;hif_flagdata&#39;</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="c1"># get the context on which this task operates</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+    <span class="c1"># execute the task</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">execute_task</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

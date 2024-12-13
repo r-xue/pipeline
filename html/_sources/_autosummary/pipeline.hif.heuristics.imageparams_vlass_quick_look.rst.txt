@@ -20,6 +20,7 @@ pipeline.hif.heuristics.imageparams\_vlass\_quick\_look
       :template: custom-class-template.rst
       :nosignatures:
    
+      ImageParamsHeuristics
       ImageParamsHeuristicsVlassQl
    
    

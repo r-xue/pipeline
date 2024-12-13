@@ -9,6 +9,14 @@ pipeline.domain.datatype
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      unique
+   
    
 
    
@@ -21,6 +29,9 @@ pipeline.domain.datatype
       :nosignatures:
    
       DataType
+      Enum
+      attrgetter
+      auto
    
    
 

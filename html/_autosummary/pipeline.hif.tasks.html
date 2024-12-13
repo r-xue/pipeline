@@ -20,10 +20,12 @@
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hif.tasks.analyzealpha" href="pipeline.hif.tasks.analyzealpha.html" />
+    <link rel="next" title="pipeline.hif.tasks.Analyzealpha" href="pipeline.hif.tasks.Analyzealpha.html" />
     <link rel="prev" title="pipeline.hif.heuristics.standard.Standard" href="pipeline.hif.heuristics.standard.Standard.html" /> 
 </head>
 
@@ -31,7 +33,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +59,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -144,6 +150,116 @@
              
   <section id="module-pipeline.hif.tasks">
 <span id="pipeline-hif-tasks"></span><h1>pipeline.hif.tasks<a class="headerlink" href="#module-pipeline.hif.tasks" title="Link to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Analyzealpha.html#pipeline.hif.tasks.Analyzealpha" title="pipeline.hif.tasks.Analyzealpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Analyzealpha</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Antpos.html#pipeline.hif.tasks.Antpos" title="pipeline.hif.tasks.Antpos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Antpos</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Bandpass.html#pipeline.hif.tasks.Bandpass" title="pipeline.hif.tasks.Bandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bandpass</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.hif.tasks.bandpass.PhcorBandpass.html#pipeline.hif.tasks.bandpass.PhcorBandpass" title="pipeline.hif.tasks.bandpass.phcorbandpass.PhcorBandpass"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhcorBandpass</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.BandpassMode.html#pipeline.hif.tasks.BandpassMode" title="pipeline.hif.tasks.BandpassMode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassMode</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.ChannelBandpass.html#pipeline.hif.tasks.ChannelBandpass" title="pipeline.hif.tasks.ChannelBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChannelBandpass</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.CheckProductSize.html#pipeline.hif.tasks.CheckProductSize" title="pipeline.hif.tasks.CheckProductSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckProductSize</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Correctedampflag.html#pipeline.hif.tasks.Correctedampflag" title="pipeline.hif.tasks.Correctedampflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Correctedampflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Editimlist.html#pipeline.hif.tasks.Editimlist" title="pipeline.hif.tasks.Editimlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Editimlist</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.FindCont.html#pipeline.hif.tasks.FindCont" title="pipeline.hif.tasks.FindCont"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FindCont</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Fluxscale.html#pipeline.hif.tasks.Fluxscale" title="pipeline.hif.tasks.Fluxscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Fluxscale</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.GSplineGaincal.html#pipeline.hif.tasks.GSplineGaincal" title="pipeline.hif.tasks.GSplineGaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GSplineGaincal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.GTypeGaincal.html#pipeline.hif.tasks.GTypeGaincal" title="pipeline.hif.tasks.GTypeGaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GTypeGaincal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Gaincal.html#pipeline.hif.tasks.Gaincal" title="pipeline.hif.tasks.Gaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gaincal</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pipeline.hif.tasks.GaincalMode.html#pipeline.hif.tasks.GaincalMode" title="pipeline.hif.tasks.gaincal.gaincalmode.GaincalMode"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaincalMode</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.GaincalMode.html#pipeline.hif.tasks.GaincalMode" title="pipeline.hif.tasks.GaincalMode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GaincalMode</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.IFApplycal.html#pipeline.hif.tasks.IFApplycal" title="pipeline.hif.tasks.IFApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IFApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.KTypeGaincal.html#pipeline.hif.tasks.KTypeGaincal" title="pipeline.hif.tasks.KTypeGaincal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTypeGaincal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Lowgainflag.html#pipeline.hif.tasks.Lowgainflag" title="pipeline.hif.tasks.Lowgainflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lowgainflag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList" title="pipeline.hif.tasks.MakeImList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MakeImList</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages" title="pipeline.hif.tasks.MakeImages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MakeImages</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Makecutoutimages.html#pipeline.hif.tasks.Makecutoutimages" title="pipeline.hif.tasks.Makecutoutimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Makecutoutimages</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Makermsimages.html#pipeline.hif.tasks.Makermsimages" title="pipeline.hif.tasks.Makermsimages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Makermsimages</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Mstransform.html#pipeline.hif.tasks.Mstransform" title="pipeline.hif.tasks.Mstransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Mstransform</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.PhcorBandpass.html#pipeline.hif.tasks.PhcorBandpass" title="pipeline.hif.tasks.PhcorBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PhcorBandpass</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Polarization.html#pipeline.hif.tasks.Polarization" title="pipeline.hif.tasks.Polarization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polarization</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker" title="pipeline.hif.tasks.PolcalWorker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolcalWorker</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Rawflagchans.html#pipeline.hif.tasks.Rawflagchans" title="pipeline.hif.tasks.Rawflagchans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rawflagchans</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.RefAnt.html#pipeline.hif.tasks.RefAnt" title="pipeline.hif.tasks.RefAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RefAnt</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Selfcal.html#pipeline.hif.tasks.Selfcal" title="pipeline.hif.tasks.Selfcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Selfcal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.SerialIFApplycal.html#pipeline.hif.tasks.SerialIFApplycal" title="pipeline.hif.tasks.SerialIFApplycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialIFApplycal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.SerialRefAnt.html#pipeline.hif.tasks.SerialRefAnt" title="pipeline.hif.tasks.SerialRefAnt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SerialRefAnt</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.SetModels.html#pipeline.hif.tasks.SetModels" title="pipeline.hif.tasks.SetModels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetModels</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Setjy.html#pipeline.hif.tasks.Setjy" title="pipeline.hif.tasks.Setjy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Setjy</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean" title="pipeline.hif.tasks.Tclean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tclean</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hif.tasks.Transformimagedata.html#pipeline.hif.tasks.Transformimagedata" title="pipeline.hif.tasks.Transformimagedata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transformimagedata</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.UVcontSub.html#pipeline.hif.tasks.UVcontSub" title="pipeline.hif.tasks.UVcontSub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UVcontSub</span></code></a></p></td>
+<td><p>UVcontSub class for parallelization.</p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hif.tasks.analyzealpha.html#module-pipeline.hif.tasks.analyzealpha" title="pipeline.hif.tasks.analyzealpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyzealpha</span></code></a></p></td>
@@ -233,7 +349,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.hif.heuristics.standard.Standard.html" class="btn btn-neutral float-left" title="pipeline.hif.heuristics.standard.Standard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hif.tasks.analyzealpha.html" class="btn btn-neutral float-right" title="pipeline.hif.tasks.analyzealpha" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hif.tasks.Analyzealpha.html" class="btn btn-neutral float-right" title="pipeline.hif.tasks.Analyzealpha" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -15,7 +15,9 @@ pipeline.infrastructure.displays.plotsuntrack
       :toctree:
       :nosignatures:
    
+      RescaleXAxisTimeTicks
       get_az_el_from_body
+      mjd_seconds_to_datetime
       plot_suntrack
    
    

@@ -9,6 +9,14 @@ pipeline.hif.tasks.selfcal.display
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      matplotlibrc_formal
+   
    
 
    
@@ -20,7 +28,9 @@ pipeline.hif.tasks.selfcal.display
       :template: custom-class-template.rst
       :nosignatures:
    
+      CasaTasks
       SelfcalSummary
+      TaskQueue
    
    
 

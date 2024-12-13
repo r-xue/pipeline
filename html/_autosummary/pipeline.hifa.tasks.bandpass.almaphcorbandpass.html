@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.centre_datetime_from_epochs" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.centre_datetime_from_epochs.html" />
-    <link rel="prev" title="pipeline.hifa.tasks.bandpass" href="pipeline.hifa.tasks.bandpass.html" /> 
+    <link rel="prev" title="pipeline.hifa.tasks.bandpass.SessionALMAPhcorBandpass" href="pipeline.hifa.tasks.bandpass.SessionALMAPhcorBandpass.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -155,6 +159,9 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.get_time_delta_seconds.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.get_time_delta_seconds" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.get_time_delta_seconds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_time_delta_seconds</span></code></a></p></td>
 <td><p>Get the absolute time difference between a time t and a scan's time of observation.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.round_up.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.round_up" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.round_up"><code class="xref py py-obj docutils literal notranslate"><span class="pre">round_up</span></code></a></p></td>
+<td><p>Round to nearest integer away from zero.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -166,10 +173,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpassInputs" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.ALMAPhcorBandpassInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALMAPhcorBandpassInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionALMAPhcorBandpass</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.BandpassResults.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.BandpassResults" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.BandpassResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandpassResults</span></code></a></p></td>
+<td><p>BandpassResults is the results class common to all pipeline bandpass calibration tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionALMAPhcorBandpass</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionALMAPhcorBandpassInputs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs.html#pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpassInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionALMAPhcorBandpassInputs</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -180,7 +190,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifa.tasks.bandpass.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.bandpass" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.bandpass.SessionALMAPhcorBandpass.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.bandpass.SessionALMAPhcorBandpass" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hifa.tasks.bandpass.almaphcorbandpass.centre_datetime_from_epochs.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.bandpass.almaphcorbandpass.centre_datetime_from_epochs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

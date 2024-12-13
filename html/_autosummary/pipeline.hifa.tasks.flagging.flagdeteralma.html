@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands" href="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands.html" />
-    <link rel="prev" title="pipeline.hifa.tasks.flagging" href="pipeline.hifa.tasks.flagging.html" /> 
+    <link rel="next" title="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges" href="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges.html" />
+    <link rel="prev" title="pipeline.hifa.tasks.flagging.FlagTargetsALMA" href="pipeline.hifa.tasks.flagging.FlagTargetsALMA.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -149,8 +153,14 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands.html#pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands" title="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_params_to_commands</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges.html#pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges" title="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_ranges</span></code></a></p></td>
+<td><p>Given a list of channels will return a list of ranges that describe them.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands.html#pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands" title="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_params_to_commands</span></code></a></p></td>
 <td><p>Convert the identified partial polarization parameters to flagging commands.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV.html#pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV" title="pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getMedianPWV</span></code></a></p></td>
+<td><p>Extracts the PWV measurements from the WVR on all antennas for the specified time range.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.get_airmass_for_alma_scan.html#pipeline.hifa.tasks.flagging.flagdeteralma.get_airmass_for_alma_scan" title="pipeline.hifa.tasks.flagging.flagdeteralma.get_airmass_for_alma_scan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_airmass_for_alma_scan</span></code></a></p></td>
 <td><p>Compute the airmass corresponding to an ALMA observation scan.</p></td>
@@ -175,7 +185,13 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA" title="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMA</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.AltAz.html#pipeline.hifa.tasks.flagging.flagdeteralma.AltAz" title="pipeline.hifa.tasks.flagging.flagdeteralma.AltAz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AltAz</span></code></a></p></td>
+<td><p>A coordinate or frame in the Altitude-Azimuth system (Horizontal coordinates) with respect to the WGS84 ellipsoid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation.html#pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation" title="pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarthLocation</span></code></a></p></td>
+<td><p>Location on the Earth.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.FlagDeterALMA.html#pipeline.hifa.tasks.FlagDeterALMA" title="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMA</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs" title="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAInputs</span></code></a></p></td>
@@ -183,6 +199,15 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAResults.html#pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAResults" title="pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlagDeterALMAResults</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.MeasurementSet.html#pipeline.hifa.tasks.flagging.flagdeteralma.MeasurementSet" title="pipeline.hifa.tasks.flagging.flagdeteralma.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.SkyCoord.html#pipeline.hifa.tasks.flagging.flagdeteralma.SkyCoord" title="pipeline.hifa.tasks.flagging.flagdeteralma.SkyCoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a></p></td>
+<td><p>High-level object providing a flexible interface for celestial coordinate representation, manipulation, and transformation between systems.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hifa.tasks.flagging.flagdeteralma.Time.html#pipeline.hifa.tasks.flagging.flagdeteralma.Time" title="pipeline.hifa.tasks.flagging.flagdeteralma.Time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Time</span></code></a></p></td>
+<td><p>Represent and manipulate times and dates for astronomy.</p></td>
 </tr>
 </tbody>
 </table>
@@ -192,8 +217,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifa.tasks.flagging.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.flagging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hifa.tasks.flagging.FlagTargetsALMA.html" class="btn btn-neutral float-left" title="pipeline.hifa.tasks.flagging.FlagTargetsALMA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges.html" class="btn btn-neutral float-right" title="pipeline.hifa.tasks.flagging.flagdeteralma.channel_ranges" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

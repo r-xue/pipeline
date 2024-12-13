@@ -15,6 +15,7 @@ pipeline.h.tasks.common.displays.sky
       :toctree:
       :nosignatures:
    
+      get_stokes
       plotfilename
    
    
@@ -28,7 +29,10 @@ pipeline.h.tasks.common.displays.sky
       :template: custom-class-template.rst
       :nosignatures:
    
+      AnnotationBbox
+      HPacker
       SkyDisplay
+      TextArea
    
    
 

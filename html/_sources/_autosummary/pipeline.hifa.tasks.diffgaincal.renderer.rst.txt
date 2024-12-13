@@ -15,6 +15,7 @@ pipeline.hifa.tasks.diffgaincal.renderer
       :toctree:
       :nosignatures:
    
+      generate_detail_plots
       get_diffgain_applications
       get_plots
    
@@ -29,7 +30,9 @@ pipeline.hifa.tasks.diffgaincal.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
       DiffGainApplication
+      ResultsList
       T2_4MDetailsDiffgaincalRenderer
    
    

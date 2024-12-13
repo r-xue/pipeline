@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hsd.cli.hsd_exportdata">
-<span id="pipeline-hsd-cli-hsd-exportdata"></span><h1>pipeline.hsd.cli.hsd_exportdata<a class="headerlink" href="#module-pipeline.hsd.cli.hsd_exportdata" title="Link to this heading"></a></h1>
+  <section id="pipeline-hsd-cli-hsd-exportdata">
+<h1>pipeline.hsd.cli.hsd_exportdata<a class="headerlink" href="#pipeline-hsd-cli-hsd-exportdata" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_exportdata">
+<span class="sig-name descname"><span class="pre">hsd_exportdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pprfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetimages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_exportdata.html#hsd_exportdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_exportdata" title="Link to this definition"></a></dt>
+<dd><p>Prepare single dish data for export.</p>
+<p>The hsd_exportdata task exports the data defined in the pipeline context
+and exports it to the data products directory, converting and or packing
+it as necessary.</p>
+<p>The current version of the task exports the following products</p>
+<ul class="simple">
+<li><p>a FITS image for each selected science target source image</p></li>
+<li><p>a tar file per ASDM containing the final flags version and blparam</p></li>
+<li><p>a tar file containing the file web log</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pprfile</strong> – Name of the pipeline processing request to be exported. Defaults to a file matching the template ‘PPR_*.xml’.
+example: pprfile=[‘PPR_GRB021004.xml’]</p></li>
+<li><p><strong>targetimages</strong> – List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
+example: targetimages=[‘r_aqr.CM02.spw5.line0.XXYY.sd.im’, ‘r_aqr.CM02.spw5.XXYY.sd.cont.im’]</p></li>
+<li><p><strong>products_dir</strong> – Name of the data products subdirectory. Defaults to ‘./’. Example: products_dir=’../products’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Export the pipeline results for a single session to the data products
+directory</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; !mkdir ../products
+&gt;&gt;&gt; hsd_exportdata (products_dir=&#39;../products&#39;)
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -29,6 +29,7 @@ pipeline.infrastructure.casa\_tools
       post_to_log
       selectvis_context_manager
       set_log_origin
+      signature
       unpickler
    
    

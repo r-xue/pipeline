@@ -39,7 +39,14 @@ pipeline.h.tasks.applycal.renderer
       ApplycalPhaseVsFreqPlotRenderer
       ApplycalPhaseVsTimePlotRenderer
       ApplycalPhaseVsUVPlotRenderer
+      ApplycalResults
+      Context
+      JsonPlotRenderer
+      MeasurementSet
+      Plot
+      ResultsList
       T2_4MDetailsApplycalRenderer
+      UVChart
    
    
 

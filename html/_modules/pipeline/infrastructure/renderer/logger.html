@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -173,7 +173,7 @@
 
 
 <div class="viewcode-block" id="getPath">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.getPath.html#pipeline.infrastructure.renderer.logger.getPath">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.getPath.html#pipeline.infrastructure.utils.framework.getPath">[docs]</a>
 <span class="k">def</span> <span class="nf">getPath</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span></div>
@@ -181,7 +181,7 @@
 
 
 <div class="viewcode-block" id="Parameters">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.renderer.logger.Parameters">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.utils.framework.Parameters">[docs]</a>
 <span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides a set of utility functions that describe how the plot parameters</span>
@@ -215,7 +215,7 @@
                                              <span class="s1">&#39;file&#39;</span>   <span class="p">:</span> <span class="s1">&#39;File&#39;</span>   <span class="p">})</span>
 
 <div class="viewcode-block" id="Parameters.getCssId">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.renderer.logger.Parameters.getCssId">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.utils.framework.Parameters.getCssId">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">getCssId</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -227,7 +227,7 @@
 
 
 <div class="viewcode-block" id="Parameters.getDescription">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.renderer.logger.Parameters.getDescription">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Parameters.html#pipeline.infrastructure.utils.framework.Parameters.getDescription">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">getDescription</span><span class="p">(</span><span class="n">parameter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -245,7 +245,7 @@
 
 
 <div class="viewcode-block" id="PlotGroup">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.renderer.logger.PlotGroup">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.utils.framework.PlotGroup">[docs]</a>
 <span class="k">class</span> <span class="nc">PlotGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># the full template for the selectors in this series of plots</span>
     <span class="n">full_template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;&lt;li class=&quot;selectorHeading&quot;&gt;$description&#39;</span>
@@ -257,7 +257,7 @@
                         <span class="s1">&#39;&lt;a class=&quot;button small pill&quot; href=&quot;#&quot;&gt;$val&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PlotGroup.create_plot_groups">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.renderer.logger.PlotGroup.create_plot_groups">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.utils.framework.PlotGroup.create_plot_groups">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_plot_groups</span><span class="p">(</span><span class="n">plots</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -305,7 +305,7 @@
         <span class="k">return</span> <span class="n">title</span>
 
 <div class="viewcode-block" id="PlotGroup.numericalSort">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.renderer.logger.PlotGroup.numericalSort">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.PlotGroup.html#pipeline.infrastructure.utils.framework.PlotGroup.numericalSort">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">numericalSort</span><span class="p">(</span><span class="n">selector</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -374,7 +374,7 @@
 
 
 <div class="viewcode-block" id="Selector">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Selector.html#pipeline.infrastructure.renderer.logger.Selector">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Selector.html#pipeline.infrastructure.utils.framework.Selector">[docs]</a>
 <span class="k">class</span> <span class="nc">Selector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># CSS classes have a restricted character sets, so we use a regex to </span>
     <span class="c1"># remove them</span>
@@ -394,7 +394,7 @@
 
 
 <div class="viewcode-block" id="Plot">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.logger.Plot.html#pipeline.infrastructure.renderer.logger.Plot">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.framework.Plot.html#pipeline.infrastructure.utils.framework.Plot">[docs]</a>
 <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;Unknown&#39;</span><span class="p">,</span> 
                  <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_score</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">captionmessage</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>

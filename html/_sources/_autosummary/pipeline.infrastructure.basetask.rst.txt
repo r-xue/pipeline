@@ -33,14 +33,21 @@ pipeline.infrastructure.basetask
       :template: custom-class-template.rst
       :nosignatures:
    
+      CasaTasks
       Executor
       FailedTask
       FailedTaskResults
       ModeTask
+      ResultAcceptErrorEvent
+      ResultAcceptedEvent
+      ResultAcceptingEvent
       Results
       ResultsList
       ResultsProxy
       StandardTaskTemplate
+      TaskAbnormalExitEvent
+      TaskCompleteEvent
+      TaskStartedEvent
       Timestamps
    
    

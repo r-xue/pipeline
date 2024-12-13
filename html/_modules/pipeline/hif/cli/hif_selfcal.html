@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hif.cli.hif_selfcal &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hif.cli.hif_selfcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hif.cli.hif_selfcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">pipeline.h.cli.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+
+
+<div class="viewcode-block" id="hif_selfcal">
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.cli.hif_selfcal.html#pipeline.cli.hif_selfcal">[docs]</a>
+<span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
+<span class="k">def</span> <span class="nf">hif_selfcal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restore_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">n_solints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amplitude_selfcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaincal_minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">minsnr_to_proceed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_beam_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">apply_cal_mode_default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rel_thresh_scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">dividing_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_all_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inf_EB_gaincal_combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine and apply self-calibration with the science target data</span>
+
+<span class="sd">    Determine and apply self-calibration with the science target data</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            default = &quot;&quot;: use all MeasurementSets in the context</span>
+
+<span class="sd">        field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is</span>
+<span class="sd">            specified only fields with data matching the intent will be</span>
+<span class="sd">            selected. The fields will be selected from MeasurementSets in</span>
+<span class="sd">            &quot;vis&quot;.</span>
+<span class="sd">            default= &quot;&quot; Fields matching intent, one image per target source.</span>
+
+<span class="sd">        spw: Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</span>
+
+<span class="sd">        contfile: Name of file to specify line-free frequency ranges for selfcal continuum imaging. default=&quot;cont.dat&quot;</span>
+
+<span class="sd">        apply: Apply final selfcal solutions back to the input MeasurementSets. default = True</span>
+
+<span class="sd">        recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.</span>
+<span class="sd">            default = False</span>
+
+<span class="sd">        refantignore: string list to be ignored as reference antennas. example:  refantignore=&#39;ea02,ea03&#39;</span>
+
+<span class="sd">        restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify</span>
+<span class="sd">            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred</span>
+<span class="sd">            in selfcal.json, starting from working/, to products/ and rawdata/.</span>
+<span class="sd">            If restore_resources is specified, this file path will be evaluated first</span>
+<span class="sd">            before the pre-defined exhaustive search list.</span>
+<span class="sd">            The value can be the file path of *auxproducts.tgz file or *selfcal.json file.</span>
+
+<span class="sd">        n_solints: number of solution intervals to attempt for self-calibration. default: 4</span>
+
+<span class="sd">        amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time between scans of a given target is &lt; 150s,</span>
+<span class="sd">            solution intervals of 300s and inf will be attempted, otherwise just</span>
+<span class="sd">            inf will be attempted.</span>
+<span class="sd">            default = False</span>
+
+<span class="sd">        gaincal_minsnr: Minimum S/N for a solution to not be flagged by gaincal. default = 2.0</span>
+
+<span class="sd">        minsnr_to_proceed: Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.</span>
+<span class="sd">            default = 3.0</span>
+
+<span class="sd">        delta_beam_thresh: Allowed fractional change in beam size for selfcalibration to accept results of a solution interval.</span>
+<span class="sd">            default = 0.05</span>
+
+<span class="sd">        apply_cal_mode_default: Apply mode to use for applycal task during self-calibration; same options as applycal.</span>
+<span class="sd">            default = &#39;calflag&#39;</span>
+
+<span class="sd">        rel_thresh_scaling: Scaling type to determine how clean thresholds per solution interval should be determined going from the starting</span>
+<span class="sd">            clean threshold to 3.0 * RMS for the final solution interval.</span>
+<span class="sd">            default=&#39;log10&#39;, options: &#39;linear&#39;, &#39;log10&#39;, or &#39;loge&#39; (natural log)</span>
+
+<span class="sd">        dividing_factor: Scaling factor to determine clean threshold for first self-calibration solution interval.</span>
+<span class="sd">            Equivalent to (Peak S/N / dividing_factor) *RMS = First clean threshold;</span>
+<span class="sd">            however, if (Peak S/N / dividing_factor) *RMS is &lt; 5.0; a value of 5.0</span>
+<span class="sd">            is used for the first clean threshold.</span>
+<span class="sd">            default = 40 for &lt; 8 GHz; 15 for &gt; 8 GHz</span>
+
+<span class="sd">        check_all_spws: If True, the S/N of mfs images created on a per-spectral-window basis will be compared at the initial stages final self-calibration.</span>
+<span class="sd">            default=False</span>
+
+<span class="sd">        inf_EB_gaincal_combine: change gain solution combination parameters for the inf_EB solution interval. if True, the gaincal combine parameter will be set to &#39;scan,spw&#39;; if False,</span>
+<span class="sd">            the gaincal combine parameter will be set to &#39;scan&#39;.</span>
+<span class="sd">            default=False</span>
+
+<span class="sd">        parallel: Use MPI cluster where possible, default=&#39;automatic&#39;. options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The results object for the pipeline task is returned.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        1. Run self-calibration and apply solutions to all science targets and spws</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal()</span>
+
+<span class="sd">        2. Run self-calibration and apply solutions to a single science target</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal(field=&quot;3C279&quot;)</span>
+
+<span class="sd">        3. Run self-calibration with a more relaxed allowed fractional change in the beam size for a solution interval to be successful</span>
+
+<span class="sd">        &gt;&gt;&gt; hif_selfcal(delta_beam_thresh=0.15)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#                                                                        #</span>
+    <span class="c1">#  CASA task interface boilerplate code starts here. No edits should be  #</span>
+    <span class="c1">#  needed beyond this point.                                             #</span>
+    <span class="c1">#                                                                        #</span>
+
+    <span class="c1"># create a dictionary containing all the arguments given in the</span>
+    <span class="c1"># constructor</span>
+    <span class="n">all_inputs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">()</span>
+
+    <span class="c1"># get the name of this function for the weblog, eg. &#39;hif_flagdata&#39;</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="c1"># get the context on which this task operates</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
+
+    <span class="c1"># execute the task</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">execute_task</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

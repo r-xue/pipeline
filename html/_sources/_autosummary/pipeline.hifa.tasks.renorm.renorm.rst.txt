@@ -9,6 +9,14 @@ pipeline.hifa.tasks.renorm.renorm
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      alma_renorm
+   
    
 
    

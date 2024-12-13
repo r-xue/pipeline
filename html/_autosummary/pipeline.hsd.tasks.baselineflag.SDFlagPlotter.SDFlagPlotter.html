@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hsd.tasks.baselineflag.SDFlagRule" href="pipeline.hsd.tasks.baselineflag.SDFlagRule.html" />
-    <link rel="prev" title="pipeline.hsd.tasks.baselineflag.SDFlagPlotter" href="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.html" /> 
+    <link rel="prev" title="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes" href="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -149,7 +153,7 @@
 <h1>pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter<a class="headerlink" href="#pipeline-hsd-tasks-baselineflag-sdflagplotter-sdflagplotter" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDFlagPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><span class="pre">DataTableImpl</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FigFileDir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baselineflag/SDFlagPlotter.html#SDFlagPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDFlagPlotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.h.tasks.common.commonhelpermethods.MeasurementSet.html#pipeline.h.tasks.common.commonhelpermethods.MeasurementSet" title="pipeline.domain.measurementset.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><span class="pre">DataTableImpl</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spwid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FigFileDir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/baselineflag/SDFlagPlotter.html#SDFlagPlotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.baselineflag.SDFlagPlotter.SDFlagPlotter" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to create Flag Plots for hsd_blflag weblog.</p>
 <p class="rubric">Methods</p>
@@ -217,7 +221,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baselineflag.SDFlagPlotter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hsd.tasks.baselineflag.SDFlagRule.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.baselineflag.SDFlagRule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

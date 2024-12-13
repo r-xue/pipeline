@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -122,12 +122,12 @@
 
 
 <div class="viewcode-block" id="GroupByPosition2">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByPosition2.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByPosition2.html#pipeline.hsd.heuristics.GroupByPosition2">[docs]</a>
 <span class="k">class</span> <span class="nc">GroupByPosition2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Grouping by RA/DEC position.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GroupByPosition2.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByPosition2.html#pipeline.hsd.heuristics.grouping2.GroupByPosition2.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByPosition2.html#pipeline.hsd.heuristics.GroupByPosition2.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">r_combine</span><span class="p">:</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">r_allowance</span><span class="p">:</span> <span class="n">Angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Group data by RA/DEC position.</span>
 
@@ -245,12 +245,12 @@
 
 
 <div class="viewcode-block" id="GroupByTime2">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByTime2.html#pipeline.hsd.heuristics.grouping2.GroupByTime2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByTime2.html#pipeline.hsd.heuristics.GroupByTime2">[docs]</a>
 <span class="k">class</span> <span class="nc">GroupByTime2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Grouping by time sequence.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GroupByTime2.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByTime2.html#pipeline.hsd.heuristics.grouping2.GroupByTime2.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.GroupByTime2.html#pipeline.hsd.heuristics.GroupByTime2.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timebase</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">],</span> <span class="n">time_diff</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Group data by time sequence.</span>
 
@@ -345,12 +345,12 @@
 
 
 <div class="viewcode-block" id="ThresholdForGroupByTime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.html#pipeline.hsd.heuristics.ThresholdForGroupByTime">[docs]</a>
 <span class="k">class</span> <span class="nc">ThresholdForGroupByTime</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate thresholds for large and small time gaps.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ThresholdForGroupByTime.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.html#pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.ThresholdForGroupByTime.html#pipeline.hsd.heuristics.ThresholdForGroupByTime.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timebase</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Real</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate thresholds for large and small time gaps.</span>
 
@@ -405,12 +405,12 @@
 
 
 <div class="viewcode-block" id="MergeGapTables2">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.MergeGapTables2.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.MergeGapTables2.html#pipeline.hsd.heuristics.MergeGapTables2">[docs]</a>
 <span class="k">class</span> <span class="nc">MergeGapTables2</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge time gap and position gaps.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MergeGapTables2.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.MergeGapTables2.html#pipeline.hsd.heuristics.grouping2.MergeGapTables2.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.grouping2.MergeGapTables2.html#pipeline.hsd.heuristics.MergeGapTables2.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TimeGap</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">TimeTable</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">PosGap</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">tBEAM</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge time gap and position gaps.</span>
 

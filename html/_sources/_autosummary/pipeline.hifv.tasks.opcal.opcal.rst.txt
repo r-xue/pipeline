@@ -9,6 +9,14 @@ pipeline.hifv.tasks.opcal.opcal
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      find_EVLA_band
+   
    
 
    

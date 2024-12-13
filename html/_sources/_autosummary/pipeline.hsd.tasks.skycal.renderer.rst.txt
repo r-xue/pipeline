@@ -20,6 +20,7 @@ pipeline.hsd.tasks.skycal.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataTable
       T2_4MDetailsSingleDishSkyCalRenderer
    
    

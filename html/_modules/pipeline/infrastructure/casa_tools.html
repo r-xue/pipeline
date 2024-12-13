@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -132,7 +132,7 @@
 
 
 <div class="viewcode-block" id="log_call">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.log_call.html#pipeline.infrastructure.casa_tools.log_call">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.log_call.html#pipeline.environment.log_call">[docs]</a>
 <span class="k">def</span> <span class="nf">log_call</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorate a function or method so that all invocations of that function or</span>
@@ -182,7 +182,7 @@
 
 
 <div class="viewcode-block" id="create_logging_class">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.create_logging_class.html#pipeline.infrastructure.casa_tools.create_logging_class">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.create_logging_class.html#pipeline.environment.create_logging_class">[docs]</a>
 <span class="k">def</span> <span class="nf">create_logging_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span> <span class="n">to_log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a class with all methods decorated to log method calls.</span>
@@ -252,7 +252,7 @@
 
 
 <div class="viewcode-block" id="post_to_log">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.post_to_log.html#pipeline.infrastructure.casa_tools.post_to_log">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.post_to_log.html#pipeline.environment.post_to_log">[docs]</a>
 <span class="k">def</span> <span class="nf">post_to_log</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">echo_to_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">log</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">echo_to_screen</span><span class="p">:</span>
@@ -261,14 +261,14 @@
 
 
 <div class="viewcode-block" id="set_log_origin">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.set_log_origin.html#pipeline.infrastructure.casa_tools.set_log_origin">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.set_log_origin.html#pipeline.environment.set_log_origin">[docs]</a>
 <span class="k">def</span> <span class="nf">set_log_origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="n">log</span><span class="o">.</span><span class="n">origin</span><span class="p">(</span><span class="n">fromwhere</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="context_manager_factory">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.context_manager_factory.html#pipeline.infrastructure.casa_tools.context_manager_factory">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.context_manager_factory.html#pipeline.environment.context_manager_factory">[docs]</a>
 <span class="k">def</span> <span class="nf">context_manager_factory</span><span class="p">(</span><span class="n">tool_cls</span><span class="p">,</span> <span class="n">finalisers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a context manager function that wraps the given CASA tool.</span>
@@ -303,7 +303,7 @@
 
 
 <div class="viewcode-block" id="selectvis_context_manager">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.selectvis_context_manager.html#pipeline.infrastructure.casa_tools.selectvis_context_manager">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.casa_tools.selectvis_context_manager.html#pipeline.environment.selectvis_context_manager">[docs]</a>
 <span class="k">def</span> <span class="nf">selectvis_context_manager</span><span class="p">(</span><span class="n">tool_cls</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an imager tool context manager function that opens the MS using</span>

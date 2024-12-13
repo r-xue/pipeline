@@ -24,6 +24,15 @@ pipeline.hsd.tasks.common.direction\_utils
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      NewType
+   
    
 
    

@@ -1,23 +1,6 @@
 pipeline.hifa.cli.hifa\_polcalflag
 ==================================
 
-.. automodule:: pipeline.hifa.cli.hifa_polcalflag
+.. currentmodule:: pipeline.hifa.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifa_polcalflag

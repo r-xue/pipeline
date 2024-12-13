@@ -28,6 +28,7 @@ pipeline.hsd.tasks.flagging.flagdeteralmasd
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataTable
       FlagDeterALMASingleDish
       FlagDeterALMASingleDishInputs
       FlagDeterALMASingleDishResults

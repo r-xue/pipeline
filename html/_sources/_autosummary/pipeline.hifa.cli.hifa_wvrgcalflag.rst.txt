@@ -1,23 +1,6 @@
 pipeline.hifa.cli.hifa\_wvrgcalflag
 ===================================
 
-.. automodule:: pipeline.hifa.cli.hifa_wvrgcalflag
+.. currentmodule:: pipeline.hifa.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifa_wvrgcalflag

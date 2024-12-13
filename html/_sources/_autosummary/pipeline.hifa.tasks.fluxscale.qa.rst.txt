@@ -20,6 +20,7 @@ pipeline.hifa.tasks.fluxscale.qa
       gaincalSNR
       get_dtype
       score_kspw
+      sqrt
    
    
 
@@ -35,8 +36,18 @@ pipeline.hifa.tasks.fluxscale.qa
       BandInfo
       CaltableWrapper
       CaltableWrapperFactory
+      Context
+      Decimal
+      Field
+      FluxDensity
+      FluxDensityUnits
+      FluxMeasurement
+      Frequency
+      FrequencyUnits
       GcorFluxscaleListQAHandler
       GcorFluxscaleQAHandler
+      MeasurementSet
+      SpectralWindow
    
    
 

@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.environment.CGroupControllerParser" href="pipeline.environment.CGroupControllerParser.html" />
-    <link rel="prev" title="pipeline.environment.cluster_details" href="pipeline.environment.cluster_details.html" /> 
+    <link rel="prev" title="pipeline.environment.version" href="pipeline.environment.version.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,15 +57,23 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.cluster_details.html">pipeline.environment.cluster_details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.compare_casa_version.html">pipeline.environment.compare_casa_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.find_spec.html">pipeline.environment.find_spec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.get_version_string_from_git.html">pipeline.environment.get_version_string_from_git</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.version.html">pipeline.environment.version</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.environment.CGroupController</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.CGroupControllerParser.html">pipeline.environment.CGroupControllerParser</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.CGroupLimit.html">pipeline.environment.CGroupLimit</a></li>
@@ -73,7 +81,11 @@
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.Environment.html">pipeline.environment.Environment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.EnvironmentFactory.html">pipeline.environment.EnvironmentFactory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.LinuxEnvironment.html">pipeline.environment.LinuxEnvironment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.MPIEnvironment.html">pipeline.environment.MPIEnvironment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.MacOSEnvironment.html">pipeline.environment.MacOSEnvironment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.Path.html">pipeline.environment.Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.StringIO.html">pipeline.environment.StringIO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.PackageNotFoundError.html">pipeline.environment.PackageNotFoundError</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
@@ -124,7 +136,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -151,7 +163,7 @@
 <h1>pipeline.environment.CGroupController<a class="headerlink" href="#pipeline-environment-cgroupcontroller" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.environment.CGroupController">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CGroupController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hierarchy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cgroup_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mount_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_mount_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/environment.html#CGroupController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.environment.CGroupController" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CGroupController</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hierarchy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cgroup_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.environment.Path.html#pipeline.environment.Path" title="pathlib.Path"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mount_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.environment.Path.html#pipeline.environment.Path" title="pathlib.Path"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_mount_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.environment.Path.html#pipeline.environment.Path" title="pathlib.Path"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/environment.html#CGroupController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.environment.CGroupController" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>CgroupSpec is a dataclass for properties that describe a cgroup limit. It
 holds information on the path to the cgroup controller, cgroup type, and
@@ -213,7 +225,7 @@ disabled</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.environment.cluster_details.html" class="btn btn-neutral float-left" title="pipeline.environment.cluster_details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.environment.version.html" class="btn btn-neutral float-left" title="pipeline.environment.version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.environment.CGroupControllerParser.html" class="btn btn-neutral float-right" title="pipeline.environment.CGroupControllerParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -9,6 +9,16 @@ pipeline.hsdn.cli
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      hsdn_exportdata
+      hsdn_importdata
+      hsdn_restoredata
+   
    
 
    
@@ -20,13 +30,4 @@ pipeline.hsdn.cli
    
 
 
-
-.. autosummary::
-   :toctree:
-   :template: custom-module-template.rst
-   :recursive:
-
-   hsdn_exportdata
-   hsdn_importdata
-   hsdn_restoredata
 

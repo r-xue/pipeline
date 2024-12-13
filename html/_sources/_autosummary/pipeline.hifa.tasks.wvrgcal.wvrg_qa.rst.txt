@@ -19,6 +19,7 @@ pipeline.hifa.tasks.wvrgcal.wvrg\_qa
       calculate_qa_numbers
       calculate_view
       findchunks
+      list_to_str
    
    
 

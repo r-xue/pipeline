@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,64 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_checkproductsize">
-<span id="pipeline-hif-cli-hif-checkproductsize"></span><h1>pipeline.hif.cli.hif_checkproductsize<a class="headerlink" href="#module-pipeline.hif.cli.hif_checkproductsize" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-checkproductsize">
+<h1>pipeline.hif.cli.hif_checkproductsize<a class="headerlink" href="#pipeline-hif-cli-hif-checkproductsize" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_checkproductsize">
+<span class="sig-name descname"><span class="pre">hif_checkproductsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubesize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubelimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxproductsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_checkproductsize.html#hif_checkproductsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_checkproductsize" title="Link to this definition"></a></dt>
+<dd><p>Check imaging product size</p>
+<p>Check interferometry imaging product size and try to mitigate to maximum
+allowed values. The task implements a mitigation cascade computing the largest
+cube size and tries to reduce it below a given limit by adjusting the <code class="docutils literal notranslate"><span class="pre">nbins</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hm_imsize</span></code> and <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> parameters. If this step succeeds, it also checks the
+overall imaging product size and if necessary reduces the number of fields to
+be imaged.</p>
+<p>Alternatively, if <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> is set, the image product pixel count is
+mitigated by trying to adjust <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> parameter. If the pixel count is still
+greater than <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> at <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> of 4ppb, then this value is kept and
+the image field is truncated around the phase center by forcing <code class="docutils literal notranslate"><span class="pre">hm_imsize</span></code>
+= <code class="docutils literal notranslate"><span class="pre">maximsize</span></code>.</p>
+<p>Note that mitigation for image pixel count and for the product size currently
+are mutually exclusive, with maximsize taking precedence if set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+‘’: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>maxcubesize</strong> – Maximum allowed cube size in gigabytes (mitigation goal) -1: automatic from performance parameters</p></li>
+<li><p><strong>maxcubelimit</strong> – Maximum allowed cube limit in gigabytes (mitigation failure limit)
+-1: automatic from performance parameters</p></li>
+<li><p><strong>maxproductsize</strong> – Maximum allowed product size in gigabytes (mitigation goal and failure limit)
+-1: automatic from performance parameters</p></li>
+<li><p><strong>maximsize</strong> – Maximum allowed image count size (mitigation goal and hard maximum).
+Parameter <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> must be even and divisible by 2,3,5,7 only.
+Note that <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> is disabled by default and cannot be set at
+the same time as <code class="docutils literal notranslate"><span class="pre">maxcubesize</span></code>, <code class="docutils literal notranslate"><span class="pre">maxcubelimit</span></code> and <code class="docutils literal notranslate"><span class="pre">maxproductsize</span></code>!
+-1: disables mitigation for this parameter</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Basic call to check the product sizes using internal defaults</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_checkproductsize</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Typical ALMA call</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_checkproductsize</span><span class="p">(</span><span class="n">maxcubesize</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span> <span class="n">maxcubelimit</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span> <span class="n">maxproductsize</span><span class="o">=</span><span class="mf">350.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

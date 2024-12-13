@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -118,7 +118,7 @@
 
 
 <div class="viewcode-block" id="RendererRegistry">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.registry.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry">[docs]</a>
 <span class="k">class</span> <span class="nc">RendererRegistry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># holds registrations of renderers that should be used in all</span>
@@ -133,7 +133,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selector_fn_map</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="RendererRegistry.add_renderer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.registry.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry.add_renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry.add_renderer">[docs]</a>
     <span class="k">def</span> <span class="nf">add_renderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">key_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Register a renderer to be used to generate HTML for results from a given</span>
@@ -179,7 +179,7 @@
 
 
 <div class="viewcode-block" id="RendererRegistry.get_renderer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.registry.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry.get_renderer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.renderer.weblog.RendererRegistry.html#pipeline.infrastructure.renderer.weblog.RendererRegistry.get_renderer">[docs]</a>
     <span class="k">def</span> <span class="nf">get_renderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the registered renderer for a class.</span>

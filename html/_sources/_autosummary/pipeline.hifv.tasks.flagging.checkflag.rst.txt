@@ -9,6 +9,16 @@ pipeline.hifv.tasks.flagging.checkflag
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      contfile_to_spwsel
+      mssel_valid
+      set_add_model_column_parameters
+   
    
 
    
@@ -23,6 +33,9 @@ pipeline.hifv.tasks.flagging.checkflag
       Checkflag
       CheckflagInputs
       CheckflagResults
+      DataType
+      RflagDevHeuristic
+      checkflagSummaryChart
    
    
 

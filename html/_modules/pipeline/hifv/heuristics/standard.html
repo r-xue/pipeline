@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -111,7 +111,7 @@
 
 
 <div class="viewcode-block" id="Standard">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.standard.Standard.html#pipeline.hifv.heuristics.standard.Standard">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.standard.Standard.html#pipeline.hifv.heuristics.Standard">[docs]</a>
 <span class="k">class</span> <span class="nc">Standard</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 
     <span class="n">ephemeris_fields</span> <span class="o">=</span> <span class="p">{</span>
@@ -121,7 +121,7 @@
         <span class="s1">&#39;Victoria&#39;</span><span class="p">,</span> <span class="s1">&#39;Davida&#39;</span><span class="p">}</span>
 
 <div class="viewcode-block" id="Standard.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.standard.Standard.html#pipeline.hifv.heuristics.standard.Standard.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.standard.Standard.html#pipeline.hifv.heuristics.Standard.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">field</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ephemeris_fields</span><span class="p">):</span>

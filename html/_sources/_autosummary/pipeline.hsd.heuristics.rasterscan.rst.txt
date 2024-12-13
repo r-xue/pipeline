@@ -42,6 +42,7 @@ pipeline.hsd.heuristics.rasterscan
       :nosignatures:
    
       HeuristicsParameter
+      MeasurementSet
       RasterScanHeuristic
       RasterScanHeuristicsResult
    

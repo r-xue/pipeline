@@ -13,6 +13,16 @@ pipeline.hsd.tasks.flagging
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      FlagDeterALMASingleDish
+      SerialFlagDeterALMASingleDish
+   
    
 
    

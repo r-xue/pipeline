@@ -1,23 +1,6 @@
 pipeline.hifa.cli.hifa\_bpsolint
 ================================
 
-.. automodule:: pipeline.hifa.cli.hifa_bpsolint
+.. currentmodule:: pipeline.hifa.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifa_bpsolint

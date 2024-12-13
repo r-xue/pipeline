@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -161,6 +167,9 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.get_tsys_fields_for_intent.html#pipeline.h.tasks.tsyscal.tsyscal.get_tsys_fields_for_intent" title="pipeline.h.tasks.tsyscal.tsyscal.get_tsys_fields_for_intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tsys_fields_for_intent</span></code></a></p></td>
 <td><p>Returns the identity of the Tsys field(s) for an intent.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.tsysspwmap.html#pipeline.h.tasks.tsyscal.tsyscal.tsysspwmap" title="pipeline.h.tasks.tsyscal.tsyscal.tsysspwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsysspwmap</span></code></a></p></td>
+<td><p>Generate default spwmap for ALMA Tsys, including TDM-&gt;FDM associations Input:  ms        the target MeasurementSet object  tsystable  the input Tsys caltable (w/ TDM Tsys measurements)  trim       if True (the default), return minimum-length spwmap;                 otherwise the spwmap will be exhaustive and include                 the high-numbered (and usually irrelevant) wvr                 spws  relax      (not yet implemented) Output:  spw list to use in applycal spwmap parameter for the Tsys caltable</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -169,11 +178,20 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.GainfieldMapping.html#pipeline.h.tasks.tsyscal.tsyscal.GainfieldMapping" title="pipeline.h.tasks.tsyscal.tsyscal.GainfieldMapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GainfieldMapping</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal" title="pipeline.h.tasks.tsyscal.tsyscal.Tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tsyscal</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.MeasurementSet.html#pipeline.h.tasks.tsyscal.tsyscal.MeasurementSet" title="pipeline.h.tasks.tsyscal.tsyscal.MeasurementSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementSet</span></code></a></p></td>
+<td><p>A class to store logical representation of a MeasurementSet (MS).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.Tsyscal.html#pipeline.h.tasks.tsyscal.tsyscal.Tsyscal" title="pipeline.h.tasks.tsyscal.tsyscal.Tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tsyscal</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs" title="pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsyscalInputs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs.html#pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs" title="pipeline.h.tasks.tsyscal.tsyscal.TsyscalInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TsyscalInputs</span></code></a></p></td>
 <td><p>TsyscalInputs defines the inputs for the Tsyscal pipeline task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.attrgetter.html#pipeline.h.tasks.tsyscal.tsyscal.attrgetter" title="pipeline.h.tasks.tsyscal.tsyscal.attrgetter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attrgetter</span></code></a></p></td>
+<td><p>attrgetter(attr, ...) --&gt; attrgetter object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.tsyscal.tsyscal.itemgetter.html#pipeline.h.tasks.tsyscal.tsyscal.itemgetter" title="pipeline.h.tasks.tsyscal.tsyscal.itemgetter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">itemgetter</span></code></a></p></td>
+<td><p>itemgetter(item, ...) --&gt; itemgetter object</p></td>
 </tr>
 </tbody>
 </table>

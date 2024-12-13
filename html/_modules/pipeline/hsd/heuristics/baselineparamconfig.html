@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -125,21 +125,21 @@
 
 
 <div class="viewcode-block" id="TRACE">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.TRACE.html#pipeline.hsd.heuristics.baselineparamconfig.TRACE">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.TRACE.html#pipeline.hsd.tasks.baseline.worker.TRACE">[docs]</a>
 <span class="k">def</span> <span class="nf">TRACE</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">LOGGING_LEVELS</span><span class="p">[</span><span class="s1">&#39;trace&#39;</span><span class="p">])</span></div>
 
 
 
 <div class="viewcode-block" id="DEBUG">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.DEBUG.html#pipeline.hsd.heuristics.baselineparamconfig.DEBUG">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.DEBUG.html#pipeline.hsd.tasks.baseline.worker.DEBUG">[docs]</a>
 <span class="k">def</span> <span class="nf">DEBUG</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">LOGGING_LEVELS</span><span class="p">[</span><span class="s1">&#39;debug&#39;</span><span class="p">])</span></div>
 
 
 
 <div class="viewcode-block" id="BaselineParamKeys">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.BaselineParamKeys.html#pipeline.hsd.tasks.baseline.worker.BaselineParamKeys">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineParamKeys</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">ROW</span> <span class="o">=</span> <span class="s1">&#39;row&#39;</span>
     <span class="n">POL</span> <span class="o">=</span> <span class="s1">&#39;pol&#39;</span>
@@ -162,7 +162,7 @@
 
 
 <div class="viewcode-block" id="write_blparam">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.write_blparam.html#pipeline.hsd.heuristics.baselineparamconfig.write_blparam">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.write_blparam.html#pipeline.hsd.tasks.baseline.worker.write_blparam">[docs]</a>
 <span class="k">def</span> <span class="nf">write_blparam</span><span class="p">(</span><span class="n">fileobj</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
     <span class="n">param_values</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">BLP</span><span class="p">:</span>
@@ -174,28 +174,28 @@
 
 
 <div class="viewcode-block" id="as_maskstring">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.as_maskstring.html#pipeline.hsd.heuristics.baselineparamconfig.as_maskstring">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.as_maskstring.html#pipeline.hsd.tasks.baseline.worker.as_maskstring">[docs]</a>
 <span class="k">def</span> <span class="nf">as_maskstring</span><span class="p">(</span><span class="n">masklist</span><span class="p">):</span>
     <span class="k">return</span> <span class="s1">&#39;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">~</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">masklist</span><span class="p">])</span></div>
 
 
 
 <div class="viewcode-block" id="no_switching">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.no_switching.html#pipeline.hsd.heuristics.baselineparamconfig.no_switching">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.no_switching.html#pipeline.hsd.tasks.baseline.worker.no_switching">[docs]</a>
 <span class="k">def</span> <span class="nf">no_switching</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">fitorder</span><span class="o">.</span><span class="n">FittingFunction</span><span class="o">.</span><span class="n">CSPLINE</span><span class="o">.</span><span class="n">blfunc</span><span class="p">,</span> <span class="mi">0</span></div>
 
 
 
 <div class="viewcode-block" id="do_switching">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.do_switching.html#pipeline.hsd.heuristics.baselineparamconfig.do_switching">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.do_switching.html#pipeline.hsd.tasks.baseline.worker.do_switching">[docs]</a>
 <span class="k">def</span> <span class="nf">do_switching</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">engine</span><span class="p">(</span><span class="n">nchan</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">num_pieces</span><span class="p">,</span> <span class="n">masklist</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="BaselineFitParamConfig">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineFitParamConfig.html#pipeline.hsd.tasks.baseline.worker.BaselineFitParamConfig">[docs]</a>
 <span class="k">class</span> <span class="nc">BaselineFitParamConfig</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate/update BLParam file according to the input parameters.</span>
@@ -254,7 +254,7 @@
         <span class="k">return</span> <span class="n">colname</span>
 
 <div class="viewcode-block" id="BaselineFitParamConfig.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.html#pipeline.hsd.heuristics.baselineparamconfig.BaselineFitParamConfig.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.tasks.baseline.worker.BaselineFitParamConfig.html#pipeline.hsd.tasks.baseline.worker.BaselineFitParamConfig.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatable</span><span class="p">:</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span>
                   <span class="n">rowmap</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                   <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fit_order</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>

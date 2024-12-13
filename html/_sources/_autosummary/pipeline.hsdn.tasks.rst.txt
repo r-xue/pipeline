@@ -13,6 +13,17 @@ pipeline.hsdn.tasks
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      NROExportData
+      NROImportData
+      NRORestoreData
+   
    
 
    

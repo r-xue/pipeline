@@ -21,6 +21,10 @@ pipeline.hif.tasks.bandpass.common
       :nosignatures:
    
       BandpassResults
+      CalApplication
+      CalFrom
+      CalToArgs
+      Context
       VdpCommonBandpassInputs
    
    

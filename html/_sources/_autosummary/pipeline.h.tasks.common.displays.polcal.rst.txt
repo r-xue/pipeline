@@ -23,7 +23,9 @@ pipeline.h.tasks.common.displays.polcal
       AmpVsAntennaChart
       AmpVsParangSummaryChart
       AmpVsScanChart
+      Context
       GainRatioRMSVsScanChart
+      MultipleLocator
       PhaseVsChannelChart
       RealVsImagChart
       XVsChannelDetailChart

@@ -21,6 +21,8 @@ pipeline.infrastructure.launcher
       :nosignatures:
    
       Context
+      ContextCreatedEvent
+      ContextResumedEvent
       Pipeline
    
    

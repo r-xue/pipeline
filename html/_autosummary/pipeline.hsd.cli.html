@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -113,42 +113,43 @@
   <section id="module-pipeline.hsd.cli">
 <span id="pipeline-hsd-cli"></span><h1>pipeline.hsd.cli<a class="headerlink" href="#module-pipeline.hsd.cli" title="Link to this heading"></a></h1>
 <p>ALMA Single Dish Tasks</p>
+<p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_applycal.html#module-pipeline.hsd.cli.hsd_applycal" title="pipeline.hsd.cli.hsd_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code></a>([vis, field, intent, spw, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_applycal.html#pipeline.hsd.cli.hsd_applycal" title="pipeline.hsd.cli.hsd_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_applycal</span></code></a></p></td>
 <td><p>Apply the calibration(s) to the data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_atmcor.html#module-pipeline.hsd.cli.hsd_atmcor" title="pipeline.hsd.cli.hsd_atmcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code></a>([atmtype, dtem_dh, h0, infiles, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_atmcor.html#pipeline.hsd.cli.hsd_atmcor" title="pipeline.hsd.cli.hsd_atmcor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_atmcor</span></code></a></p></td>
 <td><p>Apply offline ATM correction to the data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_baseline.html#module-pipeline.hsd.cli.hsd_baseline" title="pipeline.hsd.cli.hsd_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code></a>([fitfunc, fitorder, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_baseline.html#pipeline.hsd.cli.hsd_baseline" title="pipeline.hsd.cli.hsd_baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_baseline</span></code></a></p></td>
 <td><p>Detect and validate spectral lines, subtract baseline by masking detected lines.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_blflag.html#module-pipeline.hsd.cli.hsd_blflag" title="pipeline.hsd.cli.hsd_blflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code></a>([iteration, edge, flag_tsys, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_blflag.html#pipeline.hsd.cli.hsd_blflag" title="pipeline.hsd.cli.hsd_blflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_blflag</span></code></a></p></td>
 <td><p>Flag spectra based on predefined criteria of single dish pipeline.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_exportdata.html#module-pipeline.hsd.cli.hsd_exportdata" title="pipeline.hsd.cli.hsd_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code></a>([pprfile, targetimages, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_exportdata.html#pipeline.hsd.cli.hsd_exportdata" title="pipeline.hsd.cli.hsd_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_exportdata</span></code></a></p></td>
 <td><p>Prepare single dish data for export.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_flagdata.html#module-pipeline.hsd.cli.hsd_flagdata" title="pipeline.hsd.cli.hsd_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code></a>([vis, autocorr, shadow, scan, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_flagdata.html#pipeline.hsd.cli.hsd_flagdata" title="pipeline.hsd.cli.hsd_flagdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_flagdata</span></code></a></p></td>
 <td><p>Do basic flagging of a list of MeasurementSets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_imaging.html#module-pipeline.hsd.cli.hsd_imaging" title="pipeline.hsd.cli.hsd_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code></a>([mode, restfreq, infiles, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_imaging.html#pipeline.hsd.cli.hsd_imaging" title="pipeline.hsd.cli.hsd_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_imaging</span></code></a></p></td>
 <td><p>Generate single dish images.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_importdata.html#module-pipeline.hsd.cli.hsd_importdata" title="pipeline.hsd.cli.hsd_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code></a>([vis, session, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_importdata.html#pipeline.hsd.cli.hsd_importdata" title="pipeline.hsd.cli.hsd_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_importdata</span></code></a></p></td>
 <td><p>Imports data into the single dish pipeline.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_k2jycal.html#module-pipeline.hsd.cli.hsd_k2jycal" title="pipeline.hsd.cli.hsd_k2jycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code></a>([dbservice, endpoint, reffile, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_k2jycal.html#pipeline.hsd.cli.hsd_k2jycal" title="pipeline.hsd.cli.hsd_k2jycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_k2jycal</span></code></a></p></td>
 <td><p>Derive Kelvin to Jy calibration tables.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_restoredata.html#module-pipeline.hsd.cli.hsd_restoredata" title="pipeline.hsd.cli.hsd_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code></a>([vis, session, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_restoredata.html#pipeline.hsd.cli.hsd_restoredata" title="pipeline.hsd.cli.hsd_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_restoredata</span></code></a></p></td>
 <td><p>Restore flagged and calibration single dish data from a pipeline run.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_skycal.html#module-pipeline.hsd.cli.hsd_skycal" title="pipeline.hsd.cli.hsd_skycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code></a>([calmode, fraction, noff, width, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_skycal.html#pipeline.hsd.cli.hsd_skycal" title="pipeline.hsd.cli.hsd_skycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_skycal</span></code></a></p></td>
 <td><p>Calibrate data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_tsysflag.html#module-pipeline.hsd.cli.hsd_tsysflag" title="pipeline.hsd.cli.hsd_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code></a>([vis, caltable, flag_nmedian, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.cli.hsd_tsysflag.html#pipeline.hsd.cli.hsd_tsysflag" title="pipeline.hsd.cli.hsd_tsysflag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hsd_tsysflag</span></code></a></p></td>
 <td><p>Flag deviant system temperature measurements.</p></td>
 </tr>
 </tbody>

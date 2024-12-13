@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hif.cli.hif_makecutoutimages">
-<span id="pipeline-hif-cli-hif-makecutoutimages"></span><h1>pipeline.hif.cli.hif_makecutoutimages<a class="headerlink" href="#module-pipeline.hif.cli.hif_makecutoutimages" title="Link to this heading"></a></h1>
+  <section id="pipeline-hif-cli-hif-makecutoutimages">
+<h1>pipeline.hif.cli.hif_makecutoutimages<a class="headerlink" href="#pipeline-hif-cli-hif-makecutoutimages" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hif.cli.hif_makecutoutimages">
+<span class="sig-name descname"><span class="pre">hif_makecutoutimages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetblc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsettrc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makecutoutimages.html#hif_makecutoutimages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_makecutoutimages" title="Link to this definition"></a></dt>
+<dd><p>Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images</p>
+<p>Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs,
+or tar files of MSs.
+If ASDM files are specified, they will be converted to
+MS format.
+example: vis=[‘X227.ms’, ‘asdms.tar.gz’]</p></li>
+<li><p><strong>offsetblc</strong> – -x and -y offsets to the bottom lower corner (blc) in arcseconds</p></li>
+<li><p><strong>offsettrc</strong> – +x and +y offsets to the top right corner (trc) in arcseconds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Basic makecutoutimages task</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_makecutoutimages</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -112,7 +112,7 @@
 
 
 <div class="viewcode-block" id="is_ms">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.is_ms.html#pipeline.hsd.heuristics.sddatatype.is_ms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.is_ms.html#pipeline.hsd.heuristics.sdcaltype.is_ms">[docs]</a>
 <span class="k">def</span> <span class="nf">is_ms</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="n">table_info</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;table.info&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">table_info</span><span class="p">):</span>
@@ -124,7 +124,7 @@
 
 
 <div class="viewcode-block" id="DataTypeHeuristics">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.html#pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.DataTypeHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">DataTypeHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Examine type of the input data. Data types that are recognizable</span>
@@ -138,7 +138,7 @@
 <span class="sd">    Otherwise, the heuristics will return &#39;UNKNOWN&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="DataTypeHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.html#pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.sddatatype.DataTypeHeuristics.html#pipeline.hsd.heuristics.sdcaltype.DataTypeHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return data type of the file.</span>

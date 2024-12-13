@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -122,7 +122,7 @@
 
 
 <div class="viewcode-block" id="FlagtargetsdataInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.html#pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.html#pipeline.hifv.tasks.flagging.FlagtargetsdataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagtargetsdataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.</span>
 
@@ -173,7 +173,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filetemplate</span> <span class="o">=</span> <span class="n">filetemplate</span>
 
 <div class="viewcode-block" id="FlagtargetsdataInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.html#pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.html#pipeline.hifv.tasks.flagging.FlagtargetsdataInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the input parameters of this class to task parameters</span>
@@ -193,7 +193,7 @@
 
 
 <div class="viewcode-block" id="FlagtargetsdataResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults.html#pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults.html#pipeline.hifv.tasks.flagging.FlagtargetsdataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagtargetsdataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.</span>
 
@@ -215,7 +215,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span>
 
 <div class="viewcode-block" id="FlagtargetsdataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults.html#pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataResults.html#pipeline.hifv.tasks.flagging.FlagtargetsdataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -247,7 +247,7 @@
 
 
 <div class="viewcode-block" id="Flagtargetsdata">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.Flagtargetsdata">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_flagtargetsdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Flagtargetsdata&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Flagtargetsdata</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
@@ -259,7 +259,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagtargetsdataInputs</span>
 
 <div class="viewcode-block" id="Flagtargetsdata.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.Flagtargetsdata.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -291,7 +291,7 @@
 
 
 <div class="viewcode-block" id="Flagtargetsdata.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifv.tasks.flagging.flagtargetsdata.Flagtargetsdata.html#pipeline.hifv.tasks.flagging.Flagtargetsdata.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 

@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.cli.cli" href="pipeline.h.cli.cli.html" />
-    <link rel="prev" title="pipeline.h" href="pipeline.h.html" /> 
+    <link rel="next" title="pipeline.h.cli.h_applycal" href="pipeline.h.cli.h_applycal.html" />
+    <link rel="prev" title="pipeline.h.FailedTaskResults" href="pipeline.h.FailedTaskResults.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -113,51 +113,56 @@
   <section id="module-pipeline.h.cli">
 <span id="pipeline-h-cli"></span><h1>pipeline.h.cli<a class="headerlink" href="#module-pipeline.h.cli" title="Link to this heading"></a></h1>
 <p>Generic Tasks</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_applycal.html#pipeline.h.cli.h_applycal" title="pipeline.h.cli.h_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_applycal</span></code></a></p></td>
+<td><p>Apply the calibration(s) to the data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_export_calstate.html#pipeline.h.cli.h_export_calstate" title="pipeline.h.cli.h_export_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_export_calstate</span></code></a></p></td>
+<td><p>Save the pipeline calibration state to disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_exportdata.html#pipeline.h.cli.h_exportdata" title="pipeline.h.cli.h_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_exportdata</span></code></a></p></td>
+<td><p>Prepare interferometry data for export</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_import_calstate.html#pipeline.h.cli.h_import_calstate" title="pipeline.h.cli.h_import_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_import_calstate</span></code></a></p></td>
+<td><p>Import a calibration state from disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_importdata.html#pipeline.h.cli.h_importdata" title="pipeline.h.cli.h_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_importdata</span></code></a></p></td>
+<td><p>Imports data into the interferometry pipeline</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_init.html#pipeline.h.cli.h_init" title="pipeline.h.cli.h_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code></a></p></td>
+<td><p>Initialize the pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_mssplit.html#pipeline.h.cli.h_mssplit" title="pipeline.h.cli.h_mssplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_mssplit</span></code></a></p></td>
+<td><p>Select data from calibrated MS(s) to form new MS(s) for imaging</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_restoredata.html#pipeline.h.cli.h_restoredata" title="pipeline.h.cli.h_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_restoredata</span></code></a></p></td>
+<td><p>Restore flags and calibration state from a pipeline run</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_resume.html#pipeline.h.cli.h_resume" title="pipeline.h.cli.h_resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code></a></p></td>
+<td><p>Restore a saved pipeline state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_save.html#pipeline.h.cli.h_save" title="pipeline.h.cli.h_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code></a></p></td>
+<td><p>Save the pipeline state to disk</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_show_calstate.html#pipeline.h.cli.h_show_calstate" title="pipeline.h.cli.h_show_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_show_calstate</span></code></a></p></td>
+<td><p>Show the current pipeline calibration state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_tsyscal.html#pipeline.h.cli.h_tsyscal" title="pipeline.h.cli.h_tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_tsyscal</span></code></a></p></td>
+<td><p>Derive a Tsys calibration table</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_weblog.html#pipeline.h.cli.h_weblog" title="pipeline.h.cli.h_weblog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_weblog</span></code></a></p></td>
+<td><p>Open the pipeline weblog in a browser</p></td>
+</tr>
+</tbody>
+</table>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.cli.html#module-pipeline.h.cli.cli" title="pipeline.h.cli.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_applycal.html#module-pipeline.h.cli.h_applycal" title="pipeline.h.cli.h_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_applycal</span></code></a>([vis, field, intent, spw, ...])</p></td>
-<td><p>Apply the calibration(s) to the data</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_export_calstate.html#module-pipeline.h.cli.h_export_calstate" title="pipeline.h.cli.h_export_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_export_calstate</span></code></a>([filename, state])</p></td>
-<td><p>Save the pipeline calibration state to disk</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_exportdata.html#module-pipeline.h.cli.h_exportdata" title="pipeline.h.cli.h_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_exportdata</span></code></a>([vis, session, ...])</p></td>
-<td><p>Prepare interferometry data for export</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_import_calstate.html#module-pipeline.h.cli.h_import_calstate" title="pipeline.h.cli.h_import_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_import_calstate</span></code></a>(filename)</p></td>
-<td><p>Import a calibration state from disk</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_importdata.html#module-pipeline.h.cli.h_importdata" title="pipeline.h.cli.h_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_importdata</span></code></a>([vis, session, asis, ...])</p></td>
-<td><p>Imports data into the interferometry pipeline</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_init.html#module-pipeline.h.cli.h_init" title="pipeline.h.cli.h_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code></a>([loglevel, plotlevel, weblog])</p></td>
-<td><p>Initialize the pipeline</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_mssplit.html#module-pipeline.h.cli.h_mssplit" title="pipeline.h.cli.h_mssplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_mssplit</span></code></a>([vis, outputvis, field, intent, ...])</p></td>
-<td><p>Select data from calibrated MS(s) to form new MS(s) for imaging</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_restoredata.html#module-pipeline.h.cli.h_restoredata" title="pipeline.h.cli.h_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_restoredata</span></code></a>([vis, session, products_dir, ...])</p></td>
-<td><p>Restore flags and calibration state from a pipeline run</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_resume.html#module-pipeline.h.cli.h_resume" title="pipeline.h.cli.h_resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code></a>([filename])</p></td>
-<td><p>Restore a saved pipeline state</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_save.html#module-pipeline.h.cli.h_save" title="pipeline.h.cli.h_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code></a>([filename])</p></td>
-<td><p>Save the pipeline state to disk</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_show_calstate.html#module-pipeline.h.cli.h_show_calstate" title="pipeline.h.cli.h_show_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_show_calstate</span></code></a>()</p></td>
-<td><p>Show the current pipeline calibration state</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_tsyscal.html#module-pipeline.h.cli.h_tsyscal" title="pipeline.h.cli.h_tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_tsyscal</span></code></a>([vis, caltable, chantol])</p></td>
-<td><p>Derive a Tsys calibration table</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_weblog.html#module-pipeline.h.cli.h_weblog" title="pipeline.h.cli.h_weblog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_weblog</span></code></a>([relpath])</p></td>
-<td><p>Open the pipeline weblog in a browser</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.utils.html#module-pipeline.h.cli.utils" title="pipeline.h.cli.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utils</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.utils.html#module-pipeline.h.cli.utils" title="pipeline.h.cli.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">utils</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -168,8 +173,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.h.html" class="btn btn-neutral float-left" title="pipeline.h" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.cli.cli.html" class="btn btn-neutral float-right" title="pipeline.h.cli.cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.FailedTaskResults.html" class="btn btn-neutral float-left" title="pipeline.h.FailedTaskResults" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.cli.h_applycal.html" class="btn btn-neutral float-right" title="pipeline.h.cli.h_applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,51 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hsd.cli.hsd_imaging">
-<span id="pipeline-hsd-cli-hsd-imaging"></span><h1>pipeline.hsd.cli.hsd_imaging<a class="headerlink" href="#module-pipeline.hsd.cli.hsd_imaging" title="Link to this heading"></a></h1>
+  <section id="pipeline-hsd-cli-hsd-imaging">
+<h1>pipeline.hsd.cli.hsd_imaging<a class="headerlink" href="#pipeline-hsd-cli-hsd-imaging" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_imaging">
+<span class="sig-name descname"><span class="pre">hsd_imaging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restfreq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_imaging.html#hsd_imaging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_imaging" title="Link to this definition"></a></dt>
+<dd><p>Generate single dish images.</p>
+<p>The hsd_imaging task generates single dish images per antenna as
+well as combined image over whole antennas for each field and
+spectral window. Image configuration (grid size, number of pixels,
+etc.) is automatically determined based on meta data such as
+antenna diameter, map extent, etc.</p>
+<p>Note that generated images are always in LSRK frame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> – Imaging mode controls imaging parameters in the task. Accepts either “line” (spectral line imaging) or “ampcal”
+(image settings for amplitude calibrator).</p></li>
+<li><p><strong>restfreq</strong> – Rest frequency</p></li>
+<li><p><strong>infiles</strong> – List of data files. These must be a name of MeasurementSets that are registered to context via
+hsd_importdata task.
+example: vis=[‘uid___A002_X85c183_X36f.ms’,
+‘uid___A002_X85c183_X60b.ms’]</p></li>
+<li><p><strong>field</strong> – Data selection by field names or ids. example: “<cite>*Sgr*,M100</cite>”</p></li>
+<li><p><strong>spw</strong> – Data selection by spw ids. example: “3,4” (generate images for spw 3 and 4)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Generate images with default settings and context</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">()</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Generate images with amplitude calibrator and specific parameters</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_imaging</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ampcal&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;*Sgr*,M100&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;17,19&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

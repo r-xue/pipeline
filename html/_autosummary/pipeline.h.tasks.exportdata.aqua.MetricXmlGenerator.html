@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.tasks.exportdata.exportdata" href="pipeline.h.tasks.exportdata.exportdata.html" />
+    <link rel="next" title="pipeline.h.tasks.exportdata.aqua.QAScore" href="pipeline.h.tasks.exportdata.aqua.QAScore.html" />
     <link rel="prev" title="pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator" href="pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,16 +57,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.h.html">pipeline.h</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTask.html">pipeline.h.FailedTask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.h.FailedTaskResults.html">pipeline.h.FailedTaskResults</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.cli.html">pipeline.h.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.h.heuristics.html">pipeline.h.heuristics</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="pipeline.h.tasks.html">pipeline.h.tasks</a></li>
@@ -119,7 +125,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -168,7 +174,7 @@
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qa_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.pipelineqa.QAScore.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/exportdata/aqua.html#MetricXmlGenerator.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.__call__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qa_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.pipelineqa.QAScore.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Element.html#pipeline.hsd.tasks.exportdata.almasdaqua.Element" title="xml.etree.ElementTree.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/exportdata/aqua.html#MetricXmlGenerator.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.__call__" title="Link to this definition"></a></dt>
 <dd><p>Call self as a function.</p>
 </dd></dl>
 
@@ -202,7 +208,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.to_xml">
-<span class="sig-name descname"><span class="pre">to_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qa_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.pipelineqa.QAScore.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/exportdata/aqua.html#MetricXmlGenerator.to_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.to_xml" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qa_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.pipelineqa.QAScore.html#pipeline.infrastructure.pipelineqa.QAScore" title="pipeline.infrastructure.pipelineqa.QAScore"><span class="pre">QAScore</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Element.html#pipeline.hsd.tasks.exportdata.almasdaqua.Element" title="xml.etree.ElementTree.Element"><span class="pre">Element</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/h/tasks/exportdata/aqua.html#MetricXmlGenerator.to_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.exportdata.aqua.MetricXmlGenerator.to_xml" title="Link to this definition"></a></dt>
 <dd><p>Return the XML representation of a QA score and associated metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -212,7 +218,7 @@
 <dd class="field-even"><p>XML element</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>xml.etree.ElementTree.Element</p>
+<dd class="field-odd"><p><a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Element.html#pipeline.hsd.tasks.exportdata.almasdaqua.Element" title="xml.etree.ElementTree.Element">xml.etree.ElementTree.Element</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -226,7 +232,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator.html" class="btn btn-neutral float-left" title="pipeline.h.tasks.exportdata.aqua.LowestScoreMetricXmlGenerator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.tasks.exportdata.exportdata.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.exportdata.exportdata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.h.tasks.exportdata.aqua.QAScore.html" class="btn btn-neutral float-right" title="pipeline.h.tasks.exportdata.aqua.QAScore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

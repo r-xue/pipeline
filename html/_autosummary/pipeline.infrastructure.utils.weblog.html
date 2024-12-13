@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.infrastructure.utils.weblog.get_intervals" href="pipeline.infrastructure.utils.weblog.get_intervals.html" />
+    <link rel="next" title="pipeline.infrastructure.utils.weblog.flatten" href="pipeline.infrastructure.utils.weblog.flatten.html" />
     <link rel="prev" title="pipeline.infrastructure.utils.utils.pl_defaultdict" href="pipeline.infrastructure.utils.utils.pl_defaultdict.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +78,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +165,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -182,14 +195,20 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_intervals.html#pipeline.infrastructure.utils.weblog.get_intervals" title="pipeline.infrastructure.utils.weblog.get_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_intervals</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.flatten.html#pipeline.infrastructure.utils.weblog.flatten" title="pipeline.infrastructure.utils.weblog.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a></p></td>
+<td><p>Flatten a list of lists into a single list without pipelineaq.QAScore.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_intervals.html#pipeline.infrastructure.utils.weblog.get_intervals" title="pipeline.infrastructure.utils.weblog.get_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_intervals</span></code></a></p></td>
 <td><p>Get the integration intervals for scans processed by a calibration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_logrecords.html#pipeline.infrastructure.utils.weblog.get_logrecords" title="pipeline.infrastructure.utils.weblog.get_logrecords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logrecords</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_logrecords.html#pipeline.infrastructure.utils.weblog.get_logrecords" title="pipeline.infrastructure.utils.weblog.get_logrecords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logrecords</span></code></a></p></td>
 <td><p>Get the logrecords for the result, removing any duplicates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_vis_from_plots.html#pipeline.infrastructure.utils.weblog.get_vis_from_plots" title="pipeline.infrastructure.utils.weblog.get_vis_from_plots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vis_from_plots</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.get_vis_from_plots.html#pipeline.infrastructure.utils.weblog.get_vis_from_plots" title="pipeline.infrastructure.utils.weblog.get_vis_from_plots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vis_from_plots</span></code></a></p></td>
 <td><p>Get the name to be used for the MS from the given plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.list_to_str.html#pipeline.infrastructure.utils.weblog.list_to_str" title="pipeline.infrastructure.utils.weblog.list_to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_to_str</span></code></a></p></td>
+<td><p>Convert list or numpy.ndarray into string.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.merge_td_columns.html#pipeline.infrastructure.utils.weblog.merge_td_columns" title="pipeline.infrastructure.utils.weblog.merge_td_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_td_columns</span></code></a></p></td>
 <td><p>Merge HTML TD columns with identical values using rowspan.</p></td>
@@ -200,16 +219,25 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.plots_to_html.html#pipeline.infrastructure.utils.weblog.plots_to_html" title="pipeline.infrastructure.utils.weblog.plots_to_html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plots_to_html</span></code></a></p></td>
 <td><p>Convert a list of plots to HTML snippets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.scale_uv_range.html#pipeline.infrastructure.utils.weblog.scale_uv_range" title="pipeline.infrastructure.utils.weblog.scale_uv_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_uv_range</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.reduce.html#pipeline.infrastructure.utils.weblog.reduce" title="pipeline.infrastructure.utils.weblog.reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce</span></code></a></p></td>
+<td><p>Apply a function of two arguments cumulatively to the items of a sequence or iterable, from left to right, so as to reduce the iterable to a single value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.scale_uv_range.html#pipeline.infrastructure.utils.weblog.scale_uv_range" title="pipeline.infrastructure.utils.weblog.scale_uv_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_uv_range</span></code></a></p></td>
 <td><p>Return the UV range that captures the inner half of the data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.spw_arg_to_id.html#pipeline.infrastructure.utils.weblog.spw_arg_to_id" title="pipeline.infrastructure.utils.weblog.spw_arg_to_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw_arg_to_id</span></code></a></p></td>
+<td><p>Convert a string to spectral window IDs and channels.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.table_to_html.html#pipeline.infrastructure.utils.weblog.table_to_html" title="pipeline.infrastructure.utils.weblog.table_to_html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table_to_html</span></code></a></p></td>
 <td><p>Convert a astropy.table.Table object to an HTML table snippet.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.total_time_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_source" title="pipeline.infrastructure.utils.weblog.total_time_on_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_source</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.to_pipeline_intent.html#pipeline.infrastructure.utils.weblog.to_pipeline_intent" title="pipeline.infrastructure.utils.weblog.to_pipeline_intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pipeline_intent</span></code></a></p></td>
+<td><p>Convert CASA intents to pipeline intents.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.total_time_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_source" title="pipeline.infrastructure.utils.weblog.total_time_on_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_source</span></code></a></p></td>
 <td><p>Return the total time on source for the given Scans.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.total_time_on_target_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_target_on_source" title="pipeline.infrastructure.utils.weblog.total_time_on_target_on_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_target_on_source</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.total_time_on_target_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_target_on_source" title="pipeline.infrastructure.utils.weblog.total_time_on_target_on_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">total_time_on_target_on_source</span></code></a></p></td>
 <td><p>Return the nominal total time on target source for the given MeasurementSet excluding OFF-source integrations (REFERENCE).</p></td>
 </tr>
 </tbody>
@@ -217,8 +245,11 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.OrderedDefaultdict.html#pipeline.infrastructure.utils.weblog.OrderedDefaultdict" title="pipeline.infrastructure.utils.weblog.OrderedDefaultdict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDefaultdict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.OrderedDefaultdict.html#pipeline.infrastructure.utils.OrderedDefaultdict" title="pipeline.infrastructure.utils.weblog.OrderedDefaultdict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDefaultdict</span></code></a></p></td>
 <td><p>This class behaves as defaultdict from the collections module but maintaining the order of insertion.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.utils.weblog.QTable.html#pipeline.infrastructure.utils.weblog.QTable" title="pipeline.infrastructure.utils.weblog.QTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QTable</span></code></a></p></td>
+<td><p>A class to represent tables of heterogeneous data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -229,7 +260,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.infrastructure.utils.utils.pl_defaultdict.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.utils.utils.pl_defaultdict" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.infrastructure.utils.weblog.get_intervals.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.utils.weblog.get_intervals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.infrastructure.utils.weblog.flatten.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.utils.weblog.flatten" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

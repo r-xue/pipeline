@@ -40,6 +40,7 @@ pipeline.hifa.tasks.applycal.qa
       ALMAApplycalListQAHandler
       ALMAApplycalQAHandler
       DataSelection
+      MeasurementSet
       PIPE356Switches
       QAMessage
    

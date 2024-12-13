@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -132,7 +132,7 @@
 
 
 <div class="viewcode-block" id="run_bdsf">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.run_bdsf.html#pipeline.hifv.heuristics.vip_helper_functions.run_bdsf">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.vlassmasking.vlassmasking.run_bdsf.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.run_bdsf">[docs]</a>
 <span class="k">def</span> <span class="nf">run_bdsf</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect bright point sources and blobs on map.</span>
@@ -167,7 +167,7 @@
 
 
 <div class="viewcode-block" id="mask_from_catalog">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog.html#pipeline.hifv.heuristics.vip_helper_functions.mask_from_catalog">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.vlassmasking.vlassmasking.mask_from_catalog.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.mask_from_catalog">[docs]</a>
 <span class="k">def</span> <span class="nf">mask_from_catalog</span><span class="p">(</span><span class="n">inext</span><span class="o">=</span><span class="s1">&#39;iter0.model.tt0&#39;</span><span class="p">,</span> <span class="n">outext</span><span class="o">=</span><span class="s2">&quot;mask_from_cat.mask&quot;</span><span class="p">,</span>
                       <span class="n">catalog_fits_file</span><span class="o">=</span><span class="s1">&#39;/home/vlass/packages/VLASS1Q.fits&#39;</span><span class="p">,</span>
                       <span class="n">catalog_search_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">mask_shape</span><span class="o">=</span><span class="p">[],</span> <span class="n">frequency</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -409,7 +409,7 @@
 
 
 <div class="viewcode-block" id="edit_pybdsf_islands">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands.html#pipeline.hifv.heuristics.vip_helper_functions.edit_pybdsf_islands">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.tasks.vlassmasking.vlassmasking.edit_pybdsf_islands.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.edit_pybdsf_islands">[docs]</a>
 <span class="k">def</span> <span class="nf">edit_pybdsf_islands</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">r_squared_threshold</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
                         <span class="n">n_gauss_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gauss_size_threshold</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                         <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -542,7 +542,7 @@
 
 
 <div class="viewcode-block" id="cat_to_ds9_rgn">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn.html#pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.cat_to_ds9_rgn.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.cat_to_ds9_rgn">[docs]</a>
 <span class="k">def</span> <span class="nf">cat_to_ds9_rgn</span><span class="p">(</span><span class="n">catalog_fits_file</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;ds9.reg&#39;</span><span class="p">,</span> <span class="n">region_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write each component to a ds9 region</span>
@@ -573,7 +573,7 @@
 
 
 <div class="viewcode-block" id="Timer">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.heuristics.vip_helper_functions.Timer">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Timer">[docs]</a>
 <span class="k">class</span> <span class="nc">Timer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Contextualisable class for simple runtime measurement.</span>
@@ -584,7 +584,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Timer.start">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.start">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Timer.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Start timer.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">:</span>
@@ -593,7 +593,7 @@
 
 
 <div class="viewcode-block" id="Timer.stop">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.heuristics.vip_helper_functions.Timer.stop">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.heuristics.vip_helper_functions.Timer.html#pipeline.hifv.tasks.vlassmasking.vlassmasking.Timer.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop timer and return elapsed time.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">:</span>

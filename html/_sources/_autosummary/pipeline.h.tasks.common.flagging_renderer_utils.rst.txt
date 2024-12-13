@@ -32,7 +32,9 @@ pipeline.h.tasks.common.flagging\_renderer\_utils
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
       FlagTotal
+      MeasurementSet
    
    
 

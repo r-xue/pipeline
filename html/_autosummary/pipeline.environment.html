@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,15 +57,23 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline.environment</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.cluster_details.html">pipeline.environment.cluster_details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.compare_casa_version.html">pipeline.environment.compare_casa_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.find_spec.html">pipeline.environment.find_spec</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.get_version_string_from_git.html">pipeline.environment.get_version_string_from_git</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.version.html">pipeline.environment.version</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.CGroupController.html">pipeline.environment.CGroupController</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.CGroupControllerParser.html">pipeline.environment.CGroupControllerParser</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.CGroupLimit.html">pipeline.environment.CGroupLimit</a></li>
@@ -73,7 +81,11 @@
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.Environment.html">pipeline.environment.Environment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.EnvironmentFactory.html">pipeline.environment.EnvironmentFactory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.LinuxEnvironment.html">pipeline.environment.LinuxEnvironment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.MPIEnvironment.html">pipeline.environment.MPIEnvironment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.environment.MacOSEnvironment.html">pipeline.environment.MacOSEnvironment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.Path.html">pipeline.environment.Path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.StringIO.html">pipeline.environment.StringIO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.environment.PackageNotFoundError.html">pipeline.environment.PackageNotFoundError</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
@@ -124,7 +136,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -155,6 +167,18 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.cluster_details.html#pipeline.environment.cluster_details" title="pipeline.environment.cluster_details"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cluster_details</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.environment.compare_casa_version.html#pipeline.environment.compare_casa_version" title="pipeline.environment.compare_casa_version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_casa_version</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.find_spec.html#pipeline.environment.find_spec" title="pipeline.environment.find_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_spec</span></code></a></p></td>
+<td><p>Return the spec for the specified module.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.environment.get_version_string_from_git.html#pipeline.environment.get_version_string_from_git" title="pipeline.environment.get_version_string_from_git"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_version_string_from_git</span></code></a></p></td>
+<td><p>Retrieves the version of the package based on Git repository information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.version.html#pipeline.environment.version" title="pipeline.environment.version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">version</span></code></a></p></td>
+<td><p>Get the version string for the named package.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -181,8 +205,25 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.LinuxEnvironment.html#pipeline.environment.LinuxEnvironment" title="pipeline.environment.LinuxEnvironment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinuxEnvironment</span></code></a></p></td>
 <td><p>LinuxEnvironment adds the Environment properties missing from a CommonEnvironment using methods that are specific to Linux.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.environment.MacOSEnvironment.html#pipeline.environment.MacOSEnvironment" title="pipeline.environment.MacOSEnvironment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MacOSEnvironment</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.environment.MPIEnvironment.html#pipeline.environment.MPIEnvironment" title="pipeline.environment.MPIEnvironment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MPIEnvironment</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.MacOSEnvironment.html#pipeline.environment.MacOSEnvironment" title="pipeline.environment.MacOSEnvironment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MacOSEnvironment</span></code></a></p></td>
 <td><p>MacOSEnvironment adds environment properties missing from a CommonEnvironment using methods that are specific to MacOS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.environment.Path.html#pipeline.environment.Path" title="pipeline.environment.Path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Path</span></code></a></p></td>
+<td><p>PurePath subclass that can make system calls.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.StringIO.html#pipeline.environment.StringIO" title="pipeline.environment.StringIO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StringIO</span></code></a></p></td>
+<td><p>Text I/O implementation using an in-memory buffer.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Exceptions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.environment.PackageNotFoundError.html#pipeline.environment.PackageNotFoundError" title="pipeline.environment.PackageNotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PackageNotFoundError</span></code></a></p></td>
+<td><p>The package was not found.</p></td>
 </tr>
 </tbody>
 </table>

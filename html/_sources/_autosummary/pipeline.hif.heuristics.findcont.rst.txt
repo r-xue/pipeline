@@ -9,6 +9,16 @@ pipeline.hif.heuristics.findcont
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      countChannelsInRanges
+      findContinuum
+      numberOfChannelsInCube
+   
    
 
    

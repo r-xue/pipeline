@@ -24,7 +24,9 @@ pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag
       WvrgcalflagData
       WvrgcalflagDataInputs
       WvrgcalflagInputs
+      WvrgcalflagResults
       WvrgcalflagView
+      WvrgcalflagViewResults
    
    
 

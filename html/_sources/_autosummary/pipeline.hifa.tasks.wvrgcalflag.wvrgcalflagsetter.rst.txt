@@ -20,6 +20,7 @@ pipeline.hifa.tasks.wvrgcalflag.wvrgcalflagsetter
       :template: custom-class-template.rst
       :nosignatures:
    
+      FlagCmd
       WvrgcalFlagSetter
       WvrgcalFlagSetterInputs
       WvrgcalFlagSetterResult

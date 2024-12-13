@@ -9,6 +9,14 @@ pipeline.hifa.tasks.common.displays.phaseoffset
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      reduce
+   
    
 
    

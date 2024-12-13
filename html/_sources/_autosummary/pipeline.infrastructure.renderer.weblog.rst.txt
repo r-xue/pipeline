@@ -29,6 +29,7 @@ pipeline.infrastructure.renderer.weblog
       :template: custom-class-template.rst
       :nosignatures:
    
+      RendererRegistry
       WebLogRendererRegistry
    
    

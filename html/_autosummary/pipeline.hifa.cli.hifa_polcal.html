@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifa.cli.hifa_polcal">
-<span id="pipeline-hifa-cli-hifa-polcal"></span><h1>pipeline.hifa.cli.hifa_polcal<a class="headerlink" href="#module-pipeline.hifa.cli.hifa_polcal" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifa-cli-hifa-polcal">
+<h1>pipeline.hifa.cli.hifa_polcal<a class="headerlink" href="#pipeline-hifa-cli-hifa-polcal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_polcal">
+<span class="sig-name descname"><span class="pre">hifa_polcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minpacov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solint_chavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_polcal.html#hifa_polcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_polcal" title="Link to this definition"></a></dt>
+<dd><p>Derive instrumental polarization calibration for ALMA.</p>
+<p>Derive the instrumental polarization calibrations for ALMA using the
+polarization calibrators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+MeasurementSets specified in the pipeline context.
+Example: [‘M32A.ms’, ‘M32B.ms’]</p></li>
+<li><p><strong>minpacov</strong> – Minimum Parallactic Angle Coverage (degrees) required for
+Q, U estimation in task polfromgain. This enables avoiding
+pathological cases of antennas with insufficient parallactic
+angle coverage which can yield spurious source polarization
+solutions or cause polfromgain to fail to find any
+solutions.
+Default: 30.0</p></li>
+<li><p><strong>solint_chavg</strong> – Channel averaging to include in solint for gaincal steps
+producing cross-hand delay, cross-hand phase, and leakage
+(D-terms) solutions.
+Default: ‘5MHz’</p></li>
+<li><p><strong>vs_stats</strong> – List of visstat statistics to use for diagnostic comparison
+between the concatenated session MS and individual MSes in
+that session after applying polarization calibration tables.
+Default: [‘min’,’max’,’mean’]</p></li>
+<li><p><strong>vs_thresh</strong> – Threshold to use in diagnostic comparison of visstat
+statistics; relative differences larger than this threshold
+are reported in the CASA log.
+Default: 1e-3</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Compute the polarization calibrations:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_polcal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

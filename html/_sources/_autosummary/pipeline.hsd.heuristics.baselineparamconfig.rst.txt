@@ -36,6 +36,8 @@ pipeline.hsd.heuristics.baselineparamconfig
       BLP
       BaselineFitParamConfig
       BaselineParamKeys
+      DataTable
+      MeasurementSet
    
    
 

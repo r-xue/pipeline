@@ -24,14 +24,14 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic" href="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic.html" />
-    <link rel="prev" title="pipeline.hsd.tasks.baseline" href="pipeline.hsd.tasks.baseline.html" /> 
+    <link rel="prev" title="pipeline.hsd.tasks.baseline.SDBaseline" href="pipeline.hsd.tasks.baseline.SDBaseline.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -153,7 +157,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic.html#pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic" title="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deviation_mask_heuristic</span></code></a></p></td>
 <td><p>Prepare task instance that can be executed in mpihelpers framework.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic.html#pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic" title="pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_deviation_mask_heuristic</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.generate_ms.html#pipeline.hsd.tasks.baseline.baseline.generate_ms" title="pipeline.hsd.tasks.baseline.baseline.generate_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_ms</span></code></a></p></td>
+<td><p>Generate MeasurementSet (MS) domain object of a new MS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.inspect_reduction_group.html#pipeline.hsd.tasks.baseline.baseline.inspect_reduction_group" title="pipeline.hsd.tasks.baseline.baseline.inspect_reduction_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspect_reduction_group</span></code></a></p></td>
+<td><p>Inspect MS and define Reduction Group Description of the MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.merge_reduction_group.html#pipeline.hsd.tasks.baseline.baseline.merge_reduction_group" title="pipeline.hsd.tasks.baseline.baseline.merge_reduction_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_reduction_group</span></code></a></p></td>
+<td><p>Merge a reduction group description to observing_run in context.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic.html#pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic" title="pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_deviation_mask_heuristic</span></code></a></p></td>
 <td><p>Test deviation mask heuristic.</p></td>
 </tr>
 </tbody>
@@ -161,19 +174,28 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask" title="pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviationMaskHeuristicsTask</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.DataType.html#pipeline.hsd.tasks.baseline.baseline.DataType" title="pipeline.hsd.tasks.baseline.baseline.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a></p></td>
+<td><p>A class to define DataType enum.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask" title="pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviationMaskHeuristicsTask</span></code></a></p></td>
 <td><p>Executor class specialized to MaskDeviationHeuristic.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.baseline.baseline.HeuristicsTask" title="pipeline.hsd.tasks.baseline.baseline.HeuristicsTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HeuristicsTask</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.baseline.baseline.HeuristicsTask" title="pipeline.hsd.tasks.baseline.baseline.HeuristicsTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HeuristicsTask</span></code></a></p></td>
 <td><p>Executor for heuristics class.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.SDBaseline.html#pipeline.hsd.tasks.baseline.baseline.SDBaseline" title="pipeline.hsd.tasks.baseline.baseline.SDBaseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaseline</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.MSReductionGroupDesc.html#pipeline.hsd.tasks.baseline.baseline.MSReductionGroupDesc" title="pipeline.hsd.tasks.baseline.baseline.MSReductionGroupDesc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MSReductionGroupDesc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic.html#pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic" title="pipeline.hsd.tasks.baseline.baseline.MaskDeviationHeuristic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MaskDeviationHeuristic</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline" title="pipeline.hsd.tasks.baseline.baseline.SDBaseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaseline</span></code></a></p></td>
 <td><p>Baseline subtraction task.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs" title="pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineInputs</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs" title="pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineInputs</span></code></a></p></td>
 <td><p>Inputs for baseline subtraction task.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineResults" title="pipeline.hsd.tasks.baseline.baseline.SDBaselineResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineResults</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.baseline.baseline.SDBaselineResults" title="pipeline.hsd.tasks.baseline.baseline.SDBaselineResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SDBaselineResults</span></code></a></p></td>
 <td><p>Results class to hold the result of baseline subtraction task.</p></td>
 </tr>
 </tbody>
@@ -184,7 +206,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hsd.tasks.baseline.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baseline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hsd.tasks.baseline.SDBaseline.html" class="btn btn-neutral float-left" title="pipeline.hsd.tasks.baseline.SDBaseline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic.html" class="btn btn-neutral float-right" title="pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

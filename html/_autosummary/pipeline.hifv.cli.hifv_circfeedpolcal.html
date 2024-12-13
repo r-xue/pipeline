@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_circfeedpolcal">
-<span id="pipeline-hifv-cli-hifv-circfeedpolcal"></span><h1>pipeline.hifv.cli.hifv_circfeedpolcal<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_circfeedpolcal" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-circfeedpolcal">
+<h1>pipeline.hifv.cli.hifv_circfeedpolcal<a class="headerlink" href="#pipeline-hifv-cli-hifv-circfeedpolcal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_circfeedpolcal">
+<span class="sig-name descname"><span class="pre">hifv_circfeedpolcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dterm_solint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leakage_poltype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mbdkcross</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clipminmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_setjy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_circfeedpolcal.html#hifv_circfeedpolcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_circfeedpolcal" title="Link to this definition"></a></dt>
+<dd><p>Perform polarization calibration for VLA circular feeds.</p>
+<p>Only validated for VLA sky survey data in S-band continuum mode with 3C138
+or 3C286 as polarization angle. Requires that all polarization intents are
+properly set during observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input visibility data.</p></li>
+<li><p><strong>Dterm_solint</strong> – D-terms spectral averaging.  Example:  refantignore=’ea02,ea03’.</p></li>
+<li><p><strong>refantignore</strong> – String list of antennas to ignore.</p></li>
+<li><p><strong>leakage_poltype</strong> – poltype to use in first polcal execution - blank string means use default heuristics.</p></li>
+<li><p><strong>mbdkcross</strong> – Run gaincal KCROSS grouped by baseband.</p></li>
+<li><p><strong>clipminmax</strong> – Acceptable range for leakage amplitudes, values outside will be flagged.</p></li>
+<li><p><strong>refant</strong> – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>. Example: refant = ‘ea01, ea02’</p></li>
+<li><p><strong>run_setjy</strong> – Run setjy for amplitude/flux calibrator, default set to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Basic circfeedpolcal task:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_circfeedpolcal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

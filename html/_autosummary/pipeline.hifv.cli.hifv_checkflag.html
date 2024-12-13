@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,69 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.cli.hifv_checkflag">
-<span id="pipeline-hifv-cli-hifv-checkflag"></span><h1>pipeline.hifv.cli.hifv_checkflag<a class="headerlink" href="#module-pipeline.hifv.cli.hifv_checkflag" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-cli-hifv-checkflag">
+<h1>pipeline.hifv.cli.hifv_checkflag<a class="headerlink" href="#pipeline-hifv-cli-hifv-checkflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_checkflag">
+<span class="sig-name descname"><span class="pre">hifv_checkflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkflagmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_modelcol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_checkflag.html#hifv_checkflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_checkflag" title="Link to this definition"></a></dt>
+<dd><p>Run RFI flagging using flagdata in various modes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
+<li><p><strong>checkflagmode</strong> –</p>
+<ul>
+<li><p>Standard VLA modes with improved RFI flagging heuristics: ‘bpd-vla’, ‘allcals-vla’, ‘target-vla’</p></li>
+<li><p>blank string default use of rflag on bandpass and delay calibrators</p></li>
+<li><p>use string ‘semi’ after hifv_semiFinalBPdcals() for executing rflag on calibrators</p></li>
+<li><p>use string ‘bpd’, for the bandpass and delay calibrators:
+execute rflag on all calibrated cross-hand corrected data;
+extend flags to all correlations
+execute rflag on all calibrated parallel-hand residual data;
+extend flags to all correlations
+execute tfcrop on all calibrated cross-hand corrected data,
+per visibility; extend flags to all correlations
+execute tfcrop on all calibrated parallel-hand corrected data,
+per visibility; extend flags to all correlations</p></li>
+<li><p>use string ‘allcals’, for all the other calibrators, with delays and BPcal applied:
+similar procedure as ‘bpd’ mode, but uses corrected data throughout</p></li>
+<li><p>use string ‘target’, for the target data:
+similar procedure as ‘allcals’ mode, but with a higher SNR cutoff
+for rflag to avoid flagging data due to source structure, and
+with an additional series of tfcrop executions to make up for
+the higher SNR cutoff in rflag</p></li>
+<li><p>VLASS specific modes include ‘bpd-vlass’, ‘allcals-vlass’, and ‘target-vlass’
+which calculate thresholds to use per spw/field/scan (action=’calculate’, then,
+per baseband/field/scan, replace all spw thresholds above the median with the median,
+before re-running rflag with the new thresholds.  This has the effect of
+lowering the thresholds for spws with RFI to be closer to the RFI-free
+thresholds, and catches more of the RFI.</p></li>
+<li><p>Mode ‘vlass-imaging’ is similar to ‘target-vlass’, except that it executes on the split off target
+data, intent=’<a href="#id1"><span class="problematic" id="id2">*</span></a>TARGET’, datacolumn=’data’ and uses a timedevscale of 4.0.</p></li>
+</ul>
+</li>
+<li><p><strong>growflags</strong> – Grow flags in time at the end of the following checkflagmodes:</p>
+<ul>
+<li><p>default=True, for ‘bpd-vla’, ‘allcals-vla’, ‘bpd’, and ‘allcals.’</p></li>
+<li><p>default=False, for ‘’ and ‘semi’</p></li>
+</ul>
+</li>
+<li><p><strong>overwrite_modelcol</strong> – Always write the model column, even if it already exists.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Run RFLAG with associated heuristics in the VLA CASA pipeline:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifv_checkflag</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

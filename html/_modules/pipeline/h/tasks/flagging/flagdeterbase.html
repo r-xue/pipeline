@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline</a>
       </nav>
@@ -157,7 +157,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBaseInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBaseInputs manages the inputs for the FlagDeterBase task.</span>
@@ -366,7 +366,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mintransrepspw</span> <span class="o">=</span> <span class="n">mintransrepspw</span>
 
 <div class="viewcode-block" id="FlagDeterBaseInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBaseInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the input parameters of this class to task parameters</span>
@@ -387,7 +387,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBaseResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterBaseResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -398,7 +398,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span>
 
 <div class="viewcode-block" id="FlagDeterBaseResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBaseResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># nothing to do</span>
         <span class="k">pass</span></div>
@@ -428,7 +428,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBase is the base class for deterministic flagging. It can perform</span>
@@ -449,7 +449,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterBaseInputs</span>
 
 <div class="viewcode-block" id="FlagDeterBase.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBase.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
@@ -497,7 +497,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBase.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyse the results of the flagging operation.</span>
@@ -644,7 +644,7 @@
         <span class="k">return</span> <span class="s2">&quot;mode=&#39;manual&#39; autocorr=True&quot;</span>
 
 <div class="viewcode-block" id="FlagDeterBase.verify_spw">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterBase.verify_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.verify_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Verify that the given spw should be flagged, raising a ValueError if</span>

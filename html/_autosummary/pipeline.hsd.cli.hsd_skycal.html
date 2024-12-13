@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,66 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hsd.cli.hsd_skycal">
-<span id="pipeline-hsd-cli-hsd-skycal"></span><h1>pipeline.hsd.cli.hsd_skycal<a class="headerlink" href="#module-pipeline.hsd.cli.hsd_skycal" title="Link to this heading"></a></h1>
+  <section id="pipeline-hsd-cli-hsd-skycal">
+<h1>pipeline.hsd.cli.hsd_skycal<a class="headerlink" href="#pipeline-hsd-cli-hsd-skycal" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_skycal">
+<span class="sig-name descname"><span class="pre">hsd_skycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elongated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_skycal.html#hsd_skycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_skycal" title="Link to this definition"></a></dt>
+<dd><p>Calibrate data.</p>
+<p>The hsd_skycal generates a caltable for sky calibration that stores
+reference spectra, which is to be subtracted from on-source spectra to filter
+out non-source contribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calmode</strong> – Calibration mode. Available options are ‘auto’ (default), ‘ps’, ‘otf’, and ‘otfraster’. When ‘auto’ is set, the task will
+use preset calibration mode that is determined by inspecting data.
+‘ps’ mode is simple position switching using explicit reference
+scans. Other two modes, ‘otf’ and ‘otfraster’, will generate
+reference data from scans at the edge of the map. Those modes
+are intended for OTF observation and the former is defined for
+generic scanning pattern such as Lissajous, while the latter is
+specific use for raster scan.
+options: ‘auto’, ‘ps’, ‘otf’, ‘otfraster’</p></li>
+<li><p><strong>fraction</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ and ‘otfraster’ mode. It specifies a number of OFF scans
+as a fraction of total number of data points.
+options: String style like ‘20%’, or float value less than 1.0.
+For ‘otfraster’ mode, you can also specify ‘auto’.</p></li>
+<li><p><strong>noff</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otfraster’ mode. It is used to specify a number of OFF scans near edge directly
+instead to specify it by fractional number by ‘fraction’. If it is
+set, the value will come before setting by ‘fraction’.
+options: any positive integer value</p></li>
+<li><p><strong>width</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ mode. It specifies pixel width with respect to a median spatial
+separation between neighboring two data in time. Default will
+be fine in most cases.
+options: any float value</p></li>
+<li><p><strong>elongated</strong> – Sub-parameter for calmode. Edge marking parameter for ‘otf’ mode. Please set True only if observed area is elongated
+in one direction.</p></li>
+<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available. Options: ‘automatic’, ‘true’, ‘false’, True, False.
+default: None (equivalent to ‘automatic’)</p></li>
+<li><p><strong>infiles</strong> – List of data files. These must be a name of MeasurementSets that are registered to context via hsd_importdata task.
+example: vis=[‘X227.ms’, ‘X228.ms’]</p></li>
+<li><p><strong>field</strong> – Data selection by field name.</p></li>
+<li><p><strong>spw</strong> – Data selection by spw. (defalut all spws) example: ‘3,4’ (generate caltable for spw 3 and 4),
+[‘0’,’2’] (spw 0 for first data, 2 for second)</p></li>
+<li><p><strong>scan</strong> – Data selection by scan number. (default all scans) example: ‘22,23’ (use scan 22 and 23 for calibration),
+[‘22’,’24’] (scan 22 for first data, 24 for second)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Generate caltables for all data managed by context.</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">default</span><span class="p">(</span><span class="n">hsd_skycal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_skycal</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

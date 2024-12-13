@@ -15,7 +15,9 @@ pipeline.hsd.tasks.imaging.detectcontamination
       :toctree:
       :nosignatures:
    
+      ceil
       detect_contamination
+      namedtuple
    
    
 

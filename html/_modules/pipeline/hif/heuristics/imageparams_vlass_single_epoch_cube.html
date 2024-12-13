@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -118,7 +118,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube">[docs]</a>
 <span class="k">class</span> <span class="nc">ImageParamsHeuristicsVlassSeCube</span><span class="p">(</span><span class="n">ImageParamsHeuristicsVlassSeContMosaic</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">,</span> <span class="n">imagename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">proj_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_params</span><span class="o">=</span><span class="p">{}):</span>
@@ -127,7 +127,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vlass_stage</span> <span class="o">=</span> <span class="mi">3</span>
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.reffreq">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.reffreq">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.reffreq">[docs]</a>
     <span class="k">def</span> <span class="nf">reffreq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deconvolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean reffreq parameter heuristics.</span>
 
@@ -140,7 +140,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.meanfreq_spwgroup">[docs]</a>
     <span class="k">def</span> <span class="nf">meanfreq_spwgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_selection</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mean frequency of a spw group (specified by a selection string, e.g. &#39;2,3,4&#39;).&quot;&quot;&quot;</span>
 
@@ -159,7 +159,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.flagpct_spwgroup">[docs]</a>
     <span class="k">def</span> <span class="nf">flagpct_spwgroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw_selection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the flag percentage of a spw group (specified by a selection string, e.g. &#39;2,3,4&#39;).</span>
 
@@ -191,7 +191,7 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.mask">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.mask">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.mask">[docs]</a>
     <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rootname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">results_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">clean_no_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.</span>
@@ -225,21 +225,21 @@
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.nterms">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.nterms">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.nterms">[docs]</a>
     <span class="k">def</span> <span class="nf">nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean nterms parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.stokes">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.stokes">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.stokes">[docs]</a>
     <span class="k">def</span> <span class="nf">stokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">joint_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean stokes parameter heuristics.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;IQUV&#39;</span></div>
 
 
 <div class="viewcode-block" id="ImageParamsHeuristicsVlassSeCube.psfcutoff">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.psfcutoff">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.heuristics.imageparams_vlass_single_epoch_cube.ImageParamsHeuristicsVlassSeCube.html#pipeline.hif.heuristics.imageparams_factory.ImageParamsHeuristicsVlassSeCube.psfcutoff">[docs]</a>
     <span class="k">def</span> <span class="nf">psfcutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Tclean psfcutoff parameter heuristics.</span>
 

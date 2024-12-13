@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>glob &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">glob</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for glob</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Filename globbing utility.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;glob&quot;</span><span class="p">,</span> <span class="s2">&quot;iglob&quot;</span><span class="p">,</span> <span class="s2">&quot;escape&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="glob">
+<a class="viewcode-back" href="../_autosummary/pipeline.infrastructure.utils.casa_data.glob.html#pipeline.infrastructure.utils.casa_data.glob">[docs]</a>
+<span class="k">def</span> <span class="nf">glob</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of paths matching a pathname pattern.</span>
+
+<span class="sd">    The pattern may contain simple shell-style wildcards a la</span>
+<span class="sd">    fnmatch. However, unlike fnmatch, filenames starting with a</span>
+<span class="sd">    dot are special cases that are not matched by &#39;*&#39; and &#39;?&#39;</span>
+<span class="sd">    patterns.</span>
+
+<span class="sd">    If recursive is true, the pattern &#39;**&#39; will match any files and</span>
+<span class="sd">    zero or more directories and subdirectories.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iglob</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="n">dir_fd</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="n">recursive</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">iglob</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an iterator which yields the paths matching a pathname pattern.</span>
+
+<span class="sd">    The pattern may contain simple shell-style wildcards a la</span>
+<span class="sd">    fnmatch. However, unlike fnmatch, filenames starting with a</span>
+<span class="sd">    dot are special cases that are not matched by &#39;*&#39; and &#39;?&#39;</span>
+<span class="sd">    patterns.</span>
+
+<span class="sd">    If recursive is true, the pattern &#39;**&#39; will match any files and</span>
+<span class="sd">    zero or more directories and subdirectories.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;glob.glob&quot;</span><span class="p">,</span> <span class="n">pathname</span><span class="p">,</span> <span class="n">recursive</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">audit</span><span class="p">(</span><span class="s2">&quot;glob.glob/2&quot;</span><span class="p">,</span> <span class="n">pathname</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">root_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">root_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root_dir</span> <span class="o">=</span> <span class="n">pathname</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="n">_iglob</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pathname</span> <span class="ow">or</span> <span class="n">recursive</span> <span class="ow">and</span> <span class="n">_isrecursive</span><span class="p">(</span><span class="n">pathname</span><span class="p">[:</span><span class="mi">2</span><span class="p">]):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>  <span class="c1"># skip empty string</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">it</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">((</span><span class="n">s</span><span class="p">,),</span> <span class="n">it</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">it</span>
+
+<span class="k">def</span> <span class="nf">_iglob</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="n">dirname</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_magic</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">dironly</span>
+        <span class="k">if</span> <span class="n">basename</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_lexists</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">pathname</span><span class="p">),</span> <span class="n">dir_fd</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">pathname</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Patterns ending with a slash should match only directories</span>
+            <span class="k">if</span> <span class="n">_isdir</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">dirname</span><span class="p">),</span> <span class="n">dir_fd</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">pathname</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dirname</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">recursive</span> <span class="ow">and</span> <span class="n">_isrecursive</span><span class="p">(</span><span class="n">basename</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">_glob2</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="n">_glob1</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="c1"># `os.path.split()` returns the argument itself as a dirname if it is a</span>
+    <span class="c1"># drive or UNC path.  Prevent an infinite recursion if a drive or UNC path</span>
+    <span class="c1"># contains magic characters (i.e. r&#39;\\?\C:&#39;).</span>
+    <span class="k">if</span> <span class="n">dirname</span> <span class="o">!=</span> <span class="n">pathname</span> <span class="ow">and</span> <span class="n">has_magic</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+        <span class="n">dirs</span> <span class="o">=</span> <span class="n">_iglob</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">dirname</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">has_magic</span><span class="p">(</span><span class="n">basename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">recursive</span> <span class="ow">and</span> <span class="n">_isrecursive</span><span class="p">(</span><span class="n">basename</span><span class="p">):</span>
+            <span class="n">glob_in_dir</span> <span class="o">=</span> <span class="n">_glob2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">glob_in_dir</span> <span class="o">=</span> <span class="n">_glob1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">glob_in_dir</span> <span class="o">=</span> <span class="n">_glob0</span>
+    <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">glob_in_dir</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">dirname</span><span class="p">),</span> <span class="n">basename</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># These 2 helper functions non-recursively glob inside a literal directory.</span>
+<span class="c1"># They return a list of basenames.  _glob1 accepts a pattern while _glob0</span>
+<span class="c1"># takes a literal basename (so it only has to check for its existence).</span>
+
+<span class="k">def</span> <span class="nf">_glob1</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">_listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_ishidden</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">_ishidden</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">fnmatch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_glob0</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">basename</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_lexists</span><span class="p">(</span><span class="n">_join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">basename</span><span class="p">),</span> <span class="n">dir_fd</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">basename</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># `os.path.split()` returns an empty basename for paths ending with a</span>
+        <span class="c1"># directory separator.  &#39;q*x/&#39; should match only directories.</span>
+        <span class="k">if</span> <span class="n">_isdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">basename</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[]</span>
+
+<span class="c1"># Following functions are not public but can be used by third-party code.</span>
+
+<span class="k">def</span> <span class="nf">glob0</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_glob0</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">glob1</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_glob1</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># This helper function recursively yields relative pathnames inside a literal</span>
+<span class="c1"># directory.</span>
+
+<span class="k">def</span> <span class="nf">_glob2</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">_isrecursive</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">pattern</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">yield from</span> <span class="n">_rlistdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">)</span>
+
+<span class="c1"># If dironly is false, yields all file names inside a directory.</span>
+<span class="c1"># If dironly is true, yields only directory names.</span>
+<span class="k">def</span> <span class="nf">_iterdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">fsencode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">dir_fd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dirname</span><span class="p">:</span>
+                <span class="n">fd</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">_dir_open_flags</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="n">dir_fd</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">dir_fd</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">fsencode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fsencode</span>
+        <span class="k">elif</span> <span class="n">dirname</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">dirname</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="s1">&#39;ASCII&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">curdir</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">as</span> <span class="n">it</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">dironly</span> <span class="ow">or</span> <span class="n">entry</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="n">fsencode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="k">yield</span> <span class="n">fsencode</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">yield</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span>
+                    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span>
+
+<span class="k">def</span> <span class="nf">_listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">_iterdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">))</span> <span class="k">as</span> <span class="n">it</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+
+<span class="c1"># Recursively yields relative pathnames inside a literal directory.</span>
+<span class="k">def</span> <span class="nf">_rlistdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">_listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_ishidden</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">x</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">_join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">dirname</span> <span class="k">else</span> <span class="n">x</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">_rlistdir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">,</span> <span class="n">dironly</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">_join</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_lexists</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">):</span>
+    <span class="c1"># Same as os.path.lexists(), but with dir_fd</span>
+    <span class="k">if</span> <span class="n">dir_fd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lexists</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">lstat</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="n">dir_fd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">_isdir</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="p">):</span>
+    <span class="c1"># Same as os.path.isdir(), but with dir_fd</span>
+    <span class="k">if</span> <span class="n">dir_fd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="n">dir_fd</span><span class="o">=</span><span class="n">dir_fd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_ISDIR</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">basename</span><span class="p">):</span>
+    <span class="c1"># It is common if dirname or basename is empty</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dirname</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">basename</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dirname</span> <span class="ow">or</span> <span class="n">basename</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+
+<span class="n">magic_check</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;([*?[])&#39;</span><span class="p">)</span>
+<span class="n">magic_check_bytes</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;([*?[])&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">has_magic</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">magic_check_bytes</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">magic_check</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="k">def</span> <span class="nf">_ishidden</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;.&#39;</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">_isrecursive</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pattern</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;**&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pattern</span> <span class="o">==</span> <span class="s1">&#39;**&#39;</span>
+
+<span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">pathname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Escape all special characters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Escaping is done by wrapping any of &quot;*?[&quot; between square brackets.</span>
+    <span class="c1"># Metacharacters do not work in the drive part and shouldn&#39;t be escaped.</span>
+    <span class="n">drive</span><span class="p">,</span> <span class="n">pathname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitdrive</span><span class="p">(</span><span class="n">pathname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pathname</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">pathname</span> <span class="o">=</span> <span class="n">magic_check_bytes</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">br</span><span class="s1">&#39;[\1]&#39;</span><span class="p">,</span> <span class="n">pathname</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pathname</span> <span class="o">=</span> <span class="n">magic_check</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\1]&#39;</span><span class="p">,</span> <span class="n">pathname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">drive</span> <span class="o">+</span> <span class="n">pathname</span>
+
+
+<span class="n">_dir_open_flags</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">O_RDONLY</span> <span class="o">|</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">os</span><span class="p">,</span> <span class="s1">&#39;O_DIRECTORY&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

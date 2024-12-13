@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline</a>
       </nav>
@@ -113,7 +113,7 @@
 
 
 <div class="viewcode-block" id="TsysSpwMapHeuristics">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.TsysSpwMapHeuristics">[docs]</a>
 <span class="k">class</span> <span class="nc">TsysSpwMapHeuristics</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Heuristic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Heuristics for Tsys spw mapping</span>
@@ -128,7 +128,7 @@
 <span class="sd">    spw).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="TsysSpwMapHeuristics.calculate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.calculate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.TsysSpwMapHeuristics.html#pipeline.hsd.heuristics.TsysSpwMapHeuristics.calculate">[docs]</a>
     <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">spwmap_pairs</span><span class="p">):</span>
         <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span>
@@ -151,7 +151,7 @@
 
 
 <div class="viewcode-block" id="best_spwmap">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.best_spwmap.html#pipeline.hsd.heuristics.tsysspwmap.best_spwmap">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.heuristics.tsysspwmap.best_spwmap.html#pipeline.hsd.heuristics.best_spwmap">[docs]</a>
 <span class="k">def</span> <span class="nf">best_spwmap</span><span class="p">(</span><span class="n">scores</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">score_list</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">best_score</span> <span class="o">=</span> <span class="mf">0.0</span>

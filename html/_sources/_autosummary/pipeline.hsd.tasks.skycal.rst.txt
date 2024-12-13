@@ -13,6 +13,16 @@ pipeline.hsd.tasks.skycal
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      SDSkyCal
+      SerialSDSkyCal
+   
    
 
    

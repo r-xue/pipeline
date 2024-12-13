@@ -20,6 +20,7 @@ pipeline.hif.tasks.mstransform.mstransform
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Mstransform
       MstransformInputs
       MstransformResults

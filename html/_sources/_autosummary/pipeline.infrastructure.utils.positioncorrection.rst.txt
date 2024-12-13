@@ -17,6 +17,8 @@ pipeline.infrastructure.utils.positioncorrection
    
       calc_wide_field_pos_cor
       do_wide_field_pos_cor
+      offset_by
+      rtq
    
    
 

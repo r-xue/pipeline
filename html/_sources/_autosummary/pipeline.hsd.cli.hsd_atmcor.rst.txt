@@ -1,23 +1,6 @@
 pipeline.hsd.cli.hsd\_atmcor
 ============================
 
-.. automodule:: pipeline.hsd.cli.hsd_atmcor
+.. currentmodule:: pipeline.hsd.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hsd_atmcor

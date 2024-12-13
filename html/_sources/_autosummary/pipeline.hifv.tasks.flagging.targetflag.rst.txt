@@ -9,6 +9,14 @@ pipeline.hifv.tasks.flagging.targetflag
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      contfile_to_spwsel
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hifv.tasks.flagging.targetflag
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       Targetflag
       TargetflagInputs
       TargetflagResults

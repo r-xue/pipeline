@@ -15,6 +15,7 @@ pipeline.hifa.tasks.gfluxscaleflag.renderer
       :toctree:
       :nosignatures:
    
+      copy_callibrary
       get_plot_dicts
       relocate_plots
    
@@ -29,6 +30,7 @@ pipeline.hifa.tasks.gfluxscaleflag.renderer
       :template: custom-class-template.rst
       :nosignatures:
    
+      T2_4MDetailsCorrectedampflagRenderer
       T2_4MDetailsGfluxscaleflagRenderer
    
    

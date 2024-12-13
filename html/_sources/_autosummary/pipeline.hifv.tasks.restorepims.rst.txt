@@ -13,6 +13,15 @@ pipeline.hifv.tasks.restorepims
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Restorepims
+   
    
 
    

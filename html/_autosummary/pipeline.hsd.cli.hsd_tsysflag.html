@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -87,7 +87,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -111,8 +111,95 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hsd.cli.hsd_tsysflag">
-<span id="pipeline-hsd-cli-hsd-tsysflag"></span><h1>pipeline.hsd.cli.hsd_tsysflag<a class="headerlink" href="#module-pipeline.hsd.cli.hsd_tsysflag" title="Link to this heading"></a></h1>
+  <section id="pipeline-hsd-cli-hsd-tsysflag">
+<h1>pipeline.hsd.cli.hsd_tsysflag<a class="headerlink" href="#pipeline-hsd-cli-hsd-tsysflag" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_tsysflag">
+<span class="sig-name descname"><span class="pre">hsd_tsysflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_nmedian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fnm_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fnm_byfield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fd_max_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_edgechans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_edge_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_fieldshape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_max_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_birdies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_sharps_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_toomany</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmf1_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmef1_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_tsys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_tsysflag.html#hsd_tsysflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_tsysflag" title="Link to this definition"></a></dt>
+<dd><p>Flag deviant system temperature measurements.</p>
+<p>Flag deviant system temperature measurements for single dish measurements. This is done by running a
+sequence of flagging sub-tasks (tests), each looking for a different type of possible error.</p>
+<p>If a file with manual Tsys flags is provided with the ‘filetemplate’
+parameter, then these flags are applied prior to the evaluation of the
+flagging heuristics listed below.</p>
+<p>The tests are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Flag Tsys spectra with high median values</p></li>
+<li><p>Flag Tsys spectra with high median derivatives. This is meant to spot</p></li>
+</ol>
+<blockquote>
+<div><p>spectra that are ‘ringing’.</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Flag the edge channels of the Tsys spectra in each SpW.</p></li>
+<li><p>Flag Tsys spectra whose shape is different from that associated with</p></li>
+</ol>
+<blockquote>
+<div><p>the BANDPASS intent.</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Flag ‘birdies’.</p></li>
+<li><p>Flag the Tsys spectra of all antennas in a timestamp and spw if</p></li>
+</ol>
+<blockquote>
+<div><p>proportion of antennas already flagged in this timestamp and spw exceeds
+a threshold, and flag Tsys spectra for all antennas and all timestamps
+in a spw, if proportion of antennas that are already entirely flagged
+in all timestamps exceeds a threshold.</p>
+</div></blockquote>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – List of input MeasurementSets (Not used)</p></li>
+<li><p><strong>caltable</strong> – List of input Tsys calibration tables.
+default: [] - Use the table currently stored in the pipeline context.
+example: caltable=[‘X132.ms.tsys.s2.tbl’]</p></li>
+<li><p><strong>flag_nmedian</strong> – True to flag Tsys spectra with high median value.</p></li>
+<li><p><strong>fnm_limit</strong> – Flag spectra with median value higher than fnm_limit * median of this measure over all spectra.</p></li>
+<li><p><strong>fnm_byfield</strong> – Evaluate the nmedian metric separately for each field.</p></li>
+<li><p><strong>flag_derivative</strong> – True to flag Tsys spectra with high median derivative.</p></li>
+<li><p><strong>fd_max_limit</strong> – Flag spectra with median derivative higher than fd_max_limit * median of this measure over all spectra.</p></li>
+<li><p><strong>flag_edgechans</strong> – True to flag edges of Tsys spectra.</p></li>
+<li><p><strong>fe_edge_limit</strong> – Flag channels whose channel to channel difference &gt; fe_edge_limit * median across spectrum.</p></li>
+<li><p><strong>flag_fieldshape</strong> – True to flag Tsys spectra with a radically different shape to those of the ff_refintent.</p></li>
+<li><p><strong>ff_refintent</strong> – Data intent that provides the reference shape for ‘flag_fieldshape’.</p></li>
+<li><p><strong>ff_max_limit</strong> – Flag Tsys spectra with ‘fieldshape’ metric values &gt; ff_max_limit.</p></li>
+<li><p><strong>flag_birdies</strong> – True to flag channels covering sharp spectral features.</p></li>
+<li><p><strong>fb_sharps_limit</strong> – Flag channels bracketing a channel to channel difference &gt; fb_sharps_limit.</p></li>
+<li><p><strong>flag_toomany</strong> – True to flag Tsys spectra for which a proportion of antennas for given timestamp and/or proportion of antennas that are
+entirely flagged in all timestamps exceeds their respective thresholds.</p></li>
+<li><p><strong>tmf1_limit</strong> – Flag Tsys spectra for all antennas in a timestamp and spw if proportion of antennas already flagged in this timestamp and spw exceeds
+tmf1_limit.</p></li>
+<li><p><strong>tmef1_limit</strong> – Flag Tsys spectra for all antennas and all timestamps in a spw, if proportion of antennas that are already entirely flagged
+in all timestamps exceeds tmef1_limit.</p></li>
+<li><p><strong>metric_order</strong> – Order in which to evaluate the flagging metrics that are enabled. Disabled metrics are skipped.</p></li>
+<li><p><strong>normalize_tsys</strong> – True to create a normalized Tsys table that is used to evaluate the Tsys flagging metrics. All newly found flags are also applied
+to the original Tsys caltable that continues to be used for subsequent
+calibration.</p></li>
+<li><p><strong>filetemplate</strong> – The name of a text file that contains the manual Tsys flagging template. If the template flags file is undefined, a name of the form
+‘msname.flagtsystemplate.txt’ is assumed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ol class="arabic simple">
+<li><p>Flag Tsys measurements using currently recommended tests:</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_tsysflag</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. Flag Tsys measurements using all recommended tests apart from that
+using the ‘fieldshape’ metric:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hsd_tsysflag</span><span class="p">(</span><span class="n">flag_fieldshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
 

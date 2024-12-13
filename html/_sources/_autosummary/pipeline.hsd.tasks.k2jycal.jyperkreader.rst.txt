@@ -33,8 +33,10 @@ pipeline.hsd.tasks.k2jycal.jyperkreader
       :template: custom-class-template.rst
       :nosignatures:
    
+      DataType
       JyPerK
       JyPerKDataParser
+      TextIO
    
    
 

@@ -22,6 +22,8 @@ pipeline.hif.tasks.checkproductsize.checkproductsize
    
       CheckProductSize
       CheckProductSizeInputs
+      CheckProductSizeResult
+      DataType
    
    
 

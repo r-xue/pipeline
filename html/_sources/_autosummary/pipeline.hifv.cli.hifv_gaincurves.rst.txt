@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_gaincurves
 ==================================
 
-.. automodule:: pipeline.hifv.cli.hifv_gaincurves
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_gaincurves

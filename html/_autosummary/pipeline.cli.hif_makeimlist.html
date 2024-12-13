@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.cli.hif_makeimlist &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pipeline.cli.hif_makermsimages" href="pipeline.cli.hif_makermsimages.html" />
+    <link rel="prev" title="pipeline.cli.hif_makeimages" href="pipeline.cli.hif_makeimages.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.get_pipeline_task_with_name.html">pipeline.cli.get_pipeline_task_with_name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_applycal.html">pipeline.cli.h_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_export_calstate.html">pipeline.cli.h_export_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_exportdata.html">pipeline.cli.h_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_import_calstate.html">pipeline.cli.h_import_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_importdata.html">pipeline.cli.h_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_init.html">pipeline.cli.h_init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_mssplit.html">pipeline.cli.h_mssplit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_restoredata.html">pipeline.cli.h_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_resume.html">pipeline.cli.h_resume</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_save.html">pipeline.cli.h_save</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_show_calstate.html">pipeline.cli.h_show_calstate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_tsyscal.html">pipeline.cli.h_tsyscal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.h_weblog.html">pipeline.cli.h_weblog</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_analyzealpha.html">pipeline.cli.hif_analyzealpha</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_antpos.html">pipeline.cli.hif_antpos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_applycal.html">pipeline.cli.hif_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_bandpass.html">pipeline.cli.hif_bandpass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_checkproductsize.html">pipeline.cli.hif_checkproductsize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_correctedampflag.html">pipeline.cli.hif_correctedampflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_editimlist.html">pipeline.cli.hif_editimlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_findcont.html">pipeline.cli.hif_findcont</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_gaincal.html">pipeline.cli.hif_gaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_lowgainflag.html">pipeline.cli.hif_lowgainflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makecutoutimages.html">pipeline.cli.hif_makecutoutimages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makeimages.html">pipeline.cli.hif_makeimages</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pipeline.cli.hif_makeimlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_makermsimages.html">pipeline.cli.hif_makermsimages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_mstransform.html">pipeline.cli.hif_mstransform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_rawflagchans.html">pipeline.cli.hif_rawflagchans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_refant.html">pipeline.cli.hif_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_selfcal.html">pipeline.cli.hif_selfcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_setjy.html">pipeline.cli.hif_setjy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_setmodels.html">pipeline.cli.hif_setmodels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_transformimagedata.html">pipeline.cli.hif_transformimagedata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hif_uvcontsub.html">pipeline.cli.hif_uvcontsub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_antpos.html">pipeline.cli.hifa_antpos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bandpass.html">pipeline.cli.hifa_bandpass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bandpassflag.html">pipeline.cli.hifa_bandpassflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_bpsolint.html">pipeline.cli.hifa_bpsolint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_diffgaincal.html">pipeline.cli.hifa_diffgaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_exportdata.html">pipeline.cli.hifa_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_flagdata.html">pipeline.cli.hifa_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_flagtargets.html">pipeline.cli.hifa_flagtargets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_fluxcalflag.html">pipeline.cli.hifa_fluxcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gaincalsnr.html">pipeline.cli.hifa_gaincalsnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gfluxscale.html">pipeline.cli.hifa_gfluxscale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_gfluxscaleflag.html">pipeline.cli.hifa_gfluxscaleflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_imageprecheck.html">pipeline.cli.hifa_imageprecheck</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_importdata.html">pipeline.cli.hifa_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_lock_refant.html">pipeline.cli.hifa_lock_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_polcal.html">pipeline.cli.hifa_polcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_polcalflag.html">pipeline.cli.hifa_polcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_renorm.html">pipeline.cli.hifa_renorm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_restoredata.html">pipeline.cli.hifa_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_session_refant.html">pipeline.cli.hifa_session_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_spwphaseup.html">pipeline.cli.hifa_spwphaseup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_targetflag.html">pipeline.cli.hifa_targetflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_timegaincal.html">pipeline.cli.hifa_timegaincal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_tsysflag.html">pipeline.cli.hifa_tsysflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_tsysflagcontamination.html">pipeline.cli.hifa_tsysflagcontamination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_unlock_refant.html">pipeline.cli.hifa_unlock_refant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_wvrgcal.html">pipeline.cli.hifa_wvrgcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifa_wvrgcalflag.html">pipeline.cli.hifa_wvrgcalflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_analyzestokescubes.html">pipeline.cli.hifv_analyzestokescubes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_applycals.html">pipeline.cli.hifv_applycals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_checkflag.html">pipeline.cli.hifv_checkflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_circfeedpolcal.html">pipeline.cli.hifv_circfeedpolcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_exportdata.html">pipeline.cli.hifv_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_exportvlassdata.html">pipeline.cli.hifv_exportvlassdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_finalcals.html">pipeline.cli.hifv_finalcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_fixpointing.html">pipeline.cli.hifv_fixpointing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagcal.html">pipeline.cli.hifv_flagcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagdata.html">pipeline.cli.hifv_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_flagtargetsdata.html">pipeline.cli.hifv_flagtargetsdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_fluxboot.html">pipeline.cli.hifv_fluxboot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_gaincurves.html">pipeline.cli.hifv_gaincurves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_hanning.html">pipeline.cli.hifv_hanning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_importdata.html">pipeline.cli.hifv_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_mstransform.html">pipeline.cli.hifv_mstransform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_opcal.html">pipeline.cli.hifv_opcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_pbcor.html">pipeline.cli.hifv_pbcor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_plotsummary.html">pipeline.cli.hifv_plotsummary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_priorcals.html">pipeline.cli.hifv_priorcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_restoredata.html">pipeline.cli.hifv_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_restorepims.html">pipeline.cli.hifv_restorepims</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_rqcal.html">pipeline.cli.hifv_rqcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_selfcal.html">pipeline.cli.hifv_selfcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_semiFinalBPdcals.html">pipeline.cli.hifv_semiFinalBPdcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_solint.html">pipeline.cli.hifv_solint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_statwt.html">pipeline.cli.hifv_statwt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_swpowcal.html">pipeline.cli.hifv_swpowcal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_syspower.html">pipeline.cli.hifv_syspower</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_targetflag.html">pipeline.cli.hifv_targetflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_tecmaps.html">pipeline.cli.hifv_tecmaps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_testBPdcals.html">pipeline.cli.hifv_testBPdcals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_vlasetjy.html">pipeline.cli.hifv_vlasetjy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hifv_vlassmasking.html">pipeline.cli.hifv_vlassmasking</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_applycal.html">pipeline.cli.hsd_applycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_atmcor.html">pipeline.cli.hsd_atmcor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_baseline.html">pipeline.cli.hsd_baseline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_blflag.html">pipeline.cli.hsd_blflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_exportdata.html">pipeline.cli.hsd_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_flagdata.html">pipeline.cli.hsd_flagdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_imaging.html">pipeline.cli.hsd_imaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_importdata.html">pipeline.cli.hsd_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_k2jycal.html">pipeline.cli.hsd_k2jycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_restoredata.html">pipeline.cli.hsd_restoredata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_skycal.html">pipeline.cli.hsd_skycal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsd_tsysflag.html">pipeline.cli.hsd_tsysflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_exportdata.html">pipeline.cli.hsdn_exportdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_importdata.html">pipeline.cli.hsdn_importdata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.cli.hsdn_restoredata.html">pipeline.cli.hsdn_restoredata</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.environment.html">pipeline.environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.extern.html">pipeline.extern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.h.html">pipeline.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hif.html">pipeline.hif</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifa.html">pipeline.hifa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hifv.html">pipeline.hifv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsd.html">pipeline.hsd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.qa.html">pipeline.qa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipereducer.html">pipeline.recipereducer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.recipes.html">pipeline.recipes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runpipeline.html">pipeline.runpipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.runvlapipeline.html">pipeline.runvlapipeline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../apisummary.html">Full APIs (autosummary)</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.html">pipeline</a></li>
+          <li class="breadcrumb-item"><a href="pipeline.cli.html">pipeline.cli</a></li>
+      <li class="breadcrumb-item active">pipeline.cli.hif_makeimlist</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pipeline.cli.hif_makeimlist.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pipeline-cli-hif-makeimlist">
+<h1>pipeline.cli.hif_makeimlist<a class="headerlink" href="#pipeline-cli-hif-makeimlist" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.cli.hif_makeimlist">
+<span class="sig-name descname"><span class="pre">hif_makeimlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmaxpix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_eb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makeimlist.html#hif_makeimlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.cli.hif_makeimlist" title="Link to this definition"></a></dt>
+<dd><p>Compute list of clean images to be produced</p>
+<p>Generate a list of images to be cleaned. By default, the list will include
+one image per science target per spw. Calibrator targets can be selected
+by setting appropriate values for <code class="docutils literal notranslate"><span class="pre">intent</span></code>.</p>
+<p>By default, the output image cell size is set to the minimum cell size
+consistent with the UV coverage.</p>
+<p>By default, the image size in pixels is set to values determined by the
+cell size and the primary beam size. If a calibrator is being
+imaged (intents ‘PHASE’, ‘BANDPASS’, ‘FLUX’ or ‘AMPLITUDE’) then the
+image dimensions are limited to ‘calmaxpix’ pixels.</p>
+<p>By default, science target images are cubes and calibrator target images
+are mfs. Science target images may be mosaics or single fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+“”: use all MeasurementSets in the context
+Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p></li>
+<li><p><strong>imagename</strong> – Prefix for output image names, “” for automatic.</p></li>
+<li><p><strong>intent</strong> – Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
+TARGET or combinations thereof.
+Examples: ‘PHASE,BANDPASS’, ‘TARGET’</p></li>
+<li><p><strong>field</strong> – Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
+specified only fields with data matching the intent will be
+selected. The fields will be selected from MeasurementSets in
+“vis”.
+“” Fields matching intent, one image per target source.</p></li>
+<li><p><strong>spw</strong> – Select spectral windows to image. “”: Images will be computed for all science spectral windows.</p></li>
+<li><p><strong>contfile</strong> – Name of file with frequency ranges to use for continuum images.</p></li>
+<li><p><strong>linesfile</strong> – Name of file with line frequency ranges to exclude for continuum images.</p></li>
+<li><p><strong>uvrange</strong> – Select a set of uv ranges to image. “”: All uv data is included
+Examples: ‘0~1000klambda’, [‘0~100klambda’, 100~1000klambda]</p></li>
+<li><p><strong>specmode</strong> – Frequency imaging mode, ‘mfs’, ‘cont’, ‘cube’, ‘repBW’. ‘’ defaults to ‘cube’ if <code class="docutils literal notranslate"><span class="pre">intent</span></code> parameter includes ‘TARGET’
+otherwise ‘mfs’.
+specmode=’mfs’ produce one image per source and spw
+specmode=’cont’ produce one image per source and aggregate
+over all specified spws
+specmode=’cube’ produce an LSRK frequency cube, channels are
+specified in frequency
+specmode=’repBW’ produce an LSRK frequency cube at
+representative channel width</p></li>
+<li><p><strong>outframe</strong> – velocity frame of output image (LSRK, ‘’ for automatic) (not implemented)</p></li>
+<li><p><strong>hm_imsize</strong> – Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.
+The default values are derived as follows:
+1. Determine phase center and spread of field centers
+around it.
+2. Set the size of the image to cover the spread of field
+centers plus a border of width 0.75 * beam radius, to
+first null.
+3. Divide X and Y extents by cell size to arrive at the
+number of pixels required.
+The PB level setting for single fields leads to an imsize
+extending to the specified level plus 5% padding in all
+directions.
+Examples: ‘0.3pb’, [120, 120]</p></li>
+<li><p><strong>hm_cell</strong> – Image X and Y cell sizes. “” computes the cell size based on the UV coverage of all the fields to be imaged and uses a
+5 pix per beam sampling.
+The pix per beam specification (‘&lt;number&gt;ppb’) uses the above
+default cell size (‘5ppb’) and scales it accordingly.
+The cells can also be specified as explicit measures.
+Examples: ‘3ppb’, [‘0.5arcsec’, ‘0.5arcsec’]</p></li>
+<li><p><strong>calmaxpix</strong> – Maximum image X or Y size in pixels if a calibrator is being imaged (‘PHASE’, ‘BANDPASS’, ‘AMPLITUDE’ or ‘FLUX’ intent).</p></li>
+<li><p><strong>phasecenter</strong> – Direction measure or field id of the image center. The default phase center is set to the mean of the field
+directions of all fields that are to be image together.
+Examples: ‘J2000 19h30m00 -40d00m00’, 0</p></li>
+<li><p><strong>nchan</strong> – Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by
+spw consistent with start and width.</p></li>
+<li><p><strong>start</strong> – Start of image frequency axis as frequency or velocity. “” selects start frequency automatically.</p></li>
+<li><p><strong>width</strong> – Output channel width. Difference in frequency between 2 selected channels for
+frequency mode images.
+‘pilotimage’ for 15 MHz / 8 channel heuristic</p></li>
+<li><p><strong>nbins</strong> – Channel binning factors for each spw. Format: ‘spw1:nb1,spw2:nb2,…’ with optional wildcards: ‘<em>:nb’
+Examples: ‘9:2,11:4,13:2,15:8’, ‘</em>:2’</p></li>
+<li><p><strong>robust</strong> – Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)</p></li>
+<li><p><strong>uvtaper</strong> – uv-taper on outer baselines</p></li>
+<li><p><strong>clearlist</strong> – Clear any existing target list</p></li>
+<li><p><strong>per_eb</strong> – Make an image target per EB</p></li>
+<li><p><strong>per_session</strong> – Make an image target per session</p></li>
+<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>datatype</strong> – Data type(s) to image. The default ‘’ selects the best available data type (e.g. selfcal over regcal) with
+an automatic fallback to the next available data type.
+With the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter one can force the use of only
+given data type(s) without a fallback. The data type(s) are
+specified as comma separated string of keywords. Accepted
+values are the standard data types such as
+‘REGCAL_CONTLINE_ALL’, ‘REGCAL_CONTLINE_SCIENCE’,
+‘SELFCAL_CONTLINE_SCIENCE’, ‘REGCAL_LINE_SCIENCE’,
+‘SELFCAL_LINE_SCIENCE’. The shortcuts ‘regcal’ and ‘selfcal’
+are also accepted. They are expanded into the full data types
+using the <code class="docutils literal notranslate"><span class="pre">specmode</span></code> parameter and the available data types for
+the given MSes. In addition the strings ‘best’ and ‘all’ are
+accepted, where ‘best’ means the above mentioned automatic
+mode and ‘all’ means all available data types for a given
+specmode. The data type strings are case insensitive.
+Examples: ‘selfcal’, ‘regcal, ‘selfcal,regcal’,
+‘REGCAL_LINE_SCIENCE,selfcal_line_science’</p></li>
+<li><p><strong>datacolumn</strong> – Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</p></li>
+<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The results object for the pipeline task is returned.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Make a list of science target images to be cleaned, one image per science
+spw.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_makeimlist</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2. Make a list of PHASE and BANDPASS calibrator targets to be imaged,
+one image per science spw.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_makeimlist</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE,BANDPASS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>3. Make a list of PHASE calibrator images observed in spw 1, images limited to
+50 pixels on a side.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hif_makeimlist</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span><span class="n">spw</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="n">calmaxpix</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline.cli.hif_makeimages.html" class="btn btn-neutral float-left" title="pipeline.cli.hif_makeimages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.cli.hif_makermsimages.html" class="btn btn-neutral float-right" title="pipeline.cli.hif_makermsimages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

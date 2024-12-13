@@ -31,7 +31,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -74,7 +78,16 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.hsdn.html">pipeline.hsdn</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.infrastructure.html">pipeline.infrastructure</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.generate_detail_plots.html">pipeline.infrastructure.generate_detail_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.get_logger.html">pipeline.infrastructure.get_logger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.set_plot_level.html">pipeline.infrastructure.set_plot_level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalApplication.html">pipeline.infrastructure.CalApplication</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalFrom.html">pipeline.infrastructure.CalFrom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalLibrary.html">pipeline.infrastructure.CalLibrary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalState.html">pipeline.infrastructure.CalState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.CalTo.html">pipeline.infrastructure.CalTo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Context.html">pipeline.infrastructure.Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.JobRequest.html">pipeline.infrastructure.JobRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.Pipeline.html">pipeline.infrastructure.Pipeline</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.adapters.html">pipeline.infrastructure.adapters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.api.html">pipeline.infrastructure.api</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.argmapper.html">pipeline.infrastructure.argmapper</a></li>
@@ -152,7 +165,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -203,22 +216,34 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.Executor.html#pipeline.infrastructure.basetask.Executor" title="pipeline.infrastructure.basetask.Executor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Executor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.CasaTasks.html#pipeline.infrastructure.basetask.CasaTasks" title="pipeline.infrastructure.basetask.CasaTasks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CasaTasks</span></code></a></p></td>
+<td><p>A class to represent a collection of JobRequest-wrapped callables from CASA or Python modules.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.Executor.html#pipeline.infrastructure.basetask.Executor" title="pipeline.infrastructure.basetask.Executor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Executor</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.FailedTask.html#pipeline.infrastructure.basetask.FailedTask" title="pipeline.infrastructure.basetask.FailedTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FailedTask</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.FailedTask.html#pipeline.infrastructure.basetask.FailedTask" title="pipeline.infrastructure.basetask.FailedTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FailedTask</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.FailedTaskResults.html#pipeline.infrastructure.basetask.FailedTaskResults" title="pipeline.infrastructure.basetask.FailedTaskResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FailedTaskResults</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.FailedTaskResults.html#pipeline.infrastructure.basetask.FailedTaskResults" title="pipeline.infrastructure.basetask.FailedTaskResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FailedTaskResults</span></code></a></p></td>
 <td><p>FailedTaskResults represents a results object for a task that encountered an exception during execution.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ModeTask.html#pipeline.infrastructure.basetask.ModeTask" title="pipeline.infrastructure.basetask.ModeTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModeTask</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ModeTask.html#pipeline.infrastructure.basetask.ModeTask" title="pipeline.infrastructure.basetask.ModeTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModeTask</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.Results.html#pipeline.infrastructure.basetask.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptErrorEvent.html#pipeline.infrastructure.basetask.ResultAcceptErrorEvent" title="pipeline.infrastructure.basetask.ResultAcceptErrorEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptErrorEvent</span></code></a></p></td>
+<td><p>Emitted when Results acceptance fails due to error.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptedEvent.html#pipeline.infrastructure.basetask.ResultAcceptedEvent" title="pipeline.infrastructure.basetask.ResultAcceptedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptedEvent</span></code></a></p></td>
+<td><p>Emitted when a Result has been successfully incorporated into the Context.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptingEvent.html#pipeline.infrastructure.basetask.ResultAcceptingEvent" title="pipeline.infrastructure.basetask.ResultAcceptingEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptingEvent</span></code></a></p></td>
+<td><p>Emitted when a Result is accepted into the Context.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.hsd.tasks.exportdata.almasdaqua.Results.html#pipeline.hsd.tasks.exportdata.almasdaqua.Results" title="pipeline.infrastructure.basetask.Results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Results</span></code></a></p></td>
 <td><p>Results is the base implementation of the Results API.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultsList.html#pipeline.infrastructure.basetask.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.tasks.applycal.renderer.ResultsList.html#pipeline.h.tasks.applycal.renderer.ResultsList" title="pipeline.infrastructure.basetask.ResultsList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsList</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultsProxy.html#pipeline.infrastructure.basetask.ResultsProxy" title="pipeline.infrastructure.basetask.ResultsProxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsProxy</span></code></a></p></td>
@@ -227,7 +252,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.StandardTaskTemplate.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p></td>
 <td><p>StandardTaskTemplate is a template class for pipeline reduction tasks whose execution can be described by a common four-step process:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.Timestamps.html#pipeline.infrastructure.basetask.Timestamps" title="pipeline.infrastructure.basetask.Timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timestamps</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskAbnormalExitEvent.html#pipeline.infrastructure.basetask.TaskAbnormalExitEvent" title="pipeline.infrastructure.basetask.TaskAbnormalExitEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskAbnormalExitEvent</span></code></a></p></td>
+<td><p>Emitted when a pipeline Task terminates due to an unexpected error.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskCompleteEvent.html#pipeline.infrastructure.basetask.TaskCompleteEvent" title="pipeline.infrastructure.basetask.TaskCompleteEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskCompleteEvent</span></code></a></p></td>
+<td><p>Emitted when a pipeline Task completes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskStartedEvent.html#pipeline.infrastructure.basetask.TaskStartedEvent" title="pipeline.infrastructure.basetask.TaskStartedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskStartedEvent</span></code></a></p></td>
+<td><p>Emitted when a pipeline Task is started.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.Timestamps.html#pipeline.infrastructure.basetask.Timestamps" title="pipeline.infrastructure.basetask.Timestamps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Timestamps</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>

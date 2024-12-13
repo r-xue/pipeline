@@ -1,23 +1,6 @@
 pipeline.hifv.cli.hifv\_circfeedpolcal
 ======================================
 
-.. automodule:: pipeline.hifv.cli.hifv_circfeedpolcal
+.. currentmodule:: pipeline.hifv.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hifv_circfeedpolcal

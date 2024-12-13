@@ -1,0 +1,1241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>casampi.MPICommandClient &mdash; Pipeline unknown documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom_theme.css?v=30144f19" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3f1b9271"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releases.html">Past Releases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">casampi.MPICommandClient</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for casampi.MPICommandClient</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span> <span class="c1"># To handle sleep times</span>
+<span class="kn">import</span> <span class="nn">traceback</span> <span class="c1"># To pretty-print tracebacks</span>
+<span class="kn">import</span> <span class="nn">atexit</span> <span class="c1"># To handle destructors</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># CASA6</span>
+    <span class="kn">import</span> <span class="nn">_thread</span>
+    <span class="kn">from</span> <span class="nn">casatools</span> <span class="kn">import</span> <span class="n">logsink</span>
+    <span class="n">casalog</span> <span class="o">=</span> <span class="n">logsink</span><span class="p">()</span>
+    <span class="c1"># Import MPICommunicator singleton</span>
+    <span class="kn">from</span> <span class="nn">casampi.private.MPICommunicator</span> <span class="kn">import</span> <span class="n">MPICommunicator</span>
+    <span class="c1"># Import MPIMonitorClient singleton</span>
+    <span class="kn">from</span> <span class="nn">casampi.private.MPIMonitorClient</span> <span class="kn">import</span> <span class="n">MPIMonitorClient</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># CASA5</span>
+    <span class="kn">import</span> <span class="nn">thread</span> <span class="k">as</span> <span class="nn">_thread</span> 
+    <span class="kn">from</span> <span class="nn">taskinit</span> <span class="kn">import</span> <span class="n">casalog</span>
+    <span class="kn">from</span> <span class="nn">taskinit</span> <span class="kn">import</span> <span class="n">casa</span>
+    <span class="c1"># Import MPICommunicator singleton</span>
+    <span class="kn">from</span> <span class="nn">.MPICommunicator</span> <span class="kn">import</span> <span class="n">MPICommunicator</span>
+    <span class="c1"># Import MPIMonitorClient singleton</span>
+    <span class="kn">from</span> <span class="nn">.MPIMonitorClient</span> <span class="kn">import</span> <span class="n">MPIMonitorClient</span>
+
+<span class="c1"># Import MPIEnvironment static class</span>
+<span class="kn">from</span> <span class="nn">.MPIEnvironment</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+
+
+<span class="c1"># Define log levels</span>
+<span class="n">log_levels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span><span class="s1">&#39;DEBUG1&#39;</span><span class="p">,</span><span class="s1">&#39;DEBUG2&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL1&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL2&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL3&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL4&#39;</span><span class="p">,</span><span class="s1">&#39;NORMAL5&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;INFO&#39;</span><span class="p">,</span><span class="s1">&#39;INFO1&#39;</span><span class="p">,</span><span class="s1">&#39;INFO2&#39;</span><span class="p">,</span><span class="s1">&#39;INFO3&#39;</span><span class="p">,</span><span class="s1">&#39;INFO4&#39;</span><span class="p">,</span><span class="s1">&#39;INFO5&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MPICommandClient">
+<a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.mpihelpers.MPICommandClient.html#pipeline.infrastructure.mpihelpers.MPICommandClient">[docs]</a>
+<span class="k">class</span> <span class="nc">MPICommandClient</span><span class="p">:</span>
+    
+    
+    <span class="c1"># Storage for the MPICommandClient singleton instance reference</span>
+    <span class="n">__instance</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start_services</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create MPICommandClient singleton instance &quot;&quot;&quot;</span>
+        
+        <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::__init__&quot;</span>
+               
+        <span class="c1"># Check if MPI is effectively enabled</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_enabled</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;MPI is not enabled. To use the MPI client this process needs to be run &#39;</span>
+                   <span class="s1">&#39;as an MPI program, under mpiexec, mpirun or similar&#39;</span><span class="p">)</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;SEVERE&#39;</span><span class="p">,</span> <span class="n">casalog_call_origin</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        
+        <span class="c1"># Check if MPICommandClient can be instantiated</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">is_mpi_client</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;MPICommandClient can only be instantiated at master MPI process. &#39;</span>
+                   <span class="s1">&#39;This error suggests that there was no server initialization in this &#39;</span>
+                   <span class="s1">&#39;process or it did not succeed.&#39;</span><span class="p">)</span>
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;SEVERE&#39;</span><span class="p">,</span> <span class="n">casalog_call_origin</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        
+        <span class="c1"># Check whether we already have a MPICommandClient singleton instance</span>
+        <span class="k">if</span> <span class="n">MPICommandClient</span><span class="o">.</span><span class="n">__instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Create MPICommandClient singleton instance</span>
+            <span class="n">MPICommandClient</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="n">MPICommandClient</span><span class="o">.</span><span class="n">__MPICommandClientImpl</span><span class="p">(</span><span class="n">start_services</span><span class="o">=</span><span class="n">start_services</span><span class="p">)</span>
+
+        <span class="c1"># Store MPICommandClient singleton instance reference as the only member in the handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;_MPICommandClient__instance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MPICommandClient</span><span class="o">.</span><span class="n">__instance</span>
+        
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Delegate access to MPICommandClient implementation &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__instance</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Delegate access to MPICommandClient implementation &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__instance</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>    
+    
+    
+    <span class="k">class</span> <span class="nc">__MPICommandClientImpl</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Implementation of the MPICommandClient singleton interface &quot;&quot;&quot;</span>
+        
+        
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start_services</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            
+            <span class="c1"># Initialize life cycle state</span>
+            <span class="c1"># 0-&gt; Services not started</span>
+            <span class="c1"># 1-&gt; Services started</span>
+            <span class="c1"># 2-&gt; Stop service signal sent</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">=</span> <span class="mi">0</span>
+             
+                    
+            <span class="c1"># Initialize command request id counter and list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_counter</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span> <span class="o">=</span> <span class="p">{}</span>
+            
+            <span class="c1"># Initialize command group response state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_counter</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_list</span> <span class="o">=</span> <span class="p">{}</span>            
+            
+            <span class="c1"># Initialize command response handler service state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_thread</span> <span class="o">=</span> <span class="kc">None</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>       
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>            
+            
+            <span class="c1"># Initialize command request queue service state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_thread</span> <span class="o">=</span> <span class="kc">None</span>             
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>       
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>    
+            
+            <span class="c1"># Setup a command request input queue to append the jobs</span>
+            <span class="c1"># to be picked up by the command request queue service</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+            
+            <span class="c1"># Instantiate MPICommunicator reference</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span> <span class="o">=</span> <span class="n">MPICommunicator</span><span class="p">()</span>
+            
+            <span class="c1"># Instantiate MPIMonitorClient reference</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span> <span class="o">=</span> <span class="n">MPIMonitorClient</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>            
+            
+            <span class="c1"># Automatically start services</span>
+            <span class="k">if</span> <span class="n">start_services</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_services</span><span class="p">()</span>
+                
+            <span class="c1"># Log mode</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log_mode</span> <span class="o">=</span> <span class="s1">&#39;unified&#39;</span>
+                
+            <span class="c1"># Register exit handler</span>
+            <span class="c1"># NOTE: It is not guaranteed that __del__() methods are called </span>
+            <span class="c1">#       for objects that still exist when the interpreter exits.</span>
+            <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_services</span><span class="p">,</span><span class="n">force_command_request_interruption</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                                
+                                   
+        <span class="c1">################################################################################################################            </span>
+        <span class="c1"># Private methods ##############################################################################################</span>
+        <span class="c1">################################################################################################################                                   </span>
+            
+            
+        <span class="k">def</span> <span class="nf">__command_response_handler_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::command_response_handler_service&quot;</span>
+            
+            <span class="c1"># Mark service as running</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span> <span class="o">=</span> <span class="kc">True</span>            
+                          
+            <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_on</span><span class="p">):</span>
+                
+                <span class="c1"># Wait until there are command request whose response is pending</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                
+                <span class="c1"># First check if there is a command response msg available</span>
+                <span class="n">msg_available</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">msg_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">command_response_probe</span><span class="p">()</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">msg_available</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception checking if command response msg is available: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                 <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                 
+                    
+                <span class="c1"># Then receive, store and post command response msg</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">msg_available</span><span class="p">):</span>            
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># Receive command response</span>
+                        <span class="n">command_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">command_response_recv</span><span class="p">()</span>
+                        <span class="n">server</span> <span class="o">=</span> <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                        <span class="n">successful</span> <span class="o">=</span> <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;successful&#39;</span><span class="p">]</span>
+                        <span class="n">command_id</span> <span class="o">=</span> <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                        <span class="c1"># Mark immediately server as not-busy</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">set_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;busy&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="c1"># Store command response</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">command_response</span> 
+                        <span class="c1"># If there are no pending command responses clear the event controller</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>                             
+                        <span class="c1"># Mark command request as received</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;response received&#39;</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">[</span><span class="n">command_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;response received&#39;</span> 
+                        <span class="c1"># Notify that command response has been received</span>
+                        <span class="k">if</span> <span class="n">successful</span><span class="p">:</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id </span><span class="si">%s</span><span class="s2"> successfully handled by server n# </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)),</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">command_handling_log_level</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                                  
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id </span><span class="si">%s</span><span class="s2"> failed in server n# </span><span class="si">%s</span><span class="s2"> with traceback </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;traceback&#39;</span><span class="p">])),</span>
+                                         <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>          
+                        <span class="c1"># If this request belongs to a group update the group response object</span>
+                        <span class="k">if</span> <span class="s1">&#39;group&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_id</span><span class="p">]:</span>
+                            <span class="n">command_group_response_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_id</span><span class="p">][</span><span class="s1">&#39;group&#39;</span><span class="p">]</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_list</span><span class="p">[</span><span class="n">command_group_response_id</span><span class="p">][</span><span class="s1">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">command_id</span><span class="p">)</span>
+                            <span class="c1"># If there are no requests pending from this group send the group response signal</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_list</span><span class="p">[</span><span class="n">command_group_response_id</span><span class="p">][</span><span class="s1">&#39;list&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_list</span><span class="p">[</span><span class="n">command_group_response_id</span><span class="p">][</span><span class="s1">&#39;event&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception receiving command request response msg: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                     <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_command_response_handler_service_sleep_time</span><span class="p">)</span> 
+
+            <span class="c1"># Mark service as not running</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span> <span class="o">=</span> <span class="kc">False</span>            
+
+            
+        <span class="k">def</span> <span class="nf">__start_command_response_handler_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::start_command_response_handler_service&quot;</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command response handler service is already running&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_on</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_thread</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">start_new_thread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service</span><span class="p">,</span> <span class="p">())</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception starting MPI command response handler service: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                             <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>  
+                <span class="k">return</span> <span class="kc">False</span>
+        
+            <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span><span class="p">):</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_start_service_sleep_time</span><span class="p">)</span> 
+        
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command response handler service started&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="kc">True</span>
+        
+        
+        <span class="k">def</span> <span class="nf">__stop_command_response_handler_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::stop_command_response_handler_service&quot;</span>
+        
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command response handler service is not running&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>             
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Send signal to the thread to be awakened</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>            
+        
+            <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_running</span><span class="p">):</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_stop_service_sleep_time</span><span class="p">)</span>
+                
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command response handler service stopped&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            
+        <span class="k">def</span> <span class="nf">__command_request_queue_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::command_request_queue_service&quot;</span>
+            
+            <span class="c1"># Mark service as running</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span> <span class="o">=</span> <span class="kc">True</span>                    
+                       
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_on</span><span class="p">:</span>
+                
+                <span class="c1"># Wait until there are pending command responses</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                    
+                <span class="c1"># Pick up jobs from input queue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+                <span class="c1"># Get list of available servers</span>
+                <span class="n">available_servers_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_rank_available</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">available_servers_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># Get list of matching command requests</span>
+                    <span class="n">matching_command_request_id_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__match_available_servers_with_command_requests</span><span class="p">(</span><span class="n">available_servers_list</span><span class="p">)</span>
+                    <span class="c1"># Iterate over matching command request list</span>
+                    <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">matching_command_request_id_list</span><span class="p">:</span>
+                        <span class="n">command_request_found</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">command_request_queue_idx</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="c1"># Iterate over command request queue to find the corresponding index</span>
+                        <span class="k">for</span> <span class="n">command_request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">command_request_id</span><span class="p">:</span>
+                                <span class="n">command_request_found</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">command_request_queue_idx</span> <span class="o">=</span> <span class="n">command_request_queue_idx</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="c1"># Extract command request from queue and send it</span>
+                        <span class="k">if</span> <span class="n">command_request_found</span><span class="p">:</span>
+                            <span class="n">command_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">command_request_queue_idx</span><span class="p">)</span>
+                            <span class="c1"># If command request queue us empty clear the event controller</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>                            
+                            <span class="n">server</span> <span class="o">=</span> <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="c1"># Mark assigned server as busy and set command info in server status</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">set_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;busy&#39;</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">set_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;command&#39;</span><span class="p">,</span><span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">])</span>
+                                <span class="c1"># Send command request</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">command_request_send</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">command_request</span><span class="p">,</span><span class="n">server</span><span class="o">=</span><span class="n">server</span><span class="p">)</span>
+                                <span class="c1"># Mark command request as sent</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;request sent&#39;</span>
+                                <span class="c1"># Notify that command request has been sent</span>
+                                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id# </span><span class="si">%s</span><span class="s2"> sent to server n# </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                             <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)),</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">command_handling_log_level</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="c1"># Get and format traceback</span>
+                                <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                                <span class="c1"># Simulate response</span>
+                                <span class="n">command_response</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">command_request</span><span class="p">)</span>
+                                <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;successful&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+                                <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;traceback&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">formatted_traceback</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">]</span><span class="o">=</span><span class="n">command_response</span>
+                                <span class="c1"># Notify exception</span>
+                                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception sending command request with id# </span><span class="si">%s</span><span class="s2"> to server n# </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                             <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">)),</span>
+                                             <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                       
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id# </span><span class="si">%s</span><span class="s2"> not found&quot;</span> <span class="o">%</span> 
+                                         <span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Sleep in order not to saturate the system</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_command_request_queue_service_sleep_time</span><span class="p">)</span>
+                
+            <span class="c1"># Mark service as not running</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span> <span class="o">=</span> <span class="kc">False</span>
+            
+            
+        <span class="k">def</span> <span class="nf">__match_available_servers_with_command_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">available_servers</span><span class="p">):</span>
+            
+            <span class="n">matching_command_request_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">unassigned_command_request_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">available_servers_left</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">available_servers</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">command_request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="p">:</span>
+                <span class="n">server</span> <span class="o">=</span> <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                <span class="n">command_request_id</span> <span class="o">=</span> <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                <span class="c1"># Command request does not have any pre-assigned server</span>
+                <span class="k">if</span> <span class="n">server</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">matching_command_request_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                    <span class="n">unassigned_command_request_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                <span class="c1"># Assigned server is within the list of available servers </span>
+                <span class="k">elif</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">available_servers_left</span><span class="p">:</span>
+                    <span class="n">matching_command_request_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                    <span class="c1"># Remove server from the list of available servers to avoid multiple assignment</span>
+                    <span class="n">available_servers_left</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+                    
+                <span class="c1"># Exit loop if we have enough matching requests</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_command_request_id_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">available_servers</span><span class="p">):</span>
+                    <span class="k">break</span>
+                
+            <span class="c1"># Assign servers to the remaining requests</span>
+            <span class="k">for</span> <span class="n">command_request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">unassigned_command_request_id_list</span><span class="p">:</span>
+                    <span class="n">server</span> <span class="o">=</span> <span class="n">available_servers_left</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                    <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
+                
+            <span class="c1"># Return matching command request id list</span>
+            <span class="k">return</span> <span class="n">matching_command_request_id_list</span>  
+        
+            
+        <span class="k">def</span> <span class="nf">__start_command_request_queue_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::start_command_request_queue_service&quot;</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command request queue service is already running&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_on</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_thread</span> <span class="o">=</span> <span class="n">_thread</span><span class="o">.</span><span class="n">start_new_thread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service</span><span class="p">,</span> <span class="p">())</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception starting MPI command request queue service: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                             <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>  
+                <span class="k">return</span> <span class="kc">False</span>
+        
+            <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span><span class="p">):</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_start_service_sleep_time</span><span class="p">)</span> 
+        
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command request queue service started&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="kc">True</span>
+        
+        
+        <span class="k">def</span> <span class="nf">__stop_command_request_queue_service</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::stop_command_request_queue_service&quot;</span>
+        
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command request queue service is not running&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>             
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_on</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># Send signal to the thread to be awakened</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        
+            <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_running</span><span class="p">):</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_stop_service_sleep_time</span><span class="p">)</span>
+                
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPI command request queue service stopped&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>            
+            
+            
+        <span class="k">def</span> <span class="nf">__send_start_service_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="nf">filter_out_dict</span><span class="p">(</span><span class="n">a_dict</span><span class="p">,</span> <span class="n">keys_exclude</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; Return a dictionary copied from the input dictionary</span>
+<span class="sd">                but excluding the entries with keys given in the second</span>
+<span class="sd">                parameter.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">filtered</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">a_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_exclude</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">filtered</span>
+
+
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::send_start_service_signal&quot;</span>
+            
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Sending start service signal to all servers&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            <span class="c1"># Prepare stop service request</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">request</span><span class="p">[</span><span class="s1">&#39;signal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;start&#39;</span>
+
+            <span class="k">if</span> <span class="s1">&#39;casa&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+                <span class="n">request</span><span class="p">[</span><span class="s1">&#39;casa_filtered&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_out_dict</span><span class="p">(</span><span class="n">casa</span><span class="p">,</span>
+                                                           <span class="p">[</span><span class="s1">&#39;build&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;rc&#39;</span><span class="p">,</span>
+                                                            <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">,</span> <span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="s1">&#39;dbus&#39;</span><span class="p">,</span>
+                                                            <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">request</span><span class="p">[</span><span class="s1">&#39;casa_filtered&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="n">request</span><span class="p">[</span><span class="s1">&#39;logmode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_mode</span>
+            
+            <span class="c1"># Send request to all servers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_request_broadcast</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">casalog</span><span class="p">)</span>
+                
+            <span class="c1"># Then wait until all servers have handled the signal</span>
+            <span class="n">mpi_server_rank_list</span> <span class="o">=</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_server_rank_list</span><span class="p">()</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">mpi_server_rank_list</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">response_available</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">response_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_response_probe</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">response_available</span><span class="p">:</span>
+                    <span class="c1"># Receive start service response to know what server has started</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_response_recv</span><span class="p">()</span>
+                    <span class="n">rank</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span>
+                    <span class="c1"># Store processor name and PID info in the MPIMonitorClient</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">set_server_status_keyword</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="s1">&#39;processor&#39;</span><span class="p">,</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;processor&#39;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">set_server_status_keyword</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span><span class="s1">&#39;pid&#39;</span><span class="p">,</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">])</span>
+                    <span class="c1"># Remove server from list</span>
+                    <span class="n">mpi_server_rank_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+                    <span class="c1"># Communicate that server response to start service signal has been received</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Server with rank </span><span class="si">%s</span><span class="s2"> started at </span><span class="si">%s</span><span class="s2"> with PID </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                 <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;processor&#39;</span><span class="p">]),</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;pid&#39;</span><span class="p">])),</span>
+                                 <span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_start_service_sleep_time</span><span class="p">)</span>
+                        
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Received response from all servers to start service signal&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            
+        <span class="k">def</span> <span class="nf">__send_control_signal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">signal</span><span class="p">,</span><span class="n">check_response</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::send_app_control_signal&quot;</span>
+            
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Sending control signal to all servers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">signal</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">],</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+            
+            <span class="c1"># Add check_response to signal</span>
+            <span class="n">signal</span><span class="p">[</span><span class="s1">&#39;send_response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_response</span>
+            
+            <span class="c1"># Send request to all servers</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_request_broadcast</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">casalog</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception sending control signal to all servers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span>
+                             <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+                        
+            <span class="c1"># Then wait until all servers have handled the signal</span>
+            <span class="k">if</span> <span class="n">check_response</span><span class="p">:</span>
+                
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mpi_server_rank_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_rank_online</span><span class="p">()</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception checking for response to control signal: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span>
+                                 <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">return</span>
+                    
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">mpi_server_rank_list</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    
+                    <span class="n">response_available</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">response_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_response_probe</span><span class="p">()</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">response_available</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception getting response to control signal: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span>
+                                     <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="k">return</span>
+                        
+                    <span class="k">if</span> <span class="n">response_available</span><span class="p">:</span>
+                        <span class="c1"># Receive control signal response</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">control_service_response_recv</span><span class="p">()</span>
+                        <span class="n">rank</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span>
+                        <span class="c1"># Remove server from list</span>
+                        <span class="c1"># CAS-7721: Control signals are sent to all servers, even if not responsive</span>
+                        <span class="c1"># So we may get a response from a server which is not in the initial online servers list                        </span>
+                        <span class="k">if</span> <span class="n">mpi_server_rank_list</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">rank</span><span class="p">):</span>
+                            <span class="n">mpi_server_rank_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+                            <span class="c1"># Communicate that server response to start service signal has been received</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Server with rank </span><span class="si">%s</span><span class="s2"> handled control signal </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">),</span><span class="n">signal</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">]),</span>
+                                         <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_check_stop_service_sleep_time</span><span class="p">)</span>
+                
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Control signal handled by all servers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">signal</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">],</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>     
+                  
+            <span class="k">else</span><span class="p">:</span>
+                  
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Control signal sent to all servers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">signal</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">],</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>       
+            
+            
+        <span class="k">def</span> <span class="nf">__validate_target_servers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::validate_target_servers&quot;</span>
+            
+            <span class="c1"># Get list of valid MPIServer ranks</span>
+            <span class="n">mpi_server_rank_list</span> <span class="o">=</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_server_rank_list</span><span class="p">()</span>
+            
+            <span class="c1"># Check if target server is a list of integers</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_server</span><span class="p">,</span><span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">target_server</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">target_server</span><span class="p">):</span>
+                <span class="c1"># Check if server is within the server rank list</span>
+                <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">target_server</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">server</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mpi_server_rank_list</span><span class="p">:</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Server #</span><span class="si">%s</span><span class="s2"> does not exist&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;timeout&#39;</span><span class="p">):</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Server #</span><span class="si">%s</span><span class="s2"> has timed out&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+                <span class="c1"># Return input list validated</span>
+                <span class="k">return</span> <span class="n">target_server</span>
+            <span class="c1"># Check if target server is an integer</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_server</span><span class="p">,</span><span class="nb">int</span><span class="p">):</span>
+                <span class="c1"># Check if server is within the server rank list</span>
+                <span class="k">if</span> <span class="n">target_server</span> <span class="ow">in</span> <span class="n">mpi_server_rank_list</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">target_server</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Server #</span><span class="si">%s</span><span class="s2"> does not exist&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_server</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;target_server has wrong format (</span><span class="si">%s</span><span class="s2">), accepted formats are int and list(int)&quot;</span> 
+                             <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">target_server</span><span class="p">)),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                
+                <span class="k">return</span> <span class="kc">None</span>        
+            
+            
+        <span class="k">def</span> <span class="nf">__register_command_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command_request</span><span class="p">,</span><span class="n">server</span><span class="p">):</span>
+            
+            <span class="c1"># Get command request if</span>
+            <span class="n">command_request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_counter</span> 
+            
+            <span class="c1"># Complete command request definition</span>
+            <span class="n">command_request_complete</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">command_request</span><span class="p">)</span>
+            <span class="n">command_request_complete</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">command_request_id</span>
+            <span class="n">command_request_complete</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
+            <span class="n">command_request_complete</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;holding queue&#39;</span>
+                       
+            <span class="c1"># Register command request</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">]</span><span class="o">=</span><span class="n">command_request_complete</span>
+             
+            <span class="c1"># Append jobs to input queue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_complete</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_input_queue_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+             
+            <span class="c1"># Increment command id counter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_counter</span> <span class="o">+</span> <span class="mi">1</span>    
+            
+            <span class="c1"># Return command request id</span>
+            <span class="k">return</span> <span class="n">command_request_id</span>     
+        
+        <span class="k">def</span> <span class="nf">__format_command_response_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command_request_id</span><span class="p">):</span>
+            
+            <span class="c1"># Create a fake command response copying the command request and marking it as not successful</span>
+            <span class="n">command_response</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">])</span>
+            <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;timeout&#39;</span>
+            <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;successful&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            
+            <span class="c1"># Get server, processor and pid to identify which server timed out</span>
+            <span class="n">server</span> <span class="o">=</span> <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+            <span class="n">processor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;processor&#39;</span><span class="p">)</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;pid&#39;</span><span class="p">)</span>
+                        
+            <span class="c1"># Create command response trace-back msg</span>
+            <span class="n">timeout_msg</span> <span class="o">=</span> <span class="s2">&quot;Timeout of assigned server n# &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+            <span class="n">timeout_msg</span> <span class="o">=</span> <span class="n">timeout_msg</span> <span class="o">+</span> <span class="s2">&quot; deployed at &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">processor</span><span class="p">)</span>
+            <span class="n">timeout_msg</span> <span class="o">=</span> <span class="n">timeout_msg</span> <span class="o">+</span> <span class="s2">&quot; with PID &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+                        
+            <span class="n">command_response</span><span class="p">[</span><span class="s1">&#39;traceback&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timeout_msg</span>
+            
+            <span class="k">return</span> <span class="n">command_response</span>
+            
+        <span class="c1">################################################################################################################            </span>
+        <span class="c1"># Public methods ###############################################################################################</span>
+        <span class="c1">################################################################################################################</span>
+            
+            
+        <span class="k">def</span> <span class="nf">get_lifecyle_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span>
+        
+            
+        <span class="k">def</span> <span class="nf">start_services</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::start_services&quot;</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services already started&quot;</span><span class="p">,</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span> 
+        
+            <span class="c1"># 1st: start servers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__send_start_service_signal</span><span class="p">()</span>
+            
+            <span class="c1"># 2nd: start monitoring servers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">start_services</span><span class="p">()</span>
+            
+            <span class="c1"># 3rd: start command request queue service</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__start_command_request_queue_service</span><span class="p">()</span>
+            
+            <span class="c1"># 4th: start command response handler service</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__start_command_response_handler_service</span><span class="p">()</span>
+            
+            <span class="c1"># Set life cycle state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">=</span> <span class="mi">1</span>
+            
+            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;All services started&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+        
+        
+        <span class="k">def</span> <span class="nf">stop_services</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">force_command_request_interruption</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            
+            <span class="c1"># jagonzal: This method is called by the atexit module and if it fails it</span>
+            <span class="c1"># causes ipython to crash, producing a report and waiting for user input</span>
+            <span class="c1"># so we cannot risk under any circumstances such an event</span>
+            <span class="n">abort_mpi_environment</span> <span class="o">=</span> <span class="kc">False</span> 
+            <span class="k">try</span><span class="p">:</span>
+                
+                <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::stop_services&quot;</span>
+                
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">return</span>       
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">return</span>      
+                
+                <span class="c1"># Check if any server is in timeout condition before stopping the monitoring service</span>
+                <span class="n">server_rank_timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_timeout</span><span class="p">()</span>
+                <span class="n">finalize_mpi_environment</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">server_rank_timeout</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">finalize_mpi_environment</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">force_command_request_interruption</span> <span class="o">=</span> <span class="kc">True</span>                               
+                
+                <span class="c1"># Stop client monitoring services</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">stop_services</span><span class="p">()</span>
+                
+                <span class="c1"># Notify command requests which are going to be interrupted</span>
+                <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">command_request_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">:</span>
+                            <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Aborting command request with id# </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">])),</span>
+                                         <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                
+                <span class="c1"># Stop client command request-response services</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__stop_command_request_queue_service</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__stop_command_response_handler_service</span><span class="p">()</span>          
+                
+                <span class="c1"># Shutdown plotms process, if pmtool available.</span>
+                <span class="c1"># Not available at the moment in CASA6</span>
+                <span class="k">if</span> <span class="s1">&#39;pmtool&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__send_control_signal</span><span class="p">({</span><span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;pmtool.killApp()&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;signal&#39;</span><span class="p">:</span> <span class="s1">&#39;process_control&#39;</span><span class="p">},</span>
+                                               <span class="n">check_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Shutdown virtual frame buffer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_control_signal</span><span class="p">({</span><span class="s1">&#39;command&#39;</span><span class="p">:</span>
+                                            <span class="s1">&#39;self.signal_stop_virtual_frame_buffer()&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;signal&#39;</span><span class="p">:</span> <span class="s1">&#39;process_control&#39;</span><span class="p">},</span>
+                                           <span class="n">check_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>      
+                    
+                <span class="c1"># Send stop signal to servers</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__send_control_signal</span><span class="p">({</span><span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="s1">&#39;self.signal_stop_service_request()&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;signal&#39;</span><span class="p">:</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;force_command_request_interruption&#39;</span> <span class="p">:</span>
+                                            <span class="n">force_command_request_interruption</span><span class="p">,</span>
+                                            <span class="s1">&#39;finalize_mpi_environment&#39;</span> <span class="p">:</span>
+                                            <span class="n">finalize_mpi_environment</span><span class="p">},</span>
+                                           <span class="n">check_response</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>    
+                
+                <span class="c1"># Finalize MPI environment           </span>
+                <span class="k">if</span> <span class="n">finalize_mpi_environment</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Going to finalize MPI environment&quot;</span><span class="p">,</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">finalize_mpi_environment</span><span class="p">()</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Exception finalizing MPI environment </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                     <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="n">abort_mpi_environment</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPIServers with rank </span><span class="si">%s</span><span class="s2"> are in timeout condition, skipping MPI_Finalize()&quot;</span> 
+                                 <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">server_rank_timeout</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="n">abort_mpi_environment</span> <span class="o">=</span> <span class="kc">True</span>
+            
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unhandled exception in MPICommandClient::stop_services </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">))</span>
+                
+            <span class="c1"># UnMark MPI environment to be finalized by the MPICommunicator destructor</span>
+            <span class="c1"># (Either because it is already finalized or due to a </span>
+            <span class="c1"># server not responsive that prevents graceful finalization)  </span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__communicator</span><span class="o">.</span><span class="n">set_finalize_mpi_environment</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>   
+            
+            <span class="c1"># Set life cycle state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">=</span> <span class="mi">2</span>  
+                                
+            <span class="c1"># Abort or notify graceful finalization</span>
+            <span class="k">if</span> <span class="n">abort_mpi_environment</span><span class="p">:</span> 
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;Not possible to finalize gracefully... &#39;</span>
+                             <span class="s1">&#39;calling Aborting MPI environment&#39;</span><span class="p">,</span>
+                             <span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span> <span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">abort_mpi_environment</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;All services stopped&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="n">casalog_call_origin</span><span class="p">)</span>
+           
+
+        <span class="k">def</span> <span class="nf">push_command_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command</span><span class="p">,</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::push_command_request&quot;</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>  
+            
+            <span class="n">command_request</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">command</span>
+            <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameters</span>
+            
+            <span class="c1"># Determine whether command is a statement or an expression</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;push&quot;</span><span class="p">:</span>
+                <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;push&#39;</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Requested push operation&quot;</span><span class="p">,</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                   
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Determine whether command is a statement or an expression</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">],</span><span class="s2">&quot;send_command_request&quot;</span><span class="p">,</span> <span class="s2">&quot;eval&quot;</span><span class="p">)</span>
+                    <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;eval&#39;</span>
+                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command will be evaluated as an expression with return value&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">],</span><span class="s2">&quot;send_command_request&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">)</span>
+                        <span class="n">command_request</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;exec&#39;</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command will be executed as an statement w/o return code&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>                    
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                        <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command cannot be executed neither as a statement nor as an expression, it will be rejected: </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                     <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatted_traceback</span><span class="p">),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">None</span>   
+            
+            <span class="c1"># Validate target servers</span>
+            <span class="n">target_server_validated</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">target_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">target_server_validated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__validate_target_servers</span><span class="p">(</span><span class="n">target_server</span><span class="p">)</span>
+                <span class="c1"># Exit if target server is not validated</span>
+                <span class="k">if</span> <span class="n">target_server_validated</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                
+            <span class="c1"># Create command request list</span>
+            <span class="n">command_request_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">target_server_validated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">target_server_validated</span><span class="p">:</span>
+                    <span class="n">command_request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__register_command_request</span><span class="p">(</span><span class="n">command_request</span><span class="p">,</span><span class="n">server</span><span class="p">)</span>
+                    <span class="n">command_request_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">command_request_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__register_command_request</span><span class="p">(</span><span class="n">command_request</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">command_request_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                
+            <span class="c1"># Wake up command request/response service threads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_queue_service_event_controller</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_handler_service_event_controller</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            
+            <span class="c1"># In blocking mode wait until command response is received otherwise return request id</span>
+            <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+                <span class="n">command_return_code_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_command_response</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">command_return_code_list</span>
+            <span class="c1"># Otherwise we simply return the command request id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">command_request_id_list</span>
+        
+        
+        <span class="k">def</span> <span class="nf">get_command_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_request_id_list</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="nf">blocking_loop</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; Go in a loop until all requests are done (or some finish, some</span>
+<span class="sd">                time out)&quot;&quot;&quot;</span>
+
+                <span class="c1"># Wait until command request response is received or timeout</span>
+                <span class="n">pending_command_request_id_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">)</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending_command_request_id_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">command_request_id_list</span><span class="p">:</span>
+                        <span class="c1"># Check if command request id is still pending</span>
+                        <span class="k">if</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">pending_command_request_id_list</span><span class="p">:</span>
+                            <span class="c1"># Check if we have response for command request id</span>
+                            <span class="k">if</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">:</span>
+                                <span class="c1"># Remove command request id from pending list</span>
+                                <span class="n">pending_command_request_id_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;timeout&#39;</span><span class="p">):</span>
+                                    <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id# </span><span class="si">%s</span><span class="s2"> sent to server n# </span><span class="si">%s</span><span class="s2">, but the server has timed out&quot;</span> 
+                                                 <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                                    <span class="c1"># Remove command request id from pending list</span>
+                                    <span class="n">pending_command_request_id_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+
+
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_push_command_request_block_mode_sleep_time</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">blocking_gather_response_list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; build command_response list from responses available for command requests&quot;&quot;&quot;</span>
+
+                <span class="n">command_response_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">command_request_id_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">:</span>
+                        <span class="n">command_response</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">])</span>
+                        <span class="n">command_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_response</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">command_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__format_command_response_timeout</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                        <span class="n">command_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_response</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">command_response_list</span>
+
+            <span class="k">def</span> <span class="nf">nonblocking_gather_response_list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; Gather all the responses as currently available. &quot;&quot;&quot;</span>
+
+                <span class="n">command_response_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">command_request_id_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">command_request_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">:</span>
+                        <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;server&#39;</span><span class="p">]</span>
+                        <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status_keyword</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="s1">&#39;timeout&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">timeout</span><span class="p">:</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id# </span><span class="si">%s</span><span class="s2"> sent to server n# </span><span class="si">%s</span><span class="s2">, but the server has timed out&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)),</span><span class="s2">&quot;SEVERE&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                            <span class="n">command_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__format_command_response_timeout</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                            <span class="n">command_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_response</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+                            <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Command request with id# </span><span class="si">%s</span><span class="s2"> is in </span><span class="si">%s</span><span class="s2"> state assigned to server </span><span class="si">%s</span><span class="s2">&quot;</span> 
+                                         <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">),</span><span class="n">status</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">server</span><span class="p">)),</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">command_response</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">])</span>
+                        <span class="n">command_response_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_response</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">command_response_list</span>
+
+
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::get_command_response&quot;</span>
+
+            <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+                <span class="n">blocking_loop</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">)</span>
+                <span class="n">command_response_list</span> <span class="o">=</span> <span class="n">blocking_gather_response_list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">)</span>
+
+                <span class="c1"># Gather return codes</span>
+                <span class="c1">#command_return_code_list = []</span>
+                <span class="c1">#for command_response in command_response_list:</span>
+                <span class="c1">#    successful = command_response[&#39;successful&#39;]</span>
+                <span class="c1">#    if not successful:</span>
+                <span class="c1">#        command_return_code_list.append([command_response[&#39;id&#39;],False, command_response[&#39;traceback&#39;]])</span>
+                <span class="c1">#    elif command_response[&#39;mode&#39;] == &#39;eval&#39;:</span>
+                <span class="c1">#        command_return_code_list.append([command_response[&#39;id&#39;],True,command_response[&#39;ret&#39;]])</span>
+                <span class="c1">#    else:</span>
+                <span class="c1">#        command_return_code_list.append([command_response[&#39;id&#39;],True,None])</span>
+
+                <span class="c1"># Return command return code list</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">command_response_list</span> <span class="o">=</span> <span class="n">nonblocking_gather_response_list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">,</span>
+                                                                         <span class="n">verbose</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">command_response_list</span>
+            
+            
+        <span class="k">def</span> <span class="nf">get_command_response_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command_request_id_list</span><span class="p">):</span>
+            
+            <span class="c1"># Get command group response id</span>
+            <span class="n">command_group_response_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_counter</span>
+            
+            <span class="c1"># Setup event object</span>
+            <span class="n">command_group_response_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+            <span class="n">command_group_response_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            
+            <span class="c1"># Setup command group response</span>
+            <span class="n">command_group_response</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">command_group_response</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">command_group_response_id</span>
+            <span class="n">command_group_response</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">)</span> <span class="c1"># Make a copy of the list </span>
+            <span class="n">command_group_response</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">command_group_response_event</span>
+            
+            <span class="c1"># Register command group response</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_list</span><span class="p">[</span><span class="n">command_group_response_id</span><span class="p">]</span><span class="o">=</span><span class="n">command_group_response</span>
+            <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">command_request_id_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">command_group_response_id</span>
+             
+            <span class="c1"># Increment command id counter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_group_response_counter</span> <span class="o">+</span> <span class="mi">1</span>    
+            
+            <span class="c1"># Return command response event object</span>
+            <span class="k">return</span> <span class="n">command_group_response_event</span>
+        
+        
+        <span class="k">def</span> <span class="nf">get_server_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">server</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__monitor_client</span><span class="o">.</span><span class="n">get_server_status</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+        
+        
+        <span class="k">def</span> <span class="nf">get_command_request_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span>
+        
+        
+        <span class="k">def</span> <span class="nf">get_command_response_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_response_list</span>        
+        
+        
+        <span class="k">def</span> <span class="nf">set_log_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">logmode</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log_mode</span> <span class="o">=</span> <span class="n">logmode</span>
+            
+            
+        <span class="k">def</span> <span class="nf">set_log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_level</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::set_log_level&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>             
+            
+            <span class="k">if</span> <span class="n">log_level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">log_levels</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Unknown log level </span><span class="si">%s</span><span class="s2">, recognized levels are: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">log_level</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">log_levels</span><span class="p">)),</span>
+                             <span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+                
+            <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">command_handling_log_level</span> <span class="o">=</span> <span class="n">log_level</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__send_control_signal</span><span class="p">({</span><span class="s1">&#39;command&#39;</span><span class="p">:</span><span class="s2">&quot;MPIEnvironment.command_handling_log_level = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">log_level</span><span class="p">,</span>
+                                        <span class="s1">&#39;signal&#39;</span><span class="p">:</span><span class="s1">&#39;process_control&#39;</span><span class="p">},</span>
+                                       <span class="n">check_response</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   
+            
+        
+        <span class="k">def</span> <span class="nf">set_omp_num_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">omp_max_threads</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::set_omp_num_threads&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;self.omp_set_num_threads(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">omp_max_threads</span><span class="p">),</span>
+                                      <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>
+            
+        <span class="k">def</span> <span class="nf">setMemoryTotal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">memory</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::setMemoryTotal&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;casalog.setMemoryTotal(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">memory</span><span class="p">),</span>
+                                      <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>
+            
+        <span class="k">def</span> <span class="nf">setMemoryFraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">memfrac</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::setMemoryFraction&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;casalog.setMemoryFraction(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">memfrac</span><span class="p">),</span>
+                                      <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>     
+            
+        <span class="k">def</span> <span class="nf">setNumCPUs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">numCPUs</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::setNumCPUs&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;casalog.setNumCPUs(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">numCPUs</span><span class="p">),</span>
+                                      <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>              
+            
+        <span class="k">def</span> <span class="nf">getMemoryTotal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">use_aipsrc</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::getMemoryTotal&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;casalog.getMemoryTotal(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">use_aipsrc</span><span class="p">),</span>
+                                            <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">res_i</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_i</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">res_list</span>
+            
+        <span class="k">def</span> <span class="nf">getNumCPUs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">use_aipsrc</span><span class="p">,</span><span class="n">target_server</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::getNumCPUs&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>
+            
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s2">&quot;casalog.getNumCPUs(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">use_aipsrc</span><span class="p">),</span>
+                                            <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">target_server</span><span class="o">=</span><span class="n">target_server</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ret&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res_list</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">res_i</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_i</span><span class="p">[</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">res_list</span>            
+            
+        <span class="k">def</span> <span class="nf">wait_for_command_request_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">command_request_id_list</span><span class="p">):</span>
+            
+            <span class="n">casalog_call_origin</span> <span class="o">=</span> <span class="s2">&quot;MPICommandClient::wait_for_command_request_sent&quot;</span>    
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;Services not started&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>       
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__life_cycle_state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">casalog</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;MPICommandClient life cycle finalized&quot;</span><span class="p">,</span><span class="s2">&quot;WARN&quot;</span><span class="p">,</span><span class="n">casalog_call_origin</span><span class="p">)</span>
+                <span class="k">return</span>            
+            
+            <span class="n">pending_command_request_id_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command_request_id_list</span><span class="p">)</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending_command_request_id_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">command_request_id</span> <span class="ow">in</span> <span class="n">command_request_id_list</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__command_request_list</span><span class="p">[</span><span class="n">command_request_id</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;request sent&#39;</span><span class="p">:</span>
+                        <span class="n">pending_command_request_id_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">command_request_id</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_push_command_request_block_mode_sleep_time</span><span class="p">)</span></div>
+
+   
+<span class="c1"># EOF</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

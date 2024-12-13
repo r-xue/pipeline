@@ -23,15 +23,15 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.hifv.heuristics.vip_helper_functions" href="pipeline.hifv.heuristics.vip_helper_functions.html" />
-    <link rel="prev" title="pipeline.hifv.heuristics.standard.Standard" href="pipeline.hifv.heuristics.standard.Standard.html" /> 
+    <link rel="next" title="pipeline.hifv.heuristics.weakbp" href="pipeline.hifv.heuristics.weakbp.html" />
+    <link rel="prev" title="pipeline.hifv.heuristics.set_add_model_column_parameters" href="pipeline.hifv.heuristics.set_add_model_column_parameters.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -57,10 +57,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.html">pipeline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.cli_interface.html">pipeline.cli_interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.find_frame.html">pipeline.find_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.initcli.html">pipeline.initcli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.log_host_environment.html">pipeline.log_host_environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.show_weblog.html">pipeline.show_weblog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.stop_weblog.html">pipeline.stop_weblog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Context.html">pipeline.Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.Pipeline.html">pipeline.Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.cli.html">pipeline.cli</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.config.html">pipeline.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
@@ -119,7 +123,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline</a>
       </nav>
@@ -143,16 +147,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pipeline.hifv.heuristics.uvrange">
-<span id="pipeline-hifv-heuristics-uvrange"></span><h1>pipeline.hifv.heuristics.uvrange<a class="headerlink" href="#module-pipeline.hifv.heuristics.uvrange" title="Link to this heading"></a></h1>
+  <section id="pipeline-hifv-heuristics-uvrange">
+<h1>pipeline.hifv.heuristics.uvrange<a class="headerlink" href="#pipeline-hifv-heuristics-uvrange" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pipeline.hifv.heuristics.uvrange">
+<span class="sig-name descname"><span class="pre">uvrange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setjy_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifv/heuristics/uvrange.html#uvrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.heuristics.uvrange" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>setjy_results</strong> – Flux domain object read in from the import stage</p></li>
+<li><p><strong>field_id</strong> – integer field id</p></li>
+<li><p><strong>spw_id</strong> – integer spw id, default is spw_id=2 for VLASS</p></li>
+<li><p><strong>** However, currently it just picks the first index of zero</strong></p></li>
+</ul>
+</dd>
+</dl>
+<p>uvmin and uvmax are of type Decimal</p>
+<p>Units are always assumed to be lambda</p>
+<p>Returns: uvrange string</p>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifv.heuristics.standard.Standard.html" class="btn btn-neutral float-left" title="pipeline.hifv.heuristics.standard.Standard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.hifv.heuristics.vip_helper_functions.html" class="btn btn-neutral float-right" title="pipeline.hifv.heuristics.vip_helper_functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.hifv.heuristics.set_add_model_column_parameters.html" class="btn btn-neutral float-left" title="pipeline.hifv.heuristics.set_add_model_column_parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifv.heuristics.weakbp.html" class="btn btn-neutral float-right" title="pipeline.hifv.heuristics.weakbp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

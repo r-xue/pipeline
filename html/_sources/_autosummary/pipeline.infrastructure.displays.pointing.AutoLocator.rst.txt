@@ -1,0 +1,42 @@
+pipeline.infrastructure.displays.pointing.AutoLocator
+=====================================================
+
+.. currentmodule:: pipeline.infrastructure.displays.pointing
+
+.. autoclass:: AutoLocator
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~AutoLocator.create_dummy_axis
+      ~AutoLocator.nonsingular
+      ~AutoLocator.raise_if_exceeds
+      ~AutoLocator.set_axis
+      ~AutoLocator.set_bounds
+      ~AutoLocator.set_data_interval
+      ~AutoLocator.set_params
+      ~AutoLocator.set_view_interval
+      ~AutoLocator.tick_values
+      ~AutoLocator.view_limits
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~AutoLocator.MAXTICKS
+      ~AutoLocator.axis
+      ~AutoLocator.default_params
+   
+   

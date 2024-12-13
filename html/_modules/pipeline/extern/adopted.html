@@ -28,7 +28,7 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: white" >
+        <div class="wy-side-nav-search"  style="background: gray" >
 
           
           
@@ -84,7 +84,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline</a>
       </nav>
@@ -120,7 +120,7 @@
 
 
 <div class="viewcode-block" id="getMedianPWV">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMedianPWV.html#pipeline.extern.adopted.getMedianPWV">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV.html#pipeline.hifa.tasks.flagging.flagdeteralma.getMedianPWV">[docs]</a>
 <span class="k">def</span> <span class="nf">getMedianPWV</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">myTimes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999999999999</span><span class="p">],</span> <span class="n">asdm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts the PWV measurements from the WVR on all antennas for the</span>
@@ -258,7 +258,7 @@
 
 
 <div class="viewcode-block" id="readPWVFromASDM_CALATMOSPHERE">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE.html#pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readPWVFromASDM_CALATMOSPHERE.html#pipeline.hifa.tasks.flagging.flagdeteralma.readPWVFromASDM_CALATMOSPHERE">[docs]</a>
 <span class="k">def</span> <span class="nf">readPWVFromASDM_CALATMOSPHERE</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.</span>
@@ -287,7 +287,7 @@
 
 
 <div class="viewcode-block" id="readpwv">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readpwv.html#pipeline.extern.adopted.readpwv">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readpwv.html#pipeline.hifa.tasks.flagging.flagdeteralma.readpwv">[docs]</a>
 <span class="k">def</span> <span class="nf">readpwv</span><span class="p">(</span><span class="n">asdm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function assembles the dictionary returned by readwvr() into arrays</span>
@@ -313,7 +313,7 @@
 
 
 <div class="viewcode-block" id="readwvr">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readwvr.html#pipeline.extern.adopted.readwvr">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.readwvr.html#pipeline.hifa.tasks.flagging.flagdeteralma.readwvr">[docs]</a>
 <span class="k">def</span> <span class="nf">readwvr</span><span class="p">(</span><span class="n">sdmfile</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function reads the CalWVR.xml table from the ASDM and returns a</span>
@@ -373,7 +373,7 @@
 
 
 <div class="viewcode-block" id="call_qa_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.call_qa_time.html#pipeline.extern.adopted.call_qa_time">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.call_qa_time.html#pipeline.hifa.tasks.flagging.flagdeteralma.call_qa_time">[docs]</a>
 <span class="k">def</span> <span class="nf">call_qa_time</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">showform</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a wrapper for qa.time(), which in casa 4.0.0 returns a list</span>
@@ -394,7 +394,7 @@
 
 
 <div class="viewcode-block" id="MAD">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.MAD.html#pipeline.extern.adopted.MAD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.MAD.html#pipeline.hifa.tasks.flagging.flagdeteralma.MAD">[docs]</a>
 <span class="k">def</span> <span class="nf">MAD</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.6745</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Median Absolute Deviation along given axis of an array:</span>
@@ -424,7 +424,7 @@
 
 
 <div class="viewcode-block" id="getMJD">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMJD.html#pipeline.extern.adopted.getMJD">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.extern.adopted.getMJD.html#pipeline.hifa.tasks.flagging.flagdeteralma.getMJD">[docs]</a>
 <span class="k">def</span> <span class="nf">getMJD</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the current MJD.  See also getCurrentMJDSec().</span>

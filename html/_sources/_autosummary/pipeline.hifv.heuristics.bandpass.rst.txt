@@ -19,6 +19,7 @@ pipeline.hifv.heuristics.bandpass
       do_bandpass
       do_bandpassweakbp
       removeRows
+      uvrange
       weakbp
    
    

@@ -9,6 +9,14 @@ pipeline.hif.heuristics.imageparams\_vla
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      find_EVLA_band
+   
    
 
    
@@ -20,6 +28,7 @@ pipeline.hif.heuristics.imageparams\_vla
       :template: custom-class-template.rst
       :nosignatures:
    
+      ImageParamsHeuristics
       ImageParamsHeuristicsVLA
    
    

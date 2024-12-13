@@ -1,23 +1,6 @@
 pipeline.hif.cli.hif\_mstransform
 =================================
 
-.. automodule:: pipeline.hif.cli.hif_mstransform
+.. currentmodule:: pipeline.hif.cli
 
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-
+.. autofunction:: hif_mstransform

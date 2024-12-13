@@ -20,6 +20,7 @@ pipeline.hifa.tasks.unlock\_refant.unlock\_refant
       :template: custom-class-template.rst
       :nosignatures:
    
+      Context
       UnlockRefAnt
       UnlockRefAntInputs
       UnlockRefAntResults
