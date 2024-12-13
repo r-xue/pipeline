@@ -2,6 +2,14 @@
     max-width: none;
 }
 
+.wy-nav-top {
+    background: #a09f9f;
+}
+
+.wy-nav-search {
+    background: #a09f9f;
+}
+
 .wy-nav-side {
     background: #ffffff;
 }
