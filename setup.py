@@ -183,15 +183,13 @@ class VersionCommand(setuptools.Command):
 
 def _get_git_version() -> str:
 
-    # try:
-    #     ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py', '--full-string'],
-    #                                               stderr=subprocess.DEVNULL).decode().strip()
-    # except (FileNotFoundError, subprocess.CalledProcessError):
-    #     # likely the script doesn't exist due to a wrong path or the Git metadata check failed.
-    #     ver_from_script = "0.0.dev0"
-    print(os.getcwd())
-    ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py', '--full-string'],
-                                                stderr=subprocess.DEVNULL).decode().strip()
+    try:
+        ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py', '--full-string'],
+                                                  stderr=subprocess.DEVNULL).decode().strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # likely the script doesn't exist due to a wrong path or the Git metadata check failed.
+        ver_from_script = "0.0.dev0"
+
 
     return ver_from_script
 
